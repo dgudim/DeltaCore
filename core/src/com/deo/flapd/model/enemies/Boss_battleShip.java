@@ -31,9 +31,6 @@ public class Boss_battleShip {
     private Array <Rectangle> bullets_red;
     private Array <Rectangle> bullets_red_big;
     private Array <Float> healths;
-    private Array <Float> degrees_blue;
-    private Array <Float> degrees_red;
-    private Array <Float> degrees_red_big;
 
     private ProgressBar health_cannon1;
     private ProgressBar health_cannon2;
@@ -81,9 +78,6 @@ public class Boss_battleShip {
         bullets_red = new Array<>();
         bullets_red_big = new Array<>();
         healths = new Array<>();
-        degrees_blue = new Array<>();
-        degrees_red = new Array<>();
-        degrees_red_big = new Array<>();
 
         bounds_body = new Polygon(new float[]{0f, 0f, 556, 0f, 556, 172, 0f, 172});
         bounds_cannon = new Polygon(new float[]{0f, 0f, 32, 0f, 32, 28, 0f, 28});
@@ -410,7 +404,6 @@ public class Boss_battleShip {
             for (int i = 0; i<bullets_blue.size; i++){
 
                 Rectangle bullet = bullets_blue.get(i);
-                float angle = degrees_blue.get(i);
 
                 this.bullet.setPosition(bullet.x, bullet.y);
                 this.bullet.setSize(bullet.width, bullet.height);
@@ -419,14 +412,13 @@ public class Boss_battleShip {
 
                 if(!is_paused){
                     bullet.x -= 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= 300 * angle * Gdx.graphics.getDeltaTime();
+                    bullet.y -= 300 * Gdx.graphics.getDeltaTime();
                 }
             }
 
             for (int i = 0; i<bullets_red.size; i++){
 
                 Rectangle bullet = bullets_red.get(i);
-                float angle = degrees_red.get(i);
 
                 this.bullet2.setPosition(bullet.x, bullet.y);
                 this.bullet2.setSize(bullet.width, bullet.height);
@@ -435,14 +427,13 @@ public class Boss_battleShip {
 
                 if(!is_paused){
                     bullet.x -= 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= 300 * angle * Gdx.graphics.getDeltaTime();
+                    bullet.y -= 300 * Gdx.graphics.getDeltaTime();
                 }
             }
 
             for (int i = 0; i<bullets_red_big.size; i++){
 
                 Rectangle bullet = bullets_red_big.get(i);
-                float angle = degrees_red_big.get(i);
 
                 this.bullet3.setPosition(bullet.x, bullet.y);
                 this.bullet3.setSize(bullet.width, bullet.height);
@@ -451,10 +442,9 @@ public class Boss_battleShip {
 
                 if(!is_paused){
                     bullet.x -= 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= 300 * angle * Gdx.graphics.getDeltaTime();
+                    bullet.y -= 300 * Gdx.graphics.getDeltaTime();
                 }
             }
-
             shoot();
         }
     }
@@ -470,41 +460,35 @@ public class Boss_battleShip {
                     bullet.x = bounds_cannon.getX() + bounds_cannon.getBoundingRectangle().width/2 - 14;
                     bullet.y = bounds_cannon.getY() + bounds_cannon.getBoundingRectangle().height/2 - 14;
                     bullets_blue.add(bullet);
-                    degrees_blue.add(MathUtils.sin(MathUtils.degreesToRadians*bounds_cannon.getRotation()));
                     break;
                 case(2):bullet.setSize(28, 28);
                     bullet.x = bounds_cannon2.getX() + bounds_cannon2.getBoundingRectangle().width/2 - 14;
                     bullet.y = bounds_cannon2.getY() + bounds_cannon2.getBoundingRectangle().height/2 - 14;
                     bullets_blue.add(bullet);
-                    degrees_blue.add(0f);
                     break;
                 case(3):
                     bullet.setSize(28, 28);
                     bullet.x = bounds_cannon3.getX() + bounds_cannon3.getBoundingRectangle().width/2 - 14;
                     bullet.y = bounds_cannon3.getY() + bounds_cannon3.getBoundingRectangle().height/2 - 14;
                     bullets_blue.add(bullet);
-                    degrees_blue.add(0f);
                     break;
                 case(4):
                     bullet.setSize(28, 28);
                     bullet.x = bounds_cannon4.getX() + bounds_cannon4.getBoundingRectangle().width/2 - 14;
                     bullet.y = bounds_cannon4.getY() + bounds_cannon4.getBoundingRectangle().height/2 - 14;
                     bullets_blue.add(bullet);
-                    degrees_blue.add(0f);
                     break;
                 case(5):
                     bullet.setSize(28, 28);
                     bullet.x = bounds_cannon5.getX() + bounds_cannon5.getBoundingRectangle().width/2 - 14;
                     bullet.y = bounds_cannon5.getY() + bounds_cannon5.getBoundingRectangle().height/2 - 14;
                     bullets_blue.add(bullet);
-                    degrees_blue.add(0f);
                     break;
                 case(6):
                     bullet.setSize(28, 28);
                     bullet.x = bounds_cannon6.getX() + bounds_cannon6.getBoundingRectangle().width/2 - 14;
                     bullet.y = bounds_cannon6.getY() + bounds_cannon6.getBoundingRectangle().height/2 - 14;
                     bullets_blue.add(bullet);
-                    degrees_blue.add(0f);
                     break;
             }
         }
