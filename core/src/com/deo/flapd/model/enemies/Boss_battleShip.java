@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.model.Bullet;
+import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -31,6 +33,11 @@ public class Boss_battleShip {
     private Array <Rectangle> bullets_red;
     private Array <Rectangle> bullets_red_big;
     private Array <Float> healths;
+    private Array <Float> degrees_blue;
+    private Array <Float> degrees_red;
+    private Array <Float> degrees_red_big;
+    private Array <Boolean> explodedCannons;
+    private float millis;
 
     private ProgressBar health_cannon1;
     private ProgressBar health_cannon2;
@@ -50,7 +57,7 @@ public class Boss_battleShip {
 
     private Random random;
 
-    private boolean animation, animation2;
+    private boolean animation, animation2, animation3;
 
     private float offset;
 
@@ -78,6 +85,9 @@ public class Boss_battleShip {
         bullets_red = new Array<>();
         bullets_red_big = new Array<>();
         healths = new Array<>();
+        degrees_blue = new Array<>();
+        degrees_red = new Array<>();
+        degrees_red_big = new Array<>();
 
         bounds_body = new Polygon(new float[]{0f, 0f, 556, 0f, 556, 172, 0f, 172});
         bounds_cannon = new Polygon(new float[]{0f, 0f, 32, 0f, 32, 28, 0f, 28});
@@ -97,7 +107,7 @@ public class Boss_battleShip {
         cannon_small2.setOrigin(28, 16);
         cannon_stage2.setOrigin(120, 16);
         main.setOrigin(278, 86);
-        bullet.setOrigin(14, 14);
+        bullet.setOrigin(7, 7);
         bullet2.setOrigin(26, 6);
         bullet3.setOrigin(14, 14);
 
@@ -218,16 +228,6 @@ public class Boss_battleShip {
 
         if (is_spawned) {
             bounds_body.setPosition(posX, posY);
-            bounds_cannon.setPosition(posX + 224, posY + 40);
-            bounds_cannon2.setPosition(posX + 256, posY + 40);
-            bounds_cannon3.setPosition(posX + 288, posY + 40);
-            bounds_cannon4.setPosition(posX + 376, posY + 40);
-            bounds_cannon5.setPosition(posX + 408, posY + 40);
-            bounds_cannon6.setPosition(posX + 440, posY + 40);
-            bounds_cannon_front.setPosition(posX + 60, posY + 58);
-            bounds_homing1.setPosition(posX + 94, posY + 116);
-            bounds_homing2.setPosition(posX + 67, posY + 126);
-            bounds_cannon_front_big.setPosition(posX+40, posY + 48);
 
             bounds_cannon.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon.getY()-shipBounds.getY(), bounds_cannon.getX()-shipBounds.getX()));
             bounds_cannon2.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon2.getY()-shipBounds.getY(), bounds_cannon2.getX()-shipBounds.getX()));
@@ -269,12 +269,16 @@ public class Boss_battleShip {
             health_cannon_stage2.setValue(healths.get(9));
 
             if(healths.get(9)>0) {
+                bounds_cannon_front_big.setPosition(posX+40, posY + 48);
+
                 health_cannon_stage2.draw(batch, 1);
                 health_cannon_stage2.act(Gdx.graphics.getDeltaTime());
 
                 cannon_stage2.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY());
                 cannon_stage2.setRotation(bounds_cannon_front_big.getRotation());
                 cannon_stage2.draw(batch);
+            }else{
+                bounds_cannon_front_big.setPosition(-100, -100);
             }
 
             if(healths.get(7)>0) {
@@ -290,69 +294,100 @@ public class Boss_battleShip {
             }
 
             if(healths.get(1)>0) {
+                bounds_cannon.setPosition(posX + 224, posY + 40);
+
                 cannon_small.setPosition(bounds_cannon.getX(), bounds_cannon.getY());
                 cannon_small.setRotation(bounds_cannon.getRotation());
                 cannon_small.draw(batch);
 
                 health_cannon1.draw(batch, 1);
                 health_cannon1.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon.setPosition(-100, -100);
             }
 
             if(healths.get(2)>0) {
+                bounds_cannon2.setPosition(posX + 256, posY + 40);
+
                 cannon_small.setPosition(bounds_cannon2.getX(), bounds_cannon2.getY());
                 cannon_small.setRotation(bounds_cannon2.getRotation());
                 cannon_small.draw(batch);
 
                 health_cannon2.draw(batch, 1);
                 health_cannon2.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon2.setPosition(-100, -100);
             }
 
             if(healths.get(3)>0) {
+                bounds_cannon3.setPosition(posX + 288, posY + 40);
+
                 cannon_small.setPosition(bounds_cannon3.getX(), bounds_cannon3.getY());
                 cannon_small.setRotation(bounds_cannon3.getRotation());
                 cannon_small.draw(batch);
 
                 health_cannon3.draw(batch, 1);
                 health_cannon3.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon3.setPosition(-100, -100);
             }
 
             if(healths.get(4)>0) {
+                bounds_cannon4.setPosition(posX + 376, posY + 40);
+
                 cannon_small.setPosition(bounds_cannon4.getX(), bounds_cannon4.getY());
                 cannon_small.setRotation(bounds_cannon4.getRotation());
                 cannon_small.draw(batch);
 
                 health_cannon4.draw(batch, 1);
                 health_cannon4.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon4.setPosition(-100, -100);
             }
 
             if(healths.get(5)>0) {
+                bounds_cannon5.setPosition(posX + 408, posY + 40);
+
                 cannon_small.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
                 cannon_small.setRotation(bounds_cannon5.getRotation());
                 cannon_small.draw(batch);
 
                 health_cannon5.draw(batch, 1);
                 health_cannon5.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon5.setPosition(-100, -100);
             }
 
             if(healths.get(6)>0) {
+                bounds_cannon6.setPosition(posX + 440, posY + 40);
+
                 cannon_small.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
                 cannon_small.setRotation(bounds_cannon6.getRotation());
                 cannon_small.draw(batch);
 
                 health_cannon6.draw(batch, 1);
                 health_cannon6.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon6.setPosition(-100, -100);
             }
 
             if(healths.get(8)>0) {
+                bounds_cannon_front.setPosition(posX + 60, posY + 58);
+
                 cannon_small2.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY());
                 cannon_small2.setRotation(bounds_cannon_front.getRotation());
                 cannon_small2.draw(batch);
 
                 health_cannon_front.draw(batch, 1);
                 health_cannon_front.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_cannon_front.setPosition(-100, -100);
             }
 
             if(healths.get(10)>0) {
+                bounds_homing1.setPosition(posX + 94, posY + 116);
+                bounds_homing2.setPosition(posX + 67, posY + 126);
+
                 cannon_homing_part2.setPosition(bounds_homing2.getX(), bounds_homing2.getY());
                 cannon_homing_part2.setRotation(bounds_homing2.getRotation());
                 cannon_homing_part2.draw(batch);
@@ -363,6 +398,9 @@ public class Boss_battleShip {
 
                 health_cannon_homing.draw(batch, 1);
                 health_cannon_homing.act(Gdx.graphics.getDeltaTime());
+            }else{
+                bounds_homing1.setPosition(-100, -100);
+                bounds_homing2.setPosition(-100, -100);
             }
 
             if(!is_paused){
@@ -404,6 +442,7 @@ public class Boss_battleShip {
             for (int i = 0; i<bullets_blue.size; i++){
 
                 Rectangle bullet = bullets_blue.get(i);
+                float degree = degrees_blue.get(i);
 
                 this.bullet.setPosition(bullet.x, bullet.y);
                 this.bullet.setSize(bullet.width, bullet.height);
@@ -411,8 +450,17 @@ public class Boss_battleShip {
                 this.bullet.draw(batch);
 
                 if(!is_paused){
-                    bullet.x -= 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= 300 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
+                    bullet.y -= MathUtils.sinDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
+
+                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
+                        removeBullet(i, 1, true);
+                    }
+
+                    if(bullet.y<-bullet.height || bullet.y>480 || bullet.x<-bullet.width || bullet.x>800){
+                        removeBullet(i, 1, false);
+                    }
+
                 }
             }
 
@@ -428,6 +476,10 @@ public class Boss_battleShip {
                 if(!is_paused){
                     bullet.x -= 300 * Gdx.graphics.getDeltaTime();
                     bullet.y -= 300 * Gdx.graphics.getDeltaTime();
+
+                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
+                        removeBullet(i, 2, true);
+                    }
                 }
             }
 
@@ -443,54 +495,163 @@ public class Boss_battleShip {
                 if(!is_paused){
                     bullet.x -= 300 * Gdx.graphics.getDeltaTime();
                     bullet.y -= 300 * Gdx.graphics.getDeltaTime();
+
+                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
+                        removeBullet(i, 3, true);
+                    }
                 }
             }
-            shoot();
+
+            for(int i = 0; i< Bullet.bullets.size; i++){
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon.getBoundingRectangle())){
+                    healths.set(1, healths.get(1) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon2.getBoundingRectangle())){
+                    healths.set(2, healths.get(2) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon3.getBoundingRectangle())){
+                    healths.set(3, healths.get(3) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon4.getBoundingRectangle())){
+                    healths.set(4, healths.get(4) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon5.getBoundingRectangle())){
+                    healths.set(5, healths.get(5) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon6.getBoundingRectangle())){
+                    healths.set(6, healths.get(6) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon_front.getBoundingRectangle())){
+                    healths.set(8, healths.get(8) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_homing1.getBoundingRectangle()) || Bullet.bullets.get(i).overlaps(bounds_homing2.getBoundingRectangle())){
+                    healths.set(10, healths.get(10) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_body.getBoundingRectangle()) && stage2){
+                    healths.set(7, healths.get(7) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }else
+
+                if(Bullet.bullets.get(i).overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2){
+                    healths.set(9, healths.get(9) - Bullet.damages.get(i));
+                    Bullet.removeBullet(i, true);
+                }
+
+            }
+            shoot(is_paused);
         }
+
     }
 
-    public void shoot(){
-        if (!stage2){
+    private void shoot(boolean is_paused){
+        if (!stage2 && millis > 10 && !is_paused){
             int cannon = random.nextInt(6)+1;
 
             Rectangle bullet = new Rectangle();
 
             switch (cannon){
-                case(1): bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon.getX() + bounds_cannon.getBoundingRectangle().width/2 - 14;
-                    bullet.y = bounds_cannon.getY() + bounds_cannon.getBoundingRectangle().height/2 - 14;
-                    bullets_blue.add(bullet);
+                case(1):
+                    if(healths.get(1)>0) {
+                        bullet.setSize(14, 14);
+                        bullet.x = bounds_cannon.getX() + bounds_cannon.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y = bounds_cannon.getY() + bounds_cannon.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullets_blue.add(bullet);
+                        degrees_blue.add(bounds_cannon.getRotation());
+                    }
                     break;
-                case(2):bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon2.getX() + bounds_cannon2.getBoundingRectangle().width/2 - 14;
-                    bullet.y = bounds_cannon2.getY() + bounds_cannon2.getBoundingRectangle().height/2 - 14;
-                    bullets_blue.add(bullet);
+                case(2):
+                    if(healths.get(2)>0) {
+                        bullet.setSize(14, 14);
+                        bullet.x = bounds_cannon2.getX() + bounds_cannon2.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon2.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y = bounds_cannon2.getY() + bounds_cannon2.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon2.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullets_blue.add(bullet);
+                        degrees_blue.add(bounds_cannon2.getRotation());
+                    }
                     break;
                 case(3):
-                    bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon3.getX() + bounds_cannon3.getBoundingRectangle().width/2 - 14;
-                    bullet.y = bounds_cannon3.getY() + bounds_cannon3.getBoundingRectangle().height/2 - 14;
-                    bullets_blue.add(bullet);
+                    if(healths.get(3)>0) {
+                        bullet.setSize(14, 14);
+                        bullet.x = bounds_cannon3.getX() + bounds_cannon3.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon3.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y = bounds_cannon3.getY() + bounds_cannon3.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon3.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullets_blue.add(bullet);
+                        degrees_blue.add(bounds_cannon3.getRotation());
+                    }
                     break;
                 case(4):
-                    bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon4.getX() + bounds_cannon4.getBoundingRectangle().width/2 - 14;
-                    bullet.y = bounds_cannon4.getY() + bounds_cannon4.getBoundingRectangle().height/2 - 14;
-                    bullets_blue.add(bullet);
+                    if(healths.get(4)>0) {
+                        bullet.setSize(14, 14);
+                        bullet.x = bounds_cannon4.getX() + bounds_cannon4.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon4.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y = bounds_cannon4.getY() + bounds_cannon4.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon4.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullets_blue.add(bullet);
+                        degrees_blue.add(bounds_cannon4.getRotation());
+                    }
                     break;
                 case(5):
-                    bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon5.getX() + bounds_cannon5.getBoundingRectangle().width/2 - 14;
-                    bullet.y = bounds_cannon5.getY() + bounds_cannon5.getBoundingRectangle().height/2 - 14;
-                    bullets_blue.add(bullet);
+                    if(healths.get(5)>0) {
+                        bullet.setSize(14, 14);
+                        bullet.x = bounds_cannon5.getX() + bounds_cannon5.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon5.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y = bounds_cannon5.getY() + bounds_cannon5.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon5.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullets_blue.add(bullet);
+                        degrees_blue.add(bounds_cannon5.getRotation());
+                    }
                     break;
                 case(6):
-                    bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon6.getX() + bounds_cannon6.getBoundingRectangle().width/2 - 14;
-                    bullet.y = bounds_cannon6.getY() + bounds_cannon6.getBoundingRectangle().height/2 - 14;
-                    bullets_blue.add(bullet);
+                    if(healths.get(6)>0) {
+                        bullet.setSize(14, 14);
+                        bullet.x = bounds_cannon6.getX() + bounds_cannon6.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon6.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y = bounds_cannon6.getY() + bounds_cannon6.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon6.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullets_blue.add(bullet);
+                        degrees_blue.add(bounds_cannon6.getRotation());
+                    }
                     break;
             }
+            millis = 0;
+        }else if(stage2 && millis > 10 && !is_paused){
+            millis = 0;
+        }
+        millis=millis+60*Gdx.graphics.getDeltaTime();
+    }
+
+    private void removeBullet(int i, int type, boolean explode){
+        switch (type){
+            case(1):
+                bullets_blue.removeIndex(i);
+                degrees_blue.removeIndex(i);
+                GameUi.Health--;
+                break;
+            case(2):
+                break;
+            case(3):
+                break;
         }
     }
 }

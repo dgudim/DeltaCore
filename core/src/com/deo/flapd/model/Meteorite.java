@@ -150,7 +150,6 @@ public class Meteorite {
                         if(sound) {
                             explosion.play(MenuScreen.SoundVolume/100);
                         }
-                        break;
                         }
                     }
                 }

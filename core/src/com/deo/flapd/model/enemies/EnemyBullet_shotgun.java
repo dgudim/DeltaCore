@@ -147,7 +147,6 @@ public class EnemyBullet_shotgun {
                             }
 
                         }
-                        break;
                     }
                 }
                 for (int i2 = 0; i2 < Bullet.bullets.size; i2 ++) {
@@ -156,7 +155,6 @@ public class EnemyBullet_shotgun {
                         removeBullet(i, true);
                         Bullet.removeBullet(i2, true);
                         GameUi.Score += 20;
-                        break;
                     }
 
                 }

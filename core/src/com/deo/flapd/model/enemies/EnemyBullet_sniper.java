@@ -126,7 +126,6 @@ public class EnemyBullet_sniper {
                             }
 
                         }
-                        break;
                     }
                 }
                 for (int i2 = 0; i2 < Bullet.bullets.size; i2 ++) {
@@ -135,7 +134,6 @@ public class EnemyBullet_sniper {
                         removeBullet(i, true);
                         Bullet.removeBullet(i2, true);
                         GameUi.Score += 1500;
-                        break;
                     }
 
                 }

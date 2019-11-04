@@ -168,7 +168,6 @@ public class SniperEnemy {
                             if (sound){
                                 explosion.play(MenuScreen.SoundVolume/100);
                             }
-                            break;
                         }
                     }
                 }
@@ -183,11 +182,10 @@ public class SniperEnemy {
                             if(sound) {
                                 explosion.play(MenuScreen.SoundVolume/100);
                             }
-                            break;
 
                         }else if(Meteorite.healths.get(i3) < healths.get(i)){
                             healths.set(i, healths.get(i) - Meteorite.healths.get(i3));
-                            Meteorite.removeMeteorite(i, true);
+                            Meteorite.removeMeteorite(i3, true);
 
                             Meteorite.meteoritesDestroyed++;
 
@@ -204,7 +202,6 @@ public class SniperEnemy {
                             if(sound) {
                                 explosion.play(MenuScreen.SoundVolume/100);
                             }
-                            break;
                         }
                     }
                 }
