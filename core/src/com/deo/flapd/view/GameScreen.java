@@ -183,7 +183,7 @@ public class GameScreen implements Screen{
                 gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip);
             }
 
-           // try {
+           try {
 
                 enemy.draw(batch, is_paused);
                 enemy_sniper.draw(batch, is_paused);
@@ -196,10 +196,10 @@ public class GameScreen implements Screen{
 
             bonus.draw(batch, is_paused);
 
-            //}catch (Exception e){
-               // prefs.putString("lastError", e.getLocalizedMessage());
-               // prefs.flush();
-            //}
+            }catch (Exception e){
+                prefs.putString("lastError", e.getLocalizedMessage());
+                prefs.flush();
+            }
 
             ship.DrawShield(is_paused);
 

@@ -835,7 +835,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.1 Build 28", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.1 Build 29", 5, 35, 150, 1, false);
         batch.end();
     }
 
