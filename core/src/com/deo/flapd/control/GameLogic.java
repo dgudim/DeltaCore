@@ -42,7 +42,7 @@ public class GameLogic{
         bounds.setRotation((deltaY-deltaX)*7);
 
         if (is_firing && millis>10) {
-            bullet.Spawn(20, 1);
+            bullet.Spawn(2000, 1);
             millis = 0;
         }
         millis = millis + 50*(bonuses_collected/10+1)*Gdx.graphics.getDeltaTime();
