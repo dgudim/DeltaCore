@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
@@ -25,7 +26,7 @@ public class Bonus {
     public static Array<Integer> types;
     public static Array<Float> anglesY;
     private static Array <ParticleEffect> explosions;
-    private Sprite bonus_health, bonus_shield, bonus_part, bonus_bullets;
+    private Sprite bonus_health, bonus_shield, bonus_part, bonus_bullets, boss;
 
     private float width, height;
 
@@ -38,7 +39,9 @@ public class Bonus {
     private Texture bonus_bullets_t;
     private Random random;
 
-    public Bonus(AssetManager assetManager, float width, float height, Polygon shipBounds){
+    private Boss_battleShip boss_battleShip;
+
+    public Bonus(AssetManager assetManager, float width, float height, Polygon shipBounds, Boss_battleShip boss_battleShip){
         bounds = shipBounds;
 
         random = new Random();
@@ -49,6 +52,7 @@ public class Bonus {
         bonus_shield = new Sprite((Texture)assetManager.get("bonus_shield.png"));
         bonus_part = new Sprite((Texture)assetManager.get("bonus_part.png"));
         bonus_bullets = new Sprite((Texture)assetManager.get("bonus_bullets.png"));
+        boss = new Sprite((Texture)assetManager.get("bonus_boss.png"));
 
         bonus_bullets_t = assetManager.get("bonus_bullets.png");
 
@@ -63,6 +67,8 @@ public class Bonus {
         font_text = assetManager.get("fonts/font2.fnt");
 
         uiScale = prefs.getFloat("ui");
+
+        this.boss_battleShip = boss_battleShip;
     }
 
     public void Spawn(int type, float scale, Rectangle enemy) {
@@ -127,6 +133,12 @@ public class Bonus {
                     this.bonus_part.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.bonus_part.draw(batch);
                     break;
+                case(5):
+                    this.boss.setPosition(bonus.x, bonus.y);
+                    this.boss.setSize(bonus.width, bonus.height);
+                    this.boss.setOrigin(bonus.width / 2f, bonus.height / 2f);
+                    this.boss.draw(batch);
+                    break;
 
                     default:break;
             }
@@ -162,6 +174,11 @@ public class Bonus {
                     }
                     if(type == 4){
                         removeBonus(i, true);
+                    }
+                    if(type == 5){
+                        removeBonus(i, true);
+                        boss_battleShip.Spawn();
+                        GameLogic.bossWave = true;
                     }
                 }
             }
@@ -205,7 +222,9 @@ public class Bonus {
             ParticleEffect explosionEffect = new ParticleEffect();
             switch (types.get(i)){
                 case (1): explosionEffect.load(Gdx.files.internal("particles/explosion4.p"), Gdx.files.internal("particles")); break;
-                case (2): explosionEffect.load(Gdx.files.internal("particles/explosion4_1.p"), Gdx.files.internal("particles")); break;
+                case (2):
+                case (5):
+                    explosionEffect.load(Gdx.files.internal("particles/explosion4_1.p"), Gdx.files.internal("particles")); break;
                 case (3): explosionEffect.load(Gdx.files.internal("particles/explosion4_2.p"), Gdx.files.internal("particles")); break;
                 case (4): explosionEffect.load(Gdx.files.internal("particles/explosion4_3.p"), Gdx.files.internal("particles")); break;
             }
@@ -217,5 +236,4 @@ public class Bonus {
         types.removeIndex(i);
         anglesY.removeIndex(i);
     }
-
 }

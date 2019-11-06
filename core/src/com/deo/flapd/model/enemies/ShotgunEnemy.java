@@ -40,7 +40,7 @@ public class ShotgunEnemy {
 
     private Bonus bonus;
 
-    public ShotgunEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Polygon shipBounds) {
+    public ShotgunEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Polygon shipBounds, Bonus bonus) {
         bounds = shipBounds;
         this.height = height;
         this.width = width;
@@ -59,7 +59,7 @@ public class ShotgunEnemy {
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
-        bonus = new Bonus(assetManager, 50, 50, shipBounds);
+        this.bonus = bonus;
     }
 
     public void Spawn(float health, float scale) {

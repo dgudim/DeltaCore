@@ -17,6 +17,8 @@ import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class BasicEnemy {
 
@@ -43,8 +45,8 @@ public class BasicEnemy {
         this.width = width;
         this.fire_x = fire_offset_x;
         this.fire_y = fire_offset_y;
-        enemyBullet = new EnemyBullet((Texture)assetManager.get("pew2.png"), shipBounds, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
-        enemy = new Sprite((Texture)assetManager.get("trainingbot.png"));
+        enemyBullet = new EnemyBullet((Texture) assetManager.get("pew2.png"), shipBounds, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
+        enemy = new Sprite((Texture) assetManager.get("trainingbot.png"));
         enemies = new Array<>();
         healths = new Array<>();
         random = new Random();
@@ -195,6 +197,7 @@ public class BasicEnemy {
                 }
             }
         }
+
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
             if(!is_paused) {

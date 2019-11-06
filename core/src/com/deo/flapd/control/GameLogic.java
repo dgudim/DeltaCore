@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
@@ -27,6 +28,8 @@ public class GameLogic{
     public static int bonuses_collected;
     private float millis;
 
+    public static boolean bossWave;
+
     public GameLogic(Polygon bounds){
         this.bounds = bounds;
         random = new Random();
@@ -35,53 +38,62 @@ public class GameLogic{
         difficulty = prefs.getFloat("difficulty");
 
         bonuses_collected = 0;
+        bossWave = false;
     }
 
-    public void handleInput(float deltaX, float deltaY, boolean is_firing, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze) {
+    public void handleInput(float deltaX, float deltaY, boolean is_firing, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip) {
         bounds.setPosition(bounds.getX() + 300 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 300 * deltaY * Gdx.graphics.getDeltaTime());
         bounds.setRotation((deltaY-deltaX)*7);
 
         if (is_firing && millis>10) {
-            bullet.Spawn(2000, 1);
+            bullet.Spawn(40, 1);
             millis = 0;
         }
+
         millis = millis + 50*(bonuses_collected/10+1)*Gdx.graphics.getDeltaTime();
 
-        if((random.nextInt(40) == 5 || random.nextInt(40) > 37)&& GameUi.enemiesKilled<=3){
-            enemy.Spawn(40*difficulty, 0.8f);
-        }
+        if(!bossWave) {
+            if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && GameUi.enemiesKilled <= 3) {
+                enemy.Spawn(80 * difficulty, 0.8f);
+            }
 
-        if((random.nextInt(40) == 5 || random.nextInt(40) > 37)&& GameUi.enemiesKilled>=50){
-            sniperEnemy.Spawn(60*difficulty, 0.3f);
-            if((random.nextInt(40) == 5 || random.nextInt(400) > 370)&& GameUi.enemiesKilled>=50) {
-                kamikadze.Spawn(400, 0.3f, 7);
+            if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && GameUi.enemiesKilled >= 50) {
+                sniperEnemy.Spawn(120 * difficulty, 0.3f);
+                if ((random.nextInt(40) == 5 || random.nextInt(400) > 370) && GameUi.enemiesKilled >= 50) {
+                    kamikadze.Spawn(800, 0.3f, 7);
+                }
+            }
+
+            if ((random.nextInt(40) == 10 || random.nextInt(40) > 37) && GameUi.enemiesKilled >= 3) {
+                shotgunEnemy.Spawn(200 * difficulty, 0.5f);
+            }
+
+            if (random.nextInt(6000) == 5770) {
+                meteorite.Spawn(random.nextInt(480) * difficulty, (random.nextInt(60) - 30) / 10, random.nextInt(40) + 30);
+            }
+
+            for (int i2 = 0; i2 < enemy.enemies.size; i2++) {
+                if (random.nextInt(20) > 15 && GameUi.enemiesKilled <= 3) {
+                    enemy.shoot(i2);
+                }
+            }
+
+            for (int i2 = 0; i2 < shotgunEnemy.enemies.size; i2++) {
+                if (random.nextInt(40) > 37 && GameUi.enemiesKilled >= 3) {
+                    shotgunEnemy.shoot(i2);
+                }
+            }
+
+            for (int i2 = 0; i2 < sniperEnemy.enemies.size; i2++) {
+                if (random.nextInt(50) > 48 && GameUi.enemiesKilled >= 50) {
+                    sniperEnemy.shoot(i2);
+                }
             }
         }
 
-        if((random.nextInt(40) == 10 || random.nextInt(40) > 37)&&GameUi.enemiesKilled>=3){
-            shotgunEnemy.Spawn(100*difficulty, 0.5f);
-        }
-
-        if(random.nextInt(6000) == 5770){
-            meteorite.Spawn(random.nextInt(480)*difficulty, (random.nextInt(60)-30)/10, random.nextInt(40)+30);
-        }
-
-        for (int i2 = 0; i2 < enemy.enemies.size; i2 ++) {
-            if(random.nextInt(20)>15 && GameUi.enemiesKilled<=3) {
-                enemy.shoot(i2);
-            }
-        }
-
-        for (int i2 = 0; i2 < shotgunEnemy.enemies.size; i2 ++) {
-            if(random.nextInt(40)>37 && GameUi.enemiesKilled>=3) {
-                shotgunEnemy.shoot(i2);
-            }
-        }
-
-        for (int i2 = 0; i2 < sniperEnemy.enemies.size; i2 ++) {
-            if(random.nextInt(50)>48 && GameUi.enemiesKilled>=50) {
-                sniperEnemy.shoot(i2);
-            }
+        if(GameUi.Score> 80000 && GameUi.Score < 93600 && !bossWave){
+            bossWave = true;
+            boss_battleShip.Spawn();
         }
 
         if (bounds.getX() < 0) {

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
@@ -21,9 +22,6 @@ import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class GameScreen implements Screen{
 
@@ -67,6 +65,8 @@ public class GameScreen implements Screen{
     private boolean Music;
     private float millis, millis2, musicVolume;
 
+    private Bonus bonus;
+
     public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
         this.game = game;
@@ -93,6 +93,7 @@ public class GameScreen implements Screen{
         assetManager.load("bonus_health.png", Texture.class);
         assetManager.load("bonus_part.png", Texture.class);
         assetManager.load("bonus_shield.png", Texture.class);
+        assetManager.load("bonus_boss.png", Texture.class);
 
         assetManager.load("boss_ship/boss.png", Texture.class);
         assetManager.load("boss_ship/boss_dead.png", Texture.class);
@@ -132,19 +133,21 @@ public class GameScreen implements Screen{
 
         ship = new SpaceShip(ship_texture, shield_texture, 0, 204, 76.8f, 57.6f);
 
+        boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
+
+        bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip);
+
         gameUi = new GameUi(game, batch, assetManager, ship);
         gameLogic = new GameLogic(ship.getBounds());
 
         bullet = new Bullet(pew,0.4f, ship.getBounds());
 
         enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, ship.getBounds());
-        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, ship.getBounds());
-        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, ship.getBounds());
-        kamikadze = new Kamikadze(assetManager,348, 192,310, 100, ship.getBounds());
-        boss_battleShip =  new Boss_battleShip(assetManager, 800, 150, ship.getBounds());
-        boss_battleShip.Spawn();
+        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, ship.getBounds(), bonus);
+        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, ship.getBounds(), bonus);
+        kamikadze = new Kamikadze(assetManager,348, 192,310, 100, ship.getBounds(), bonus);
 
-        meteorite = new Meteorite(assetManager, ship.getBounds());
+        meteorite = new Meteorite(assetManager, ship.getBounds(), bonus);
 
         prefs = Gdx.app.getPreferences("Preferences");
 
@@ -177,7 +180,7 @@ public class GameScreen implements Screen{
             ship.draw(batch, is_paused);
 
             if(!is_paused && !ship.isExploded()) {
-                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze);
+                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip);
             }
 
            // try {
@@ -191,6 +194,8 @@ public class GameScreen implements Screen{
             bullet.draw(batch, is_paused);
             meteorite.draw(batch, is_paused);
 
+            bonus.draw(batch, is_paused);
+
             //}catch (Exception e){
                // prefs.putString("lastError", e.getLocalizedMessage());
                // prefs.flush();
@@ -202,6 +207,9 @@ public class GameScreen implements Screen{
 
             if(!is_paused){
                 movement = (int)(movement + (200 * delta));
+                if(movement> 2880){
+                    movement = 0;
+                }
             }
 
             batch.end();
@@ -281,6 +289,7 @@ public class GameScreen implements Screen{
     assetManager.unload("bonus_health.png");
     assetManager.unload("bonus_part.png");
     assetManager.unload("bonus_shield.png");
+    assetManager.unload("bonus_boss.png");
 
     assetManager.unload("boss_ship/boss.png");
     assetManager.unload("boss_ship/boss_dead.png");
@@ -292,6 +301,8 @@ public class GameScreen implements Screen{
     assetManager.unload("boss_ship/upperCannon_part1.png");
     assetManager.unload("boss_ship/upperCannon_part2.png");
     assetManager.unload("boss_ship/bigCannon.png");
+
+    boss_battleShip.dispose();
 
     music.dispose();
     }

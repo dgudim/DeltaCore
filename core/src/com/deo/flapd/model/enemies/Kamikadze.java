@@ -42,7 +42,7 @@ public class Kamikadze {
 
     private Bonus bonus;
 
-    public Kamikadze(AssetManager assetManager, float width, float height, float fire_offset_x, float fire_offset_y, Polygon shipBounds) {
+    public Kamikadze(AssetManager assetManager, float width, float height, float fire_offset_x, float fire_offset_y, Polygon shipBounds, Bonus bonus) {
         bounds = shipBounds;
         this.height = height;
         this.width = width;
@@ -61,7 +61,7 @@ public class Kamikadze {
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
-        bonus = new Bonus(assetManager, 50, 50, shipBounds);
+        this.bonus = bonus;
     }
 
     public void Spawn(float health, float scale, float explosionTimer) {

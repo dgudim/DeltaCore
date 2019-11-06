@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -35,7 +36,7 @@ public class Meteorite {
     private Bonus bonus;
     private Random random;
 
-    public Meteorite(AssetManager assetManager, Polygon shipBounds) {
+    public Meteorite(AssetManager assetManager, Polygon shipBounds, Bonus bonus) {
         bounds = shipBounds;
         meteorite = new Sprite((Texture)assetManager.get("Meteo.png"));
         meteorites = new Array<>();
@@ -51,7 +52,7 @@ public class Meteorite {
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
-        bonus = new Bonus(assetManager, 50, 50, shipBounds);
+        this.bonus = bonus;
     }
 
     public void Spawn(float x, float degree, float radius) {
@@ -63,7 +64,7 @@ public class Meteorite {
             meteorites.add(meteorite);
             radiuses.add(radius);
             degrees.add(degree);
-            healths.add(radius*1.5f);
+            healths.add(radius*3);
 
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal("particles/particle_nowind.p"), Gdx.files.internal("particles"));
@@ -116,6 +117,9 @@ public class Meteorite {
 
                 if(random.nextBoolean()) {
                     bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, meteorite);
+                    if(random.nextBoolean()) {
+                        bonus.Spawn(5, 1, meteorite);
+                    }
                 }
 
                 removeMeteorite(i, true);
@@ -141,6 +145,9 @@ public class Meteorite {
 
                         if(random.nextBoolean()) {
                             bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, meteorite);
+                            if(random.nextBoolean()) {
+                                bonus.Spawn(5, 1, meteorite);
+                            }
                         }
 
                         removeMeteorite(i, true);
@@ -167,7 +174,7 @@ public class Meteorite {
                 explosions.removeIndex(i3);
             }
         }
-        bonus.draw(batch, is_paused);
+
     }
 
     public void dispose(){
