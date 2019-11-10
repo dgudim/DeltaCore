@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
@@ -42,6 +43,7 @@ public class GameScreen implements Screen{
     private Meteorite meteorite;
     private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
+    private UraniumCell uraniumCell;
 
     private SpriteBatch batch;
 
@@ -113,6 +115,8 @@ public class GameScreen implements Screen{
         assetManager.load("boss_ship/upperCannon_part2.png", Texture.class);
         assetManager.load("boss_ship/bigCannon.png", Texture.class);
 
+        assetManager.load("uraniumCell.png", Texture.class);
+
         camera = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800,480, camera);
 
@@ -149,7 +153,9 @@ public class GameScreen implements Screen{
 
         bullet = new Bullet(pew,0.4f, ship.getBounds());
 
-        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
+        uraniumCell = new UraniumCell(assetManager, 96, 96);
+
+        enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
         enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, ship.getBounds(), bonus);
         enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, bonus);
         kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), bonus);
@@ -208,6 +214,8 @@ public class GameScreen implements Screen{
             meteorite.draw(batch, is_paused);
 
             bonus.draw(batch, is_paused);
+
+            uraniumCell.draw(batch, is_paused);
 
             //}catch (Exception e){
                 //prefs.putString("lastError", e.getLocalizedMessage());
@@ -314,6 +322,8 @@ public class GameScreen implements Screen{
     assetManager.unload("boss_ship/upperCannon_part1.png");
     assetManager.unload("boss_ship/upperCannon_part2.png");
     assetManager.unload("boss_ship/bigCannon.png");
+
+    assetManager.unload("uraniumCell.png");
 
     boss_battleShip.dispose();
 

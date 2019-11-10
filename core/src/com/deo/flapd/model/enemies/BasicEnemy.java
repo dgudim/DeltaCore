@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -35,11 +36,14 @@ public class BasicEnemy {
 
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    public BasicEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y) {
+    private UraniumCell uraniumCell;
+
+    public BasicEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y) {
         this.height = height;
         this.width = width;
         this.fire_x = fire_offset_x;
         this.fire_y = fire_offset_y;
+        this.uraniumCell = uraniumCell;
         enemyBullet = new EnemyBullet((Texture) assetManager.get("pew2.png"), Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
         enemy = new Sprite((Texture) assetManager.get("trainingbot.png"));
         enemies = new Array<>();
@@ -134,6 +138,7 @@ public class BasicEnemy {
                 explosionEffect.start();
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
+                uraniumCell.Spawn(enemies.get(i4), 10, 1, 2);
                 enemies.removeIndex(i4);
                 healths.removeIndex(i4);
                 scales.removeIndex(i4);
