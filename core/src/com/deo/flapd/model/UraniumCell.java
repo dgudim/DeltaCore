@@ -2,6 +2,7 @@ package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,6 +19,7 @@ public class UraniumCell {
     private Array <Float> timers;
     private Array <Rectangle> cells;
     private Array <Float> degrees;
+    private Array <Color> tints;
     private float width, height;
     private Random random;
 
@@ -89,6 +91,7 @@ public class UraniumCell {
         timers.removeIndex(i);
         cells.removeIndex(i);
         degrees.removeIndex(i);
+        //tints.removeIndex(i);
     }
 
 }
