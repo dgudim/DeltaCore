@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -38,7 +38,9 @@ public class ShotgunEnemy {
 
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    public ShotgunEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus) {
+    private UraniumCell uraniumCell;
+
+    public ShotgunEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus) {
         this.height = height;
         this.width = width;
         this.fire_x = fire_offset_x;
@@ -59,6 +61,7 @@ public class ShotgunEnemy {
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
         this.bonus = bonus;
+        this.uraniumCell = uraniumCell;
     }
 
     public void Spawn(float health, float scale) {
@@ -138,6 +141,7 @@ public class ShotgunEnemy {
                 if(random.nextBoolean()) {
                     bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemies.get(i4));
                 }
+                uraniumCell.Spawn(enemies.get(i4), random.nextInt(20)+10, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);

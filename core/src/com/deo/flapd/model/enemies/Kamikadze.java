@@ -13,9 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
-import com.deo.flapd.model.Bullet;
-import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -44,7 +42,9 @@ public class Kamikadze {
 
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    public Kamikadze(AssetManager assetManager, float width, float height, Polygon shipBounds, Bonus bonus) {
+    private UraniumCell uraniumCell;
+
+    public Kamikadze(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, Polygon shipBounds, Bonus bonus) {
         bounds = shipBounds;
         this.height = height;
         this.width = width;
@@ -64,6 +64,7 @@ public class Kamikadze {
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
         this.bonus = bonus;
+        this.uraniumCell = uraniumCell;
     }
 
     public void Spawn(float health, float scale, float explosionTimer) {
@@ -163,6 +164,7 @@ public class Kamikadze {
                 if (random.nextBoolean()) {
                     bonus.Spawn((int) (random.nextFloat() + 0.4) + 3, 1, enemies.get(i4));
                 }
+                uraniumCell.Spawn(enemies.get(i4), random.nextInt(40)+10, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);

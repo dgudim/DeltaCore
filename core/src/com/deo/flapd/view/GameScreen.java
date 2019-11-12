@@ -62,8 +62,6 @@ public class GameScreen implements Screen{
 
     private AssetManager assetManager;
 
-    private LoadingScreen loadingScreen;
-
     private Preferences prefs;
 
     private Music music;
@@ -84,50 +82,8 @@ public class GameScreen implements Screen{
 
         executor = Executors.newSingleThreadExecutor();
 
-        assetManager.load("bg_layer1.png", Texture.class);
-        assetManager.load("bg_layer2.png", Texture.class);
-        assetManager.load("bg_layer3.png", Texture.class);
-        assetManager.load("ship.png", Texture.class);
-        assetManager.load("ColdShield.png", Texture.class);
-        assetManager.load("pew3.png", Texture.class);
-        assetManager.load("pew.png", Texture.class);
-        assetManager.load("trainingbot.png", Texture.class);
-        assetManager.load("enemy_shotgun.png", Texture.class);
-        assetManager.load("enemy_sniper.png", Texture.class);
-        assetManager.load("pew2.png", Texture.class);
-        assetManager.load("Meteo.png", Texture.class);
-        assetManager.load("atomic_bomb.png", Texture.class);
-
-        assetManager.load("bonus_bullets.png", Texture.class);
-        assetManager.load("bonus_health.png", Texture.class);
-        assetManager.load("bonus_part.png", Texture.class);
-        assetManager.load("bonus_shield.png", Texture.class);
-        assetManager.load("bonus_boss.png", Texture.class);
-
-        assetManager.load("boss_ship/boss.png", Texture.class);
-        assetManager.load("boss_ship/boss_dead.png", Texture.class);
-        assetManager.load("boss_ship/bullet_blue.png", Texture.class);
-        assetManager.load("boss_ship/bullet_red.png", Texture.class);
-        assetManager.load("boss_ship/bullet_red_thick.png", Texture.class);
-        assetManager.load("boss_ship/cannon1.png", Texture.class);
-        assetManager.load("boss_ship/cannon2.png", Texture.class);
-        assetManager.load("boss_ship/upperCannon_part1.png", Texture.class);
-        assetManager.load("boss_ship/upperCannon_part2.png", Texture.class);
-        assetManager.load("boss_ship/bigCannon.png", Texture.class);
-
-        assetManager.load("uraniumCell.png", Texture.class);
-
         camera = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800,480, camera);
-
-        loadingScreen = new LoadingScreen(batch);
-
-        while (!assetManager.isFinished()) {
-            loadingScreen.render(assetManager.getProgress());
-            assetManager.update();
-        }
-
-        loadingScreen.dispose();
 
         bg1 = assetManager.get("bg_layer1.png");
         bg2 = assetManager.get("bg_layer2.png");
@@ -156,11 +112,11 @@ public class GameScreen implements Screen{
         uraniumCell = new UraniumCell(assetManager, 96, 96);
 
         enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
-        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, ship.getBounds(), bonus);
-        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, bonus);
-        kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), bonus);
+        enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus);
+        enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, bonus);
+        kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus);
 
-        meteorite = new Meteorite(assetManager, ship.getBounds(), bonus);
+        meteorite = new Meteorite(uraniumCell, assetManager, bonus);
 
         prefs = Gdx.app.getPreferences("Preferences");
 
@@ -197,12 +153,15 @@ public class GameScreen implements Screen{
                 executor.execute(new Runnable(){
                     @Override
                     public void run(){
+                        try {
                         gameLogic.detectCollisions(is_paused);
+                        }catch (Exception e){
+                            prefs.putString("lastError", e.getLocalizedMessage());
+                            prefs.flush();
+                        }
                     }
                 });
             }
-
-           //try {
 
             enemy.draw(batch, is_paused);
             enemy_sniper.draw(batch, is_paused);
@@ -216,11 +175,6 @@ public class GameScreen implements Screen{
             bonus.draw(batch, is_paused);
 
             uraniumCell.draw(batch, is_paused);
-
-            //}catch (Exception e){
-                //prefs.putString("lastError", e.getLocalizedMessage());
-                //prefs.flush();
-            //}
 
             ship.DrawShield(is_paused);
 
@@ -330,5 +284,6 @@ public class GameScreen implements Screen{
     music.dispose();
 
     bonus.dispose();
+    uraniumCell.dispose();
     }
 }

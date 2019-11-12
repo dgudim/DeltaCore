@@ -114,6 +114,10 @@ public class BasicEnemy {
 
             if(!is_paused) {
                 enemy.x -= 110 * Gdx.graphics.getDeltaTime();
+
+                if (enemy.x < -enemy.width - 110) {
+                    removeEnemy(i, false);
+                }
             }
         }
 
@@ -138,7 +142,7 @@ public class BasicEnemy {
                 explosionEffect.start();
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
-                uraniumCell.Spawn(enemies.get(i4), 10, 1, 2);
+                uraniumCell.Spawn(enemies.get(i4), random.nextInt(10)+10, 1, 2);
                 enemies.removeIndex(i4);
                 healths.removeIndex(i4);
                 scales.removeIndex(i4);

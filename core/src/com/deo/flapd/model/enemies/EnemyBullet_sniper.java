@@ -20,7 +20,6 @@ import java.util.Random;
 
 public class EnemyBullet_sniper {
 
-    private Polygon bounds;
     public static Array<Rectangle> bullets;
     public static Array<Float> damages;
     private static Array <Float> degrees;
@@ -38,8 +37,7 @@ public class EnemyBullet_sniper {
 
     private static Array<Boolean> explosionQueue, remove_Bullet;
 
-    public EnemyBullet_sniper(Texture bulletTexture,Polygon shipBounds, float width, float height, float Boffset_x,float Boffset_y, float Bspread) {
-        bounds = shipBounds;
+    public EnemyBullet_sniper(Texture bulletTexture, float width, float height, float Boffset_x,float Boffset_y, float Bspread) {
         this.Boffset_x = Boffset_x;
         this.Boffset_y = Boffset_y;
         this.width = width;
@@ -102,6 +100,9 @@ public class EnemyBullet_sniper {
                 bullet.x -= 1100 * Gdx.graphics.getDeltaTime();
                 bullet.y -= 70 * angle * Gdx.graphics.getDeltaTime();
 
+                if (bullet.x < -32) {
+                    removeBullet(i, false);
+                }
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){

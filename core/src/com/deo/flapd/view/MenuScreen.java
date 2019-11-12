@@ -107,8 +107,6 @@ public class MenuScreen implements Screen{
 
     private AssetManager assetManager;
 
-    private LoadingScreen loadingScreen;
-
     private ParticleEffect fire;
 
     public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
@@ -116,36 +114,6 @@ public class MenuScreen implements Screen{
         this.game = game;
 
         this.assetManager = assetManager;
-
-        assetManager.load("greyishButton.png", Texture.class);
-        assetManager.load("menuButtons/info_enabled.png", Texture.class);
-        assetManager.load("menuButtons/info_disabled.png", Texture.class);
-        assetManager.load("menuButtons/more_enabled.png", Texture.class);
-        assetManager.load("menuButtons/more_disabled.png", Texture.class);
-        assetManager.load("menuButtons/play_enabled.png", Texture.class);
-        assetManager.load("menuButtons/play_disabled.png", Texture.class);
-        assetManager.load("menuButtons/settings_enabled.png", Texture.class);
-        assetManager.load("menuButtons/settings_disabled.png", Texture.class);
-        assetManager.load("menuButtons/online_enabled.png", Texture.class);
-        assetManager.load("menuButtons/online_disabled.png", Texture.class);
-
-        assetManager.load("menuButtons/continue_e.png", Texture.class);
-        assetManager.load("menuButtons/continue_d.png", Texture.class);
-        assetManager.load("menuButtons/newGame_d.png", Texture.class);
-        assetManager.load("menuButtons/shop_d.png", Texture.class);
-        assetManager.load("menuButtons/newGame_e.png", Texture.class);
-        assetManager.load("menuButtons/shop_e.png", Texture.class);
-
-        assetManager.load("menuBg.png", Texture.class);
-        assetManager.load("lamp.png", Texture.class);
-        assetManager.load("infoBg.png", Texture.class);
-        assetManager.load("bg_old.png", Texture.class);
-        assetManager.load("ship2.png", Texture.class);
-
-        assetManager.load("checkBox_disabled.png", Texture.class);
-        assetManager.load("checkBox_enabled.png", Texture.class);
-        assetManager.load("progressBarKnob.png", Texture.class);
-        assetManager.load("progressBarBg.png", Texture.class);
 
         prefs = Gdx.app.getPreferences("Preferences");
 
@@ -167,15 +135,6 @@ public class MenuScreen implements Screen{
 
         camera = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800,480, camera);
-
-        loadingScreen = new LoadingScreen(batch);
-
-        while (!assetManager.isFinished()) {
-            assetManager.update();
-            loadingScreen.render(assetManager.getProgress());
-        }
-
-        loadingScreen.dispose();
 
         MenuBg = assetManager.get("menuBg.png");
         Lamp = new Image((Texture)(assetManager.get("lamp.png")));
@@ -661,7 +620,7 @@ public class MenuScreen implements Screen{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 newGame_enabled.setVisible(false);
-                game.setScreen(new GameScreen(game, batch, assetManager, true));
+                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true));
             }
         });
 

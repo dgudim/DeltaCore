@@ -121,10 +121,6 @@ public class GameLogic {
 
             Rectangle enemy = BasicEnemy.enemies.get(i);
 
-            if (enemy.x < -enemy.width - 110) {
-                BasicEnemy.removeEnemy(i, false);
-            }
-
             if (!is_paused) {
 
                 if (enemy.overlaps(bounds.getBoundingRectangle())) {
@@ -331,10 +327,6 @@ public class GameLogic {
 
             Rectangle enemy = SniperEnemy.enemies.get(i);
 
-            if (enemy.x < -enemy.width - 110) {
-                SniperEnemy.removeEnemy(i, false);
-            }
-
             if (!is_paused) {
 
                 if (enemy.overlaps(bounds.getBoundingRectangle())) {
@@ -407,10 +399,6 @@ public class GameLogic {
 
             if (!is_paused) {
 
-                if (meteorite.y < -radius * 4 || meteorite.x > 1000 || meteorite.x < 0 - radius * 4) {
-                    Meteorite.removeMeteorite(i, false);
-                }
-
                 if (meteorite.overlaps(bounds.getBoundingRectangle())) {
 
                     if (GameUi.Shield >= Meteorite.healths.get(i)) {
@@ -457,10 +445,6 @@ public class GameLogic {
 
             if (!is_paused) {
 
-                if (bullet.x < -32) {
-                    EnemyBullet.removeBullet(i, false);
-                }
-
                 if (bullet.overlaps(bounds.getBoundingRectangle())) {
                     if (GameUi.Shield >= EnemyBullet.damages.get(i)) {
                         GameUi.Shield -= EnemyBullet.damages.get(i);
@@ -498,24 +482,11 @@ public class GameLogic {
             }
         }
 
-        for (int i = 0; i < Bullet.bullets.size; i++) {
-
-            Rectangle bullet = Bullet.bullets.get(i);
-
-            if (bullet.x > 800) {
-                Bullet.removeBullet(i, false);
-            }
-        }
-
         for (int i = 0; i < EnemyBullet_shotgun.bullets.size; i++) {
 
             Rectangle bullet = EnemyBullet_shotgun.bullets.get(i);
 
             if (!is_paused) {
-
-                if (bullet.x < -32) {
-                    EnemyBullet_shotgun.removeBullet(i, false);
-                }
 
                 if (bullet.overlaps(bounds.getBoundingRectangle())) {
                     if (GameUi.Shield >= EnemyBullet_shotgun.damages.get(i)) {
@@ -559,10 +530,6 @@ public class GameLogic {
             Rectangle bullet = EnemyBullet_sniper.bullets.get(i);
 
             if (!is_paused) {
-
-                if (bullet.x < -32) {
-                    EnemyBullet_sniper.removeBullet(i, false);
-                }
 
                 if (bullet.overlaps(bounds.getBoundingRectangle())) {
                     if (GameUi.Shield >= EnemyBullet_sniper.damages.get(i)) {

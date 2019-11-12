@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -38,12 +38,14 @@ public class SniperEnemy {
 
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    public SniperEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Polygon shipBounds, Bonus bonus) {
+    private UraniumCell uraniumCell;
+
+    public SniperEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus) {
         this.height = height;
         this.width = width;
         this.fire_x = fire_offset_x;
         this.fire_y = fire_offset_y;
-        enemyBullet = new EnemyBullet_sniper((Texture)assetManager.get("pew.png"), shipBounds, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
+        enemyBullet = new EnemyBullet_sniper((Texture)assetManager.get("pew.png"), Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
         enemy = new Sprite((Texture)assetManager.get("enemy_sniper.png"));
         enemies = new Array<>();
         healths = new Array<>();
@@ -59,6 +61,7 @@ public class SniperEnemy {
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
         this.bonus = bonus;
+        this.uraniumCell = uraniumCell;
     }
 
     public void Spawn(float health, float scale) {
@@ -115,6 +118,10 @@ public class SniperEnemy {
 
             if (!is_paused) {
                 enemy.x -= 70 * Gdx.graphics.getDeltaTime();
+
+                if (enemy.x < -enemy.width - 110) {
+                    removeEnemy(i, false);
+                }
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
@@ -138,6 +145,7 @@ public class SniperEnemy {
                 if(random.nextBoolean()) {
                     bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemies.get(i4));
                 }
+                uraniumCell.Spawn(enemies.get(i4), random.nextInt(30)+10, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);

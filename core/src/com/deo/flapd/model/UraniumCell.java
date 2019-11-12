@@ -2,7 +2,6 @@ package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -19,7 +19,6 @@ public class UraniumCell {
     private Array <Float> timers;
     private Array <Rectangle> cells;
     private Array <Float> degrees;
-    private Array <Color> tints;
     private float width, height;
     private Random random;
 
@@ -70,7 +69,7 @@ public class UraniumCell {
                     Vector2 pos1 = new Vector2();
                     pos1.set(cell.x, cell.y);
                     Vector2 pos2 = new Vector2();
-                    pos2.set(240, 820);
+                    pos2.set(225, 400);
                     pos1.lerp(pos2, 0.05f);
 
                     cell.x = pos1.x;
@@ -80,7 +79,7 @@ public class UraniumCell {
                 timers.set(i, timer);
             }
 
-            if(cell.y>800){
+            if(cell.y > 395 && cell.x > 215 && cell.x < 235){
                 removeCell(i);
             }
 
@@ -91,7 +90,13 @@ public class UraniumCell {
         timers.removeIndex(i);
         cells.removeIndex(i);
         degrees.removeIndex(i);
-        //tints.removeIndex(i);
+        GameUi.money++;
+    }
+
+    public void dispose(){
+        timers.clear();
+        cells.clear();
+        degrees.clear();
     }
 
 }

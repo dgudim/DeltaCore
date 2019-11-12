@@ -95,6 +95,10 @@ public class Bullet {
             if (!is_paused){
                 bullet.x += 1500 * Gdx.graphics.getDeltaTime();
                 bullet.y += 300 * angle * Gdx.graphics.getDeltaTime();
+
+                if (bullet.x > 800) {
+                    Bullet.removeBullet(i, false);
+                }
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){

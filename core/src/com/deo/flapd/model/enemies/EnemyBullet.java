@@ -112,6 +112,10 @@ public class EnemyBullet {
             if (!is_paused){
                 bullet.x -= 300 * Gdx.graphics.getDeltaTime();
                 bullet.y -= 70 * angle * Gdx.graphics.getDeltaTime();
+
+                if (bullet.x < -32) {
+                    removeBullet(i, false);
+                }
             }
 
         }

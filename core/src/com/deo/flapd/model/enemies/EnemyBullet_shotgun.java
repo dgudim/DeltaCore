@@ -116,6 +116,10 @@ public class EnemyBullet_shotgun {
             if (!is_paused){
                 bullet.x -= 300 * Gdx.graphics.getDeltaTime();
                 bullet.y -= 70 * angle * Gdx.graphics.getDeltaTime();
+
+                if (bullet.x < -32) {
+                    removeBullet(i, false);
+                }
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){

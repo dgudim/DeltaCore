@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -172,8 +171,8 @@ public class Bonus {
         if(GameLogic.bonuses_collected > 0){
             font_text.setColor(Color.WHITE);
             font_text.getData().setScale(0.3f*uiScale);
-            font_text.draw(batch, "X" + GameLogic.bonuses_collected, 475-321*(uiScale-1), 425-55*(uiScale-1), 24*uiScale, 1,false);
-            batch.draw(bonus_bullets_t, 461-333*(uiScale-1), 475-50*uiScale, 50*uiScale, 50*uiScale);
+            font_text.draw(batch, "X" + GameLogic.bonuses_collected, 333-463*(uiScale-1), 425-55*(uiScale-1), 24*uiScale, 1,false);
+            batch.draw(bonus_bullets_t, 319-475*(uiScale-1), 475-50*uiScale, 50*uiScale, 50*uiScale);
             font_text.setColor(Color.BLACK);
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){

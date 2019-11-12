@@ -54,6 +54,7 @@ public class GameUi{
     private Image pause;
     private Image pause2;
     private Image levelScore;
+    private Image money_display;
     private boolean is_firing;
 
     private Image exit_button;
@@ -73,6 +74,7 @@ public class GameUi{
     public static int Score;
     public static int enemiesKilled;
     public static int enemiesSpawned;
+    public static int money;
     private float uiScale;
     private float difficulty;
 
@@ -86,8 +88,6 @@ public class GameUi{
 
     private Texture knob;
     private Texture touch_bg;
-
-    private LoadingScreen loadingScreen;
 
     private Polygon bounds;
 
@@ -107,23 +107,15 @@ public class GameUi{
 
         ship = Ship;
 
-        assetManager.load("firebutton.png", Texture.class);
-        assetManager.load("weaponbutton.png", Texture.class);
-        assetManager.load("pause.png", Texture.class);
-        assetManager.load("level score indicator.png", Texture.class);
-        assetManager.load("health indicator.png", Texture.class);
-        assetManager.load("exit.png", Texture.class);
-        assetManager.load("resume.png", Texture.class);
-        assetManager.load("restart.png", Texture.class);
+        prefs = Gdx.app.getPreferences("Preferences");
 
         Shield = 100;
         Health = 100;
         Score = 0;
+        money = prefs.getInteger("money");
 
         enemiesKilled = 0;
         enemiesSpawned = 0;
-
-        prefs = Gdx.app.getPreferences("Preferences");
 
         uiScale = prefs.getFloat("ui");
 
@@ -138,15 +130,6 @@ public class GameUi{
         cam = new OrthographicCamera();
         viewport = new FitViewport(800, 480, cam);
 
-        loadingScreen = new LoadingScreen(batch);
-
-        while (!assetManager.isFinished()){
-            loadingScreen.render(assetManager.getProgress());
-            assetManager.update();
-        }
-
-        loadingScreen.dispose();
-
         knob = new Texture("knob.png");
         touch_bg = new Texture("bg_stick.png");
 
@@ -158,6 +141,7 @@ public class GameUi{
         weaponChangeButton = new Image((Texture)assetManager.get("weaponbutton.png"));
         pause = new Image((Texture)assetManager.get("pause.png"));
         levelScore = new Image((Texture)assetManager.get("level score indicator.png"));
+        money_display = new Image((Texture)assetManager.get("money_display.png"));
         pause2 = new Image((Texture)assetManager.get("health indicator.png"));
         exit_button = new Image((Texture)assetManager.get("exit.png"));
         continue_button = new Image((Texture)assetManager.get("resume.png"));
@@ -166,6 +150,7 @@ public class GameUi{
         pause2.setBounds(658-142*(uiScale-1), 398-82*(uiScale-1), 142*uiScale, 82*uiScale);
         pause.setBounds(770-32*(uiScale-1), 450-32*(uiScale-1),29*uiScale,29*uiScale);
         levelScore.setBounds(516-284*(uiScale-1), 398-82*(uiScale-1), 142*uiScale,82*uiScale);
+        money_display.setBounds(374-426*(uiScale-1), 428-52*(uiScale-1), 142 *uiScale,52*uiScale);
 
         font_numbers = assetManager.get("fonts/font.fnt");
         font_white = assetManager.get("fonts/font_white.fnt");
@@ -277,6 +262,7 @@ public class GameUi{
             pause.setColor(1,1,1, 0.5f);
             pause2.setColor(1,1,1, 0.5f);
             levelScore.setColor(1,1,1, 0.5f);
+            money_display.setColor(1,1,1,0.5f);
             font_numbers.setColor(0,1,1,0.5f);
         }
         else{
@@ -286,6 +272,7 @@ public class GameUi{
         stage.addActor(pause2);
         stage.addActor(pause);
         stage.addActor(levelScore);
+        stage.addActor(money_display);
         stage.addActor(touchpad);
         stage.addActor(shield);
         stage.addActor(health);
@@ -352,7 +339,7 @@ public class GameUi{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if(GameScreen.is_paused) {
-                    game.setScreen(new MenuScreen(game, batch, assetManager));
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true));
                     GameScreen.is_paused = false;
                 }
             }
@@ -367,7 +354,7 @@ public class GameUi{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if(GameScreen.is_paused) {
-                    game.setScreen(new GameScreen(game, batch, assetManager, true));
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true));
                     GameScreen.is_paused = false;
                 }
             }
@@ -382,6 +369,7 @@ public class GameUi{
         batch.begin();
         font_numbers.getData().setScale(0.3f*uiScale);
         font_numbers.draw(batch, ""+Score, 537-263*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
+        font_numbers.draw(batch, ""+money, (537-122)-(263+122)*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
         font_main.getData().setScale(0.27f*uiScale);
         font_main.draw(batch, "Difficulty: "+difficulty+"X", 544-263*(uiScale-1), 433-45*(uiScale-1), 100*uiScale,1, false);
         font_main.getData().setScale(0.45f*uiScale);
@@ -454,6 +442,7 @@ public class GameUi{
         assetManager.unload("level score indicator.png");
         assetManager.unload("health indicator.png");
         assetManager.unload("exit.png");
+        assetManager.unload("money_display.png");
         assetManager.unload("resume.png");
         assetManager.unload("restart.png");
 
@@ -463,6 +452,9 @@ public class GameUi{
         PauseBg2.dispose();
 
         explosion.dispose();
+
+        prefs.putInteger("money", money);
+        prefs.flush();
     }
 
     public float getDeltaX(){

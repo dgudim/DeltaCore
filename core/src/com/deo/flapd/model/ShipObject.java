@@ -61,6 +61,8 @@ abstract class ShipObject {
         blue2 = 1;
         exploded = false;
         sound = MenuScreen.Sound;
+
+        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
 
@@ -130,6 +132,7 @@ abstract class ShipObject {
     public void dispose(){
         fire.dispose();
         fire2.dispose();
+        explosion.dispose();
     }
 
     public static void set_color(float red1, float green1, float blue1, boolean shield){

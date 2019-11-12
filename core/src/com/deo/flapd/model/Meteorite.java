@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.view.MenuScreen;
@@ -35,7 +34,9 @@ public class Meteorite {
 
     private static Array<Boolean> explosionQueue, remove_Meteorite;
 
-    public Meteorite(AssetManager assetManager, Polygon shipBounds, Bonus bonus) {
+    private UraniumCell uraniumCell;
+
+    public Meteorite(UraniumCell uraniumCell, AssetManager assetManager, Bonus bonus) {
         meteorite = new Sprite((Texture)assetManager.get("Meteo.png"));
         meteorites = new Array<>();
         radiuses = new Array<>();
@@ -53,6 +54,8 @@ public class Meteorite {
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
         this.bonus = bonus;
+
+        this.uraniumCell = uraniumCell;
     }
 
     public void Spawn(float x, float degree, float radius) {
@@ -99,6 +102,10 @@ public class Meteorite {
                 meteorite.x += 130 * degrees.get(i) * Gdx.graphics.getDeltaTime();
                 meteorite.y -= 130 * Gdx.graphics.getDeltaTime();
                 this.meteorite.setRotation(this.meteorite.getRotation() + 1.5f / meteorites.size);
+
+                if (meteorite.y < -radiuses.get(i) * 4 || meteorite.x > 1000 || meteorite.x < 0 - radiuses.get(i) * 4) {
+                    Meteorite.removeMeteorite(i, false);
+                }
             }
 
         }
@@ -126,6 +133,7 @@ public class Meteorite {
                         bonus.Spawn(5, 1, meteorites.get(i4));
                     }
                 }
+                uraniumCell.Spawn(meteorites.get(i4), random.nextInt((int)(radiuses.get(i4)/3))+10, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 meteorites.removeIndex(i4);
