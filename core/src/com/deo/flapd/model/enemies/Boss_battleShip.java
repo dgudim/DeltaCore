@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -86,9 +87,13 @@ public class Boss_battleShip {
 
     private boolean sound;
 
-    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds){
+    private UraniumCell uraniumCell;
+
+    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds, UraniumCell cell){
 
         this.shipBounds = shipBounds;
+
+        uraniumCell = cell;
 
         main = new Sprite();
         main_not_wrecked = new Sprite((Texture)assetManager.get("boss_ship/boss.png"));
@@ -291,6 +296,7 @@ public class Boss_battleShip {
         bodyOffset = 0;
         millis2 = 0;
         deathAnimation = false;
+        bounds_body.setRotation(0);
 
         main.set(main_not_wrecked);
 
@@ -420,6 +426,7 @@ public class Boss_battleShip {
                     stage2 = false;
                     deathAnimation = true;
                     GameUi.Score += 3000;
+                    uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1.3f, 1);
                 }
                 main.setPosition(bounds_body.getX(), bounds_body.getY());
                 main.setRotation(bounds_body.getRotation());

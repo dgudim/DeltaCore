@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
@@ -44,6 +45,7 @@ public class GameScreen implements Screen{
     private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
     private UraniumCell uraniumCell;
+    private Checkpoint checkpoint;
 
     private SpriteBatch batch;
 
@@ -74,6 +76,8 @@ public class GameScreen implements Screen{
 
     public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
+        prefs = Gdx.app.getPreferences("Preferences");
+
         this.game = game;
 
         this.batch = batch;
@@ -98,27 +102,27 @@ public class GameScreen implements Screen{
 
         pew = assetManager.get("pew3.png");
 
-        ship = new SpaceShip(ship_texture, shield_texture, 0, 204, 76.8f, 57.6f);
+        ship = new SpaceShip(ship_texture, shield_texture, 0, 204, 76.8f, 57.6f, newGame);
 
-        boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
+        uraniumCell = new UraniumCell(assetManager, 96, 96, prefs.getFloat("ui"));
+
+        boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds(), uraniumCell);
 
         bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip);
 
-        gameUi = new GameUi(game, batch, assetManager, ship);
-        gameLogic = new GameLogic(ship.getBounds());
+        gameUi = new GameUi(game, batch, assetManager, ship, newGame);
+        gameLogic = new GameLogic(ship.getBounds(), newGame);
 
-        bullet = new Bullet(pew,0.4f, ship.getBounds());
-
-        uraniumCell = new UraniumCell(assetManager, 96, 96);
+        bullet = new Bullet(pew,0.4f, ship.getBounds(), newGame);
 
         enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
         enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus);
         enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, bonus);
         kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus);
 
-        meteorite = new Meteorite(uraniumCell, assetManager, bonus);
+        meteorite = new Meteorite(uraniumCell, assetManager, bonus, newGame);
 
-        prefs = Gdx.app.getPreferences("Preferences");
+        checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
         musicVolume = prefs.getFloat("musicVolume");
 
@@ -149,7 +153,7 @@ public class GameScreen implements Screen{
             ship.draw(batch, is_paused);
 
             if(!is_paused && !ship.isExploded()) {
-                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip);
+                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint);
                 executor.execute(new Runnable(){
                     @Override
                     public void run(){
@@ -171,6 +175,7 @@ public class GameScreen implements Screen{
 
             bullet.draw(batch, is_paused);
             meteorite.draw(batch, is_paused);
+            checkpoint.draw(batch, is_paused);
 
             bonus.draw(batch, is_paused);
 
@@ -278,6 +283,9 @@ public class GameScreen implements Screen{
     assetManager.unload("boss_ship/bigCannon.png");
 
     assetManager.unload("uraniumCell.png");
+
+    assetManager.unload("checkpoint.png");
+    assetManager.unload("checkpoint_green.png");
 
     boss_battleShip.dispose();
 

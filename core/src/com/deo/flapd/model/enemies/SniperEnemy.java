@@ -3,14 +3,17 @@ package com.deo.flapd.model.enemies;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.UraniumCell;
+import com.deo.flapd.model.bullets.EnemyBullet_sniper;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -23,6 +26,7 @@ public class SniperEnemy {
     private static Array <ParticleEffect> fires;
     private static Array <ParticleEffect> explosions;
     private static Array <Float> scales;
+    public static Array <Color> colors;
     private Sprite enemy;
     private float millis;
     private Random random;
@@ -47,6 +51,7 @@ public class SniperEnemy {
         this.fire_y = fire_offset_y;
         enemyBullet = new EnemyBullet_sniper((Texture)assetManager.get("pew.png"), Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
         enemy = new Sprite((Texture)assetManager.get("enemy_sniper.png"));
+
         enemies = new Array<>();
         healths = new Array<>();
         random = new Random();
@@ -56,6 +61,8 @@ public class SniperEnemy {
         fires = new Array<>();
         explosionQueue = new Array<>();
         remove_Enemy = new Array<>();
+
+        colors = new Array<>();
 
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
@@ -86,6 +93,9 @@ public class SniperEnemy {
             explosionQueue.add(false);
             remove_Enemy.add(false);
 
+            Color color = new Color(Color.WHITE);
+            colors.add(color);
+
             millis = 0;
             GameUi.enemiesSpawned++;
         }
@@ -101,10 +111,12 @@ public class SniperEnemy {
             Rectangle enemy = enemies.get(i);
             ParticleEffect fire = fires.get(i);
             float scale = scales.get(i);
+            Color color = colors.get(i);
 
             this.enemy.setPosition(enemy.x, enemy.y);
             this.enemy.setSize(enemy.width, enemy.height);
             this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
+            this.enemy.setColor(color);
 
             fire.setPosition(enemy.x + fire_x * scale, enemy.y + fire_y * scale);
             fire.draw(batch);
@@ -121,6 +133,14 @@ public class SniperEnemy {
 
                 if (enemy.x < -enemy.width - 110) {
                     removeEnemy(i, false);
+                }
+
+                if(color.g < 1){
+                    color.g = (float) MathUtils.clamp(color.g + 0.07, 0, 1);
+                }
+
+                if(color.b < 1){
+                    color.b = (float)MathUtils.clamp(color.b + 0.07, 0, 1);
                 }
             }
         }
@@ -145,7 +165,7 @@ public class SniperEnemy {
                 if(random.nextBoolean()) {
                     bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemies.get(i4));
                 }
-                uraniumCell.Spawn(enemies.get(i4), random.nextInt(30)+10, 1, 2);
+                uraniumCell.Spawn(enemies.get(i4), random.nextInt(4)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);
@@ -154,6 +174,7 @@ public class SniperEnemy {
                 fires.get(i4).dispose();
                 fires.removeIndex(i4);
                 remove_Enemy.removeIndex(i4);
+                colors.removeIndex(i4);
                 if(sound) {
                     explosion.play(MenuScreen.SoundVolume/100);
                 }
@@ -165,6 +186,7 @@ public class SniperEnemy {
                 fires.get(i4).dispose();
                 fires.removeIndex(i4);
                 remove_Enemy.removeIndex(i4);
+                colors.removeIndex(i4);
             }
         }
     }
@@ -185,6 +207,7 @@ public class SniperEnemy {
         healths.clear();
         explosionQueue.clear();
         remove_Enemy.clear();
+        colors.clear();
     }
 
     public static void removeEnemy(int i, boolean explode){

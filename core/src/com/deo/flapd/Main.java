@@ -40,12 +40,13 @@ public class Main extends Game {
 				prefs.putFloat("ui", 1.25f);
 				System.out.println(prefs.getFloat("ui"));
 				prefs.putFloat("soundEffectsVolume", 1);
-				prefs.putFloat("musicVolume", 0 );
+				prefs.putFloat("musicVolume", 1 );
 				prefs.putFloat("difficulty", 1);
+				prefs.putBoolean("transparency", true);
 				prefs.flush();
 			}
 
-		this.setScreen(new LoadingScreen(this, batch, assetManager, 2, true));
+		this.setScreen(new LoadingScreen(this, batch, assetManager, 2, true, true));
 	}
 
 	@Override

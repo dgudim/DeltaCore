@@ -1,6 +1,7 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -35,10 +36,14 @@ public class Bullet {
 
     private static Array<Boolean> explosionQueue, remove_Bullet;
 
-    public Bullet(Texture bulletTexture, float spread, Polygon shipBounds) {
+    private Preferences prefs;
+
+    public Bullet(Texture bulletTexture, float spread, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
         this.spread = spread;
         bullet = new Sprite(bulletTexture);
+
+        prefs = Gdx.app.getPreferences("Preferences");
 
         random = new Random();
 
@@ -49,7 +54,11 @@ public class Bullet {
         explosionQueue = new Array<>();
         remove_Bullet = new Array<>();
 
-        bulletsShot = 0;
+        if(!newGame){
+            bulletsShot = prefs.getInteger(" bulletsShot");
+        }else {
+            bulletsShot = 0;
+        }
 
         sound = MenuScreen.Sound;
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));

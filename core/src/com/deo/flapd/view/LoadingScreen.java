@@ -23,8 +23,9 @@ public class LoadingScreen implements Screen {
     private Viewport viewport;
     private int screen_type;
     private boolean newGame;
+    private boolean is_first_launch;
 
-    public LoadingScreen(Game game, SpriteBatch batch, AssetManager assetManager, int screen_type, boolean newGame){
+    public LoadingScreen(Game game, SpriteBatch batch, AssetManager assetManager, int screen_type, boolean newGame, boolean is_first_launch){
 
         this.batch = batch;
 
@@ -78,6 +79,9 @@ public class LoadingScreen implements Screen {
                assetManager.load("exit.png", Texture.class);
                assetManager.load("resume.png", Texture.class);
                assetManager.load("restart.png", Texture.class);
+
+               assetManager.load("checkpoint.png", Texture.class);
+               assetManager.load("checkpoint_green.png", Texture.class);
                break;
            case(2):
                assetManager.load("greyishButton.png", Texture.class);
@@ -113,10 +117,13 @@ public class LoadingScreen implements Screen {
        }
         this.screen_type = screen_type;
 
-        camera = new OrthographicCamera();
+        camera = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800, 480, camera);
+        viewport.apply();
 
         this.newGame = newGame;
+
+        this.is_first_launch = is_first_launch;
     }
 
     @Override
@@ -128,6 +135,10 @@ public class LoadingScreen implements Screen {
     public void render(float delta){
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if(is_first_launch) {
+            batch.setProjectionMatrix(camera.combined);
+        }
 
         batch.begin();
         main.getData().setScale(1);
@@ -156,6 +167,9 @@ public class LoadingScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        if(is_first_launch) {
+            camera.position.set(400, 240, 0);
+        }
     }
 
     @Override

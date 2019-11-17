@@ -3,14 +3,16 @@ package com.deo.flapd.model.enemies;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.UraniumCell;
+import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -23,6 +25,7 @@ public class BasicEnemy {
     private static Array <ParticleEffect> fires;
     private static Array <ParticleEffect> explosions;
     private static Array <Float> scales;
+    public static Array <Color> colors;
     private Sprite enemy;
     private float millis;
     private Random random;
@@ -46,6 +49,7 @@ public class BasicEnemy {
         this.uraniumCell = uraniumCell;
         enemyBullet = new EnemyBullet((Texture) assetManager.get("pew2.png"), Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
         enemy = new Sprite((Texture) assetManager.get("trainingbot.png"));
+
         enemies = new Array<>();
         healths = new Array<>();
         random = new Random();
@@ -55,6 +59,8 @@ public class BasicEnemy {
         fires = new Array<>();
         explosionQueue = new Array<>();
         remove_Enemy = new Array<>();
+
+        colors = new Array<>();
 
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
@@ -81,6 +87,9 @@ public class BasicEnemy {
             explosionQueue.add(false);
             remove_Enemy.add(false);
 
+            Color color = new Color(Color.WHITE);
+            colors.add(color);
+
             millis = 0;
             GameUi.enemiesSpawned++;
         }
@@ -96,10 +105,12 @@ public class BasicEnemy {
             Rectangle enemy = enemies.get(i);
             ParticleEffect fire = fires.get(i);
             float scale = scales.get(i);
+            Color color = colors.get(i);
 
             this.enemy.setPosition(enemy.x, enemy.y);
             this.enemy.setSize(enemy.width, enemy.height);
             this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
+            this.enemy.setColor(color);
 
             fire.setPosition(enemy.x + fire_x * scale, enemy.y + fire_y * scale);
             fire.draw(batch);
@@ -117,6 +128,14 @@ public class BasicEnemy {
 
                 if (enemy.x < -enemy.width - 110) {
                     removeEnemy(i, false);
+                }
+
+                if(color.g < 1){
+                    color.g = (float)MathUtils.clamp(color.g + 0.07, 0, 1);
+                }
+
+                if(color.b < 1){
+                    color.b = (float)MathUtils.clamp(color.b + 0.07, 0, 1);
                 }
             }
         }
@@ -142,13 +161,14 @@ public class BasicEnemy {
                 explosionEffect.start();
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
-                uraniumCell.Spawn(enemies.get(i4), random.nextInt(10)+10, 1, 2);
+                uraniumCell.Spawn(enemies.get(i4), random.nextInt(3)+1, 1, 2);
                 enemies.removeIndex(i4);
                 healths.removeIndex(i4);
                 scales.removeIndex(i4);
                 fires.get(i4).dispose();
                 fires.removeIndex(i4);
                 remove_Enemy.removeIndex(i4);
+                colors.removeIndex(i4);
                 if(sound) {
                     explosion.play(MenuScreen.SoundVolume/100);
                 }
@@ -160,6 +180,7 @@ public class BasicEnemy {
                 fires.get(i4).dispose();
                 fires.removeIndex(i4);
                 remove_Enemy.removeIndex(i4);
+                colors.removeIndex(i4);
             }
         }
 
@@ -181,6 +202,7 @@ public class BasicEnemy {
         healths.clear();
         explosionQueue.clear();
         remove_Enemy.clear();
+        colors.clear();
     }
 
     public static void removeEnemy(int i, boolean explode){

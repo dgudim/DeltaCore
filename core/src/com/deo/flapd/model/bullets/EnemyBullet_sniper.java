@@ -1,7 +1,6 @@
-package com.deo.flapd.model.enemies;
+package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -15,11 +14,10 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
-public class EnemyBullet_shotgun {
+public class EnemyBullet_sniper {
 
     public static Array<Rectangle> bullets;
     public static Array<Float> damages;
-    private static Array <ParticleEffect> fires;
     private static Array <Float> degrees;
     private static Array <ParticleEffect> explosions;
     private Sprite bullet;
@@ -35,13 +33,13 @@ public class EnemyBullet_shotgun {
 
     private static Array<Boolean> explosionQueue, remove_Bullet;
 
-    public EnemyBullet_shotgun(AssetManager assetManager, float width, float height, float Boffset_x, float Boffset_y, float Bspread) {
+    public EnemyBullet_sniper(Texture bulletTexture, float width, float height, float Boffset_x,float Boffset_y, float Bspread) {
         this.Boffset_x = Boffset_x;
         this.Boffset_y = Boffset_y;
         this.width = width;
         this.height = height;
         spread = Bspread;
-        bullet = new Sprite((Texture)assetManager.get("pew2.png"));
+        bullet = new Sprite(bulletTexture);
 
         bullets = new Array<>();
         damages = new Array<>();
@@ -49,8 +47,6 @@ public class EnemyBullet_shotgun {
         explosions = new Array<>();
         explosionQueue = new Array<>();
         remove_Bullet = new Array<>();
-
-        fires = new Array<>();
 
         random = new Random();
 
@@ -62,26 +58,18 @@ public class EnemyBullet_shotgun {
     public void Spawn(float damage,  Rectangle enemyBounds, float scale) {
         if(millis > 10 && !GameScreen.is_paused) {
 
-            for(int i3 = 0; i3 < random.nextInt(5)+5; i3++) {
-                Rectangle bullet = new Rectangle();
+            Rectangle bullet = new Rectangle();
 
-                bullet.x = enemyBounds.getX() + Boffset_x;
-                bullet.y = enemyBounds.getY() + Boffset_y;
+            bullet.x = enemyBounds.getX()+Boffset_x;
+            bullet.y = enemyBounds.getY()+Boffset_y;
 
-                bullet.setSize(width * scale, height * scale);
+            bullet.setSize(width*scale, height*scale);
 
-                bullets.add(bullet);
-                damages.add(damage);
-                degrees.add((random.nextFloat() - 0.5f) * spread);
-                explosionQueue.add(false);
-                remove_Bullet.add(false);
-
-                ParticleEffect fire = new ParticleEffect();
-                fire.load(Gdx.files.internal("particles/bullet_trail_left.p"), Gdx.files.internal("particles"));
-                fire.start();
-
-                fires.add(fire);
-            }
+            bullets.add(bullet);
+            damages.add(damage);
+            degrees.add((random.nextFloat()-0.5f)*spread);
+            explosionQueue.add(false);
+            remove_Bullet.add(false);
 
             if(sound) {
                 shot.play(MenuScreen.SoundVolume/100);
@@ -97,24 +85,15 @@ public class EnemyBullet_shotgun {
         for (int i = 0; i < bullets.size; i ++) {
 
             Rectangle bullet = bullets.get(i);
-            ParticleEffect fire = fires.get(i);
-            Float angle = degrees.get(i);
+            float angle = degrees.get(i);
 
             this.bullet.setPosition(bullet.x, bullet.y);
             this.bullet.setSize(bullet.width, bullet.height);
             this.bullet.setOrigin(bullet.width / 2f, bullet.height / 2f);
             this.bullet.draw(batch);
 
-            fire.setPosition(bullet.getX() + bullet.width / 2, bullet.getY() + bullet.height / 2);
-            fire.draw(batch);
-            if(!is_paused) {
-                fire.update(Gdx.graphics.getDeltaTime());
-            }else{
-                fire.update(0);
-            }
-
             if (!is_paused){
-                bullet.x -= 300 * Gdx.graphics.getDeltaTime();
+                bullet.x -= 1100 * Gdx.graphics.getDeltaTime();
                 bullet.y -= 70 * angle * Gdx.graphics.getDeltaTime();
 
                 if (bullet.x < -32) {
@@ -145,16 +124,12 @@ public class EnemyBullet_shotgun {
                 bullets.removeIndex(i4);
                 degrees.removeIndex(i4);
                 damages.removeIndex(i4);
-                fires.get(i4).dispose();
-                fires.removeIndex(i4);
                 remove_Bullet.removeIndex(i4);
             }else if (remove_Bullet.get(i4)){
                 explosionQueue.removeIndex(i4);
                 bullets.removeIndex(i4);
                 degrees.removeIndex(i4);
                 damages.removeIndex(i4);
-                fires.get(i4).dispose();
-                fires.removeIndex(i4);
                 remove_Bullet.removeIndex(i4);
             }
         }
@@ -163,10 +138,6 @@ public class EnemyBullet_shotgun {
     public void dispose(){
         shot.dispose();
         explosion.dispose();
-        for(int i3 = 0; i3 < fires.size; i3 ++){
-            fires.get(i3).dispose();
-            fires.removeIndex(i3);
-        }
         bullets.clear();
         damages.clear();
         degrees.clear();

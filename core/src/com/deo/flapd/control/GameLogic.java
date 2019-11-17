@@ -2,16 +2,19 @@ package com.deo.flapd.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.enemies.Boss_battleShip;
-import com.deo.flapd.model.enemies.EnemyBullet;
-import com.deo.flapd.model.enemies.EnemyBullet_shotgun;
-import com.deo.flapd.model.enemies.EnemyBullet_sniper;
+import com.deo.flapd.model.bullets.EnemyBullet;
+import com.deo.flapd.model.bullets.EnemyBullet_shotgun;
+import com.deo.flapd.model.bullets.EnemyBullet_sniper;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
@@ -33,20 +36,30 @@ public class GameLogic {
     public static int bonuses_collected;
     private float millis;
 
-    public static boolean bossWave;
+    public static boolean bossWave, has1stBossSpawned;
 
-    public GameLogic(Polygon bounds) {
+    public static int lastCheckpoint;
+
+    public GameLogic(Polygon bounds, boolean newGame) {
         this.bounds = bounds;
         random = new Random();
 
         prefs = Gdx.app.getPreferences("Preferences");
         difficulty = prefs.getFloat("difficulty");
 
-        bonuses_collected = 0;
+        if(!newGame){
+            bonuses_collected = prefs.getInteger("bonuses_collected");
+            lastCheckpoint = prefs.getInteger("lastCheckpoint");
+            has1stBossSpawned = prefs.getBoolean("has1stBossSpawned");
+        }else {
+            bonuses_collected = 0;
+            lastCheckpoint = 0;
+            has1stBossSpawned = false;
+        }
         bossWave = false;
     }
 
-    public void handleInput(float deltaX, float deltaY, boolean is_firing, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip) {
+    public void handleInput(float deltaX, float deltaY, boolean is_firing, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
         bounds.setPosition(bounds.getX() + 300 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 300 * deltaY * Gdx.graphics.getDeltaTime());
         bounds.setRotation((deltaY - deltaX) * 7);
 
@@ -94,10 +107,16 @@ public class GameLogic {
                     sniperEnemy.shoot(i2);
                 }
             }
+
+            if(GameUi.Score > lastCheckpoint+9000 && !bossWave){
+                lastCheckpoint = GameUi.Score;
+                checkpoint.Spawn(random.nextInt(300)+150, random.nextInt(201)+100, 1);
+            }
         }
 
-        if (GameUi.Score > 80000 && GameUi.Score < 93600 && !bossWave) {
+        if (GameUi.Score > 80000 && !has1stBossSpawned) {
             bossWave = true;
+            has1stBossSpawned = true;
             boss_battleShip.Spawn();
         }
 
@@ -151,6 +170,8 @@ public class GameLogic {
 
                         Bullet.removeBullet(i2, true);
 
+                        BasicEnemy.colors.get(i).set(Color.RED);
+
                         if (BasicEnemy.healths.get(i) <= 0) {
 
                             BasicEnemy.removeEnemy(i, true);
@@ -171,14 +192,11 @@ public class GameLogic {
                             BasicEnemy.healths.set(i, BasicEnemy.healths.get(i) - Meteorite.healths.get(i3));
                             Meteorite.removeMeteorite(i3, true);
 
-                            Meteorite.meteoritesDestroyed++;
+                            BasicEnemy.colors.get(i).set(Color.RED);
 
                         } else {
                             BasicEnemy.removeEnemy(i, true);
                             Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
                         }
                     }
                 }
@@ -257,10 +275,6 @@ public class GameLogic {
             Rectangle enemy = ShotgunEnemy.enemies.get(i);
             if (!is_paused) {
 
-                if (enemy.x < -enemy.width - 110) {
-                    ShotgunEnemy.removeEnemy(i, false);
-                }
-
                 if (enemy.overlaps(bounds.getBoundingRectangle())) {
 
                     if (GameUi.Shield >= ShotgunEnemy.healths.get(i)) {
@@ -289,6 +303,8 @@ public class GameLogic {
 
                         Bullet.removeBullet(i2, true);
 
+                        ShotgunEnemy.colors.get(i).set(Color.RED);
+
                         if (ShotgunEnemy.healths.get(i) <= 0) {
 
                             ShotgunEnemy.removeEnemy(i, true);
@@ -310,13 +326,11 @@ public class GameLogic {
                             ShotgunEnemy.healths.set(i, ShotgunEnemy.healths.get(i) - Meteorite.healths.get(i3));
                             Meteorite.removeMeteorite(i3, true);
 
-                            Meteorite.meteoritesDestroyed++;
+                            ShotgunEnemy.colors.get(i).set(Color.RED);
 
                         } else {
                             ShotgunEnemy.removeEnemy(i, true);
                             Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
                         }
                     }
                 }
@@ -357,6 +371,8 @@ public class GameLogic {
 
                         Bullet.removeBullet(i2, true);
 
+                        SniperEnemy.colors.get(i).set(Color.RED);
+
                         if (SniperEnemy.healths.get(i) <= 0) {
 
                             SniperEnemy.removeEnemy(i, true);
@@ -378,14 +394,11 @@ public class GameLogic {
                             SniperEnemy.healths.set(i, SniperEnemy.healths.get(i) - Meteorite.healths.get(i3));
                             Meteorite.removeMeteorite(i3, true);
 
-                            Meteorite.meteoritesDestroyed++;
+                            SniperEnemy.colors.get(i).set(Color.RED);
 
                         } else {
                             SniperEnemy.removeEnemy(i, true);
                             Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
                         }
                     }
                 }

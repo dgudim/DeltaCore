@@ -1,6 +1,7 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,8 +37,13 @@ public class Meteorite {
 
     private UraniumCell uraniumCell;
 
-    public Meteorite(UraniumCell uraniumCell, AssetManager assetManager, Bonus bonus) {
+    private Preferences prefs;
+
+    public Meteorite(UraniumCell uraniumCell, AssetManager assetManager, Bonus bonus, boolean newGame) {
         meteorite = new Sprite((Texture)assetManager.get("Meteo.png"));
+
+        prefs = Gdx.app.getPreferences("Preferences");
+
         meteorites = new Array<>();
         radiuses = new Array<>();
         degrees = new Array<>();
@@ -48,10 +54,14 @@ public class Meteorite {
         explosionQueue = new Array<>();
         remove_Meteorite = new Array<>();
 
-        meteoritesDestroyed = 0;
-        random = new Random();
-        sound = MenuScreen.Sound;
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        if(!newGame){
+            meteoritesDestroyed = prefs.getInteger("meteoritesDestroyed");
+        }else {
+            meteoritesDestroyed = 0;
+        }
+            random = new Random();
+            sound = MenuScreen.Sound;
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
         this.bonus = bonus;
 
@@ -129,11 +139,11 @@ public class Meteorite {
                 explosionEffect.start();
                 if(random.nextBoolean()) {
                     bonus.Spawn((int) (random.nextFloat() + 0.4) + 2, 1, meteorites.get(i4));
-                    if(random.nextBoolean()) {
+                    if(random.nextBoolean() && random.nextFloat()>0.5) {
                         bonus.Spawn(5, 1, meteorites.get(i4));
                     }
                 }
-                uraniumCell.Spawn(meteorites.get(i4), random.nextInt((int)(radiuses.get(i4)/3))+10, 1, 2);
+                uraniumCell.Spawn(meteorites.get(i4), random.nextInt((int)(radiuses.get(i4)/17.5f))+2, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 meteorites.removeIndex(i4);

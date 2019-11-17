@@ -9,8 +9,8 @@ public class SpaceShip extends ShipObject {
 
     private SpriteBatch batch;
 
-    public SpaceShip(Texture ShipTexture, Texture ShieldTexture, float x, float y, float width, float height) {
-        super(ShipTexture,ShieldTexture, x, y, width, height);
+    public SpaceShip(Texture ShipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
+        super(ShipTexture,ShieldTexture, x, y, width, height, newGame);
     }
 
     public void draw(SpriteBatch batch, boolean is_paused){

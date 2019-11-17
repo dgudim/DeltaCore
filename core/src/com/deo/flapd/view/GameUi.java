@@ -33,7 +33,7 @@ public class GameUi{
 
     private Viewport viewport;
     private Stage stage, PauseStage;
-    InputMultiplexer multiplexer;
+    private InputMultiplexer multiplexer;
     private OrthographicCamera cam;
 
     private Touchpad touchpad;
@@ -74,7 +74,7 @@ public class GameUi{
     public static int Score;
     public static int enemiesKilled;
     public static int enemiesSpawned;
-    public static int money;
+    public static int money, moneyEarned;
     private float uiScale;
     private float difficulty;
 
@@ -97,7 +97,7 @@ public class GameUi{
 
     private SpaceShip ship;
 
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, SpaceShip Ship){
+    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, SpaceShip Ship, boolean newGame){
 
         this.game = game;
 
@@ -109,13 +109,25 @@ public class GameUi{
 
         prefs = Gdx.app.getPreferences("Preferences");
 
-        Shield = 100;
-        Health = 100;
-        Score = 0;
-        money = prefs.getInteger("money");
+        if(!newGame){
+            Shield = prefs.getFloat("Shield");
+            Health = prefs.getFloat("Health");
+            Score = prefs.getInteger("Score");
+            moneyEarned = prefs.getInteger("moneyEarned");
+            money = prefs.getInteger("money")+moneyEarned;
 
-        enemiesKilled = 0;
-        enemiesSpawned = 0;
+            enemiesKilled = prefs.getInteger("enemiesKilled");
+            enemiesSpawned = prefs.getInteger("enemiesSpawned");
+        }else {
+            Shield = 100;
+            Health = 100;
+            Score = 0;
+            moneyEarned = 0;
+            money = prefs.getInteger("money") + moneyEarned;
+
+            enemiesKilled = 0;
+            enemiesSpawned = 0;
+        }
 
         uiScale = prefs.getFloat("ui");
 
@@ -127,7 +139,7 @@ public class GameUi{
 
         this.batch = batch;
 
-        cam = new OrthographicCamera();
+        cam = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800, 480, cam);
 
         knob = new Texture("knob.png");
@@ -339,7 +351,7 @@ public class GameUi{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if(GameScreen.is_paused) {
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true));
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true, false));
                     GameScreen.is_paused = false;
                 }
             }
@@ -354,7 +366,7 @@ public class GameUi{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if(GameScreen.is_paused) {
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true));
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true, false));
                     GameScreen.is_paused = false;
                 }
             }

@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -65,9 +66,7 @@ public class MenuScreen implements Screen{
 
     private Image Lamp;
 
-    private CheckBox sound;
     private CheckBox fps;
-    private CheckBox fx;
     private CheckBox showError;
     private CheckBox transparency;
     private Slider uiScaling;
@@ -88,9 +87,9 @@ public class MenuScreen implements Screen{
     private boolean settings;
     private boolean play;
     private boolean error;
-    public static boolean Music;
+    private boolean Music;
     public static boolean Sound;
-    public static float MusicVolume;
+    private float MusicVolume;
     public static float SoundVolume;
 
     private Stage Menu;
@@ -109,7 +108,7 @@ public class MenuScreen implements Screen{
 
     private ParticleEffect fire;
 
-    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
+       public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
 
         this.game = game;
 
@@ -228,9 +227,7 @@ public class MenuScreen implements Screen{
         sliderBarStyle2.background.setMinHeight(42.5f);
         sliderBarStyle2.background.setMinWidth(230.0f);
 
-        sound = new CheckBox("",checkBoxStyle);
         fps = new CheckBox("",checkBoxStyle);
-        fx = new CheckBox("",checkBoxStyle);
         showError = new CheckBox("",checkBoxStyle);
         transparency = new CheckBox("",checkBoxStyle);
 
@@ -239,31 +236,22 @@ public class MenuScreen implements Screen{
         soundEffectsVolume = new Slider(0, 1, 0.1f, false, sliderBarStyle2);
         difficultyControl = new Slider(1, 5, 0.1f, false, sliderBarStyle2);
 
-        sound.setDisabled(true);
-        fx.setDisabled(true);
-
         uiScaling.setValue(prefs.getFloat("ui"));
         musicVolume.setValue(prefs.getFloat("musicVolume"));
         soundEffectsVolume.setValue(prefs.getFloat("soundEffectsVolume"));
         difficultyControl.setValue(prefs.getFloat("difficulty"));
         fps.setChecked(prefs.getBoolean("showFps"));
-        sound.setChecked(Music);
-        fx.setChecked(Sound);
         showError.setChecked(error);
         transparency.setChecked(prefs.getBoolean("transparency"));
 
-        sound.setBounds(13, 390, 50, 50);
-        fx.setBounds(13, 340, 50, 50);
         fps.setBounds(13, 290, 50, 50);
         showError.setBounds(13, 150, 50, 50);
         uiScaling.setBounds(10, 220, 250, 40);
-        soundEffectsVolume.setBounds(360, 350, 170, 25);
+        soundEffectsVolume.setBounds(310, 350, 170, 25);
         difficultyControl.setBounds(20, 340, 170, 25);
-        musicVolume.setBounds(360, 400, 170, 25);
+        musicVolume.setBounds(310, 400, 170, 25);
         transparency.setBounds(13,100,50,50);
-        sound.getImage().setScaling(Scaling.fill);
         fps.getImage().setScaling(Scaling.fill);
-        fx.getImage().setScaling(Scaling.fill);
         showError.getImage().setScaling(Scaling.fill);
         transparency.getImage().setScaling(Scaling.fill);
 
@@ -290,8 +278,6 @@ public class MenuScreen implements Screen{
         more_enabled.setVisible(false);
 
         fps.setVisible(false);
-        sound.setVisible(false);
-        fx.setVisible(false);
         showError.setVisible(false);
         uiScaling.setVisible(false);
         musicVolume.setVisible(false);
@@ -300,8 +286,6 @@ public class MenuScreen implements Screen{
         transparency.setVisible(false);
 
         Menu.addActor(fps);
-        Menu.addActor(sound);
-        Menu.addActor(fx);
         Menu.addActor(showError);
         Menu.addActor(uiScaling);
         Menu.addActor(musicVolume);
@@ -346,8 +330,6 @@ public class MenuScreen implements Screen{
                 if (play){
                     play = false;
                     fps.setVisible(false);
-                    sound.setVisible(false);
-                    fx.setVisible(false);
                     showError.setVisible(false);
                     uiScaling.setVisible(false);
                     musicVolume.setVisible(false);
@@ -362,8 +344,6 @@ public class MenuScreen implements Screen{
                     info = false;
                     settings = false;
                     fps.setVisible(false);
-                    sound.setVisible(false);
-                    fx.setVisible(false);
                     showError.setVisible(false);
                     uiScaling.setVisible(false);
                     musicVolume.setVisible(false);
@@ -404,8 +384,6 @@ public class MenuScreen implements Screen{
                 if (settings){
                     settings = false;
                     fps.setVisible(false);
-                    sound.setVisible(false);
-                    fx.setVisible(false);
                     showError.setVisible(false);
                     uiScaling.setVisible(false);
                     musicVolume.setVisible(false);
@@ -420,8 +398,6 @@ public class MenuScreen implements Screen{
                     info = false;
                     play = false;
                     fps.setVisible(true);
-                    sound.setVisible(true);
-                    fx.setVisible(true);
                     showError.setVisible(true);
                     uiScaling.setVisible(true);
                     musicVolume.setVisible(true);
@@ -452,8 +428,6 @@ public class MenuScreen implements Screen{
                     settings = false;
                     play = false;
                     fps.setVisible(false);
-                    sound.setVisible(false);
-                    fx.setVisible(false);
                     showError.setVisible(false);
                     uiScaling.setVisible(false);
                     musicVolume.setVisible(false);
@@ -558,30 +532,11 @@ public class MenuScreen implements Screen{
             }
         });
 
-        soundEffectsVolume.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if(soundEffectsVolume.getValue() > 0) {
-                    Sound = true;
-                    fx.setChecked(true);
-                }else{
-                    Sound = false;
-                    fx.setChecked(false);
-                }
-            }
-        });
-
         musicVolume.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if(music.isPlaying()) {
                     music.setVolume(musicVolume.getValue());
-                }
-
-                if(musicVolume.getValue() > 0) {
-                    sound.setChecked(true);
-                }else{
-                    sound.setChecked(false);
                 }
             }
         });
@@ -620,7 +575,7 @@ public class MenuScreen implements Screen{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 newGame_enabled.setVisible(false);
-                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true));
+                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true, false));
             }
         });
 
@@ -635,6 +590,9 @@ public class MenuScreen implements Screen{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 continue_enabled.setVisible(false);
+                if(prefs.getFloat("Health")>0) {
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, 1, false, false));
+                }
             }
         });
 
@@ -655,8 +613,8 @@ public class MenuScreen implements Screen{
         transparency.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-              prefs.putBoolean("transparency", transparency.isChecked());
-              prefs.flush();
+                prefs.putBoolean("transparency", transparency.isChecked());
+                prefs.flush();
             }
         });
 
@@ -679,6 +637,9 @@ public class MenuScreen implements Screen{
         batch.begin();
 
         movement = (int)(movement + (200 * delta));
+        if(movement> 2880){
+            movement = 0;
+        }
 
         batch.draw(Bg, 0, 0, movement, -240, 800, 720);
 
@@ -700,7 +661,7 @@ public class MenuScreen implements Screen{
             font_main.draw(batch, "Inspired by DefenseX, PetruCHIOrus", 5, 345, 531, 1, false);
             font_main.setColor(Color.valueOf("#cccc22"));
             font_main.draw(batch, "Testers: Misterowl, Kisliy_xleb", 5, 305, 531, 1, false);
-            font_main.draw(batch, "Lumix_lab, Watermelon0guy, PYTHØN", 5, 275, 531, 1, false);
+            font_main.draw(batch, "LumixLab, Watermelon0guy, PYTHØN", 5, 275, 531, 1, false);
             font_main.draw(batch, "Ha4upelmeney, Lukmanov", 5, 245, 531, 1, false);
             font_main.setColor(Color.valueOf("#0FE500"));
             font_main.draw(batch, "Contributors: Volkov, DefenseX", 5, 210, 531, 1, false);
@@ -718,8 +679,8 @@ public class MenuScreen implements Screen{
             font_main.setColor(Color.valueOf("#0FE500"));
             MusicVolume = (int)(musicVolume.getValue()*100);
             SoundVolume = (int)(soundEffectsVolume.getValue()*100);
-            font_main.draw(batch, "Music: " + MusicVolume + "%", 145, 420, 132, 1, false);
-            font_main.draw(batch, "Sound effects: " + SoundVolume + "%", 145, 370, 132, 1, false);
+            font_main.draw(batch, "Music: " + MusicVolume + "%", 95, 420, 132, 1, false);
+            font_main.draw(batch, "Sound effects: " + SoundVolume + "%", 95, 370, 132, 1, false);
             font_main.draw(batch, "Show Fps", 65, 320, 132, 1, false);
             uiScale = (int)(uiScaling.getValue()*100);
             font_main.draw(batch, "Ui Scaling: "+uiScale+" %", 325, 263, 132, 1, false);
@@ -820,42 +781,42 @@ public class MenuScreen implements Screen{
     @Override
     public void dispose() {
 
-    assetManager.unload("greyishButton.png");
-    assetManager.unload("menuButtons/info_enabled.png");
-    assetManager.unload("menuButtons/info_disabled.png");
-    assetManager.unload("menuButtons/more_enabled.png");
-    assetManager.unload("menuButtons/more_disabled.png");
-    assetManager.unload("menuButtons/play_enabled.png");
-    assetManager.unload("menuButtons/play_disabled.png");
-    assetManager.unload("menuButtons/settings_enabled.png");
-    assetManager.unload("menuButtons/settings_disabled.png");
-    assetManager.unload("menuButtons/online_enabled.png");
-    assetManager.unload("menuButtons/online_disabled.png");
+        assetManager.unload("greyishButton.png");
+        assetManager.unload("menuButtons/info_enabled.png");
+        assetManager.unload("menuButtons/info_disabled.png");
+        assetManager.unload("menuButtons/more_enabled.png");
+        assetManager.unload("menuButtons/more_disabled.png");
+        assetManager.unload("menuButtons/play_enabled.png");
+        assetManager.unload("menuButtons/play_disabled.png");
+        assetManager.unload("menuButtons/settings_enabled.png");
+        assetManager.unload("menuButtons/settings_disabled.png");
+        assetManager.unload("menuButtons/online_enabled.png");
+        assetManager.unload("menuButtons/online_disabled.png");
 
-    assetManager.unload("menuBg.png");
-    assetManager.unload("lamp.png");
-    assetManager.unload("infoBg.png");
-    assetManager.unload("bg_old.png");
-    assetManager.unload("ship2.png");
+        assetManager.unload("menuBg.png");
+        assetManager.unload("lamp.png");
+        assetManager.unload("infoBg.png");
+        assetManager.unload("bg_old.png");
+        assetManager.unload("ship2.png");
 
-    assetManager.unload("checkBox_disabled.png");
-    assetManager.unload("checkBox_enabled.png");
-    assetManager.unload("progressBarKnob.png");
-    assetManager.unload("progressBarBg.png");
+        assetManager.unload("checkBox_disabled.png");
+        assetManager.unload("checkBox_enabled.png");
+        assetManager.unload("progressBarKnob.png");
+        assetManager.unload("progressBarBg.png");
 
-    assetManager.unload("menuButtons/continue_e.png");
-    assetManager.unload("menuButtons/continue_d.png");
-    assetManager.unload("menuButtons/newGame_d.png");
-    assetManager.unload("menuButtons/shop_d.png");
-    assetManager.unload("menuButtons/newGame_e.png");
-    assetManager.unload("menuButtons/shop_e.png");
+        assetManager.unload("menuButtons/continue_e.png");
+        assetManager.unload("menuButtons/continue_d.png");
+        assetManager.unload("menuButtons/newGame_d.png");
+        assetManager.unload("menuButtons/shop_d.png");
+        assetManager.unload("menuButtons/newGame_e.png");
+        assetManager.unload("menuButtons/shop_e.png");
 
-    Menu.dispose();
-    music.dispose();
-    checkBoxSkin.dispose();
-    sliderBarSkin.dispose();
-    font_main.dispose();
-    fire.dispose();
+        Menu.dispose();
+        music.dispose();
+        checkBoxSkin.dispose();
+        sliderBarSkin.dispose();
+        font_main.dispose();
+        fire.dispose();
 
     }
 }

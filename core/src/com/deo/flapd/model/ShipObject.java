@@ -1,6 +1,7 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -31,12 +32,19 @@ abstract class ShipObject {
 
     private boolean sound;
 
-    ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height) {
+    private Preferences prefs;
+
+    ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
         ship = new Sprite(shipTexture);
         shield = new Sprite(ShieldTexture);
+        prefs = Gdx.app.getPreferences("Preferences");
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
-        bounds.setPosition(x, y);
+        if(!newGame) {
+            bounds.setPosition(prefs.getFloat("ShipX"), prefs.getFloat("ShipY"));
+        }else{
+            bounds.setPosition(x, y);
+        }
         ship.setOrigin(width / 2f, height / 2f);
         shield.setOrigin((width+30) / 2f, (height+30) / 2f);
 

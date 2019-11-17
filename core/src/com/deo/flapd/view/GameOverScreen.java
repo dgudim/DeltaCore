@@ -17,13 +17,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 
 public class GameOverScreen implements Screen {
 
-    private int Score, enemiesKilled, bulletsShot, meteoritesDestroyed, highScore, enemiesSpawned;
+    private int Score, enemiesKilled, bulletsShot, meteoritesDestroyed, highScore, enemiesSpawned, moneyEarned;
 
     private float difficulty;
 
@@ -83,6 +82,8 @@ public class GameOverScreen implements Screen {
 
         enemiesSpawned = GameUi.enemiesSpawned;
 
+        moneyEarned = GameUi.moneyEarned;
+
         camera = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800,480, camera);
 
@@ -107,10 +108,10 @@ public class GameOverScreen implements Screen {
         Restart_disabled = new Image((Texture)assetManager.get("GameOverScreenButtons/restart_d.png"));
 
         GameOver.setBounds(78, 235, 640, 384);
-        Menu.setBounds(296, 98, 208, 44);
-        Menu_disabled.setBounds(296, 98, 208, 44);
-        Restart_disabled.setBounds(296, 38, 208, 44);
-        Restart.setBounds(296, 38, 208, 44);
+        Menu.setBounds(296, 73, 208, 44);
+        Menu_disabled.setBounds(296, 73, 208, 44);
+        Restart_disabled.setBounds(296, 13, 208, 44);
+        Restart.setBounds(296, 13, 208, 44);
 
         stage.addActor(GameOver);
         stage.addActor(Menu);
@@ -131,7 +132,7 @@ public class GameOverScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 Menu.setVisible(false);
-                game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true));
+                game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true, false));
             }
         });
 
@@ -145,7 +146,7 @@ public class GameOverScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 Restart.setVisible(false);
-                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true));
+                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true, false));
                 GameScreen.is_paused = false;
             }
         });
@@ -174,10 +175,12 @@ public class GameOverScreen implements Screen {
         font_main.draw(batch, "Bullets Shot: " + bulletsShot, 305, 305, 200, 1, false);
         font_main.getData().setScale(0.5f);
         font_main.setColor(Color.valueOf("#ff5500"));
-        font_main.draw(batch, "Enemies Killed: " + enemiesKilled + " out of " + enemiesSpawned + " Enemies Spawned",  305, 195, 200, 1, false);
+        font_main.draw(batch, "Enemies Killed: " + enemiesKilled + " out of " + enemiesSpawned + " Enemies Spawned",  305, 205, 200, 1, false);
         font_main.getData().setScale(0.7f);
         font_main.setColor(Color.valueOf("#ff4400"));
         font_main.draw(batch, "Meteorites Destroyed: " + meteoritesDestroyed, 305, 255, 200, 1, false);
+        font_main.setColor(Color.valueOf("#ff6600"));
+        font_main.draw(batch, "Cells Collected: "+moneyEarned,  305, 165, 200, 1, false);
         font_main.setColor(new Color().fromHsv(Math.abs(120-difficulty*20), 1.5f, 1).add(0,0,0,1));
         font_main.getData().setScale(0.6f);
         font_main.draw(batch, "Difficulty: " + difficulty+"X", 51, 445, 200, 1, false);
