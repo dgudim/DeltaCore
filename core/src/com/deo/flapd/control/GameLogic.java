@@ -3,7 +3,6 @@ package com.deo.flapd.control;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Checkpoint;
@@ -29,8 +28,6 @@ public class GameLogic {
 
     private Random random;
 
-    private Preferences prefs;
-
     private float difficulty;
 
     public static int bonuses_collected;
@@ -44,7 +41,7 @@ public class GameLogic {
         this.bounds = bounds;
         random = new Random();
 
-        prefs = Gdx.app.getPreferences("Preferences");
+        Preferences prefs = Gdx.app.getPreferences("Preferences");
         difficulty = prefs.getFloat("difficulty");
 
         if(!newGame){
@@ -68,7 +65,7 @@ public class GameLogic {
             millis = 0;
         }
 
-        millis = millis + 50 * (bonuses_collected / 10 + 1) * Gdx.graphics.getDeltaTime();
+        millis = millis + 50 * (bonuses_collected / 10f + 1) * Gdx.graphics.getDeltaTime();
 
         if (!bossWave) {
             if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && GameUi.enemiesKilled <= 3) {
@@ -90,19 +87,19 @@ public class GameLogic {
                 meteorite.Spawn(random.nextInt(480) * difficulty, (random.nextInt(60) - 30) / 10, random.nextInt(40) + 30);
             }
 
-            for (int i2 = 0; i2 < enemy.enemies.size; i2++) {
+            for (int i2 = 0; i2 < BasicEnemy.enemies.size; i2++) {
                 if (random.nextInt(20) > 15 && GameUi.enemiesKilled <= 3) {
                     enemy.shoot(i2);
                 }
             }
 
-            for (int i2 = 0; i2 < shotgunEnemy.enemies.size; i2++) {
+            for (int i2 = 0; i2 < ShotgunEnemy.enemies.size; i2++) {
                 if (random.nextInt(40) > 37 && GameUi.enemiesKilled >= 3) {
                     shotgunEnemy.shoot(i2);
                 }
             }
 
-            for (int i2 = 0; i2 < sniperEnemy.enemies.size; i2++) {
+            for (int i2 = 0; i2 < SniperEnemy.enemies.size; i2++) {
                 if (random.nextInt(50) > 48 && GameUi.enemiesKilled >= 50) {
                     sniperEnemy.shoot(i2);
                 }
