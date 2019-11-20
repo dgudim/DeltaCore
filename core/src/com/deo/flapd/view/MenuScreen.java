@@ -2,6 +2,7 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -512,11 +513,7 @@ public class MenuScreen implements Screen{
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 prefs.putFloat("musicVolume", musicVolume.getValue());
 
-                if(musicVolume.getValue() > 0) {
-                    Music = true;
-                }else{
-                    Music = false;
-                }
+                Music = musicVolume.getValue() > 0;
 
                 if(Music && !music.isPlaying()){
                     music.play();
@@ -755,8 +752,12 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.1 Build 29", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.1 Build 30", 5, 35, 150, 1, false);
         batch.end();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
+            Gdx.app.exit();
+        }
     }
 
     @Override
@@ -810,6 +811,12 @@ public class MenuScreen implements Screen{
         assetManager.unload("menuButtons/shop_d.png");
         assetManager.unload("menuButtons/newGame_e.png");
         assetManager.unload("menuButtons/shop_e.png");
+
+        assetManager.unload("shop/main.png");
+        assetManager.unload("shop/button_small.png");
+        assetManager.unload("shop/button_small_enabled.png");
+        assetManager.unload("shop/button_tiny.png");
+        assetManager.unload("shop/button_tiny_enabled.png");
 
         Menu.dispose();
         music.dispose();

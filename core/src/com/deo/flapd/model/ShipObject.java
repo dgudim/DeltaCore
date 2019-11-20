@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Polygon;
+import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
 abstract class ShipObject {
@@ -17,7 +18,7 @@ abstract class ShipObject {
     private Sprite ship;
     private Sprite shield;
 
-    private ParticleEffect fire, fire2;
+    private ParticleEffect fire, fire2, damage_fire, damage_fire2, damage_fire3;
 
     private static float red;
     private static float green;
@@ -31,6 +32,8 @@ abstract class ShipObject {
     private Sound explosion;
 
     private boolean sound;
+
+    private boolean isFireStarted1, isFireStarted2, isFireStarted3;
 
     private Preferences prefs;
 
@@ -61,6 +64,15 @@ abstract class ShipObject {
         fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
         fire2.start();
 
+        damage_fire = new ParticleEffect();
+        damage_fire.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
+
+        damage_fire2 = new ParticleEffect();
+        damage_fire2.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
+
+        damage_fire3 = new ParticleEffect();
+        damage_fire3.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
+
         red = 1;
         green = 1;
         blue = 1;
@@ -68,6 +80,9 @@ abstract class ShipObject {
         green2 = 1;
         blue2 = 1;
         exploded = false;
+        isFireStarted1 = false;
+        isFireStarted2 = false;
+        isFireStarted3 = false;
         sound = MenuScreen.Sound;
 
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
@@ -82,6 +97,9 @@ abstract class ShipObject {
             fire.draw(batch);
             fire2.setPosition(bounds.getX() + 4, bounds.getY() + 40);
             fire2.draw(batch);
+            damage_fire.setPosition(bounds.getX() + 10, bounds.getY() + 25);
+            damage_fire2.setPosition(bounds.getX() + 10, bounds.getY() + 25);
+            damage_fire3.setPosition(bounds.getX() + 10, bounds.getY() + 25);
 
             if (!is_paused) {
                 fire.update(Gdx.graphics.getDeltaTime());
@@ -105,13 +123,46 @@ abstract class ShipObject {
                 }
             }
 
+            if(GameUi.Health < 70){
+                if(!is_paused){
+                    damage_fire.draw(batch, Gdx.graphics.getDeltaTime());
+                    if(!isFireStarted1){
+                        damage_fire.start();
+                    }
+                }else{
+                    damage_fire.draw(batch, 0);
+                }
+            }
+
+            if(GameUi.Health < 50){
+                if(!is_paused){
+                    damage_fire2.draw(batch, Gdx.graphics.getDeltaTime());
+                    if(!isFireStarted2){
+                        damage_fire2.start();
+                    }
+                }else{
+                    damage_fire2.draw(batch, 0);
+                }
+            }
+
+            if(GameUi.Health < 30){
+                if(!is_paused){
+                    damage_fire3.draw(batch, Gdx.graphics.getDeltaTime());
+                    if(!isFireStarted3){
+                        damage_fire3.start();
+                    }
+                }else{
+                    damage_fire3.draw(batch, 0);
+                }
+            }
+
             ship.draw(batch);
         }else{
             bounds.setPosition(-100, -100);
         }
     }
 
-    public void drawShield(SpriteBatch batch, boolean is_paused, float alpha){
+    void drawShield(SpriteBatch batch, boolean is_paused, float alpha){
         if(!exploded) {
             shield.setPosition(bounds.getX() - 20, bounds.getY() - 15);
             shield.setRotation(bounds.getRotation());
@@ -141,6 +192,9 @@ abstract class ShipObject {
         fire.dispose();
         fire2.dispose();
         explosion.dispose();
+        damage_fire.dispose();
+        damage_fire2.dispose();
+        damage_fire3.dispose();
     }
 
     public static void set_color(float red1, float green1, float blue1, boolean shield){

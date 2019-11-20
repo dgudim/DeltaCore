@@ -56,12 +56,17 @@ public class GameLogic {
         bossWave = false;
     }
 
-    public void handleInput(float deltaX, float deltaY, boolean is_firing, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
+    public void handleInput(float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
         bounds.setPosition(bounds.getX() + 300 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 300 * deltaY * Gdx.graphics.getDeltaTime());
         bounds.setRotation((deltaY - deltaX) * 7);
 
         if (is_firing && millis > 10) {
-            bullet.Spawn(40, 1);
+            bullet.Spawn(40, 1, false);
+            millis = 0;
+        }
+
+        if (is_firing_secondary && millis > 10) {
+            bullet.Spawn(90, 1, true);
             millis = 0;
         }
 

@@ -55,7 +55,8 @@ public class GameUi{
     private Image pause2;
     private Image levelScore;
     private Image money_display;
-    private boolean is_firing;
+    boolean is_firing;
+    boolean is_firing_secondary;
 
     private Image exit_button;
     private Image continue_button;
@@ -114,7 +115,7 @@ public class GameUi{
             Health = prefs.getFloat("Health");
             Score = prefs.getInteger("Score");
             moneyEarned = prefs.getInteger("moneyEarned");
-            money = prefs.getInteger("money")+moneyEarned;
+            money = prefs.getInteger("money");
 
             enemiesKilled = prefs.getInteger("enemiesKilled");
             enemiesSpawned = prefs.getInteger("enemiesSpawned");
@@ -123,7 +124,7 @@ public class GameUi{
             Health = 100;
             Score = 0;
             moneyEarned = 0;
-            money = prefs.getInteger("money") + moneyEarned;
+            money = prefs.getInteger("money");
 
             enemiesKilled = 0;
             enemiesSpawned = 0;
@@ -318,6 +319,20 @@ public class GameUi{
             }
         });
 
+        weaponChangeButton.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                is_firing_secondary = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                is_firing_secondary = false;
+            }
+        });
+
         pause.addListener(new InputListener(){
 
             @Override
@@ -433,7 +448,7 @@ public class GameUi{
         }
     }
 
-    public void resize(int width, int height){
+    void resize(int width, int height){
         viewport.update(width, height);
     }
 
@@ -469,11 +484,11 @@ public class GameUi{
         prefs.flush();
     }
 
-    public float getDeltaX(){
+    float getDeltaX(){
         return deltaX;
     }
 
-    public float getDeltaY(){
+    float getDeltaY(){
         return deltaY;
     }
 

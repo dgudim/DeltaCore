@@ -17,9 +17,9 @@ public class EnemyBullet {
 
     public static Array<Rectangle> bullets;
     public static Array<Float> damages;
-    private static Array <ParticleEffect> fires;
-    private static Array <ParticleEffect> explosions;
-    private static Array <Float> degrees;
+    private Array <ParticleEffect> fires;
+    private Array <ParticleEffect> explosions;
+    private Array <Float> degrees;
     private Sprite bullet;
     private float millis;
 

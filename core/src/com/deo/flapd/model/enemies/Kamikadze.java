@@ -23,10 +23,10 @@ public class Kamikadze {
 
     public static Array <Rectangle> enemies;
     public static Array <Float> healths;
-    private static Array <ParticleEffect> fires;
-    private static Array <ParticleEffect> explosions;
-    private static Array <Float> timers;
-    private static Array <Float> timers2;
+    private Array <ParticleEffect> fires;
+    private Array <ParticleEffect> explosions;
+    private Array <Float> timers;
+    private Array <Float> timers2;
     private Sprite enemy;
     private float millis;
     private Random random;

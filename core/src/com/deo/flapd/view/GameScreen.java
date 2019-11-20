@@ -74,7 +74,7 @@ public class GameScreen implements Screen{
 
     private Executor executor;
 
-    public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
+    GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
         prefs = Gdx.app.getPreferences("Preferences");
 
@@ -117,7 +117,7 @@ public class GameScreen implements Screen{
 
         enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
         enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus);
-        enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, bonus);
+        enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, bonus);
         kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus);
 
         meteorite = new Meteorite(uraniumCell, assetManager, bonus, newGame);
@@ -153,7 +153,7 @@ public class GameScreen implements Screen{
             ship.draw(batch, is_paused);
 
             if(!is_paused && !ship.isExploded()) {
-                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint);
+                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint);
                 executor.execute(new Runnable(){
                     @Override
                     public void run(){

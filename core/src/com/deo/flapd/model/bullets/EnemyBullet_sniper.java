@@ -18,8 +18,8 @@ public class EnemyBullet_sniper {
 
     public static Array<Rectangle> bullets;
     public static Array<Float> damages;
-    private static Array <Float> degrees;
-    private static Array <ParticleEffect> explosions;
+    private Array <Float> degrees;
+    private Array <ParticleEffect> explosions;
     private Sprite bullet;
     private float millis;
 

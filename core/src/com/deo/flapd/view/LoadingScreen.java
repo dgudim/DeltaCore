@@ -113,6 +113,12 @@ public class LoadingScreen implements Screen {
                assetManager.load("checkBox_enabled.png", Texture.class);
                assetManager.load("progressBarKnob.png", Texture.class);
                assetManager.load("progressBarBg.png", Texture.class);
+
+               assetManager.load("shop/main.png", Texture.class);
+               assetManager.load("shop/button_small.png", Texture.class);
+               assetManager.load("shop/button_small_enabled.png", Texture.class);
+               assetManager.load("shop/button_tiny.png", Texture.class);
+               assetManager.load("shop/button_tiny_enabled.png", Texture.class);
                break;
        }
         this.screen_type = screen_type;

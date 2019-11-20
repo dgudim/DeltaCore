@@ -631,8 +631,8 @@ public class Boss_battleShip {
                     if(shipBounds.getY()+57.6f>bounds_body.getY() && shipBounds.getY()+57.6f<bounds_body.getY()+30){
                         shipBounds.setPosition(shipBounds.getX(), bounds_body.getY()-57.6f);
                     }
-                    if(shipBounds.getY()<bounds_body.getY()+172 && shipBounds.getY()>bounds_body.getY()+142){
-                        shipBounds.setPosition(shipBounds.getX(), bounds_body.getY()+172);
+                    if(shipBounds.getY()<bounds_body.getY()+152 && shipBounds.getY()>bounds_body.getY()+122){
+                        shipBounds.setPosition(shipBounds.getX(), bounds_body.getY()+152);
                     }
                 }
             }
@@ -789,73 +789,59 @@ public class Boss_battleShip {
                 }
             }
 
+            if(posX<246) {
+
             for(int i = 0; i< Bullet.bullets.size; i++){
 
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon.getBoundingRectangle())){
-                    healths.set(1, healths.get(1) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
+                    if (Bullet.bullets.get(i).overlaps(bounds_cannon.getBoundingRectangle())) {
+                        healths.set(1, healths.get(1) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon2.getBoundingRectangle())) {
+                        healths.set(2, healths.get(2) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon3.getBoundingRectangle())) {
+                        healths.set(3, healths.get(3) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon4.getBoundingRectangle())) {
+                        healths.set(4, healths.get(4) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon5.getBoundingRectangle())) {
+                        healths.set(5, healths.get(5) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon6.getBoundingRectangle())) {
+                        healths.set(6, healths.get(6) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon_front.getBoundingRectangle())) {
+                        healths.set(8, healths.get(8) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_homing1.getBoundingRectangle()) || Bullet.bullets.get(i).overlaps(bounds_homing2.getBoundingRectangle())) {
+                        healths.set(10, healths.get(10) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0) {
+                        healths.set(7, healths.get(7) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2) {
+                        healths.set(9, healths.get(9) - Bullet.damages.get(i));
+                        Bullet.removeBullet(i, true);
+                    }
 
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon2.getBoundingRectangle())){
-                    healths.set(2, healths.get(2) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon3.getBoundingRectangle())){
-                    healths.set(3, healths.get(3) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon4.getBoundingRectangle())){
-                    healths.set(4, healths.get(4) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon5.getBoundingRectangle())){
-                    healths.set(5, healths.get(5) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon6.getBoundingRectangle())){
-                    healths.set(6, healths.get(6) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon_front.getBoundingRectangle())){
-                    healths.set(8, healths.get(8) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_homing1.getBoundingRectangle()) || Bullet.bullets.get(i).overlaps(bounds_homing2.getBoundingRectangle())){
-                    healths.set(10, healths.get(10) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0){
-                    healths.set(7, healths.get(7) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
-                }else
-
-                if(Bullet.bullets.get(i).overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2){
-                    healths.set(9, healths.get(9) - Bullet.damages.get(i));
-                    Bullet.removeBullet(i, true);
                 }
+                shoot(is_paused);
+            }
 
+            for(int i3 = 0; i3 < explosions.size; i3 ++){
+                explosions.get(i3).draw(batch);
+                if(!is_paused) {
+                    explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                }else{
+                    explosions.get(i3).update(0);
+                }
+                if(explosions.get(i3).isComplete()){
+                    explosions.get(i3).dispose();
+                    explosions.removeIndex(i3);
+                }
             }
-            shoot(is_paused);
-        }
 
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
-            explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
-                explosions.get(i3).dispose();
-                explosions.removeIndex(i3);
-            }
         }
 
         if(deathAnimation){
@@ -1058,7 +1044,6 @@ public class Boss_battleShip {
     }
 
     private void play_shot_Sound(int shotType, boolean sound, boolean explosion, int cannon) {
-        if (posX<645) {
             if (!explosion) {
                 if (sound) {
                     switch (shotType) {
@@ -1127,6 +1112,5 @@ public class Boss_battleShip {
                         break;
                 }
             }
-        }
     }
 }

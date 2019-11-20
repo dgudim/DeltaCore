@@ -18,10 +18,10 @@ public class Meteorite {
 
     public static Array<Rectangle> meteorites;
     public static Array<Float> radiuses;
-    public static Array<Float> degrees;
+    private Array<Float> degrees;
     public static Array<Float> healths;
-    private static Array <ParticleEffect> explosions;
-    private static Array <ParticleEffect> fires;
+    private Array <ParticleEffect> explosions;
+    private Array <ParticleEffect> fires;
     private Sprite meteorite;
 
     private Sound explosion;

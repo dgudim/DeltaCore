@@ -22,9 +22,9 @@ public class BasicEnemy {
 
     public static Array <Rectangle> enemies;
     public static Array <Float> healths;
-    private static Array <ParticleEffect> fires;
-    private static Array <ParticleEffect> explosions;
-    private static Array <Float> scales;
+    private Array <ParticleEffect> fires;
+    private Array <ParticleEffect> explosions;
+    private Array <Float> scales;
     public static Array <Color> colors;
     private Sprite enemy;
     private float millis;

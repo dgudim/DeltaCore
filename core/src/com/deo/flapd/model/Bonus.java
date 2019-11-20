@@ -21,10 +21,10 @@ import java.util.Random;
 public class Bonus {
 
     private Polygon bounds;
-    public static Array<Rectangle> bonuses;
-    public static Array<Integer> types;
-    public static Array<Float> anglesY;
-    private static Array <ParticleEffect> explosions;
+    private Array<Rectangle> bonuses;
+    private Array<Integer> types;
+    private Array<Float> anglesY;
+    private Array <ParticleEffect> explosions;
     private Sprite bonus_health, bonus_shield, bonus_part, bonus_bullets, boss;
 
     private float width, height;
@@ -200,7 +200,7 @@ public class Bonus {
         font_text.dispose();
     }
 
-    public void removeBonus(int i, boolean explode){
+    private void removeBonus(int i, boolean explode){
         if(explode){
             ParticleEffect explosionEffect = new ParticleEffect();
             switch (types.get(i)){

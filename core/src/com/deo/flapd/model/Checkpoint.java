@@ -36,7 +36,7 @@ public class Checkpoint {
 
         this.shipBounds = shipBounds;
 
-        bounds.setPosition(-100, -100);
+        bounds.setPosition(-200, -200);
 
         prefs = Gdx.app.getPreferences("Preferences");
     }
