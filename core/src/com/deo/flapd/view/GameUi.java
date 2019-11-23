@@ -491,8 +491,4 @@ public class GameUi{
     float getDeltaY(){
         return deltaY;
     }
-
-    public boolean is_firing(){
-        return is_firing;
-    }
 }

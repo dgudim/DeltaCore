@@ -37,10 +37,14 @@ abstract class ShipObject {
 
     private Preferences prefs;
 
+    private int current_engine;
+
     ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
         ship = new Sprite(shipTexture);
         shield = new Sprite(ShieldTexture);
         prefs = Gdx.app.getPreferences("Preferences");
+
+        current_engine = prefs.getInteger("current_engine");
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
         if(!newGame) {
@@ -48,6 +52,7 @@ abstract class ShipObject {
         }else{
             bounds.setPosition(x, y);
         }
+
         ship.setOrigin(width / 2f, height / 2f);
         shield.setOrigin((width+30) / 2f, (height+30) / 2f);
 
@@ -57,11 +62,24 @@ abstract class ShipObject {
         shield.setPosition(x, y-10);
 
         fire = new ParticleEffect();
-        fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
-        fire.start();
-
         fire2 = new ParticleEffect();
-        fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+
+        switch (current_engine){
+            case(1):
+                fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+                fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+                break;
+            case(2):
+                fire.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
+                fire2.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
+                break;
+            case(3):
+                fire.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
+                fire2.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
+                break;
+        }
+
+        fire.start();
         fire2.start();
 
         damage_fire = new ParticleEffect();

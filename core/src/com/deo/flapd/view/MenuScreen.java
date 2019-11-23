@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -63,6 +62,16 @@ public class MenuScreen implements Screen{
     private Image newGame_disabled;
     private Image newGame_enabled;
 
+    private Texture shop;
+    private Texture shopButton_small_enabled;
+    private Texture shopButton_small_disabled;
+    private Texture shopButton_enabled;
+    private Texture shopButton_disabled;
+
+    private Image Engine1;
+    private Image Engine2;
+    private Image Engine3;
+
     private Texture infoBg;
 
     private Image Lamp;
@@ -82,13 +91,14 @@ public class MenuScreen implements Screen{
 
     private Preferences prefs;
 
-    private BitmapFont font_main;
+    private BitmapFont font_main, font_numbers;
 
     private boolean info;
     private boolean settings;
     private boolean play;
     private boolean error;
     private boolean Music;
+    private boolean Shop;
     public static boolean Sound;
     private float MusicVolume;
     public static float SoundVolume;
@@ -107,7 +117,9 @@ public class MenuScreen implements Screen{
 
     private AssetManager assetManager;
 
-    private ParticleEffect fire;
+    private ParticleEffect fire, fire2;
+
+    private int current_engine, money;
 
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
 
@@ -131,6 +143,14 @@ public class MenuScreen implements Screen{
 
         error = prefs.getBoolean("error");
 
+        current_engine = prefs.getInteger("current_engine");
+        if(current_engine<1){
+            prefs.putInteger("current_engine", 1);
+            current_engine = 1;
+        }
+
+        money = prefs.getInteger("money");
+
         this.batch = batch;
 
         camera = new OrthographicCamera(800, 480);
@@ -141,11 +161,12 @@ public class MenuScreen implements Screen{
         infoBg = assetManager.get("infoBg.png");
 
         font_main = assetManager.get("fonts/font2.fnt");
+        font_numbers = assetManager.get("fonts/font.fnt");
 
         Bg = assetManager.get("bg_old.png");
         Bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        Ship = assetManager.get("ship2.png");
+        Ship = assetManager.get("ship.png");
 
         buildNumber = new Image((Texture)assetManager.get("greyishButton.png"));
 
@@ -173,6 +194,16 @@ public class MenuScreen implements Screen{
         shop_enabled = new Image((Texture)assetManager.get("menuButtons/shop_e.png"));
         shop_disabled = new Image((Texture)assetManager.get("menuButtons/shop_d.png"));
 
+        shop = assetManager.get("shop/main.png");
+        shopButton_disabled = assetManager.get("shop/button_small.png");
+        shopButton_enabled = assetManager.get("shop/button_small_enabled.png");
+        shopButton_small_disabled = assetManager.get("shop/button_tiny.png");
+        shopButton_small_enabled = assetManager.get("shop/button_tiny_enabled.png");
+
+        Engine1 = new Image((Texture) assetManager.get("shop/engine1.png"));
+        Engine2 = new Image((Texture) assetManager.get("shop/engine2.png"));
+        Engine3 = new Image((Texture) assetManager.get("shop/engine3.png"));
+
         play_disabled.setBounds(545, 325, 250, 75);
         online_disabled.setBounds(545, 245, 250, 75);
         settings_disabled.setBounds(545, 165, 250, 75);
@@ -194,6 +225,10 @@ public class MenuScreen implements Screen{
 
         shop_enabled.setBounds(340, 385, 160, 44);
         shop_disabled.setBounds(340, 385, 160, 44);
+
+        Engine3.setBounds(30,225.57f, 163.8f, 65.52f);
+        Engine2.setBounds(30, 302.23f, 163.8f, 65.52f);
+        Engine1.setBounds(30, 378.89f, 163.8f, 65.52f);
 
         Lamp.setBounds(730, 430, 15, 35);
 
@@ -302,17 +337,42 @@ public class MenuScreen implements Screen{
         Menu.addActor(shop_enabled);
         Menu.addActor(newGame_enabled);
 
+        Menu.addActor(Engine1);
+        Menu.addActor(Engine2);
+        Menu.addActor(Engine3);
+
         newGame_enabled.setVisible(false);
         continue_enabled.setVisible(false);
         shop_enabled.setVisible(false);
         newGame_disabled.setVisible(false);
         continue_disabled.setVisible(false);
         shop_disabled.setVisible(false);
+        Engine1.setVisible(false);
+        Engine2.setVisible(false);
+        Engine3.setVisible(false);
 
         fire = new ParticleEffect();
-        fire.load(Gdx.files.internal("particles/engine_warp.p"), Gdx.files.internal("particles"));
-        fire.setPosition(205, 271);
-        fire.start();
+        fire2 = new ParticleEffect();
+
+           switch (current_engine){
+               case(1):
+                   fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+                   fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+                   break;
+               case(2):
+                   fire.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
+                   fire2.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
+                   break;
+               case(3):
+                   fire.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
+                   fire2.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
+                   break;
+           }
+
+           fire.setPosition(330, 268);
+           fire.start();
+           fire2.setPosition(324, 290);
+           fire2.start();
 
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(Menu);
@@ -330,30 +390,13 @@ public class MenuScreen implements Screen{
 
                 if (play){
                     play = false;
-                    fps.setVisible(false);
-                    showError.setVisible(false);
-                    uiScaling.setVisible(false);
-                    musicVolume.setVisible(false);
-                    soundEffectsVolume.setVisible(false);
-                    difficultyControl.setVisible(false);
-                    newGame_disabled.setVisible(false);
-                    continue_disabled.setVisible(false);
-                    shop_disabled.setVisible(false);
-                    transparency.setVisible(false);
+                    Hide(0);
                 }else {
                     play = true;
                     info = false;
                     settings = false;
-                    fps.setVisible(false);
-                    showError.setVisible(false);
-                    uiScaling.setVisible(false);
-                    musicVolume.setVisible(false);
-                    soundEffectsVolume.setVisible(false);
-                    difficultyControl.setVisible(true);
-                    newGame_disabled.setVisible(true);
-                    continue_disabled.setVisible(true);
-                    shop_disabled.setVisible(true);
-                    transparency.setVisible(false);
+                    Shop = false;
+                    Hide(2);
                 }
             }
         });
@@ -384,30 +427,13 @@ public class MenuScreen implements Screen{
 
                 if (settings){
                     settings = false;
-                    fps.setVisible(false);
-                    showError.setVisible(false);
-                    uiScaling.setVisible(false);
-                    musicVolume.setVisible(false);
-                    soundEffectsVolume.setVisible(false);
-                    difficultyControl.setVisible(false);
-                    newGame_disabled.setVisible(false);
-                    continue_disabled.setVisible(false);
-                    shop_disabled.setVisible(false);
-                    transparency.setVisible(false);
+                    Hide(0);
                 }else {
                     settings = true;
                     info = false;
                     play = false;
-                    fps.setVisible(true);
-                    showError.setVisible(true);
-                    uiScaling.setVisible(true);
-                    musicVolume.setVisible(true);
-                    soundEffectsVolume.setVisible(true);
-                    difficultyControl.setVisible(false);
-                    newGame_disabled.setVisible(false);
-                    continue_disabled.setVisible(false);
-                    shop_disabled.setVisible(false);
-                    transparency.setVisible(true);
+                    Shop = false;
+                    Hide(1);
                 }
             }
         });
@@ -428,16 +454,8 @@ public class MenuScreen implements Screen{
                     info = true;
                     settings = false;
                     play = false;
-                    fps.setVisible(false);
-                    showError.setVisible(false);
-                    uiScaling.setVisible(false);
-                    musicVolume.setVisible(false);
-                    soundEffectsVolume.setVisible(false);
-                    difficultyControl.setVisible(false);
-                    newGame_disabled.setVisible(false);
-                    continue_disabled.setVisible(false);
-                    shop_disabled.setVisible(false);
-                    transparency.setVisible(false);
+                    Shop = false;
+                    Hide(0);
                 }
             }
         });
@@ -604,6 +622,13 @@ public class MenuScreen implements Screen{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 shop_enabled.setVisible(false);
+                if(!Shop) {
+                    Shop = true;
+                    info = false;
+                    settings = false;
+                    play = false;
+                    Hide(3);
+                }
             }
         });
 
@@ -614,6 +639,48 @@ public class MenuScreen implements Screen{
                 prefs.flush();
             }
         });
+
+        Engine1.addListener(new InputListener(){
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+               current_engine = 1;
+               UpdateFire();
+            }
+        });
+
+        Engine2.addListener(new InputListener(){
+
+               @Override
+               public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                   return true;
+               }
+
+               @Override
+               public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                   current_engine = 2;
+                   UpdateFire();
+               }
+           });
+
+        Engine3.addListener(new InputListener(){
+
+               @Override
+               public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                   return true;
+               }
+
+               @Override
+               public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                   current_engine = 3;
+                   UpdateFire();
+               }
+           });
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music/main.ogg"));
 
@@ -642,8 +709,10 @@ public class MenuScreen implements Screen{
 
         fire.draw(batch);
         fire.update(delta);
+        fire2.draw(batch);
+        fire2.update(delta);
 
-        batch.draw(Ship, 200, 250, 133.84616f, 58.46154f);
+        batch.draw(Ship, 320, 250, 76.8f, 57.6f);
         batch.draw(MenuBg, 0,0, 800, 480);
 
         if(info){
@@ -730,6 +799,33 @@ public class MenuScreen implements Screen{
             font_main.draw(batch, "Difficulty: X"+(float)((int)(difficultyControl.getValue()*100))/100, 30, 355, 531, 1, false);
         }
 
+        if(Shop){
+            batch.draw(shop, 5,70, 530, 400);
+            switch (current_engine){
+                case(1):
+                    batch.draw(shopButton_disabled, 30,220, 164, 76.66f);
+                    batch.draw(shopButton_disabled, 30, 296.66f, 164, 76.66f);
+                    batch.draw(shopButton_enabled, 30, 373.32f, 164, 76.66f);
+                    break;
+                case(2):
+                    batch.draw(shopButton_disabled, 30,220, 164, 76.66f);
+                    batch.draw(shopButton_enabled, 30, 296.66f, 164, 76.66f);
+                    batch.draw(shopButton_disabled, 30, 373.32f, 164, 76.66f);
+                    break;
+                case(3):
+                    batch.draw(shopButton_enabled, 30,220, 164, 76.66f);
+                    batch.draw(shopButton_disabled, 30, 296.66f, 164, 76.66f);
+                    batch.draw(shopButton_disabled, 30, 373.32f, 164, 76.66f);
+                    break;
+            }
+            batch.draw(shopButton_small_disabled, 234, 395, 82, 55);
+            batch.draw(shopButton_small_disabled, 331, 395, 82, 55);
+            batch.draw(shopButton_small_disabled, 428, 395, 82, 55);
+            font_numbers.setColor(Color.CYAN);
+            font_numbers.getData().setScale(0.4f);
+            font_numbers.draw(batch, ""+money, 260, 133, 100,1, false);
+        }
+
         if(lamp_animation) {
             number = number + 0.01f;
         }else{
@@ -752,12 +848,8 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.1 Build 30", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.2 Build 1", 5, 35, 150, 1, false);
         batch.end();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
-            Gdx.app.exit();
-        }
     }
 
     @Override
@@ -798,7 +890,7 @@ public class MenuScreen implements Screen{
         assetManager.unload("lamp.png");
         assetManager.unload("infoBg.png");
         assetManager.unload("bg_old.png");
-        assetManager.unload("ship2.png");
+        assetManager.unload("ship.png");
 
         assetManager.unload("checkBox_disabled.png");
         assetManager.unload("checkBox_enabled.png");
@@ -818,12 +910,106 @@ public class MenuScreen implements Screen{
         assetManager.unload("shop/button_tiny.png");
         assetManager.unload("shop/button_tiny_enabled.png");
 
+        assetManager.unload("shop/engine1.png");
+        assetManager.unload("shop/engine2.png");
+        assetManager.unload("shop/engine3.png");
+
         Menu.dispose();
         music.dispose();
         checkBoxSkin.dispose();
         sliderBarSkin.dispose();
         font_main.dispose();
+        font_numbers.dispose();
         fire.dispose();
-
+        fire2.dispose();
+        MenuBg.dispose();
+        Bg.dispose();
+        Ship.dispose();
+        shop.dispose();
+        shopButton_small_enabled.dispose();
+        shopButton_small_disabled.dispose();
+        shopButton_enabled.dispose();
+        shopButton_disabled.dispose();
+        infoBg.dispose();
     }
+
+   private void Hide(int type){
+           switch (type){
+               case(0):
+                   fps.setVisible(false);
+                   showError.setVisible(false);
+                   uiScaling.setVisible(false);
+                   musicVolume.setVisible(false);
+                   soundEffectsVolume.setVisible(false);
+                   difficultyControl.setVisible(false);
+                   newGame_disabled.setVisible(false);
+                   continue_disabled.setVisible(false);
+                   shop_disabled.setVisible(false);
+                   transparency.setVisible(false);
+                   Engine1.setVisible(false);
+                   Engine2.setVisible(false);
+                   Engine3.setVisible(false);
+                   break;
+               case(1):
+                   Hide(0);
+                   fps.setVisible(true);
+                   showError.setVisible(true);
+                   uiScaling.setVisible(true);
+                   musicVolume.setVisible(true);
+                   soundEffectsVolume.setVisible(true);
+                   transparency.setVisible(true);
+                   break;
+               case(2):
+                   Hide(0);
+                   difficultyControl.setVisible(true);
+                   newGame_disabled.setVisible(true);
+                   continue_disabled.setVisible(true);
+                   shop_disabled.setVisible(true);
+                   break;
+               case(3):
+                   Hide(0);
+                   Engine1.setVisible(true);
+                   Engine2.setVisible(true);
+                   Engine3.setVisible(true);
+                   break;
+               case(4):
+                   Hide(0);
+                   break;
+               case(5):
+                   Hide(0);
+                   break;
+               case(6):
+                   Hide(0);
+                   break;
+           }
+    }
+
+    private void UpdateFire(){
+
+        fire.dispose();
+        fire2.dispose();
+        fire = new ParticleEffect();
+        fire2 = new ParticleEffect();
+
+        switch (current_engine){
+            case(1):
+                fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+                fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
+                break;
+            case(2):
+                fire.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
+                fire2.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
+                break;
+            case(3):
+                fire.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
+                fire2.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
+                break;
+        }
+
+        fire.setPosition(330, 268);
+        fire.start();
+        fire2.setPosition(324, 290);
+        fire2.start();
+    }
+
 }

@@ -107,7 +107,7 @@ public class LoadingScreen implements Screen {
                assetManager.load("lamp.png", Texture.class);
                assetManager.load("infoBg.png", Texture.class);
                assetManager.load("bg_old.png", Texture.class);
-               assetManager.load("ship2.png", Texture.class);
+               assetManager.load("ship.png", Texture.class);
 
                assetManager.load("checkBox_disabled.png", Texture.class);
                assetManager.load("checkBox_enabled.png", Texture.class);
@@ -119,6 +119,10 @@ public class LoadingScreen implements Screen {
                assetManager.load("shop/button_small_enabled.png", Texture.class);
                assetManager.load("shop/button_tiny.png", Texture.class);
                assetManager.load("shop/button_tiny_enabled.png", Texture.class);
+
+               assetManager.load("shop/engine1.png", Texture.class);
+               assetManager.load("shop/engine2.png", Texture.class);
+               assetManager.load("shop/engine3.png", Texture.class);
                break;
        }
         this.screen_type = screen_type;

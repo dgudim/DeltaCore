@@ -119,6 +119,7 @@ public class Checkpoint {
             prefs.putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
             prefs.putFloat("ShipX", shipBounds.getX());
             prefs.putFloat("ShipY", shipBounds.getY());
+            prefs.putFloat("money", GameUi.money);
             prefs.flush();
         }
 

@@ -81,15 +81,16 @@ public class Bullet {
             damages.add(damage);
             explosionQueue.add(false);
             remove_Bullet.add(false);
-            types.add(is_uranium);
+            if(GameUi.money > 0) {
+                types.add(is_uranium);
+                GameUi.money--;
+            }else{
+                types.add(false);
+            }
 
             degrees.add((random.nextFloat()-0.5f)*spread+bounds.getRotation()/20);
 
             bulletsShot++;
-
-            if(is_uranium){
-                GameUi.money--;
-            }
 
             if(sound) {
                 shot.play(MenuScreen.SoundVolume/100);
