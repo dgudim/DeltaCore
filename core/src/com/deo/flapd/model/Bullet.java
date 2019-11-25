@@ -81,8 +81,8 @@ public class Bullet {
             damages.add(damage);
             explosionQueue.add(false);
             remove_Bullet.add(false);
-            if(GameUi.money > 0) {
-                types.add(is_uranium);
+            if(GameUi.money > 0 && is_uranium) {
+                types.add(true);
                 GameUi.money--;
             }else{
                 types.add(false);

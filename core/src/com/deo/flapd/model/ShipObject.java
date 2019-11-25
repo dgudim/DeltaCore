@@ -37,14 +37,10 @@ abstract class ShipObject {
 
     private Preferences prefs;
 
-    private int current_engine;
-
     ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
         ship = new Sprite(shipTexture);
         shield = new Sprite(ShieldTexture);
         prefs = Gdx.app.getPreferences("Preferences");
-
-        current_engine = prefs.getInteger("current_engine");
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
         if(!newGame) {
@@ -64,7 +60,7 @@ abstract class ShipObject {
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
-        switch (current_engine){
+        switch (prefs.getInteger("current_engine")){
             case(1):
                 fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
                 fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));

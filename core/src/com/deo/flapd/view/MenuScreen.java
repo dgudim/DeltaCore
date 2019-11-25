@@ -119,7 +119,7 @@ public class MenuScreen implements Screen{
 
     private ParticleEffect fire, fire2;
 
-    private int current_engine, money;
+    private int current_engine, money, ship_offset;
 
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
 
@@ -146,6 +146,7 @@ public class MenuScreen implements Screen{
         current_engine = prefs.getInteger("current_engine");
         if(current_engine<1){
             prefs.putInteger("current_engine", 1);
+            prefs.flush();
             current_engine = 1;
         }
 
@@ -226,9 +227,9 @@ public class MenuScreen implements Screen{
         shop_enabled.setBounds(340, 385, 160, 44);
         shop_disabled.setBounds(340, 385, 160, 44);
 
-        Engine3.setBounds(30,225.57f, 163.8f, 65.52f);
-        Engine2.setBounds(30, 302.23f, 163.8f, 65.52f);
-        Engine1.setBounds(30, 378.89f, 163.8f, 65.52f);
+        Engine3.setBounds(54.57f, 235.39801f, 114.66f, 45.864f);
+        Engine2.setBounds(54.57f, 312.058f, 163.8f*0.7f, 45.864f);
+        Engine1.setBounds(54.57f, 388.71802f, 163.8f*0.7f, 45.864f);
 
         Lamp.setBounds(730, 430, 15, 35);
 
@@ -707,12 +708,14 @@ public class MenuScreen implements Screen{
 
         batch.draw(Bg, 0, 0, movement, -240, 800, 720);
 
+        fire.setPosition(230+ship_offset, 268);
+        fire2.setPosition(224+ship_offset, 290);
         fire.draw(batch);
         fire.update(delta);
         fire2.draw(batch);
         fire2.update(delta);
 
-        batch.draw(Ship, 320, 250, 76.8f, 57.6f);
+        batch.draw(Ship, 220+ship_offset, 250, 76.8f, 57.6f);
         batch.draw(MenuBg, 0,0, 800, 480);
 
         if(info){
@@ -803,27 +806,73 @@ public class MenuScreen implements Screen{
             batch.draw(shop, 5,70, 530, 400);
             switch (current_engine){
                 case(1):
-                    batch.draw(shopButton_disabled, 30,220, 164, 76.66f);
-                    batch.draw(shopButton_disabled, 30, 296.66f, 164, 76.66f);
-                    batch.draw(shopButton_enabled, 30, 373.32f, 164, 76.66f);
+                    batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
+                    batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
+                    batch.draw(shopButton_enabled, 35.5f, 375.02f, 153.5f, 70.3f);
+                    if(money>=0) {
+                        font_numbers.setColor(Color.GREEN);
+                    }else{
+                        font_numbers.setColor(Color.RED);
+                    }
+                    font_numbers.getData().setScale(0.3f);
+                    font_numbers.draw(batch, "--", 62, 204, 100,1, false);
+
+                    font_main.getData().setScale(0.27f);
+                    font_main.setColor(Color.YELLOW);
+                    font_main.draw(batch, "RD-170 engine (stock)", 62, 154, 100,1, false);
+                    font_main.draw(batch, "Speed multiplier: 1X", 62, 134, 100,1, false);
+                    font_main.draw(batch, "Thrust : 7887 kN", 62, 114, 100,1, false);
                     break;
                 case(2):
-                    batch.draw(shopButton_disabled, 30,220, 164, 76.66f);
-                    batch.draw(shopButton_enabled, 30, 296.66f, 164, 76.66f);
-                    batch.draw(shopButton_disabled, 30, 373.32f, 164, 76.66f);
+                    batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
+                    batch.draw(shopButton_enabled, 35.5f, 299.96f, 153.5f, 70.3f);
+                    batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
+                    if(money>=1500) {
+                        font_numbers.setColor(Color.GREEN);
+                    }else{
+                        font_numbers.setColor(Color.RED);
+                    }
+                    font_numbers.getData().setScale(0.3f);
+                    font_numbers.draw(batch, "1500", 62, 204, 100,1, false);
+
+                    font_main.getData().setScale(0.27f);
+                    font_main.setColor(Color.ORANGE);
+                    font_main.draw(batch, "NK-33 nuclear engine", 62, 154, 100,1, false);
+                    font_main.draw(batch, "Speed multiplier: 1.4X", 62, 134, 100,1, false);
+                    font_main.draw(batch, "Thrust : 11042 kN", 62, 114, 100,1, false);
                     break;
                 case(3):
-                    batch.draw(shopButton_enabled, 30,220, 164, 76.66f);
-                    batch.draw(shopButton_disabled, 30, 296.66f, 164, 76.66f);
-                    batch.draw(shopButton_disabled, 30, 373.32f, 164, 76.66f);
+                    batch.draw(shopButton_enabled, 35.5f, 224.7f, 153.5f, 70.3f);
+                    batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
+                    batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
+                    if(money>=3500) {
+                        font_numbers.setColor(Color.GREEN);
+                    }else{
+                        font_numbers.setColor(Color.RED);
+                    }
+                    font_numbers.getData().setScale(0.3f);
+                    font_numbers.draw(batch, "3500", 62, 204, 100,1, false);
+
+                    font_main.getData().setScale(0.27f);
+                    font_main.setColor(Color.valueOf("#b37dfa"));
+                    font_main.draw(batch, "F119 plasma engine", 62, 154, 100,1, false);
+                    font_main.draw(batch, "Speed multiplier: 1.7X", 62, 134, 100,1, false);
+                    font_main.draw(batch, "Thrust : 13408 kN", 62, 114, 100,1, false);
                     break;
             }
-            batch.draw(shopButton_small_disabled, 234, 395, 82, 55);
-            batch.draw(shopButton_small_disabled, 331, 395, 82, 55);
-            batch.draw(shopButton_small_disabled, 428, 395, 82, 55);
+            batch.draw(shopButton_small_disabled, 238.5f, 399.5f, 73, 46);
+            batch.draw(shopButton_small_disabled, 335.5f, 399.5f, 73, 46);
+            batch.draw(shopButton_small_disabled, 432.5f, 399.5f, 73, 46);
             font_numbers.setColor(Color.CYAN);
             font_numbers.getData().setScale(0.4f);
             font_numbers.draw(batch, ""+money, 260, 133, 100,1, false);
+
+            if(ship_offset<100){
+                ship_offset++;
+            }
+
+        }else if(ship_offset>0){
+            ship_offset--;
         }
 
         if(lamp_animation) {
@@ -924,7 +973,6 @@ public class MenuScreen implements Screen{
         fire2.dispose();
         MenuBg.dispose();
         Bg.dispose();
-        Ship.dispose();
         shop.dispose();
         shopButton_small_enabled.dispose();
         shopButton_small_disabled.dispose();

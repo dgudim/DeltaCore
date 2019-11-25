@@ -37,12 +37,26 @@ public class GameLogic {
 
     public static int lastCheckpoint;
 
+    private float speedMultiplier;
+
     public GameLogic(Polygon bounds, boolean newGame) {
         this.bounds = bounds;
         random = new Random();
 
         Preferences prefs = Gdx.app.getPreferences("Preferences");
         difficulty = prefs.getFloat("difficulty");
+
+        switch (prefs.getInteger("current_engine")){
+            case(1):
+                speedMultiplier = 1;
+                break;
+            case(2):
+                speedMultiplier = 1.4f;
+                break;
+            case(3):
+                speedMultiplier = 1.7f;
+                break;
+        }
 
         if(!newGame){
             bonuses_collected = prefs.getInteger("bonuses_collected");
@@ -57,7 +71,10 @@ public class GameLogic {
     }
 
     public void handleInput(float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
-        bounds.setPosition(bounds.getX() + 300 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 300 * deltaY * Gdx.graphics.getDeltaTime());
+        deltaX*=speedMultiplier;
+        deltaY*=speedMultiplier;
+
+        bounds.setPosition(bounds.getX() + 250 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 250 * deltaY * Gdx.graphics.getDeltaTime());
         bounds.setRotation((deltaY - deltaX) * 7);
 
         if (is_firing && millis > 10) {
