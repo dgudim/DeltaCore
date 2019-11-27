@@ -426,7 +426,7 @@ public class Boss_battleShip {
                     stage2 = false;
                     deathAnimation = true;
                     GameUi.Score += 3000;
-                    uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1.3f, 1);
+                    uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }
                 main.setPosition(bounds_body.getX(), bounds_body.getY());
                 main.setRotation(bounds_body.getRotation());

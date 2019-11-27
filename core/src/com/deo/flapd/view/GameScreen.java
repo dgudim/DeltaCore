@@ -179,9 +179,9 @@ public class GameScreen implements Screen{
 
             bonus.draw(batch, is_paused);
 
-            uraniumCell.draw(batch, is_paused);
-
             ship.DrawShield(is_paused);
+
+            uraniumCell.draw(batch, is_paused);
 
             gameUi.draw(is_paused);
 
