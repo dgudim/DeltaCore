@@ -68,14 +68,21 @@ public class MenuScreen implements Screen{
     private Texture shopButton_disabled;
     private Texture menu_purchase, menu_purchase2;
 
+    private Texture Engine1_t;
+    private Texture Engine2_t;
+    private Texture Engine3_t;
+
     private Image Engine1;
     private Image Engine2;
     private Image Engine3;
     private Image yes, yesDisabled, no, noDisabled, upgrade, upgradeDisabled;
 
-    private Texture Engine1_t;
-    private Texture Engine2_t;
-    private Texture Engine3_t;
+    private Image CategoryGun;
+    private Image CategoryGun2;
+    private Image CategoryEngine;
+    private Image Cannon1;
+    private Image Cannon2;
+    private Image Cannon3;
 
     private Texture infoBg;
 
@@ -108,7 +115,7 @@ public class MenuScreen implements Screen{
     private float MusicVolume;
     public static float SoundVolume;
 
-    private Stage Menu;
+    private Stage Menu, ShopStage;
 
     private int movement;
 
@@ -124,11 +131,11 @@ public class MenuScreen implements Screen{
 
     private ParticleEffect fire, fire2;
 
-    private int current_engine, money, ship_offset, menu_offset, menu_type;
+    private int current_engine, current_cannon, current_category, money, ship_offset, menu_offset, menu_type;
 
     private boolean menuAnimation;
 
-    private boolean is2ndEngineUnlocked, is3rdEngineUnlocked;
+    private boolean is2ndEngineUnlocked, is3rdEngineUnlocked, is2ndCannonUnlocked, is3rdCannonUnlocked;
 
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
 
@@ -161,10 +168,26 @@ public class MenuScreen implements Screen{
             current_engine = 1;
         }
 
+        current_cannon = prefs.getInteger("current_cannon");
+        if(current_cannon<1){
+            prefs.putInteger("current_cannon", 1);
+            prefs.flush();
+            current_cannon = 1;
+        }
+
+        current_category = prefs.getInteger("current_category");
+        if(current_category<1){
+            prefs.putInteger("current_category", 1);
+            prefs.flush();
+            current_category = 1;
+        }
+
         money = prefs.getInteger("money");
 
         is2ndEngineUnlocked = prefs.getBoolean("is2ndEngineUnlocked");
         is3rdEngineUnlocked = prefs.getBoolean("is3rdEngineUnlocked");
+        is2ndCannonUnlocked = prefs.getBoolean("is2ndCannonUnlocked");
+        is3rdCannonUnlocked = prefs.getBoolean("is3rdCannonUnlocked");
 
         this.batch = batch;
 
@@ -218,9 +241,19 @@ public class MenuScreen implements Screen{
         shopButton_small_disabled = assetManager.get("shop/button_tiny.png");
         shopButton_small_enabled = assetManager.get("shop/button_tiny_enabled.png");
 
+        Engine1_t = assetManager.get("shop/engine1.png");
+        Engine2_t = assetManager.get("shop/engine2.png");
+        Engine3_t = assetManager.get("shop/engine3.png");
+
         Engine1 = new Image((Texture) assetManager.get("shop/engine1.png"));
         Engine2 = new Image((Texture) assetManager.get("shop/engine2.png"));
         Engine3 = new Image((Texture) assetManager.get("shop/engine3.png"));
+        Cannon1 = new Image((Texture) assetManager.get("shop/Cannon1.png"));
+        Cannon2 = new Image((Texture) assetManager.get("shop/Cannon2.png"));
+        Cannon3 = new Image((Texture) assetManager.get("shop/Cannon3.png"));
+        CategoryEngine = new Image((Texture) assetManager.get("shop/CategoryEngine.png"));
+        CategoryGun = new Image((Texture) assetManager.get("shop/CategoryGun.png"));
+        CategoryGun2 = new Image((Texture) assetManager.get("shop/CategoryGun2.png"));
 
         yes = new Image((Texture) assetManager.get("shop/yes.png"));
         yesDisabled = new Image((Texture) assetManager.get("shop/yesDisabled.png"));
@@ -228,10 +261,6 @@ public class MenuScreen implements Screen{
         noDisabled = new Image((Texture) assetManager.get("shop/noDisabled.png"));
         upgrade = new Image((Texture) assetManager.get("shop/upgrade.png"));
         upgradeDisabled = new Image((Texture) assetManager.get("shop/upgradeDisabled.png"));
-
-        Engine1_t = assetManager.get("shop/engine1.png");
-        Engine2_t = assetManager.get("shop/engine2.png");
-        Engine3_t = assetManager.get("shop/engine3.png");
 
         play_disabled.setBounds(545, 325, 250, 75);
         online_disabled.setBounds(545, 245, 250, 75);
@@ -256,8 +285,12 @@ public class MenuScreen implements Screen{
         shop_disabled.setBounds(340, 385, 160, 44);
 
         Engine3.setBounds(54.57f, 235.39801f, 114.66f, 45.864f);
-        Engine2.setBounds(54.57f, 312.058f, 163.8f*0.7f, 45.864f);
-        Engine1.setBounds(54.57f, 388.71802f, 163.8f*0.7f, 45.864f);
+        Engine2.setBounds(54.57f, 312.058f, 114.66f, 45.864f);
+        Engine1.setBounds(54.57f, 388.71802f, 114.66f, 45.864f);
+
+        Cannon1.setBounds(54.57f, 235.39801f, 114.66f, 45.864f);
+        Cannon2.setBounds(54.57f, 312.058f, 114.66f, 45.864f);
+        Cannon3.setBounds(54.57f, 388.71802f, 114.66f, 45.864f);
 
         yes.setBounds(-100, -100, 83.2f, 57.2f);
         no.setBounds(-100, -100, 83.2f, 57.2f);
@@ -265,6 +298,10 @@ public class MenuScreen implements Screen{
         noDisabled.setBounds(-100, -100, 83.2f, 57.2f);
         upgrade.setBounds(-100, -100, 280.8f, 57.2f);
         upgradeDisabled.setBounds(-100, -100, 280.8f, 57.2f);
+
+        CategoryEngine.setBounds(245, 400, 60, 46);
+        CategoryGun.setBounds(337, 405, 70, 38);
+        CategoryGun2.setBounds(445, 400, 46, 46);
 
         Lamp.setBounds(730, 430, 15, 35);
 
@@ -376,13 +413,21 @@ public class MenuScreen implements Screen{
         Menu.addActor(Engine1);
         Menu.addActor(Engine2);
         Menu.addActor(Engine3);
+        Menu.addActor(Cannon1);
+        Menu.addActor(Cannon2);
+        Menu.addActor(Cannon3);
+        Menu.addActor(CategoryEngine);
+        Menu.addActor(CategoryGun);
+        Menu.addActor(CategoryGun2);
 
-        Menu.addActor(yesDisabled);
-        Menu.addActor(noDisabled);
-        Menu.addActor(upgradeDisabled);
-        Menu.addActor(yes);
-        Menu.addActor(no);
-        Menu.addActor(upgrade);
+        ShopStage = new Stage(viewport, batch);
+
+        ShopStage.addActor(yesDisabled);
+        ShopStage.addActor(noDisabled);
+        ShopStage.addActor(upgradeDisabled);
+        ShopStage.addActor(yes);
+        ShopStage.addActor(no);
+        ShopStage.addActor(upgrade);
 
         newGame_enabled.setVisible(false);
         continue_enabled.setVisible(false);
@@ -397,6 +442,13 @@ public class MenuScreen implements Screen{
         upgrade.setVisible(false);
         yes.setVisible(false);
         no.setVisible(false);
+
+        CategoryGun.setVisible(false);
+        CategoryGun2.setVisible(false);
+        CategoryEngine.setVisible(false);
+        Cannon1.setVisible(false);
+        Cannon2.setVisible(false);
+        Cannon3.setVisible(false);
 
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
@@ -423,6 +475,7 @@ public class MenuScreen implements Screen{
 
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(Menu);
+        multiplexer.addProcessor(ShopStage);
 
         play_disabled.addListener(new InputListener(){
             @Override
@@ -674,7 +727,17 @@ public class MenuScreen implements Screen{
                     info = false;
                     settings = false;
                     play = false;
-                    Hide(3);
+                    switch(current_category){
+                        case(1):
+                            Hide(3);
+                            break;
+                        case(2):
+                            Hide(4);
+                            break;
+                        case(3):
+                            Hide(5);
+                            break;
+                    }
                 }
             }
         });
@@ -837,6 +900,51 @@ public class MenuScreen implements Screen{
             }
         });
 
+        CategoryEngine.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                current_category = 1;
+                prefs.putInteger("current_category", current_category);
+                prefs.flush();
+                Hide(3);
+            }
+        });
+
+        CategoryGun.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                current_category = 2;
+                prefs.putInteger("current_category", current_category);
+                prefs.flush();
+                Hide(4);
+            }
+        });
+
+        CategoryGun2.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                current_category = 3;
+                prefs.putInteger("current_category", current_category);
+                prefs.flush();
+                Hide(5);
+            }
+        });
+
         music = Gdx.audio.newMusic(Gdx.files.internal("music/main.ogg"));
 
     }
@@ -871,72 +979,94 @@ public class MenuScreen implements Screen{
 
         batch.draw(Ship, 220+ship_offset, 250, 76.8f, 57.6f);
 
+        batch.end();
+        ShopStage.draw();
+        ShopStage.act(delta);
+        batch.begin();
+
         if(Shop){
             batch.draw(shop, 5,70, 530, 400);
-            switch (current_engine){
-                case(1):
-                    batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
-                    batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
-                    batch.draw(shopButton_enabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                    if(money>=0) {
-                        font_numbers.setColor(Color.GREEN);
-                    }else{
-                        font_numbers.setColor(Color.RED);
-                    }
-                    font_numbers.getData().setScale(0.3f);
-                    font_numbers.draw(batch, "--", 62, 204, 100,1, false);
 
-                    font_main.getData().setScale(0.27f);
-                    font_main.setColor(Color.YELLOW);
-                    font_main.draw(batch, "RD-170 engine (stock)", 62, 154, 100,1, false);
-                    font_main.draw(batch, "Speed multiplier: 1X", 62, 134, 100,1, false);
-                    font_main.draw(batch, "Thrust : 7887 kN", 62, 114, 100,1, false);
+            switch(current_category){
+                case(1):
+                    switch (current_engine){
+                        case(1):
+                            batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
+                            batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
+                            batch.draw(shopButton_enabled, 35.5f, 375.02f, 153.5f, 70.3f);
+                            if(money>=0) {
+                                font_numbers.setColor(Color.GREEN);
+                            }else{
+                                font_numbers.setColor(Color.RED);
+                            }
+                            font_numbers.getData().setScale(0.3f);
+                            font_numbers.draw(batch, "--", 62, 204, 100,1, false);
+
+                            font_main.getData().setScale(0.27f);
+                            font_main.setColor(Color.YELLOW);
+                            font_main.draw(batch, "RD-170 engine (stock)", 62, 154, 100,1, false);
+                            font_main.draw(batch, "Speed multiplier: 1X", 62, 134, 100,1, false);
+                            font_main.draw(batch, "Thrust : 7887 kN", 62, 114, 100,1, false);
+                            break;
+                        case(2):
+                            batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
+                            batch.draw(shopButton_enabled, 35.5f, 299.96f, 153.5f, 70.3f);
+                            batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
+                            if(money>=1500) {
+                                font_numbers.setColor(Color.GREEN);
+                            }else{
+                                font_numbers.setColor(Color.RED);
+                            }
+                            font_numbers.getData().setScale(0.3f);
+                            font_numbers.draw(batch, "1500", 62, 204, 100,1, false);
+
+                            font_main.getData().setScale(0.27f);
+                            font_main.setColor(Color.ORANGE);
+                            font_main.draw(batch, "NK-33 nuclear engine", 62, 154, 100,1, false);
+                            font_main.draw(batch, "Speed multiplier: 1.4X", 62, 134, 100,1, false);
+                            font_main.draw(batch, "Thrust : 11042 kN", 62, 114, 100,1, false);
+                            break;
+                        case(3):
+                            batch.draw(shopButton_enabled, 35.5f, 224.7f, 153.5f, 70.3f);
+                            batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
+                            batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
+                            if(money>=3500) {
+                                font_numbers.setColor(Color.GREEN);
+                            }else{
+                                font_numbers.setColor(Color.RED);
+                            }
+                            font_numbers.getData().setScale(0.3f);
+                            font_numbers.draw(batch, "3500", 62, 204, 100,1, false);
+
+                            font_main.getData().setScale(0.27f);
+                            font_main.setColor(Color.valueOf("#b37dfa"));
+                            font_main.draw(batch, "F119 plasma engine", 62, 154, 100,1, false);
+                            font_main.draw(batch, "Speed multiplier: 1.7X", 62, 134, 100,1, false);
+                            font_main.draw(batch, "Thrust : 13408 kN", 62, 114, 100,1, false);
+                            break;
+                    }
+
+                    batch.draw(shopButton_small_enabled, 238.5f, 399.5f, 73, 46);
+                    batch.draw(shopButton_small_disabled, 335.5f, 399.5f, 73, 46);
+                    batch.draw(shopButton_small_disabled, 432.5f, 399.5f, 73, 46);
                     break;
                 case(2):
-                    batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
-                    batch.draw(shopButton_enabled, 35.5f, 299.96f, 153.5f, 70.3f);
-                    batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                    if(money>=1500) {
-                        font_numbers.setColor(Color.GREEN);
-                    }else{
-                        font_numbers.setColor(Color.RED);
-                    }
-                    font_numbers.getData().setScale(0.3f);
-                    font_numbers.draw(batch, "1500", 62, 204, 100,1, false);
-
-                    font_main.getData().setScale(0.27f);
-                    font_main.setColor(Color.ORANGE);
-                    font_main.draw(batch, "NK-33 nuclear engine", 62, 154, 100,1, false);
-                    font_main.draw(batch, "Speed multiplier: 1.4X", 62, 134, 100,1, false);
-                    font_main.draw(batch, "Thrust : 11042 kN", 62, 114, 100,1, false);
+                    batch.draw(shopButton_small_disabled, 238.5f, 399.5f, 73, 46);
+                    batch.draw(shopButton_small_enabled, 335.5f, 399.5f, 73, 46);
+                    batch.draw(shopButton_small_disabled, 432.5f, 399.5f, 73, 46);
                     break;
                 case(3):
-                    batch.draw(shopButton_enabled, 35.5f, 224.7f, 153.5f, 70.3f);
-                    batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
-                    batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                    if(money>=3500) {
-                        font_numbers.setColor(Color.GREEN);
-                    }else{
-                        font_numbers.setColor(Color.RED);
-                    }
-                    font_numbers.getData().setScale(0.3f);
-                    font_numbers.draw(batch, "3500", 62, 204, 100,1, false);
-
-                    font_main.getData().setScale(0.27f);
-                    font_main.setColor(Color.valueOf("#b37dfa"));
-                    font_main.draw(batch, "F119 plasma engine", 62, 154, 100,1, false);
-                    font_main.draw(batch, "Speed multiplier: 1.7X", 62, 134, 100,1, false);
-                    font_main.draw(batch, "Thrust : 13408 kN", 62, 114, 100,1, false);
+                    batch.draw(shopButton_small_disabled, 238.5f, 399.5f, 73, 46);
+                    batch.draw(shopButton_small_disabled, 335.5f, 399.5f, 73, 46);
+                    batch.draw(shopButton_small_enabled, 432.5f, 399.5f, 73, 46);
                     break;
             }
-            batch.draw(shopButton_small_disabled, 238.5f, 399.5f, 73, 46);
-            batch.draw(shopButton_small_disabled, 335.5f, 399.5f, 73, 46);
-            batch.draw(shopButton_small_disabled, 432.5f, 399.5f, 73, 46);
+
             font_numbers.setColor(Color.CYAN);
             font_numbers.getData().setScale(0.4f);
             font_numbers.draw(batch, ""+money, 260, 133, 100,1, false);
 
-            if(menu_type == 1) {
+            if(menu_type == 1){
                 batch.draw(menu_purchase2, 5+menu_offset, 70, 530, 400);
                 yes.setPosition(427+menu_offset, 175);
                 yesDisabled.setPosition(427+menu_offset, 175);
@@ -1170,7 +1300,15 @@ public class MenuScreen implements Screen{
         assetManager.unload("shop/upgrade.png");
         assetManager.unload("shop/upgradeDisabled.png");
 
+        assetManager.unload("shop/CategoryGun.png");
+        assetManager.unload("shop/CategoryGun2.png");
+        assetManager.unload("shop/CategoryEngine.png");
+        assetManager.unload("shop/Cannon1.png");
+        assetManager.unload("shop/Cannon2.png");
+        assetManager.unload("shop/Cannon3.png");
+
         Menu.dispose();
+        ShopStage.dispose();
         music.dispose();
         checkBoxSkin.dispose();
         sliderBarSkin.dispose();
@@ -1212,6 +1350,12 @@ public class MenuScreen implements Screen{
                    yesDisabled.setVisible(false);
                    noDisabled.setVisible(false);
                    upgradeDisabled.setVisible(false);
+                   CategoryGun.setVisible(false);
+                   CategoryGun2.setVisible(false);
+                   CategoryEngine.setVisible(false);
+                   Cannon1.setVisible(false);
+                   Cannon2.setVisible(false);
+                   Cannon3.setVisible(false);
                    break;
                case(1):
                    Hide(0);
@@ -1231,6 +1375,9 @@ public class MenuScreen implements Screen{
                    break;
                case(3):
                    Hide(0);
+                   CategoryGun.setVisible(true);
+                   CategoryGun2.setVisible(true);
+                   CategoryEngine.setVisible(true);
                    Engine1.setVisible(true);
                    Engine2.setVisible(true);
                    Engine3.setVisible(true);
@@ -1240,11 +1387,17 @@ public class MenuScreen implements Screen{
                    break;
                case(4):
                    Hide(0);
+                   CategoryGun.setVisible(true);
+                   CategoryGun2.setVisible(true);
+                   CategoryEngine.setVisible(true);
+                   Cannon1.setVisible(true);
+                   Cannon2.setVisible(true);
+                   Cannon3.setVisible(true);
+                   yesDisabled.setVisible(true);
+                   noDisabled.setVisible(true);
+                   upgradeDisabled.setVisible(true);
                    break;
                case(5):
-                   Hide(0);
-                   break;
-               case(6):
                    Hide(0);
                    break;
            }

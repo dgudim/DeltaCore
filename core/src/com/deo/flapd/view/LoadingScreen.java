@@ -134,6 +134,13 @@ public class LoadingScreen implements Screen {
                assetManager.load("shop/upgrade.png", Texture.class);
                assetManager.load("shop/upgradeDisabled.png", Texture.class);
 
+               assetManager.load("shop/CategoryGun.png", Texture.class);
+               assetManager.load("shop/CategoryGun2.png", Texture.class);
+               assetManager.load("shop/CategoryEngine.png", Texture.class);
+               assetManager.load("shop/Cannon1.png", Texture.class);
+               assetManager.load("shop/Cannon2.png", Texture.class);
+               assetManager.load("shop/Cannon3.png", Texture.class);
+
                break;
        }
         this.screen_type = screen_type;
