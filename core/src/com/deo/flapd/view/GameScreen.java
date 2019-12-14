@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -113,7 +114,14 @@ public class GameScreen implements Screen{
         gameUi = new GameUi(game, batch, assetManager, ship, newGame);
         gameLogic = new GameLogic(ship.getBounds(), newGame);
 
-        bullet = new Bullet(pew,0.4f, ship.getBounds(), newGame);
+        switch (prefs.getInteger("current_cannon")){
+            case(1):bullet = new Bullet(pew,0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), ship.getBounds(), newGame);
+                break;
+            case(2):bullet = new Bullet(pew,0.4f, ship.getBounds(), newGame);
+                break;
+            case(3):bullet = new Bullet(pew,0.4f, ship.getBounds(), newGame);
+                break;
+        }
 
         enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
         enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus);

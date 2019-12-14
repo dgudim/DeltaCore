@@ -140,6 +140,7 @@ public class LoadingScreen implements Screen {
                assetManager.load("shop/Cannon1.png", Texture.class);
                assetManager.load("shop/Cannon2.png", Texture.class);
                assetManager.load("shop/Cannon3.png", Texture.class);
+               assetManager.load("bonus_part.png", Texture.class);
 
                break;
        }

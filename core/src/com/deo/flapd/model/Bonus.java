@@ -159,6 +159,8 @@ public class Bonus {
                     }
                     if(type == 4){
                         removeBonus(i, true);
+                        prefs.putInteger("cogs", prefs.getInteger("cogs")+1);
+                        prefs.flush();
                     }
                     if(type == 5){
                         removeBonus(i, true);
