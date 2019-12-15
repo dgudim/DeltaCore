@@ -427,7 +427,9 @@ public class Boss_battleShip {
                     is_spawned = false;
                     stage2 = false;
                     deathAnimation = true;
-                    bonus.Spawn(4, 1, posX + 278, posY + 86);
+                    for (int i = 0; i<10; i++) {
+                        bonus.Spawn(4, 1, posX + 278+i, posY + 86+i);
+                    }
                     GameUi.Score += 3000;
                     uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }
