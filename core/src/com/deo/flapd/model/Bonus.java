@@ -84,6 +84,20 @@ public class Bonus {
             anglesY.add(random.nextFloat()*2-1);
     }
 
+    public void Spawn(int type, float scale, float x, float y) {
+
+        Rectangle bonus = new Rectangle();
+
+        bonus.x = x;
+        bonus.y = y;
+
+        bonus.setSize(width*scale, height*scale);
+
+        bonuses.add(bonus);
+        types.add(type);
+        anglesY.add(random.nextFloat()*2-1);
+    }
+
     public void draw(SpriteBatch batch, boolean is_paused) {
 
         for (int i = 0; i < bonuses.size; i ++) {
@@ -124,8 +138,6 @@ public class Bonus {
                     this.boss.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.boss.draw(batch);
                     break;
-
-                    default:break;
             }
 
             if (!is_paused){

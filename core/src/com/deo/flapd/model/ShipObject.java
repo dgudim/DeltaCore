@@ -146,6 +146,9 @@ abstract class ShipObject {
                 }else{
                     damage_fire.draw(batch, 0);
                 }
+            }else if(isFireStarted1){
+                damage_fire.reset();
+                isFireStarted1 = false;
             }
 
             if(GameUi.Health < 50){
@@ -157,6 +160,9 @@ abstract class ShipObject {
                 }else{
                     damage_fire2.draw(batch, 0);
                 }
+            }else if(isFireStarted2){
+                damage_fire2.reset();
+                isFireStarted2 = false;
             }
 
             if(GameUi.Health < 30){
@@ -168,6 +174,9 @@ abstract class ShipObject {
                 }else{
                     damage_fire3.draw(batch, 0);
                 }
+            }else if(isFireStarted3){
+                damage_fire3.reset();
+                isFireStarted3 = false;
             }
 
             ship.draw(batch);

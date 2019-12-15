@@ -28,8 +28,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import sun.rmi.runtime.Log;
-
 
 public class MenuScreen implements Screen{
 
@@ -1610,7 +1608,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.2 Build 2", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.2 Build 3", 5, 35, 150, 1, false);
         batch.end();
     }
 
@@ -1718,7 +1716,6 @@ public class MenuScreen implements Screen{
         Cannon1_t.dispose();
         Cannon2_t.dispose();
         Cannon3_t.dispose();
-        cog.dispose();
     }
 
    private void Hide(int type){

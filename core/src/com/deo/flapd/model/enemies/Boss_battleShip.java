@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
@@ -88,6 +89,7 @@ public class Boss_battleShip {
     private boolean sound;
 
     private UraniumCell uraniumCell;
+    private Bonus bonus;
 
     public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds, UraniumCell cell){
 
@@ -425,6 +427,7 @@ public class Boss_battleShip {
                     is_spawned = false;
                     stage2 = false;
                     deathAnimation = true;
+                    bonus.Spawn(4, 1, posX + 278, posY + 86);
                     GameUi.Score += 3000;
                     uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }
@@ -1113,4 +1116,9 @@ public class Boss_battleShip {
                 }
             }
     }
+
+    public void postConstruct(Bonus bonus){
+        this.bonus = bonus;
+    }
+
 }

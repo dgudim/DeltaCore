@@ -111,15 +111,17 @@ public class GameScreen implements Screen{
 
         bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip);
 
+        boss_battleShip.postConstruct(bonus);
+
         gameUi = new GameUi(game, batch, assetManager, ship, newGame);
-        gameLogic = new GameLogic(ship.getBounds(), newGame);
+        gameLogic = new GameLogic(ship.getBounds(), newGame, game);
 
         switch (prefs.getInteger("current_cannon")){
-            case(1):bullet = new Bullet(pew,0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), ship.getBounds(), newGame);
+            case(1):bullet = new Bullet(pew,0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
                 break;
-            case(2):bullet = new Bullet(pew,0.4f, ship.getBounds(), newGame);
+            case(2):bullet = new Bullet(pew,0.4f, 0.8f, ship.getBounds(), newGame);
                 break;
-            case(3):bullet = new Bullet(pew,0.4f, ship.getBounds(), newGame);
+            case(3):bullet = new Bullet(pew,0.4f, 1.3f, ship.getBounds(), newGame);
                 break;
         }
 

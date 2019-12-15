@@ -1,6 +1,8 @@
 package com.deo.flapd.control;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Polygon;
@@ -37,11 +39,15 @@ public class GameLogic {
 
     public static int lastCheckpoint;
 
-    private float speedMultiplier;
+    private float speedMultiplier, damage;
 
-    public GameLogic(Polygon bounds, boolean newGame) {
+    private Game game;
+
+    public GameLogic(Polygon bounds, boolean newGame, Game game) {
         this.bounds = bounds;
         random = new Random();
+
+        this.game = game;
 
         Preferences prefs = Gdx.app.getPreferences("Preferences");
         difficulty = prefs.getFloat("difficulty");
@@ -55,6 +61,18 @@ public class GameLogic {
                 break;
             case(3):
                 speedMultiplier = 1.7f;
+                break;
+        }
+
+        switch (prefs.getInteger("current_cannon")){
+            case(1):
+                damage = 40+prefs.getInteger("cannon1upgradeLevel");
+                break;
+            case(2):
+                damage = 60+prefs.getInteger("cannon2upgradeLevel");
+                break;
+            case(3):
+                damage = 70+prefs.getInteger("cannon3upgradeLevel");
                 break;
         }
 
@@ -74,16 +92,32 @@ public class GameLogic {
         deltaX*=speedMultiplier;
         deltaY*=speedMultiplier;
 
+        if(Gdx.input.isKeyPressed(Input.Keys.W))
+            deltaY = speedMultiplier;
+        if(Gdx.input.isKeyPressed(Input.Keys.A))
+            deltaX = -speedMultiplier;
+        if(Gdx.input.isKeyPressed(Input.Keys.S))
+            deltaY = -speedMultiplier;
+        if(Gdx.input.isKeyPressed(Input.Keys.D))
+            deltaX = speedMultiplier;
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+            is_firing = true;
+        if(Gdx.input.isKeyPressed(Input.Keys.M))
+            is_firing_secondary = true;
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+            game.pause();
+
+
         bounds.setPosition(bounds.getX() + 250 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 250 * deltaY * Gdx.graphics.getDeltaTime());
         bounds.setRotation((deltaY - deltaX) * 7);
 
         if (is_firing && millis > 10) {
-            bullet.Spawn(40, 1, false);
+            bullet.Spawn(damage,1, false);
             millis = 0;
         }
 
         if (is_firing_secondary && millis > 10) {
-            bullet.Spawn(90, 1, true);
+            bullet.Spawn(damage*2.25f, 1, true);
             millis = 0;
         }
 

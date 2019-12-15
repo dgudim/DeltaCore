@@ -41,7 +41,7 @@ public class Bullet {
 
     private Preferences prefs;
 
-    public Bullet(Texture bulletTexture, float spread, Polygon shipBounds, boolean newGame) {
+    public Bullet(Texture bulletTexture, float spread, float shootingSpeedMultiplier, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
         this.spread = spread;
         bullet = new Sprite(bulletTexture);
