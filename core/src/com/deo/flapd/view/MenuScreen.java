@@ -7,6 +7,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,12 +22,19 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 
 public class MenuScreen implements Screen{
@@ -143,6 +151,8 @@ public class MenuScreen implements Screen{
 
     private boolean is2ndEngineUnlocked, is3rdEngineUnlocked, is2ndCannonUnlocked, is3rdCannonUnlocked;
 
+    private boolean easterEgg;
+
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
 
         this.game = game;
@@ -190,6 +200,7 @@ public class MenuScreen implements Screen{
 
         money = prefs.getInteger("money");
         cogs = prefs.getInteger("cogs");
+        easterEgg = prefs.getBoolean("easterEgg");
 
         engine1upgradeLevel = prefs.getInteger("engine1upgradeLevel");
         engine2upgradeLevel = prefs.getInteger("engine2upgradeLevel");
@@ -682,6 +693,7 @@ public class MenuScreen implements Screen{
                 error = showError.isChecked();
                 prefs.putBoolean("error", error);
                 prefs.flush();
+
             }
         });
 
@@ -960,8 +972,8 @@ public class MenuScreen implements Screen{
                             }
                             break;
                         case(2):
-                            if(cogs>=2+(int)(2*engine2upgradeLevel/2.6)){
-                                cogs-=2+(int)(2*engine2upgradeLevel/2.6);
+                            if(cogs>=2+(2*engine2upgradeLevel/3)){
+                                cogs-=2+(2*engine2upgradeLevel/3);
                                 prefs.putInteger("cogs", cogs);
                                 engine2upgradeLevel++;
                                 prefs.putInteger("engine2upgradeLevel",engine2upgradeLevel);
@@ -970,8 +982,8 @@ public class MenuScreen implements Screen{
                             }
                             break;
                         case(3):
-                            if(cogs>=3+(int)(2*engine3upgradeLevel/2.3)){
-                                cogs-=3+(int)(2*engine3upgradeLevel/2.3);
+                            if(cogs>=3+(2*engine3upgradeLevel/3)){
+                                cogs-=3+(2*engine3upgradeLevel/3);
                                 prefs.putInteger("cogs", cogs);
                                 engine3upgradeLevel++;
                                 prefs.putInteger("engine3upgradeLevel",engine3upgradeLevel);
@@ -994,8 +1006,8 @@ public class MenuScreen implements Screen{
                                 }
                                 break;
                             case(2):
-                                if(cogs>=3+(int)(2*cannon2upgradeLevel/2.6)){
-                                    cogs-=3+(int)(2*cannon2upgradeLevel/2.6);
+                                if(cogs>=3+(2*cannon2upgradeLevel/3)){
+                                    cogs-=3+(2*cannon2upgradeLevel/3);
                                     prefs.putInteger("cogs", cogs);
                                     cannon2upgradeLevel++;
                                     prefs.putInteger("cannon2upgradeLevel",cannon2upgradeLevel);
@@ -1004,8 +1016,8 @@ public class MenuScreen implements Screen{
                                 }
                                 break;
                             case(3):
-                                if(cogs>=4+(int)(2*cannon3upgradeLevel/2.3)){
-                                    cogs-=4+(int)(2*cannon3upgradeLevel/2.3);
+                                if(cogs>=4+(2*cannon3upgradeLevel/3)){
+                                    cogs-=4+(2*cannon3upgradeLevel/3);
                                     prefs.putInteger("cogs", cogs);
                                     cannon3upgradeLevel++;
                                     prefs.putInteger("cannon3upgradeLevel",cannon3upgradeLevel);
@@ -1150,6 +1162,21 @@ public class MenuScreen implements Screen{
                }
            });
 
+        buildNumber.addListener(new InputListener(){
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                easterEgg = !easterEgg;
+                prefs.putBoolean("easterEgg", easterEgg);
+                prefs.flush();
+            }
+        });
+
         music = Gdx.audio.newMusic(Gdx.files.internal("music/main.ogg"));
 
     }
@@ -1212,8 +1239,8 @@ public class MenuScreen implements Screen{
                             font_main.getData().setScale(0.27f);
                             font_main.setColor(Color.YELLOW);
                             font_main.draw(batch, "RD-170 engine (stock)", 62, 154, 100,1, false);
-                            font_main.draw(batch, "Speed multiplier: 1X", 62, 134, 100,1, false);
-                            font_main.draw(batch, "Thrust : 7887 kN", 62, 114, 100,1, false);
+                            font_main.draw(batch, "Speed multiplier: "+String.format ("%.1f",(1+engine1upgradeLevel/10f))+"X", 62, 134, 100,1, false);
+                            font_main.draw(batch, "Thrust: "+(7887*(1+engine1upgradeLevel/10f))+"kN", 62, 114, 100,1, false);
                             break;
                         case(2):
                             batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
@@ -1236,8 +1263,8 @@ public class MenuScreen implements Screen{
                             font_main.getData().setScale(0.27f);
                             font_main.setColor(Color.ORANGE);
                             font_main.draw(batch, "NK-33 nuclear engine", 62, 154, 100,1, false);
-                            font_main.draw(batch, "Speed multiplier: 1.4X", 62, 134, 100,1, false);
-                            font_main.draw(batch, "Thrust : 11042 kN", 62, 114, 100,1, false);
+                            font_main.draw(batch, "Speed multiplier: "+String.format ("%.1f",(1.4f+engine2upgradeLevel/10f))+"X", 62, 134, 100,1, false);
+                            font_main.draw(batch, "Thrust: "+(7887*(1.4f+engine2upgradeLevel/10f))+"kN", 62, 114, 100,1, false);
                             break;
                         case(3):
                             batch.draw(shopButton_enabled, 35.5f, 224.7f, 153.5f, 70.3f);
@@ -1260,8 +1287,8 @@ public class MenuScreen implements Screen{
                             font_main.getData().setScale(0.27f);
                             font_main.setColor(Color.valueOf("#b37dfa"));
                             font_main.draw(batch, "F119 plasma engine", 62, 154, 100,1, false);
-                            font_main.draw(batch, "Speed multiplier: 1.7X", 62, 134, 100,1, false);
-                            font_main.draw(batch, "Thrust : 13408 kN", 62, 114, 100,1, false);
+                            font_main.draw(batch, "Speed multiplier: "+String.format ("%.1f",(1.7f+engine3upgradeLevel/10f))+"X", 62, 134, 100,1, false);
+                            font_main.draw(batch, "Thrust: "+(7887*(1.7f+engine3upgradeLevel/10f))+"kN", 62, 114, 100,1, false);
                             break;
                     }
 
@@ -1298,23 +1325,32 @@ public class MenuScreen implements Screen{
                             font_main.draw(batch,"UPGRADE!", 325+menu_offset, 210, 100,1, false );
                             font_main.setColor(Color.GREEN);
                             font_main.getData().setScale(0.5f);
-                            batch.draw(cog, 445+menu_offset, 320, 30, 30);
+                            batch.draw(cog, 447+menu_offset, 320, 30, 30);
                             font_main.draw(batch, "?", 445+menu_offset, 340, 100,1, false );
                             switch (current_engine){
                                 case(1):
-                                    batch.draw(Engine1_t, 310+menu_offset, 270, 114.66f, 45.864f);
-                                    font_main.draw(batch, "Upgrade for "+(2+(engine1upgradeLevel/3)), 290+menu_offset, 340, 100,1, false );
+                                    batch.draw(Engine1_t, 361+menu_offset, 270, 114.66f, 45.864f);
+                                    font_main.draw(batch, "Upgrade for "+(2+(engine1upgradeLevel/3)), 292+menu_offset, 340, 100,1, false );
                                     font_main.draw(batch, "Level: "+(engine1upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
+                                    font_main.getData().setScale(0.28f);
+                                    font_main.draw(batch, "Speed Multiplier: ", 254+menu_offset, 305, 100,1, false);
+                                    font_main.draw(batch, ""+String.format ("%.1f",(1+engine1upgradeLevel/10f))+"-->"+String.format ("%.1f",(1.1f+engine1upgradeLevel/10f)), 254+menu_offset, 290, 100,1, false);
                                     break;
                                 case(2):
-                                    batch.draw(Engine2_t, 310+menu_offset, 270, 114.66f, 45.864f);
-                                    font_main.draw(batch, "Upgrade for "+(2+(int)(2*engine2upgradeLevel/2.6)), 290+menu_offset, 340, 100,1, false );
+                                    batch.draw(Engine2_t, 361+menu_offset, 270, 114.66f, 45.864f);
+                                    font_main.draw(batch, "Upgrade for "+(2+(int)(2*engine2upgradeLevel/2.6)), 292+menu_offset, 340, 100,1, false );
                                     font_main.draw(batch, "Level: "+(engine2upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
+                                    font_main.getData().setScale(0.28f);
+                                    font_main.draw(batch, "Speed Multiplier: ", 254+menu_offset, 305, 100,1, false);
+                                    font_main.draw(batch, ""+String.format ("%.1f",(1.4f+engine2upgradeLevel/10f))+"-->"+String.format ("%.1f",(1.5f+engine2upgradeLevel/10f)), 254+menu_offset, 290, 100,1, false);
                                     break;
                                 case(3):
-                                    batch.draw(Engine3_t, 311+menu_offset, 270, 114.66f, 45.864f);
-                                    font_main.draw(batch, "Upgrade for "+(3+(int)(2*engine3upgradeLevel/2.3)), 290+menu_offset, 340, 100,1, false );
+                                    batch.draw(Engine3_t, 361+menu_offset, 270, 114.66f, 45.864f);
+                                    font_main.draw(batch, "Upgrade for "+(3+(int)(2*engine3upgradeLevel/2.3)), 292+menu_offset, 340, 100,1, false );
                                     font_main.draw(batch, "Level: "+(engine3upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
+                                    font_main.getData().setScale(0.28f);
+                                    font_main.draw(batch, "Speed Multiplier: ", 254+menu_offset, 305, 100,1, false);
+                                    font_main.draw(batch, ""+String.format ("%.1f",(1.7f+engine3upgradeLevel/10f))+"-->"+String.format ("%.1f",(1.8f+engine3upgradeLevel/10f)), 254+menu_offset, 290, 100,1, false);
                                     break;
                             }
                             break;
@@ -1369,7 +1405,7 @@ public class MenuScreen implements Screen{
                             font_main.setColor(Color.ORANGE);
                             font_main.draw(batch, "Heavy Machine Gun", 62, 154, 100,1, false);
                             font_main.draw(batch, "Shooting rate multiplier: 0.8X", 62, 139, 100,1, false);
-                            font_main.draw(batch, "Spread : 1.2", 62, 124, 100,1, false);
+                            font_main.draw(batch, "Spread : "+MathUtils.clamp((1.2f-cannon2upgradeLevel*0.1f), 0.7f, 1.5f), 62, 124, 100,1, false);
                             font_main.draw(batch, "Damage : "+(60+cannon2upgradeLevel), 62, 109, 100,1, false);
                             break;
                         case(3):
@@ -1394,7 +1430,7 @@ public class MenuScreen implements Screen{
                             font_main.setColor(Color.SCARLET);
                             font_main.draw(batch, "Laser Gun", 62, 154, 100,1, false);
                             font_main.draw(batch, "Shooting rate multiplier: 1.3X", 62, 139, 100,1, false);
-                            font_main.draw(batch, "Spread : 0.8", 62, 124, 100,1, false);
+                            font_main.draw(batch, "Spread : "+MathUtils.clamp((0.8f-cannon3upgradeLevel*0.1f), 0.7f, 1.5f), 62, 124, 100,1, false);
                             font_main.draw(batch, "Damage : "+(70+cannon3upgradeLevel), 62, 109, 100,1, false);
                             break;
                     }
@@ -1448,7 +1484,8 @@ public class MenuScreen implements Screen{
                                 batch.draw(Cannon2_t, 361+menu_offset, 270, 142.07649f, 45.901638f);
                                 font_main.draw(batch, "Upgrade for "+(3+(int)(2*cannon2upgradeLevel/2.6)), 290+menu_offset, 340, 100,1, false );
                                 font_main.getData().setScale(0.26f);
-                                font_main.draw(batch, "Damage: "+(60+cannon2upgradeLevel)+"-->"+(60+cannon2upgradeLevel+1), 252+menu_offset, 300, 100,1, false);
+                                font_main.draw(batch, "Damage: "+(60+cannon2upgradeLevel)+"-->"+(60+cannon2upgradeLevel+1), 252+menu_offset, 310, 100,1, false);
+                                font_main.draw(batch, "Spread: "+MathUtils.clamp((1.2f-cannon2upgradeLevel*0.1f), 0.7f, 1.5f)+"-->"+MathUtils.clamp((1.2f-(cannon2upgradeLevel+1)*0.1f), 0.7f, 1.5f), 252+menu_offset, 290, 100,1, false);
                                 font_main.getData().setScale(0.4f);
                                 font_main.draw(batch, "Level: "+(cannon2upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     break;
@@ -1456,7 +1493,8 @@ public class MenuScreen implements Screen{
                                 batch.draw(Cannon3_t, 361+menu_offset, 270, 140.01207f, 45.866024f);
                                 font_main.draw(batch, "Upgrade for "+(4+(int)(2*cannon3upgradeLevel/2.3)), 290+menu_offset, 340, 100,1, false);
                                 font_main.getData().setScale(0.26f);
-                                font_main.draw(batch, "Damage: "+(70+cannon3upgradeLevel)+"-->"+(70+cannon3upgradeLevel+1), 252+menu_offset, 300, 100,1, false);
+                                font_main.draw(batch, "Damage: "+(70+cannon3upgradeLevel)+"-->"+(70+cannon3upgradeLevel+1), 252+menu_offset, 310, 100,1, false);
+                                font_main.draw(batch, "Spread: "+MathUtils.clamp((0.8f-cannon3upgradeLevel*0.1f), 0.7f, 1.5f)+"-->"+MathUtils.clamp((0.8f-(cannon3upgradeLevel+1)*0.1f), 0.7f, 1.5f), 252+menu_offset, 290, 100,1, false);
                                 font_main.getData().setScale(0.4f);
                                 font_main.draw(batch, "Level: "+(cannon3upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     break;
@@ -1524,35 +1562,24 @@ public class MenuScreen implements Screen{
             font_main.draw(batch,"® All right reserved", 5, 95, 531, 1, false);
         }
 
-        if(settings){
-            batch.draw(infoBg, 5,65, 531, 410);
+        if(settings) {
+            batch.draw(infoBg, 5, 65, 531, 410);
             font_main.getData().setScale(0.5f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "ø¤º°°º¤ø,¸¸,ø¤[ Settings ]¤ø,¸¸,ø¤º°°º¤ø", 5, 460, 531, 1, false);
             font_main.setColor(Color.valueOf("#0FE500"));
-            MusicVolume = (int)(musicVolume.getValue()*100);
-            SoundVolume = (int)(soundEffectsVolume.getValue()*100);
+            MusicVolume = (int) (musicVolume.getValue() * 100);
+            SoundVolume = (int) (soundEffectsVolume.getValue() * 100);
             font_main.draw(batch, "Music: " + MusicVolume + "%", 95, 420, 132, 1, false);
             font_main.draw(batch, "Sound effects: " + SoundVolume + "%", 95, 370, 132, 1, false);
             font_main.draw(batch, "Show Fps", 65, 320, 132, 1, false);
-            uiScale = (int)(uiScaling.getValue()*100);
-            font_main.draw(batch, "Ui Scaling: "+uiScale+" %", 325, 263, 132, 1, false);
+            uiScale = (int) (uiScaling.getValue() * 100);
+            font_main.draw(batch, "Ui Scaling: " + uiScale + " %", 325, 263, 132, 1, false);
             font_main.draw(batch, "(In game)", 325, 233, 132, 1, false);
             font_main.draw(batch, "Semi-transparent UI", 140, 128, 132, 1, false);
-
-            if(error){
-                font_main.setColor(Color.RED);
-                font_main.getData().setScale(0.4f);
-                if(prefs.getString("lastError").length() > 1) {
-                    font_main.draw(batch, prefs.getString("lastError"), 230, 178, 132, 1, false);
-                }else{
-                    font_main.draw(batch, "No errors", 230, 178, 132, 1, false);
-                }
-            }else{
-                font_main.setColor(Color.valueOf("#0FE500"));
-                font_main.getData().setScale(0.5f);
-                font_main.draw(batch, "Show last error (developer)", 188, 178, 132, 1, false);
-            }
+            font_main.setColor(Color.valueOf("#0FE500"));
+            font_main.getData().setScale(0.5f);
+            font_main.draw(batch, "Enable logging", 100, 178, 132, 1, false);
         }
 
         if(Music) {
@@ -1608,7 +1635,12 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.2 Build 3", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.2 Build 4", 5, 35, 150, 1, false);
+        if(easterEgg){
+            font_main.getData().setScale(0.2f);
+            font_main.setColor(Color.ORANGE);
+            font_main.draw(batch, "cat edition", 5, 20, 150, 1, false);
+        }
         batch.end();
     }
 

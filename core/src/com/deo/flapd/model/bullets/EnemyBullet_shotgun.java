@@ -26,7 +26,7 @@ public class EnemyBullet_shotgun {
 
     private Random random;
 
-    private Sound shot, explosion;
+    private Sound shot;
 
     private boolean sound;
 
@@ -34,7 +34,7 @@ public class EnemyBullet_shotgun {
 
     private static Array<Boolean> explosionQueue, remove_Bullet;
 
-    public EnemyBullet_shotgun(AssetManager assetManager, float width, float height, float Boffset_x, float Boffset_y, float Bspread) {
+    public EnemyBullet_shotgun(AssetManager assetManager, float width, float height, float Boffset_x, float Boffset_y, float Bspread, boolean easterEgg) {
         this.Boffset_x = Boffset_x;
         this.Boffset_y = Boffset_y;
         this.width = width;
@@ -54,8 +54,11 @@ public class EnemyBullet_shotgun {
         random = new Random();
 
         sound = MenuScreen.Sound;
-        shot = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        if(easterEgg){
+            shot = Gdx.audio.newSound(Gdx.files.internal("music/mewcat.ogg"));
+        }else {
+            shot = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
+        }
     }
 
     public void Spawn(float damage,  Rectangle enemyBounds, float scale) {
@@ -161,7 +164,6 @@ public class EnemyBullet_shotgun {
 
     public void dispose(){
         shot.dispose();
-        explosion.dispose();
         for(int i3 = 0; i3 < fires.size; i3 ++){
             fires.get(i3).dispose();
             fires.removeIndex(i3);

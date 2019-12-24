@@ -82,6 +82,12 @@ public class LoadingScreen implements Screen {
 
                assetManager.load("checkpoint.png", Texture.class);
                assetManager.load("checkpoint_green.png", Texture.class);
+
+               assetManager.load("bu1.png", Texture.class);
+               assetManager.load("bu2.png", Texture.class);
+               assetManager.load("bu3.png", Texture.class);
+
+               assetManager.load("cat.png", Texture.class);
                break;
            case(2):
                assetManager.load("greyishButton.png", Texture.class);

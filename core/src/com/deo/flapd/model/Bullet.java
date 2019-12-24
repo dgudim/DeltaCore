@@ -90,6 +90,9 @@ public class Bullet {
 
             degrees.add((random.nextFloat()-0.5f)*spread+bounds.getRotation()/20);
 
+            bullet.x+=MathUtils.cosDeg(bounds.getRotation())*6;
+            bullet.y+=MathUtils.cosDeg(bounds.getRotation());
+
             bulletsShot++;
 
             if(sound) {

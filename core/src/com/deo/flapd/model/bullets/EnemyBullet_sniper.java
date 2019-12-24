@@ -25,7 +25,7 @@ public class EnemyBullet_sniper {
 
     private Random random;
 
-    private Sound shot, explosion;
+    private Sound shot;
 
     private boolean sound;
 
@@ -52,7 +52,6 @@ public class EnemyBullet_sniper {
 
         sound = MenuScreen.Sound;
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
     public void Spawn(float damage,  Rectangle enemyBounds, float scale) {
@@ -137,7 +136,6 @@ public class EnemyBullet_sniper {
 
     public void dispose(){
         shot.dispose();
-        explosion.dispose();
         bullets.clear();
         damages.clear();
         degrees.clear();

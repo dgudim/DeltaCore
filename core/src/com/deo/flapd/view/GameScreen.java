@@ -25,7 +25,10 @@ import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
+import com.deo.flapd.utils.DUtils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -36,7 +39,6 @@ public class GameScreen implements Screen{
     private Texture bg3;
     private Texture ship_texture;
     private Texture shield_texture;
-    private Texture pew;
 
     private Bullet bullet;
     private BasicEnemy enemy;
@@ -75,6 +77,8 @@ public class GameScreen implements Screen{
 
     private Executor executor;
 
+    private boolean logging;
+
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
         prefs = Gdx.app.getPreferences("Preferences");
@@ -101,8 +105,6 @@ public class GameScreen implements Screen{
         ship_texture = assetManager.get("ship.png");
         shield_texture = assetManager.get("ColdShield.png");
 
-        pew = assetManager.get("pew3.png");
-
         ship = new SpaceShip(ship_texture, shield_texture, 0, 204, 76.8f, 57.6f, newGame);
 
         uraniumCell = new UraniumCell(assetManager, 96, 96, prefs.getFloat("ui"));
@@ -117,17 +119,17 @@ public class GameScreen implements Screen{
         gameLogic = new GameLogic(ship.getBounds(), newGame, game);
 
         switch (prefs.getInteger("current_cannon")){
-            case(1):bullet = new Bullet(pew,0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
+            case(1):bullet = new Bullet((Texture)assetManager.get("bu1.png"),0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
                 break;
-            case(2):bullet = new Bullet(pew,0.4f, 0.8f, ship.getBounds(), newGame);
+            case(2):bullet = new Bullet((Texture)assetManager.get("bu2.png"),0.4f*MathUtils.clamp((1.2f-prefs.getInteger("cannon2upgradeLevel")*0.1f), 0.7f, 1.5f), 0.8f, ship.getBounds(), newGame);
                 break;
-            case(3):bullet = new Bullet(pew,0.4f, 1.3f, ship.getBounds(), newGame);
+            case(3):bullet = new Bullet((Texture)assetManager.get("bu3.png"),0.4f*MathUtils.clamp((0.8f-prefs.getInteger("cannon3upgradeLevel")*0.1f), 0.7f, 1.5f), 1.3f, ship.getBounds(), newGame);
                 break;
         }
 
         enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
         enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus);
-        enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, bonus);
+        enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, bonus, prefs.getBoolean("easterEgg"));
         kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus);
 
         meteorite = new Meteorite(uraniumCell, assetManager, bonus, newGame);
@@ -135,6 +137,8 @@ public class GameScreen implements Screen{
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
         musicVolume = prefs.getFloat("musicVolume");
+
+        logging = prefs.getBoolean("error");
 
         if(musicVolume > 0) {
             Music = true;
@@ -170,8 +174,12 @@ public class GameScreen implements Screen{
                         try {
                         gameLogic.detectCollisions(is_paused);
                         }catch (Exception e){
-                            prefs.putString("lastError", e.getLocalizedMessage());
-                            prefs.flush();
+                            if(logging) {
+                                StringWriter sw = new StringWriter();
+                                e.printStackTrace(new PrintWriter(sw));
+                                String fullStackTrace = sw.toString();
+                                DUtils.log(fullStackTrace + "\n");
+                            }
                         }
                     }
                 });
@@ -296,6 +304,12 @@ public class GameScreen implements Screen{
 
     assetManager.unload("checkpoint.png");
     assetManager.unload("checkpoint_green.png");
+
+    assetManager.unload("bu1.png");
+    assetManager.unload("bu2.png");
+    assetManager.unload("bu3.png");
+
+    assetManager.unload("cat.png");
 
     boss_battleShip.dispose();
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Checkpoint;
@@ -54,13 +55,13 @@ public class GameLogic {
 
         switch (prefs.getInteger("current_engine")){
             case(1):
-                speedMultiplier = 1;
+                speedMultiplier =1f+prefs.getInteger("engine1upgradeLevel")/10f;
                 break;
             case(2):
-                speedMultiplier = 1.4f;
+                speedMultiplier = 1.4f+prefs.getInteger("engine2upgradeLevel")/10f;
                 break;
             case(3):
-                speedMultiplier = 1.7f;
+                speedMultiplier = 1.7f+prefs.getInteger("engine3upgradeLevel")/10f;
                 break;
         }
 
@@ -109,7 +110,7 @@ public class GameLogic {
 
 
         bounds.setPosition(bounds.getX() + 250 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 250 * deltaY * Gdx.graphics.getDeltaTime());
-        bounds.setRotation((deltaY - deltaX) * 7);
+        bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
 
         if (is_firing && millis > 10) {
             bullet.Spawn(damage,1, false);
@@ -188,8 +189,7 @@ public class GameLogic {
     }
 
     public void detectCollisions(boolean is_paused) {
-
-        for (int i = 0; i < BasicEnemy.enemies.size; i++) {
+        for (int i = 1; i < BasicEnemy.enemies.size; i++) {
 
             Rectangle enemy = BasicEnemy.enemies.get(i);
 

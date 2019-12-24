@@ -9,8 +9,8 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.LoadingScreen;
-import com.deo.flapd.view.MenuScreen;
 
 public class Main extends Game {
 
@@ -43,8 +43,12 @@ public class Main extends Game {
             prefs.putFloat("musicVolume", 1 );
             prefs.putFloat("difficulty", 1);
             prefs.putBoolean("transparency", true);
+            prefs.putBoolean("error", true);
             prefs.flush();
         }
+
+        DUtils.clearLog();
+        DUtils.log("------------new session------------"+"\n");
 
         this.setScreen(new LoadingScreen(this, batch, assetManager, 2, true, true));
     }
