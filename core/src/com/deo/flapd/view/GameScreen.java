@@ -10,7 +10,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -71,13 +74,15 @@ public class GameScreen implements Screen{
 
     private Music music;
     private boolean Music;
-    private float millis, millis2, musicVolume;
+    private float millis, millis2, millis3, musicVolume;
 
     private Bonus bonus;
 
     private Executor executor;
 
-    private boolean logging;
+    private ShaderProgram shaderProgram;
+
+    private boolean shaders;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
@@ -88,6 +93,8 @@ public class GameScreen implements Screen{
         this.batch = batch;
 
         this.assetManager = assetManager;
+
+        shaders = prefs.getBoolean("shaders");
 
         executor = Executors.newSingleThreadExecutor();
 
@@ -116,7 +123,6 @@ public class GameScreen implements Screen{
         boss_battleShip.postConstruct(bonus);
 
         gameUi = new GameUi(game, batch, assetManager, ship, newGame);
-        gameLogic = new GameLogic(ship.getBounds(), newGame, game);
 
         switch (prefs.getInteger("current_cannon")){
             case(1):bullet = new Bullet((Texture)assetManager.get("bu1.png"),0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
@@ -136,15 +142,19 @@ public class GameScreen implements Screen{
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
-        musicVolume = prefs.getFloat("musicVolume");
+        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint);
 
-        logging = prefs.getBoolean("error");
+        musicVolume = prefs.getFloat("musicVolume");
 
         if(musicVolume > 0) {
             Music = true;
         }
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music/main2.ogg"));
+
+        ShaderProgram.pedantic = false;
+        shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/glow.vertex"),Gdx.files.internal("shaders/glow.fragment"));
+        DUtils.log("\n shader compiler log: " + shaderProgram.getLog() + " ==end of log== " + "\n");
     }
 
     @Override
@@ -167,19 +177,17 @@ public class GameScreen implements Screen{
             ship.draw(batch, is_paused);
 
             if(!is_paused && !ship.isExploded()) {
-                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint);
+                gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
                 executor.execute(new Runnable(){
                     @Override
                     public void run(){
                         try {
                         gameLogic.detectCollisions(is_paused);
                         }catch (Exception e){
-                            if(logging) {
                                 StringWriter sw = new StringWriter();
                                 e.printStackTrace(new PrintWriter(sw));
                                 String fullStackTrace = sw.toString();
-                                DUtils.log(fullStackTrace + "\n");
-                            }
+                                DUtils.log("\n"+fullStackTrace + "\n");
                         }
                     }
                 });
@@ -197,7 +205,21 @@ public class GameScreen implements Screen{
 
             bonus.draw(batch, is_paused);
 
-            ship.DrawShield(is_paused);
+            if(shaders) {
+                shaderProgram.begin();
+                shaderProgram.setUniformf("td_alpha", GameUi.Shield / 100);
+                shaderProgram.setUniformf("a_alpha", millis3);
+                millis3 += delta * (1 - GameUi.Shield / 100 + 1);
+                if (millis3 > 1) {
+                    millis3 = 0;
+                }
+                shaderProgram.end();
+                batch.setShader(shaderProgram);
+                ship.DrawShield(is_paused);
+                batch.setShader(null);
+            }else{
+                ship.DrawShield(is_paused);
+            }
 
             uraniumCell.draw(batch, is_paused);
 

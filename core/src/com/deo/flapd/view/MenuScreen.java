@@ -7,7 +7,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,20 +21,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-
 
 public class MenuScreen implements Screen{
 
@@ -103,8 +94,8 @@ public class MenuScreen implements Screen{
     private Image Lamp;
 
     private CheckBox fps;
-    private CheckBox showError;
     private CheckBox transparency;
+    private CheckBox shaders;
     private Slider uiScaling;
     private Slider musicVolume;
     private Slider soundEffectsVolume;
@@ -122,7 +113,6 @@ public class MenuScreen implements Screen{
     private boolean info;
     private boolean settings;
     private boolean play;
-    private boolean error;
     private boolean Music;
     private boolean Shop;
     public static boolean Sound;
@@ -174,8 +164,6 @@ public class MenuScreen implements Screen{
         if(SoundVolume > 0) {
             Sound = true;
         }
-
-        error = prefs.getBoolean("error");
 
         current_engine = prefs.getInteger("current_engine");
         if(current_engine<1){
@@ -368,8 +356,8 @@ public class MenuScreen implements Screen{
         sliderBarStyle2.background.setMinWidth(230.0f);
 
         fps = new CheckBox("",checkBoxStyle);
-        showError = new CheckBox("",checkBoxStyle);
         transparency = new CheckBox("",checkBoxStyle);
+        shaders = new CheckBox("",checkBoxStyle);
 
         uiScaling = new Slider(1, 2, 0.1f, false, sliderBarStyle);
         musicVolume = new Slider(0, 1, 0.1f, false, sliderBarStyle2);
@@ -381,19 +369,19 @@ public class MenuScreen implements Screen{
         soundEffectsVolume.setValue(prefs.getFloat("soundEffectsVolume"));
         difficultyControl.setValue(prefs.getFloat("difficulty"));
         fps.setChecked(prefs.getBoolean("showFps"));
-        showError.setChecked(error);
         transparency.setChecked(prefs.getBoolean("transparency"));
+        shaders.setChecked(prefs.getBoolean("shaders"));
 
         fps.setBounds(13, 290, 50, 50);
-        showError.setBounds(13, 150, 50, 50);
         uiScaling.setBounds(10, 220, 250, 40);
         soundEffectsVolume.setBounds(310, 350, 170, 25);
         difficultyControl.setBounds(20, 340, 170, 25);
         musicVolume.setBounds(310, 400, 170, 25);
         transparency.setBounds(13,100,50,50);
+        shaders.setBounds(13, 150, 50, 50);
         fps.getImage().setScaling(Scaling.fill);
-        showError.getImage().setScaling(Scaling.fill);
         transparency.getImage().setScaling(Scaling.fill);
+        shaders.getImage().setScaling(Scaling.fill);
 
         Menu = new Stage(viewport, batch);
 
@@ -418,20 +406,20 @@ public class MenuScreen implements Screen{
         more_enabled.setVisible(false);
 
         fps.setVisible(false);
-        showError.setVisible(false);
         uiScaling.setVisible(false);
         musicVolume.setVisible(false);
         soundEffectsVolume.setVisible(false);
         difficultyControl.setVisible(false);
         transparency.setVisible(false);
+        shaders.setVisible(false);
 
         Menu.addActor(fps);
-        Menu.addActor(showError);
         Menu.addActor(uiScaling);
         Menu.addActor(musicVolume);
         Menu.addActor(soundEffectsVolume);
         Menu.addActor(difficultyControl);
         Menu.addActor(transparency);
+        Menu.addActor(shaders);
 
         Menu.addActor(newGame_disabled);
         Menu.addActor(continue_disabled);
@@ -687,16 +675,6 @@ public class MenuScreen implements Screen{
             }
         });
 
-        showError.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                error = showError.isChecked();
-                prefs.putBoolean("error", error);
-                prefs.flush();
-
-            }
-        });
-
         difficultyControl.addListener(new InputListener(){
 
             @Override
@@ -778,6 +756,14 @@ public class MenuScreen implements Screen{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 prefs.putBoolean("transparency", transparency.isChecked());
+                prefs.flush();
+            }
+        });
+
+        shaders.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                prefs.putBoolean("shaders", shaders.isChecked());
                 prefs.flush();
             }
         });
@@ -1577,9 +1563,7 @@ public class MenuScreen implements Screen{
             font_main.draw(batch, "Ui Scaling: " + uiScale + " %", 325, 263, 132, 1, false);
             font_main.draw(batch, "(In game)", 325, 233, 132, 1, false);
             font_main.draw(batch, "Semi-transparent UI", 140, 128, 132, 1, false);
-            font_main.setColor(Color.valueOf("#0FE500"));
-            font_main.getData().setScale(0.5f);
-            font_main.draw(batch, "Enable logging", 100, 178, 132, 1, false);
+            font_main.draw(batch, "Enable shaders", 107, 178, 132, 1, false);
         }
 
         if(Music) {
@@ -1635,7 +1619,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.2 Build 4", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.2 Build 5", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);
@@ -1754,7 +1738,7 @@ public class MenuScreen implements Screen{
            switch (type){
                case(0):
                    fps.setVisible(false);
-                   showError.setVisible(false);
+                   shaders.setVisible(false);
                    uiScaling.setVisible(false);
                    musicVolume.setVisible(false);
                    soundEffectsVolume.setVisible(false);
@@ -1779,7 +1763,7 @@ public class MenuScreen implements Screen{
                case(1):
                    Hide(0);
                    fps.setVisible(true);
-                   showError.setVisible(true);
+                   shaders.setVisible(true);
                    uiScaling.setVisible(true);
                    musicVolume.setVisible(true);
                    soundEffectsVolume.setVisible(true);
@@ -1855,5 +1839,4 @@ public class MenuScreen implements Screen{
         fire2.setPosition(324, 290);
         fire2.start();
     }
-
 }

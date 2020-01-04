@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -41,6 +42,8 @@ public class Bullet {
 
     private Preferences prefs;
 
+    private float shootingSpeedMultiplier;
+
     public Bullet(Texture bulletTexture, float spread, float shootingSpeedMultiplier, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
         this.spread = spread;
@@ -63,6 +66,8 @@ public class Bullet {
         }else {
             bulletsShot = 0;
         }
+
+        this.shootingSpeedMultiplier = shootingSpeedMultiplier;
 
         sound = MenuScreen.Sound;
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
@@ -190,6 +195,10 @@ public class Bullet {
             explosionQueue.set(i, false);
             remove_Bullet.set(i, true);
         }
+    }
+
+    public float getShootingSpeed(){
+        return shootingSpeedMultiplier;
     }
 
 }

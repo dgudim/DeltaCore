@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -44,11 +45,31 @@ public class GameLogic {
 
     private Game game;
 
-    public GameLogic(Polygon bounds, boolean newGame, Game game) {
+    private float ShootingSpeed;
+
+    private Bullet bullet;
+    private BasicEnemy enemy;
+    private ShotgunEnemy shotgunEnemy;
+    private SniperEnemy sniperEnemy;
+    private Meteorite meteorite;
+    private Kamikadze kamikadze;
+    private Boss_battleShip boss_battleShip;
+    private Checkpoint checkpoint;
+
+    public GameLogic(Polygon bounds, boolean newGame, Game game, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
         this.bounds = bounds;
         random = new Random();
 
         this.game = game;
+
+        this.bullet = bullet;
+        this.enemy = enemy;
+        this.shotgunEnemy = shotgunEnemy;
+        this.sniperEnemy = sniperEnemy;
+        this.meteorite = meteorite;
+        this.kamikadze = kamikadze;
+        this.boss_battleShip = boss_battleShip;
+        this.checkpoint = checkpoint;
 
         Preferences prefs = Gdx.app.getPreferences("Preferences");
         difficulty = prefs.getFloat("difficulty");
@@ -87,9 +108,11 @@ public class GameLogic {
             has1stBossSpawned = false;
         }
         bossWave = false;
+
+        ShootingSpeed = bullet.getShootingSpeed();
     }
 
-    public void handleInput(float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
+    public void handleInput(float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary) {
         deltaX*=speedMultiplier;
         deltaY*=speedMultiplier;
 
@@ -112,12 +135,12 @@ public class GameLogic {
         bounds.setPosition(bounds.getX() + 250 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 250 * deltaY * Gdx.graphics.getDeltaTime());
         bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
 
-        if (is_firing && millis > 10) {
+        if (is_firing && millis > 10/ShootingSpeed) {
             bullet.Spawn(damage,1, false);
             millis = 0;
         }
 
-        if (is_firing_secondary && millis > 10) {
+        if (is_firing_secondary && millis > 10/ShootingSpeed) {
             bullet.Spawn(damage*2.25f, 1, true);
             millis = 0;
         }
@@ -189,7 +212,7 @@ public class GameLogic {
     }
 
     public void detectCollisions(boolean is_paused) {
-        for (int i = 1; i < BasicEnemy.enemies.size; i++) {
+        for (int i = 0; i < BasicEnemy.enemies.size; i++) {
 
             Rectangle enemy = BasicEnemy.enemies.get(i);
 

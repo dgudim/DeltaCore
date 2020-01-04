@@ -662,7 +662,7 @@ public class Boss_battleShip {
                         } else {
                             GameUi.Health = GameUi.Health - (5 - GameUi.Shield) / 5;
                             GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 0, false);
+                            SpaceShip.set_color(1, 0, 1, false);
                         }
                         removeBullet(i, 1);
                     }
@@ -694,7 +694,7 @@ public class Boss_battleShip {
                         } else {
                             GameUi.Health = GameUi.Health - (10 - GameUi.Shield) / 5;
                             GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 0, false);
+                            SpaceShip.set_color(1, 0, 1, false);
                         }
                         removeBullet(i, 2);
                     }

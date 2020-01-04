@@ -2,16 +2,26 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.utils.DUtils;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class LoadingScreen implements Screen {
 
@@ -24,6 +34,11 @@ public class LoadingScreen implements Screen {
     private int screen_type;
     private boolean newGame;
     private boolean is_first_launch;
+    private Texture bg_loading, bg_loadingBase;
+    private ProgressBar loadingBar;
+    private ProgressBar.ProgressBarStyle loadingBarStyle;
+    private Group group;
+    private Preferences prefs;
 
     public LoadingScreen(Game game, SpriteBatch batch, AssetManager assetManager, int screen_type, boolean newGame, boolean is_first_launch){
 
@@ -34,6 +49,10 @@ public class LoadingScreen implements Screen {
         this.assetManager = assetManager;
 
         this.game = game;
+
+        this.screen_type = screen_type;
+
+        prefs = Gdx.app.getPreferences("Preferences");
 
         switch (screen_type){
            case(1):
@@ -150,7 +169,9 @@ public class LoadingScreen implements Screen {
 
                break;
        }
-        this.screen_type = screen_type;
+
+        bg_loading = new Texture("loadingScreen.png");
+        bg_loadingBase = new Texture("loadingScreenBase.png");
 
         camera = new OrthographicCamera(800, 480);
         viewport = new FitViewport(800, 480, camera);
@@ -159,6 +180,32 @@ public class LoadingScreen implements Screen {
         this.newGame = newGame;
 
         this.is_first_launch = is_first_launch;
+
+        loadingBarStyle = new ProgressBar.ProgressBarStyle();
+
+        Pixmap pixmap4 = new Pixmap(0, 12, Pixmap.Format.RGBA8888);
+        pixmap4.setColor(Color.valueOf("1ABDA5"));
+        pixmap4.fill();
+        TextureRegionDrawable BarForeground = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap4)));
+        pixmap4.dispose();
+
+        Pixmap pixmap5 = new Pixmap(100, 12, Pixmap.Format.RGBA8888);
+        pixmap5.setColor(Color.valueOf("1ABDA5"));
+        pixmap5.fill();
+        TextureRegionDrawable BarForeground2 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap5)));
+        pixmap5.dispose();
+
+        loadingBarStyle.knob = BarForeground;
+        loadingBarStyle.knobBefore = BarForeground2;
+
+        loadingBar = new ProgressBar(0, 100, 0.01f, false, loadingBarStyle);
+        loadingBar.setSize(100, 12);
+        loadingBar.setPosition(0, 0);
+        loadingBar.setAnimateDuration(0.25f);
+        group = new Group();
+        group.addActor(loadingBar);
+        group.setRotation(-16);
+        group.setPosition(512, 347);
     }
 
     @Override
@@ -176,26 +223,42 @@ public class LoadingScreen implements Screen {
         }
 
         batch.begin();
-        main.getData().setScale(1);
-        main.setColor(Color.CYAN);
-        main.draw(batch, "Loading Textures...", 155, 450,480, 1,false);
-        main.setColor(new Color().fromHsv(Math.abs((int)(assetManager.getProgress()*100)/1.1f), 1.5f, 1).add(0,0,0,1));
-        main.draw(batch, "Loaded: " + (int)(assetManager.getProgress()*100) + "%"  , 155, 390, 480, 1,false);
-        main.getData().setScale(0.4f);
+
+        batch.draw(bg_loadingBase, 0 , 0, 800, 480);
+
+        main.getData().setScale(0.05f);
         main.setColor(Color.valueOf("00db00"));
-        main.draw(batch, assetManager.getDiagnostics() + (int)(assetManager.getProgress()*100) + "%"  , 155, 350, 480, 1,false);
+        main.draw(batch, assetManager.getDiagnostics() + (int)(assetManager.getProgress()*100) + "%"  , 95, 320, 20, 1,false);
+        batch.draw(bg_loading, 0 , 0, 800, 480);
+        loadingBar.setValue(assetManager.getProgress()*100);
+        group.draw(batch, 1);
+        group.act(delta);
         assetManager.update();
         batch.end();
 
-        if(assetManager.isFinished()){
-            switch (screen_type){
-                case(1):
-                    game.setScreen(new GameScreen(game, batch, assetManager, newGame));
-                    break;
-                case(2):
-                    game.setScreen(new MenuScreen(game, batch, assetManager));
-                    break;
+        try {
+            if (assetManager.isFinished()) {
+                switch (screen_type) {
+                    case (1):
+                        game.setScreen(new GameScreen(game, batch, assetManager, newGame));
+                        break;
+                    case (2):
+                        game.setScreen(new MenuScreen(game, batch, assetManager));
+                        break;
+                }
             }
+        }catch (Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String fullStackTrace = sw.toString();
+            DUtils.log("\n"+assetManager.getDiagnostics()+"\n");
+            DUtils.log("\n"+fullStackTrace + "\n");
+            DUtils.log("\n wiping data :) \n");
+            prefs.clear();
+            prefs.flush();
+            prefs.putInteger("money", 5000);
+            DUtils.log("...done...force exiting");
+            System.exit(1);
         }
     }
 
@@ -224,6 +287,8 @@ public class LoadingScreen implements Screen {
 
     public void dispose(){
         main.dispose();
+        bg_loading.dispose();
+        bg_loadingBase.dispose();
     }
 
 }

@@ -167,7 +167,12 @@ public class Bonus {
                     }
                     if(type == 3){
                         removeBonus(i, true);
-                        GameLogic.bonuses_collected += 1;
+                        if(GameLogic.bonuses_collected<10) {
+                            GameLogic.bonuses_collected += 1;
+                        }else{
+                            prefs.putInteger("cogs", prefs.getInteger("cogs")+1);
+                            prefs.flush();
+                        }
                     }
                     if(type == 4){
                         removeBonus(i, true);

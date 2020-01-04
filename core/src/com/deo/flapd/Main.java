@@ -12,6 +12,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.LoadingScreen;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+import javax.swing.text.DateFormatter;
+
 public class Main extends Game {
 
     private SpriteBatch batch;
@@ -43,12 +53,14 @@ public class Main extends Game {
             prefs.putFloat("musicVolume", 1 );
             prefs.putFloat("difficulty", 1);
             prefs.putBoolean("transparency", true);
-            prefs.putBoolean("error", true);
+            prefs.putBoolean("shaders", true);
+            DUtils.log("------------first launch------------"+"\n");
             prefs.flush();
         }
 
         DUtils.clearLog();
-        DUtils.log("------------new session------------"+"\n");
+        Date date = new Date();
+        DUtils.log("|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n");
 
         this.setScreen(new LoadingScreen(this, batch, assetManager, 2, true, true));
     }

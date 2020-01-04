@@ -5,13 +5,13 @@ import com.badlogic.gdx.files.FileHandle;
 
 public abstract class DUtils {
     public static void log(String contents){
-        FileHandle file = Gdx.files.external("!DeltaCore/logFull.txt");
+        FileHandle file = Gdx.files.external("Android/data/!DeltaCore/logFull.txt");
         file.writeString(contents, true);
-        FileHandle file2 = Gdx.files.external("!DeltaCore/log.txt");
+        FileHandle file2 = Gdx.files.external("Android/data/!DeltaCore/log.txt");
         file2.writeString(contents, true);
     }
     public static void clearLog(){
-        FileHandle file = Gdx.files.external("!DeltaCore/log.txt");
+        FileHandle file = Gdx.files.external("Android/data/!DeltaCore/log.txt");
         file.writeString("", false);
     }
 }
