@@ -41,14 +41,28 @@ public class BasicEnemy {
 
     private UraniumCell uraniumCell;
 
-    public BasicEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y) {
-        this.height = height;
-        this.width = width;
-        this.fire_x = fire_offset_x;
-        this.fire_y = fire_offset_y;
+    public BasicEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, boolean easterEgg) {
+        if(easterEgg) {
+            this.height = height;
+            this.width = width + 40;
+            this.fire_x = fire_offset_x + 20;
+            this.fire_y = fire_offset_y + 15;
+        }else{
+            this.height = height;
+            this.width = width;
+            this.fire_x = fire_offset_x;
+            this.fire_y = fire_offset_y;
+        }
         this.uraniumCell = uraniumCell;
-        enemyBullet = new EnemyBullet((Texture) assetManager.get("pew2.png"), Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
-        enemy = new Sprite((Texture) assetManager.get("trainingbot.png"));
+        enemyBullet = new EnemyBullet(assetManager, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread, easterEgg);
+
+        if(easterEgg){
+            enemy = new Sprite((Texture) assetManager.get("cat2.png"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/hitcat.ogg"));
+        }else {
+            enemy = new Sprite((Texture) assetManager.get("trainingbot.png"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        }
 
         enemies = new Array<>();
         healths = new Array<>();
@@ -63,7 +77,6 @@ public class BasicEnemy {
         colors = new Array<>();
 
         sound = MenuScreen.Sound;
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
     public void Spawn(float health, float scale) {

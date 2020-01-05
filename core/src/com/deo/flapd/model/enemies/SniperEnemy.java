@@ -44,13 +44,27 @@ public class SniperEnemy {
 
     private UraniumCell uraniumCell;
 
-    public SniperEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus) {
-        this.height = height;
-        this.width = width;
-        this.fire_x = fire_offset_x;
-        this.fire_y = fire_offset_y;
-        enemyBullet = new EnemyBullet_sniper((Texture)assetManager.get("pew.png"), Bwidth, Bheight, Boffset_x, Boffset_y, Bspread);
-        enemy = new Sprite((Texture)assetManager.get("enemy_sniper.png"));
+    public SniperEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus, boolean easterEgg) {
+        if(easterEgg) {
+            this.height = height;
+            this.width = width + 15;
+            this.fire_x = fire_offset_x + 5;
+            this.fire_y = fire_offset_y - 20;
+        }else{
+            this.height = height;
+            this.width = width;
+            this.fire_x = fire_offset_x;
+            this.fire_y = fire_offset_y;
+        }
+        enemyBullet = new EnemyBullet_sniper(assetManager, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread, easterEgg);
+
+        if(easterEgg){
+            enemy = new Sprite((Texture) assetManager.get("cat2.png"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/hitcat.ogg"));
+        }else {
+            enemy = new Sprite((Texture) assetManager.get("enemy_sniper.png"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        }
 
         enemies = new Array<>();
         healths = new Array<>();
@@ -65,7 +79,6 @@ public class SniperEnemy {
         colors = new Array<>();
 
         sound = MenuScreen.Sound;
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
 
         this.bonus = bonus;
         this.uraniumCell = uraniumCell;

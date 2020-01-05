@@ -37,10 +37,19 @@ public class EnemyBullet_shotgun {
     public EnemyBullet_shotgun(AssetManager assetManager, float width, float height, float Boffset_x, float Boffset_y, float Bspread, boolean easterEgg) {
         this.Boffset_x = Boffset_x;
         this.Boffset_y = Boffset_y;
-        this.width = width;
-        this.height = height;
+        if(easterEgg) {
+            this.width = width*2;
+            this.height = height*2;
+        }else{
+            this.width = width;
+            this.height = height;
+        }
         spread = Bspread;
-        bullet = new Sprite((Texture)assetManager.get("pew2.png"));
+        if(easterEgg) {
+            bullet = new Sprite((Texture) assetManager.get("whiskas.png"));
+        }else{
+            bullet = new Sprite((Texture) assetManager.get("pew2.png"));
+        }
 
         bullets = new Array<>();
         damages = new Array<>();

@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -74,15 +72,13 @@ public class GameScreen implements Screen{
 
     private Music music;
     private boolean Music;
-    private float millis, millis2, millis3, musicVolume;
+    private float millis, millis2, musicVolume;
 
     private Bonus bonus;
 
     private Executor executor;
 
     private ShaderProgram shaderProgram;
-
-    private boolean shaders;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
@@ -93,8 +89,6 @@ public class GameScreen implements Screen{
         this.batch = batch;
 
         this.assetManager = assetManager;
-
-        shaders = prefs.getBoolean("shaders");
 
         executor = Executors.newSingleThreadExecutor();
 
@@ -133,12 +127,12 @@ public class GameScreen implements Screen{
                 break;
         }
 
-        enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
-        enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus);
+        enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, prefs.getBoolean("easterEgg"));
+        enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus, prefs.getBoolean("easterEgg"));
         enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, bonus, prefs.getBoolean("easterEgg"));
-        kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus);
+        kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus, prefs.getBoolean("easterEgg"));
 
-        meteorite = new Meteorite(uraniumCell, assetManager, bonus, newGame);
+        meteorite = new Meteorite(uraniumCell, assetManager, bonus, newGame, prefs.getBoolean("easterEgg"));
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
@@ -153,8 +147,11 @@ public class GameScreen implements Screen{
         music = Gdx.audio.newMusic(Gdx.files.internal("music/main2.ogg"));
 
         ShaderProgram.pedantic = false;
-        shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/glow.vertex"),Gdx.files.internal("shaders/glow.fragment"));
+        shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/glow.vertex"), Gdx.files.internal("shaders/glow.fragment"));
         DUtils.log("\n shader compiler log: " + shaderProgram.getLog() + " ==end of log== " + "\n");
+        if (prefs.getBoolean("shaders")) {
+            batch.setShader(shaderProgram);
+        }
     }
 
     @Override
@@ -205,21 +202,7 @@ public class GameScreen implements Screen{
 
             bonus.draw(batch, is_paused);
 
-            if(shaders) {
-                shaderProgram.begin();
-                shaderProgram.setUniformf("td_alpha", GameUi.Shield / 100);
-                shaderProgram.setUniformf("a_alpha", millis3);
-                millis3 += delta * (1 - GameUi.Shield / 100 + 1);
-                if (millis3 > 1) {
-                    millis3 = 0;
-                }
-                shaderProgram.end();
-                batch.setShader(shaderProgram);
-                ship.DrawShield(is_paused);
-                batch.setShader(null);
-            }else{
-                ship.DrawShield(is_paused);
-            }
+            ship.DrawShield(is_paused);
 
             uraniumCell.draw(batch, is_paused);
 
@@ -332,6 +315,10 @@ public class GameScreen implements Screen{
     assetManager.unload("bu3.png");
 
     assetManager.unload("cat.png");
+    assetManager.unload("cat2.png");
+    assetManager.unload("cat_meteorite.png");
+    assetManager.unload("cat_bomb.png");
+    assetManager.unload("whiskas.png");
 
     boss_battleShip.dispose();
 
@@ -339,5 +326,7 @@ public class GameScreen implements Screen{
 
     bonus.dispose();
     uraniumCell.dispose();
+    batch.setShader(null);
+    shaderProgram.dispose();
     }
 }

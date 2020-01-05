@@ -1,6 +1,7 @@
 package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -33,13 +34,22 @@ public class EnemyBullet {
 
     private static Array<Boolean> explosionQueue, remove_Bullet;
 
-    public EnemyBullet(Texture bulletTexture, float width, float height, float Boffset_x,float Boffset_y, float Bspread) {
+    public EnemyBullet(AssetManager assetManager, float width, float height, float Boffset_x, float Boffset_y, float Bspread, boolean easterEgg) {
         this.Boffset_x = Boffset_x;
         this.Boffset_y = Boffset_y;
-        this.width = width;
-        this.height = height;
+        if(easterEgg) {
+            this.width = width*2;
+            this.height = height*2;
+        }else{
+            this.width = width;
+            this.height = height;
+        }
         spread = Bspread;
-        bullet = new Sprite(bulletTexture);
+        if(easterEgg) {
+            bullet = new Sprite((Texture) assetManager.get("whiskas.png"));
+        }else{
+            bullet = new Sprite((Texture) assetManager.get("pew2.png"));
+        }
 
         bullets = new Array<>();
         damages = new Array<>();
@@ -53,7 +63,11 @@ public class EnemyBullet {
         random = new Random();
 
         sound = MenuScreen.Sound;
-        shot = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
+        if(easterEgg){
+            shot = Gdx.audio.newSound(Gdx.files.internal("music/mewcat.ogg"));
+        }else {
+            shot = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
+        }
     }
 
     public void Spawn(float damage,  Rectangle enemyBounds, float scale) {

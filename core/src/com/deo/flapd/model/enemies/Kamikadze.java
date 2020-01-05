@@ -44,16 +44,23 @@ public class Kamikadze {
 
     private UraniumCell uraniumCell;
 
-    public Kamikadze(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, Polygon shipBounds, Bonus bonus) {
+    public Kamikadze(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, Polygon shipBounds, Bonus bonus, boolean easterEgg) {
         bounds = shipBounds;
         this.height = height;
         this.width = width;
-        enemy = new Sprite((Texture)assetManager.get("atomic_bomb.png"));
         enemies = new Array<>();
         healths = new Array<>();
         random = new Random();
         timers = new Array<>();
         timers2 = new Array<>();
+
+        if(easterEgg){
+            enemy = new Sprite((Texture) assetManager.get("cat_bomb.png"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/hitcat.ogg"));
+        }else {
+            enemy = new Sprite((Texture) assetManager.get("atomic_bomb.png"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        }
 
         explosions = new Array<>();
         fires = new Array<>();

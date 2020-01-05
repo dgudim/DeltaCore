@@ -155,7 +155,7 @@ public class GameLogic {
             if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && GameUi.enemiesKilled >= 50) {
                 sniperEnemy.Spawn(120 * difficulty, 0.3f);
                 if ((random.nextInt(40) == 5 || random.nextInt(400) > 370) && GameUi.enemiesKilled >= 50) {
-                    kamikadze.Spawn(800, 0.3f, 7);
+                    kamikadze.Spawn(800 * difficulty, 0.3f, 7);
                 }
             }
 

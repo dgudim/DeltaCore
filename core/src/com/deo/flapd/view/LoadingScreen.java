@@ -107,6 +107,10 @@ public class LoadingScreen implements Screen {
                assetManager.load("bu3.png", Texture.class);
 
                assetManager.load("cat.png", Texture.class);
+               assetManager.load("cat2.png", Texture.class);
+               assetManager.load("cat_meteorite.png", Texture.class);
+               assetManager.load("cat_bomb.png", Texture.class);
+               assetManager.load("whiskas.png", Texture.class);
                break;
            case(2):
                assetManager.load("greyishButton.png", Texture.class);

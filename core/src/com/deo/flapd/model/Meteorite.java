@@ -39,8 +39,12 @@ public class Meteorite {
 
     private Preferences prefs;
 
-    public Meteorite(UraniumCell uraniumCell, AssetManager assetManager, Bonus bonus, boolean newGame) {
-        meteorite = new Sprite((Texture)assetManager.get("Meteo.png"));
+    public Meteorite(UraniumCell uraniumCell, AssetManager assetManager, Bonus bonus, boolean newGame, boolean easterEgg) {
+        if(easterEgg) {
+            meteorite = new Sprite((Texture) assetManager.get("cat_meteorite.png"));
+        }else{
+            meteorite = new Sprite((Texture) assetManager.get("Meteo.png"));
+        }
 
         prefs = Gdx.app.getPreferences("Preferences");
 

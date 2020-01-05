@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Random;
+
 public class MenuScreen implements Screen{
 
     private float number;
@@ -128,6 +130,7 @@ public class MenuScreen implements Screen{
     private Music music;
     private float millis;
     private float millis2;
+    private int millis3;
 
     private Game game;
 
@@ -141,17 +144,17 @@ public class MenuScreen implements Screen{
 
     private boolean is2ndEngineUnlocked, is3rdEngineUnlocked, is2ndCannonUnlocked, is3rdCannonUnlocked;
 
-    private boolean easterEgg;
+    private boolean easterEgg, easterEgg_unlocked;
 
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
+
+        prefs = Gdx.app.getPreferences("Preferences");
 
         this.game = game;
 
         this.assetManager = assetManager;
 
         menu_offset = 1000;
-
-        prefs = Gdx.app.getPreferences("Preferences");
 
         uiScale = prefs.getFloat("ui");
         MusicVolume = (int)(prefs.getFloat("musicVolume")*100);
@@ -189,6 +192,7 @@ public class MenuScreen implements Screen{
         money = prefs.getInteger("money");
         cogs = prefs.getInteger("cogs");
         easterEgg = prefs.getBoolean("easterEgg");
+        easterEgg_unlocked = prefs.getBoolean("easterEgg_unlocked");
 
         engine1upgradeLevel = prefs.getInteger("engine1upgradeLevel");
         engine2upgradeLevel = prefs.getInteger("engine2upgradeLevel");
@@ -1159,6 +1163,8 @@ public class MenuScreen implements Screen{
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 easterEgg = !easterEgg;
                 prefs.putBoolean("easterEgg", easterEgg);
+                prefs.putBoolean("easterEgg_unlocked", true);
+                easterEgg_unlocked = true;
                 prefs.flush();
             }
         });
@@ -1563,7 +1569,16 @@ public class MenuScreen implements Screen{
             font_main.draw(batch, "Ui Scaling: " + uiScale + " %", 325, 263, 132, 1, false);
             font_main.draw(batch, "(In game)", 325, 233, 132, 1, false);
             font_main.draw(batch, "Semi-transparent UI", 140, 128, 132, 1, false);
-            font_main.draw(batch, "Enable shaders", 107, 178, 132, 1, false);
+            if(easterEgg_unlocked) {
+                if(shaders.isChecked()) {
+                    font_main.setColor(new Color().fromHsv(millis3, 1, 1).add(0,0,0,1));
+                    millis3+=80*delta;
+                    if(millis3>350){
+                        millis3 = 0;
+                    }
+                }
+                    font_main.draw(batch, "Enable rainbow shader", 153, 178, 132, 1, false);
+            }
         }
 
         if(Music) {
@@ -1578,8 +1593,8 @@ public class MenuScreen implements Screen{
                 millis = 0;
             }
 
-            millis = millis + 50 * Gdx.graphics.getDeltaTime();
-            millis2 = millis2 + 0.5f * Gdx.graphics.getDeltaTime();
+            millis = millis + 50 * delta;
+            millis2 = millis2 + 0.5f * delta;
 
             if(millis2 > 100){
                 music.play();
@@ -1593,7 +1608,7 @@ public class MenuScreen implements Screen{
             font_main.getData().setScale(0.5f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "ø¤º°º¤ø,¸¸,ø¤[ Play Menu ]¤ø,¸¸,ø¤º°º¤ø", 5, 460, 531, 1, false);
-            font_main.setColor(new Color().fromHsv(Math.abs(120-difficultyControl.getValue()*20), 1.5f, 1).add(0,0,0,1));
+            font_main.setColor(new Color().fromHsv(120-difficultyControl.getValue()*20, 1.5f, 1).add(0,0,0,1));
             font_main.draw(batch, "Difficulty: X"+(float)((int)(difficultyControl.getValue()*100))/100, 30, 355, 531, 1, false);
         }
 
@@ -1763,7 +1778,9 @@ public class MenuScreen implements Screen{
                case(1):
                    Hide(0);
                    fps.setVisible(true);
-                   shaders.setVisible(true);
+                   if(easterEgg_unlocked) {
+                       shaders.setVisible(true);
+                   }
                    uiScaling.setVisible(true);
                    musicVolume.setVisible(true);
                    soundEffectsVolume.setVisible(true);
