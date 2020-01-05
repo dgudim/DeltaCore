@@ -47,8 +47,13 @@ public class ShotgunEnemy {
     public ShotgunEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus, boolean easterEgg) {
         this.height = height;
         this.width = width;
-        this.fire_x = fire_offset_x;
-        this.fire_y = fire_offset_y;
+        if(easterEgg) {
+            this.fire_x = fire_offset_x-45;
+            this.fire_y = fire_offset_y;
+        }else{
+            this.fire_x = fire_offset_x;
+            this.fire_y = fire_offset_y;
+        }
         enemyBullet = new EnemyBullet_shotgun(assetManager, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread, easterEgg);
 
         if(easterEgg){
