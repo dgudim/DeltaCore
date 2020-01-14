@@ -281,6 +281,7 @@ public class Boss_battleShip {
         health_cannon_stage2.setAnimateDuration(0.25f);
 
         sound = MenuScreen.Sound;
+
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun1.ogg"));
         shot2 = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
         shot3 = Gdx.audio.newSound(Gdx.files.internal("music/gun3.ogg"));
@@ -341,19 +342,19 @@ public class Boss_battleShip {
         posY = posY_original;
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
+    public void draw(SpriteBatch batch, boolean is_paused, float delta) {
 
         if (is_spawned || deathAnimation) {
 
-            bounds_cannon.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon.getY()-shipBounds.getY(), bounds_cannon.getX()-shipBounds.getX()));
-            bounds_cannon2.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon2.getY()-shipBounds.getY(), bounds_cannon2.getX()-shipBounds.getX()));
-            bounds_cannon3.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon3.getY()-shipBounds.getY(), bounds_cannon3.getX()-shipBounds.getX()));
-            bounds_cannon4.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon4.getY()-shipBounds.getY(), bounds_cannon4.getX()-shipBounds.getX()));
-            bounds_cannon5.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon5.getY()-shipBounds.getY(), bounds_cannon5.getX()-shipBounds.getX()));
-            bounds_cannon6.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon6.getY()-shipBounds.getY(), bounds_cannon6.getX()-shipBounds.getX()));
-            bounds_cannon_front.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon_front.getY()-shipBounds.getY(), bounds_cannon_front.getX()-shipBounds.getX()));
-            bounds_cannon_front_big.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon_front_big.getY()-shipBounds.getY(), bounds_cannon_front_big.getX()-shipBounds.getX()), -20, 20));
-            bounds_homing2.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_homing2.getY()-shipBounds.getY(), bounds_homing2.getX()-shipBounds.getX()), -30, 30));
+            bounds_cannon.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon.getY()-shipBounds.getY()-30, bounds_cannon.getX()-shipBounds.getX()-30));
+            bounds_cannon2.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon2.getY()-shipBounds.getY()-30, bounds_cannon2.getX()-shipBounds.getX()-30));
+            bounds_cannon3.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon3.getY()-shipBounds.getY()-30, bounds_cannon3.getX()-shipBounds.getX()-30));
+            bounds_cannon4.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon4.getY()-shipBounds.getY()-30, bounds_cannon4.getX()-shipBounds.getX()-30));
+            bounds_cannon5.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon5.getY()-shipBounds.getY()-30, bounds_cannon5.getX()-shipBounds.getX()-30));
+            bounds_cannon6.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon6.getY()-shipBounds.getY()-30, bounds_cannon6.getX()-shipBounds.getX()-30));
+            bounds_cannon_front.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon_front.getY()-shipBounds.getY()-30, bounds_cannon_front.getX()-shipBounds.getX()-30));
+            bounds_cannon_front_big.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon_front_big.getY()-shipBounds.getY()-30, bounds_cannon_front_big.getX()-shipBounds.getX()-30), -20, 20));
+            bounds_homing2.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_homing2.getY()-shipBounds.getY()-30, bounds_homing2.getX()-shipBounds.getX()-30), -30, 30));
 
             health_cannon1.setPosition(bounds_cannon.getX()+3, bounds_cannon.getY()-5);
             health_cannon2.setPosition(bounds_cannon2.getX()+3, bounds_cannon2.getY()-5);
@@ -389,7 +390,7 @@ public class Boss_battleShip {
                 bounds_cannon_front_big.setPosition(posX + 40 - laserOffset + bodyOffset, posY + 48);
 
                 health_cannon_stage2.draw(batch, 1);
-                health_cannon_stage2.act(Gdx.graphics.getDeltaTime());
+                health_cannon_stage2.act(delta);
 
                 cannon_stage2.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY());
                 cannon_stage2.setRotation(bounds_cannon_front_big.getRotation());
@@ -412,7 +413,7 @@ public class Boss_battleShip {
 
                 if(stage2) {
                     health_body.draw(batch, 1);
-                    health_body.act(Gdx.graphics.getDeltaTime());
+                    health_body.act(delta);
                 }
 
             }else{
@@ -452,7 +453,7 @@ public class Boss_battleShip {
                 cannon_small.draw(batch);
 
                 health_cannon1.draw(batch, 1);
-                health_cannon1.act(Gdx.graphics.getDeltaTime());
+                health_cannon1.act(delta);
             }else{
                 if(!explodedCannons.get(1)){
                     explodedCannons.set(1, true);
@@ -470,7 +471,7 @@ public class Boss_battleShip {
                 cannon_small.draw(batch);
 
                 health_cannon2.draw(batch, 1);
-                health_cannon2.act(Gdx.graphics.getDeltaTime());
+                health_cannon2.act(delta);
             }else{
                 if(!explodedCannons.get(2)){
                     explodedCannons.set(2, true);
@@ -488,7 +489,7 @@ public class Boss_battleShip {
                 cannon_small.draw(batch);
 
                 health_cannon3.draw(batch, 1);
-                health_cannon3.act(Gdx.graphics.getDeltaTime());
+                health_cannon3.act(delta);
             }else{
                 if(!explodedCannons.get(3)){
                     explodedCannons.set(3, true);
@@ -506,7 +507,7 @@ public class Boss_battleShip {
                 cannon_small.draw(batch);
 
                 health_cannon4.draw(batch, 1);
-                health_cannon4.act(Gdx.graphics.getDeltaTime());
+                health_cannon4.act(delta);
             }else{
                 if(!explodedCannons.get(4)){
                     explodedCannons.set(4, true);
@@ -524,7 +525,7 @@ public class Boss_battleShip {
                 cannon_small.draw(batch);
 
                 health_cannon5.draw(batch, 1);
-                health_cannon5.act(Gdx.graphics.getDeltaTime());
+                health_cannon5.act(delta);
             }else{
                 if(!explodedCannons.get(5)){
                     explodedCannons.set(5, true);
@@ -542,7 +543,7 @@ public class Boss_battleShip {
                 cannon_small.draw(batch);
 
                 health_cannon6.draw(batch, 1);
-                health_cannon6.act(Gdx.graphics.getDeltaTime());
+                health_cannon6.act(delta);
             }else{
                 if(!explodedCannons.get(6)){
                     explodedCannons.set(6, true);
@@ -560,7 +561,7 @@ public class Boss_battleShip {
                 cannon_small2.draw(batch);
 
                 health_cannon_front.draw(batch, 1);
-                health_cannon_front.act(Gdx.graphics.getDeltaTime());
+                health_cannon_front.act(delta);
             }else{
                 if(!explodedCannons.get(7)){
                     explodedCannons.set(7, true);
@@ -583,7 +584,7 @@ public class Boss_battleShip {
                 cannon_homing_part1.draw(batch);
 
                 health_cannon_homing.draw(batch, 1);
-                health_cannon_homing.act(Gdx.graphics.getDeltaTime());
+                health_cannon_homing.act(delta);
             }else{
                 if(!explodedCannons.get(9)){
                     explodedCannons.set(9, true);
@@ -597,13 +598,13 @@ public class Boss_battleShip {
             if(!is_paused){
 
                 if(posX>245){
-                    posX--;
+                    posX = posX - 80*delta;
                 }
 
                 if(animation2){
-                    offset = offset + 0.04f;
+                    offset = offset + 2*delta;
                 }else{
-                    offset = offset - 0.04f;
+                    offset = offset - 2*delta;
                 }
 
                 if(offset>1.3){
@@ -652,8 +653,8 @@ public class Boss_battleShip {
                 this.bullet.draw(batch);
 
                 if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
                         if (GameUi.Shield >= 5) {
@@ -684,8 +685,8 @@ public class Boss_battleShip {
                 this.bullet2.draw(batch);
 
                 if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
                         if (GameUi.Shield >= 10) {
@@ -727,7 +728,7 @@ public class Boss_battleShip {
                 fire.draw(batch);
 
                 if(!is_paused) {
-                    fire.update(Gdx.graphics.getDeltaTime());
+                    fire.update(delta);
                 }else{
                     fire.update(0);
                 }
@@ -736,7 +737,7 @@ public class Boss_battleShip {
                     bullet.x = pos1.x;
                     bullet.y = pos1.y;
 
-                    timer = timer - 1*Gdx.graphics.getDeltaTime();
+                    timer = timer - 1*delta;
                     bullets_red_big_timers.set(i, timer);
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
@@ -773,8 +774,8 @@ public class Boss_battleShip {
                 this.bullet4.rotate(1);
 
                 if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
                         if (GameUi.Shield >= 7) {
@@ -831,13 +832,13 @@ public class Boss_battleShip {
                     }
 
                 }
-                shoot(is_paused);
+                shoot(is_paused, delta);
             }
 
             for(int i3 = 0; i3 < explosions.size; i3 ++){
                 explosions.get(i3).draw(batch);
                 if(!is_paused) {
-                    explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                    explosions.get(i3).update(delta);
                 }else{
                     explosions.get(i3).update(0);
                 }
@@ -850,14 +851,14 @@ public class Boss_battleShip {
         }
 
         if(deathAnimation){
-            millis2 += 3*Gdx.graphics.getDeltaTime();
+            millis2 += 3*delta;
             if(millis2>50){
                 deathAnimation = false;
             }
         }
     }
 
-    private void shoot(boolean is_paused){
+    private void shoot(boolean is_paused, float delta){
         if (millis > 10 && !is_paused){
             int cannon = random.nextInt(9)+1;
 
@@ -868,9 +869,9 @@ public class Boss_battleShip {
                     if(healths.get(1)>0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon.getX() + bounds_cannon.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon.getRotation()) * 19;
                         bullet.y = bounds_cannon.getY() + bounds_cannon.getBoundingRectangle().height / 2 - 7;
-                        bullet.y -= MathUtils.sinDeg(bounds_cannon.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon.getRotation()) * 19;
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon.getRotation());
 
@@ -881,9 +882,9 @@ public class Boss_battleShip {
                     if(healths.get(2)>0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon2.getX() + bounds_cannon2.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon2.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon2.getRotation()) * 19;
                         bullet.y = bounds_cannon2.getY() + bounds_cannon2.getBoundingRectangle().height / 2 - 7;
-                        bullet.y -= MathUtils.sinDeg(bounds_cannon2.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon2.getRotation()) * 19;
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon2.getRotation());
 
@@ -894,9 +895,9 @@ public class Boss_battleShip {
                     if(healths.get(3)>0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon3.getX() + bounds_cannon3.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon3.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon3.getRotation()) * 19;
                         bullet.y = bounds_cannon3.getY() + bounds_cannon3.getBoundingRectangle().height / 2 - 7;
-                        bullet.y -= MathUtils.sinDeg(bounds_cannon3.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon3.getRotation()) * 19;
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon3.getRotation());
 
@@ -907,9 +908,9 @@ public class Boss_battleShip {
                     if(healths.get(4)>0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon4.getX() + bounds_cannon4.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon4.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon4.getRotation()) * 19 ;
                         bullet.y = bounds_cannon4.getY() + bounds_cannon4.getBoundingRectangle().height / 2 - 7;
-                        bullet.y -= MathUtils.sinDeg(bounds_cannon4.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon4.getRotation()) * 19;
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon4.getRotation());
 
@@ -920,9 +921,9 @@ public class Boss_battleShip {
                     if(healths.get(5)>0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon5.getX() + bounds_cannon5.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon5.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon5.getRotation()) * 19;
                         bullet.y = bounds_cannon5.getY() + bounds_cannon5.getBoundingRectangle().height / 2 - 7;
-                        bullet.y -= MathUtils.sinDeg(bounds_cannon5.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon5.getRotation()) * 19;
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon5.getRotation());
 
@@ -933,9 +934,9 @@ public class Boss_battleShip {
                     if(healths.get(6)>0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon6.getX() + bounds_cannon6.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon6.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon6.getRotation()) * 19;
                         bullet.y = bounds_cannon6.getY() + bounds_cannon6.getBoundingRectangle().height / 2 - 7;
-                        bullet.y -= MathUtils.sinDeg(bounds_cannon6.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon6.getRotation()) * 19;
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon6.getRotation());
 
@@ -945,9 +946,9 @@ public class Boss_battleShip {
                 case(7): if(healths.get(8)>0) {
                     bullet.setSize(12, 12);
                     bullet.x = bounds_cannon_front.getX() + bounds_cannon_front.getBoundingRectangle().width / 2 - 3;
-                    bullet.x -= MathUtils.cosDeg(bounds_cannon_front.getRotation()) * 1300 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(bounds_cannon_front.getRotation()) * 22;
                     bullet.y = bounds_cannon_front.getY() + bounds_cannon_front.getBoundingRectangle().height / 2 - 6;
-                    bullet.y -= MathUtils.sinDeg(bounds_cannon_front.getRotation()) * 1300 * Gdx.graphics.getDeltaTime();
+                    bullet.y -= MathUtils.sinDeg(bounds_cannon_front.getRotation()) * 22;
                     bullets_red.add(bullet);
                     degrees_red.add(bounds_cannon_front.getRotation());
 
@@ -957,9 +958,9 @@ public class Boss_battleShip {
                 case(8): if(healths.get(9)>0 && stage2) {
                     bullet.setSize(28, 28);
                     bullet.x = bounds_cannon_front_big.getX() + bounds_cannon_front_big.getBoundingRectangle().width / 2 - 14;
-                    bullet.x -= MathUtils.cosDeg(bounds_cannon_front_big.getRotation()) * 3100 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(bounds_cannon_front_big.getRotation()) * 52.7f;
                     bullet.y = bounds_cannon_front_big.getY() + bounds_cannon_front_big.getBoundingRectangle().height / 2 - 14;
-                    bullet.y -= MathUtils.sinDeg(bounds_cannon_front_big.getRotation()) * 3100 * Gdx.graphics.getDeltaTime();
+                    bullet.y -= MathUtils.sinDeg(bounds_cannon_front_big.getRotation()) * 52.7f;
                     bullets_red_big.add(bullet);
                     bullets_red_big_timers.add(3.5f);
                     bullets_red_big_timers_ideal.add(3.5f);
@@ -976,9 +977,9 @@ public class Boss_battleShip {
                 case(9): if(healths.get(10)>0) {
                     bullet.setSize(54, 12);
                     bullet.x = bounds_homing2.getX() + bounds_homing2.getBoundingRectangle().width / 2 - 7;
-                    bullet.x -= MathUtils.cosDeg(bounds_homing2.getRotation()) * 2100 * Gdx.graphics.getDeltaTime();
+                    bullet.x -= MathUtils.cosDeg(bounds_homing2.getRotation()) * 35.7f;
                     bullet.y = bounds_homing2.getY() + bounds_homing2.getBoundingRectangle().height / 2 - 7;
-                    bullet.y -= MathUtils.sinDeg(bounds_homing2.getRotation()) * 2100 * Gdx.graphics.getDeltaTime();
+                    bullet.y -= MathUtils.sinDeg(bounds_homing2.getRotation()) * 35.7f;
                     bullets_red_long.add(bullet);
                     degrees_red_long.add(bounds_homing2.getRotation());
 
@@ -988,7 +989,7 @@ public class Boss_battleShip {
             }
             millis = 0;
         }
-        millis=millis+60*Gdx.graphics.getDeltaTime();
+        millis=millis+60*delta;
     }
 
     private void removeBullet(int i, int type){
@@ -1016,8 +1017,6 @@ public class Boss_battleShip {
     }
 
     public void dispose(){
-        is_spawned = false;
-        stage2 = false;
         bullets_blue.clear();
         bullets_red.clear();
         bullets_red_big.clear();

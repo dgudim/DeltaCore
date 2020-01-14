@@ -18,6 +18,7 @@ import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.model.bullets.EnemyBullet_shotgun;
 import com.deo.flapd.model.bullets.EnemyBullet_sniper;
+import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
@@ -37,7 +38,7 @@ public class GameLogic {
     public static int bonuses_collected;
     private float millis;
 
-    public static boolean bossWave, has1stBossSpawned;
+    public static boolean bossWave, has1stBossSpawned, has2ndBossSpawned;
 
     public static int lastCheckpoint;
 
@@ -55,8 +56,9 @@ public class GameLogic {
     private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
     private Checkpoint checkpoint;
+    private Boss_evilEye boss_evilEye;
 
-    public GameLogic(Polygon bounds, boolean newGame, Game game, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint) {
+    public GameLogic(Polygon bounds, boolean newGame, Game game, Bullet bullet, BasicEnemy enemy, ShotgunEnemy shotgunEnemy, SniperEnemy sniperEnemy, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint, Boss_evilEye boss_evilEye) {
         this.bounds = bounds;
         random = new Random();
 
@@ -70,6 +72,7 @@ public class GameLogic {
         this.kamikadze = kamikadze;
         this.boss_battleShip = boss_battleShip;
         this.checkpoint = checkpoint;
+        this.boss_evilEye = boss_evilEye;
 
         Preferences prefs = Gdx.app.getPreferences("Preferences");
         difficulty = prefs.getFloat("difficulty");
@@ -102,10 +105,12 @@ public class GameLogic {
             bonuses_collected = prefs.getInteger("bonuses_collected");
             lastCheckpoint = prefs.getInteger("lastCheckpoint");
             has1stBossSpawned = prefs.getBoolean("has1stBossSpawned");
+            has2ndBossSpawned = prefs.getBoolean("has2ndBossSpawned");
         }else {
             bonuses_collected = 0;
             lastCheckpoint = 0;
             has1stBossSpawned = false;
+            has2ndBossSpawned = false;
         }
         bossWave = false;
 
@@ -191,10 +196,16 @@ public class GameLogic {
             }
         }
 
-        if (GameUi.Score > 80000 && !has1stBossSpawned) {
+        if (GameUi.Score > 70000 && !has1stBossSpawned) {
             bossWave = true;
             has1stBossSpawned = true;
             boss_battleShip.Spawn();
+        }
+
+        if (GameUi.Score > 30000 && !has2ndBossSpawned) {
+            bossWave = true;
+            has2ndBossSpawned = true;
+            boss_evilEye.Spawn();
         }
 
         if (bounds.getX() < 0) {

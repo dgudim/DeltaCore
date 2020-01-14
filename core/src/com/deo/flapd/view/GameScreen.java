@@ -23,6 +23,7 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.enemies.Boss_battleShip;
+import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
@@ -48,6 +49,7 @@ public class GameScreen implements Screen{
     private Meteorite meteorite;
     private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
+    private Boss_evilEye boss_evilEye;
     private UraniumCell uraniumCell;
     private Checkpoint checkpoint;
 
@@ -112,18 +114,22 @@ public class GameScreen implements Screen{
 
         boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds(), uraniumCell);
 
-        bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip);
+        boss_evilEye = new Boss_evilEye(assetManager, ship.getBounds(), uraniumCell);
+
+        bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip, boss_evilEye);
 
         boss_battleShip.postConstruct(bonus);
+
+        boss_evilEye.postConstruct(bonus);
 
         gameUi = new GameUi(game, batch, assetManager, ship, newGame);
 
         switch (prefs.getInteger("current_cannon")){
-            case(1):bullet = new Bullet((Texture)assetManager.get("bu1.png"),0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
+            case(1):bullet = new Bullet((Texture)assetManager.get("bu1.png"), (Texture)assetManager.get("laser.png"),0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
                 break;
-            case(2):bullet = new Bullet((Texture)assetManager.get("bu2.png"),0.4f*MathUtils.clamp((1.2f-prefs.getInteger("cannon2upgradeLevel")*0.1f), 0.7f, 1.5f), 0.8f, ship.getBounds(), newGame);
+            case(2):bullet = new Bullet((Texture)assetManager.get("bu2.png"), (Texture)assetManager.get("laser.png"),0.4f*MathUtils.clamp((1.2f-prefs.getInteger("cannon2upgradeLevel")*0.1f), 0.7f, 1.5f), 0.8f, ship.getBounds(), newGame);
                 break;
-            case(3):bullet = new Bullet((Texture)assetManager.get("bu3.png"),0.4f*MathUtils.clamp((0.8f-prefs.getInteger("cannon3upgradeLevel")*0.1f), 0.7f, 1.5f), 1.3f, ship.getBounds(), newGame);
+            case(3):bullet = new Bullet((Texture)assetManager.get("bu3.png"), (Texture)assetManager.get("laser.png"),0.4f*MathUtils.clamp((0.8f-prefs.getInteger("cannon3upgradeLevel")*0.1f), 0.7f, 1.5f), 1.3f, ship.getBounds(), newGame);
                 break;
         }
 
@@ -136,7 +142,7 @@ public class GameScreen implements Screen{
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
-        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint);
+        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint, boss_evilEye);
 
         musicVolume = prefs.getFloat("musicVolume");
 
@@ -194,7 +200,8 @@ public class GameScreen implements Screen{
             enemy_sniper.draw(batch, is_paused);
             enemy_shotgun.draw(batch, is_paused);
             kamikadze.draw(batch, is_paused);
-            boss_battleShip.draw(batch, is_paused);
+            boss_battleShip.draw(batch, is_paused, delta);
+            boss_evilEye.draw(batch, is_paused, delta);
 
             bullet.draw(batch, is_paused);
             meteorite.draw(batch, is_paused);
@@ -279,6 +286,7 @@ public class GameScreen implements Screen{
     assetManager.unload("bg_layer3.png");
     assetManager.unload("ship.png");
     assetManager.unload("ColdShield.png");
+    assetManager.unload("HotShield.png");
     assetManager.unload("pew3.png");
     assetManager.unload("pew.png");
     assetManager.unload("trainingbot.png");
@@ -319,8 +327,22 @@ public class GameScreen implements Screen{
     assetManager.unload("cat_meteorite.png");
     assetManager.unload("cat_bomb.png");
     assetManager.unload("whiskas.png");
+    assetManager.unload("laser.png");
+
+    assetManager.unload("boss_evil/evil_cannon.png");
+    assetManager.unload("boss_evil/evil_center.png");
+    assetManager.unload("boss_evil/evil_down_left.png");
+    assetManager.unload("boss_evil/evil_down_right.png");
+    assetManager.unload("boss_evil/evil_up_left.png");
+    assetManager.unload("boss_evil/evil_up_right.png");
+    assetManager.unload("boss_evil/evil_left.png");
+    assetManager.unload("boss_evil/evil_right.png");
+    assetManager.unload("boss_evil/evil_down.png");
+    assetManager.unload("boss_evil/evil_up.png");
+    assetManager.unload("boss_evil/evil_base.png");
 
     boss_battleShip.dispose();
+    boss_evilEye.dispose();
 
     music.dispose();
 

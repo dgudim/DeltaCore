@@ -61,6 +61,7 @@ public class LoadingScreen implements Screen {
                assetManager.load("bg_layer3.png", Texture.class);
                assetManager.load("ship.png", Texture.class);
                assetManager.load("ColdShield.png", Texture.class);
+               assetManager.load("HotShield.png", Texture.class);
                assetManager.load("pew3.png", Texture.class);
                assetManager.load("pew.png", Texture.class);
                assetManager.load("trainingbot.png", Texture.class);
@@ -111,6 +112,19 @@ public class LoadingScreen implements Screen {
                assetManager.load("cat_meteorite.png", Texture.class);
                assetManager.load("cat_bomb.png", Texture.class);
                assetManager.load("whiskas.png", Texture.class);
+               assetManager.load("laser.png", Texture.class);
+
+               assetManager.load("boss_evil/evil_cannon.png", Texture.class);
+               assetManager.load("boss_evil/evil_center.png", Texture.class);
+               assetManager.load("boss_evil/evil_down_left.png", Texture.class);
+               assetManager.load("boss_evil/evil_down_right.png", Texture.class);
+               assetManager.load("boss_evil/evil_up_left.png", Texture.class);
+               assetManager.load("boss_evil/evil_up_right.png", Texture.class);
+               assetManager.load("boss_evil/evil_left.png", Texture.class);
+               assetManager.load("boss_evil/evil_right.png", Texture.class);
+               assetManager.load("boss_evil/evil_down.png", Texture.class);
+               assetManager.load("boss_evil/evil_up.png", Texture.class);
+               assetManager.load("boss_evil/evil_base.png", Texture.class);
                break;
            case(2):
                assetManager.load("greyishButton.png", Texture.class);
@@ -251,7 +265,7 @@ public class LoadingScreen implements Screen {
                         break;
                 }
             }
-        }catch (Exception e){
+        }catch (ClassCastException | NumberFormatException e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
@@ -259,9 +273,15 @@ public class LoadingScreen implements Screen {
             DUtils.log("\n"+fullStackTrace + "\n");
             DUtils.log("\n wiping data :) \n");
             prefs.clear();
-            prefs.flush();
             prefs.putInteger("money", 5000);
-            DUtils.log("...done...force exiting");
+            prefs.flush();
+            DUtils.log("...done...restaring");
+        } catch (Exception e2) {
+            StringWriter sw = new StringWriter();
+            e2.printStackTrace(new PrintWriter(sw));
+            String fullStackTrace = sw.toString();
+            DUtils.log("\n" + fullStackTrace + "\n");
+            DUtils.log("force exiting");
             System.exit(1);
         }
     }

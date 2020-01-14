@@ -48,19 +48,18 @@ public class Main extends Game {
 
         if (prefs.getFloat("ui")<=0) {
             prefs.putFloat("ui", 1.25f);
-            System.out.println(prefs.getFloat("ui"));
             prefs.putFloat("soundEffectsVolume", 1);
             prefs.putFloat("musicVolume", 1 );
             prefs.putFloat("difficulty", 1);
             prefs.putBoolean("transparency", true);
-            prefs.putBoolean("shaders", true);
+            prefs.putBoolean("shaders", false);
             DUtils.log("------------first launch------------"+"\n");
             prefs.flush();
         }
 
         DUtils.clearLog();
         Date date = new Date();
-        DUtils.log("|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n");
+        DUtils.log("\n\n|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date));
 
         this.setScreen(new LoadingScreen(this, batch, assetManager, 2, true, true));
     }

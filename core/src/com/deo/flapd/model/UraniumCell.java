@@ -122,6 +122,7 @@ public class UraniumCell {
         timers.clear();
         cells.clear();
         degrees.clear();
+        values.clear();
     }
 
 }

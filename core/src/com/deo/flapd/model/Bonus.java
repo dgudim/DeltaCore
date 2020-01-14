@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Boss_battleShip;
+import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
@@ -39,8 +40,9 @@ public class Bonus {
     private Random random;
 
     private Boss_battleShip boss_battleShip;
+    private Boss_evilEye boss_evilEye;
 
-    public Bonus(AssetManager assetManager, float width, float height, Polygon shipBounds, Boss_battleShip boss_battleShip){
+    public Bonus(AssetManager assetManager, float width, float height, Polygon shipBounds, Boss_battleShip boss_battleShip, Boss_evilEye boss_evilEye){
         bounds = shipBounds;
 
         random = new Random();
@@ -68,6 +70,7 @@ public class Bonus {
         uiScale = prefs.getFloat("ui");
 
         this.boss_battleShip = boss_battleShip;
+        this.boss_evilEye = boss_evilEye;
     }
 
     public void Spawn(int type, float scale, Rectangle enemy) {
@@ -181,7 +184,12 @@ public class Bonus {
                     }
                     if(type == 5){
                         removeBonus(i, true);
-                        boss_battleShip.Spawn();
+                        if(random.nextBoolean()) {
+                            boss_battleShip.Spawn();
+                        }
+                        else{
+                            boss_evilEye.Spawn();
+                        }
                         GameLogic.bossWave = true;
                     }
                 }

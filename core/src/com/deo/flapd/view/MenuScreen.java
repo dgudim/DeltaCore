@@ -952,8 +952,8 @@ public class MenuScreen implements Screen{
                 switch (current_category){
                     case(1):switch (current_engine){
                         case(1):
-                            if(cogs>=2+(engine1upgradeLevel/3)){
-                                cogs-=2+(engine1upgradeLevel/3);
+                            if(cogs>=2+(2*engine1upgradeLevel/3)){
+                                cogs-=2+(2*engine1upgradeLevel/3);
                                 prefs.putInteger("cogs", cogs);
                                 engine1upgradeLevel++;
                                 prefs.putInteger("engine1upgradeLevel",engine1upgradeLevel);
@@ -962,8 +962,8 @@ public class MenuScreen implements Screen{
                             }
                             break;
                         case(2):
-                            if(cogs>=2+(2*engine2upgradeLevel/3)){
-                                cogs-=2+(2*engine2upgradeLevel/3);
+                            if(cogs>=3+(2*engine2upgradeLevel/3)){
+                                cogs-=3+(2*engine2upgradeLevel/3);
                                 prefs.putInteger("cogs", cogs);
                                 engine2upgradeLevel++;
                                 prefs.putInteger("engine2upgradeLevel",engine2upgradeLevel);
@@ -972,8 +972,8 @@ public class MenuScreen implements Screen{
                             }
                             break;
                         case(3):
-                            if(cogs>=3+(2*engine3upgradeLevel/3)){
-                                cogs-=3+(2*engine3upgradeLevel/3);
+                            if(cogs>=4+(2*engine3upgradeLevel/3)){
+                                cogs-=4+(2*engine3upgradeLevel/3);
                                 prefs.putInteger("cogs", cogs);
                                 engine3upgradeLevel++;
                                 prefs.putInteger("engine3upgradeLevel",engine3upgradeLevel);
@@ -1164,6 +1164,9 @@ public class MenuScreen implements Screen{
                 easterEgg = !easterEgg;
                 prefs.putBoolean("easterEgg", easterEgg);
                 prefs.putBoolean("easterEgg_unlocked", true);
+                if(settings && !easterEgg_unlocked){
+                    shaders.setVisible(true);
+                }
                 easterEgg_unlocked = true;
                 prefs.flush();
             }
@@ -1218,14 +1221,14 @@ public class MenuScreen implements Screen{
                             batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
                             batch.draw(shopButton_enabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                            if(money>=0) {
+                            if(cogs>=2+(2*engine1upgradeLevel/3)) {
                                 font_numbers.setColor(Color.GREEN);
                             }else{
                                 font_numbers.setColor(Color.RED);
                             }
                             font_numbers.getData().setScale(0.3f);
 
-                            font_numbers.draw(batch, ""+(2+(engine1upgradeLevel/3)), 51, 204, 100,1, false);
+                            font_numbers.draw(batch, ""+(2+(2*engine1upgradeLevel/3)), 51, 204, 100,1, false);
                             batch.draw(cog, 155, 177, 30, 30);
 
                             font_main.getData().setScale(0.27f);
@@ -1238,17 +1241,23 @@ public class MenuScreen implements Screen{
                             batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
                             batch.draw(shopButton_enabled, 35.5f, 299.96f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                            if(money>=1500) {
-                                font_numbers.setColor(Color.GREEN);
-                            }else{
-                                font_numbers.setColor(Color.RED);
-                            }
+
                             font_numbers.getData().setScale(0.3f);
 
                             if(!is2ndEngineUnlocked) {
+                                if(money>=1500) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
                                 font_numbers.draw(batch, "1500", 62, 204, 100, 1, false);
                             }else{
-                                font_numbers.draw(batch, ""+(2+(int)(2*engine2upgradeLevel/2.6)), 51, 204, 100,1, false);
+                                if(cogs>=3+(2*engine2upgradeLevel/3)) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
+                                font_numbers.draw(batch, ""+(3+(2*engine2upgradeLevel/3)), 51, 204, 100,1, false);
                                 batch.draw(cog, 155, 177, 30, 30);
                             }
 
@@ -1262,17 +1271,23 @@ public class MenuScreen implements Screen{
                             batch.draw(shopButton_enabled, 35.5f, 224.7f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                            if(money>=3500) {
-                                font_numbers.setColor(Color.GREEN);
-                            }else{
-                                font_numbers.setColor(Color.RED);
-                            }
+
                             font_numbers.getData().setScale(0.3f);
 
                             if(!is3rdEngineUnlocked) {
+                                if(money>=3500) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
                                 font_numbers.draw(batch, "3500", 62, 204, 100, 1, false);
                             }else{
-                                font_numbers.draw(batch, ""+(3+(int)(2*engine3upgradeLevel/2.3)), 51, 204, 100,1, false);
+                                if(cogs>=4+(2*engine3upgradeLevel/3)) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
+                                font_numbers.draw(batch, ""+(4+(2*engine3upgradeLevel/3)), 51, 204, 100,1, false);
                                 batch.draw(cog, 155, 177, 30, 30);
                             }
 
@@ -1322,7 +1337,7 @@ public class MenuScreen implements Screen{
                             switch (current_engine){
                                 case(1):
                                     batch.draw(Engine1_t, 361+menu_offset, 270, 114.66f, 45.864f);
-                                    font_main.draw(batch, "Upgrade for "+(2+(engine1upgradeLevel/3)), 292+menu_offset, 340, 100,1, false );
+                                    font_main.draw(batch, "Upgrade for "+(2+(2*engine1upgradeLevel/3)), 292+menu_offset, 340, 100,1, false );
                                     font_main.draw(batch, "Level: "+(engine1upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     font_main.getData().setScale(0.28f);
                                     font_main.draw(batch, "Speed Multiplier: ", 254+menu_offset, 305, 100,1, false);
@@ -1330,7 +1345,7 @@ public class MenuScreen implements Screen{
                                     break;
                                 case(2):
                                     batch.draw(Engine2_t, 361+menu_offset, 270, 114.66f, 45.864f);
-                                    font_main.draw(batch, "Upgrade for "+(2+(int)(2*engine2upgradeLevel/2.6)), 292+menu_offset, 340, 100,1, false );
+                                    font_main.draw(batch, "Upgrade for "+(3+(2*engine2upgradeLevel/3)), 292+menu_offset, 340, 100,1, false );
                                     font_main.draw(batch, "Level: "+(engine2upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     font_main.getData().setScale(0.28f);
                                     font_main.draw(batch, "Speed Multiplier: ", 254+menu_offset, 305, 100,1, false);
@@ -1338,7 +1353,7 @@ public class MenuScreen implements Screen{
                                     break;
                                 case(3):
                                     batch.draw(Engine3_t, 361+menu_offset, 270, 114.66f, 45.864f);
-                                    font_main.draw(batch, "Upgrade for "+(3+(int)(2*engine3upgradeLevel/2.3)), 292+menu_offset, 340, 100,1, false );
+                                    font_main.draw(batch, "Upgrade for "+(4+(2*engine3upgradeLevel/3)), 292+menu_offset, 340, 100,1, false );
                                     font_main.draw(batch, "Level: "+(engine3upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     font_main.getData().setScale(0.28f);
                                     font_main.draw(batch, "Speed Multiplier: ", 254+menu_offset, 305, 100,1, false);
@@ -1358,7 +1373,7 @@ public class MenuScreen implements Screen{
                             batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
                             batch.draw(shopButton_enabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                            if(money>=0) {
+                            if(cogs>=2+(2*cannon1upgradeLevel/3)) {
                                 font_numbers.setColor(Color.GREEN);
                             }else{
                                 font_numbers.setColor(Color.RED);
@@ -1379,17 +1394,23 @@ public class MenuScreen implements Screen{
                             batch.draw(shopButton_disabled, 35.5f, 224.7f, 153.5f, 70.3f);
                             batch.draw(shopButton_enabled, 35.5f, 299.96f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                            if(money>=1500) {
-                                font_numbers.setColor(Color.GREEN);
-                            }else{
-                                font_numbers.setColor(Color.RED);
-                            }
+
                             font_numbers.getData().setScale(0.3f);
 
                             if(!is2ndCannonUnlocked) {
+                                if(money>=1500) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
                                 font_numbers.draw(batch, "2500", 62, 204, 100, 1, false);
                             }else{
-                                font_numbers.draw(batch, ""+(3+(int)(2*cannon2upgradeLevel/2.6)), 51, 204, 100,1, false);
+                                if(cogs>=3+(2*cannon2upgradeLevel/3)) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
+                                font_numbers.draw(batch, ""+(3+(2*cannon2upgradeLevel/3)), 51, 204, 100,1, false);
                                 batch.draw(cog, 155, 177, 30, 30);
                             }
 
@@ -1404,17 +1425,23 @@ public class MenuScreen implements Screen{
                             batch.draw(shopButton_enabled, 35.5f, 224.7f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 299.96f, 153.5f, 70.3f);
                             batch.draw(shopButton_disabled, 35.5f, 375.02f, 153.5f, 70.3f);
-                            if(money>=3500) {
-                                font_numbers.setColor(Color.GREEN);
-                            }else{
-                                font_numbers.setColor(Color.RED);
-                            }
+
                             font_numbers.getData().setScale(0.3f);
 
                             if(!is3rdCannonUnlocked) {
+                                if(money>=4500) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
                                 font_numbers.draw(batch, "4500", 62, 204, 100, 1, false);
                             }else{
-                                font_numbers.draw(batch, ""+(4+(int)(2*cannon3upgradeLevel/2.3)), 51, 204, 100,1, false);
+                                if(cogs>=4+(2*cannon3upgradeLevel/3)) {
+                                    font_numbers.setColor(Color.GREEN);
+                                }else{
+                                    font_numbers.setColor(Color.RED);
+                                }
+                                font_numbers.draw(batch, ""+(4+(2*cannon3upgradeLevel/3)), 51, 204, 100,1, false);
                                 batch.draw(cog, 155, 177, 30, 30);
                             }
 
@@ -1468,25 +1495,25 @@ public class MenuScreen implements Screen{
                                 font_main.draw(batch, "Upgrade for "+(2+(2*cannon1upgradeLevel/3)), 290+menu_offset, 340, 100,1, false );
                                 font_main.getData().setScale(0.26f);
                                 font_main.draw(batch, "Damage: "+(40+cannon1upgradeLevel)+"-->"+(40+cannon1upgradeLevel+1), 252+menu_offset, 310, 100,1, false);
-                                font_main.draw(batch, "Spread: "+MathUtils.clamp((1.5f-cannon1upgradeLevel*0.1f), 0.7f, 1.5f)+"-->"+MathUtils.clamp((1.5f-(cannon1upgradeLevel+1)*0.1f), 0.7f, 1.5f), 252+menu_offset, 290, 100,1, false);
+                                font_main.draw(batch, "Spread: "+String.format ("%.1f",MathUtils.clamp((1.5f-cannon1upgradeLevel*0.1f), 0.7f, 1.5f))+"-->"+String.format ("%.1f",MathUtils.clamp((1.5f-(cannon1upgradeLevel+1)*0.1f), 0.7f, 1.5f)), 252+menu_offset, 290, 100,1, false);
                                 font_main.getData().setScale(0.4f);
                                 font_main.draw(batch, "Level: "+(cannon1upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     break;
                                 case(2):
                                 batch.draw(Cannon2_t, 361+menu_offset, 270, 142.07649f, 45.901638f);
-                                font_main.draw(batch, "Upgrade for "+(3+(int)(2*cannon2upgradeLevel/2.6)), 290+menu_offset, 340, 100,1, false );
+                                font_main.draw(batch, "Upgrade for "+(3+(2*cannon2upgradeLevel/3)), 290+menu_offset, 340, 100,1, false );
                                 font_main.getData().setScale(0.26f);
                                 font_main.draw(batch, "Damage: "+(60+cannon2upgradeLevel)+"-->"+(60+cannon2upgradeLevel+1), 252+menu_offset, 310, 100,1, false);
-                                font_main.draw(batch, "Spread: "+MathUtils.clamp((1.2f-cannon2upgradeLevel*0.1f), 0.7f, 1.5f)+"-->"+MathUtils.clamp((1.2f-(cannon2upgradeLevel+1)*0.1f), 0.7f, 1.5f), 252+menu_offset, 290, 100,1, false);
+                                font_main.draw(batch, "Spread: "+String.format ("%.1f",MathUtils.clamp((1.2f-cannon2upgradeLevel*0.1f), 0.7f, 1.5f))+"-->"+String.format ("%.1f",MathUtils.clamp((1.2f-(cannon2upgradeLevel+1)*0.1f), 0.7f, 1.5f)), 252+menu_offset, 290, 100,1, false);
                                 font_main.getData().setScale(0.4f);
                                 font_main.draw(batch, "Level: "+(cannon2upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     break;
                                 case(3):
                                 batch.draw(Cannon3_t, 361+menu_offset, 270, 140.01207f, 45.866024f);
-                                font_main.draw(batch, "Upgrade for "+(4+(int)(2*cannon3upgradeLevel/2.3)), 290+menu_offset, 340, 100,1, false);
+                                font_main.draw(batch, "Upgrade for "+(4+(2*cannon3upgradeLevel/3)), 290+menu_offset, 340, 100,1, false);
                                 font_main.getData().setScale(0.26f);
                                 font_main.draw(batch, "Damage: "+(70+cannon3upgradeLevel)+"-->"+(70+cannon3upgradeLevel+1), 252+menu_offset, 310, 100,1, false);
-                                font_main.draw(batch, "Spread: "+MathUtils.clamp((0.8f-cannon3upgradeLevel*0.1f), 0.7f, 1.5f)+"-->"+MathUtils.clamp((0.8f-(cannon3upgradeLevel+1)*0.1f), 0.7f, 1.5f), 252+menu_offset, 290, 100,1, false);
+                                font_main.draw(batch, "Spread: "+String.format ("%.1f",MathUtils.clamp((0.8f-cannon3upgradeLevel*0.1f), 0.7f, 1.5f))+"-->"+String.format ("%.1f",MathUtils.clamp((0.8f-(cannon3upgradeLevel+1)*0.1f), 0.7f, 1.5f)), 252+menu_offset, 290, 100,1, false);
                                 font_main.getData().setScale(0.4f);
                                 font_main.draw(batch, "Level: "+(cannon3upgradeLevel+1), 320+menu_offset, 260, 100,1, false );
                                     break;

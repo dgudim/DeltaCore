@@ -48,7 +48,7 @@ public class ShotgunEnemy {
         this.height = height;
         this.width = width;
         if(easterEgg) {
-            this.fire_x = fire_offset_x-45;
+            this.fire_x = fire_offset_x-50;
             this.fire_y = fire_offset_y;
         }else{
             this.fire_x = fire_offset_x;

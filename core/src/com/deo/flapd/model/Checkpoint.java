@@ -113,6 +113,7 @@ public class Checkpoint {
             prefs.putFloat("Health",GameUi.Health);
             prefs.putFloat("Shield",GameUi.Shield);
             prefs.putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
+            prefs.putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
             prefs.putInteger("bonuses_collected", GameLogic.bonuses_collected);
             prefs.putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
             prefs.putInteger("bulletsShot", Bullet.bulletsShot);

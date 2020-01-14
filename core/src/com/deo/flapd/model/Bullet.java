@@ -44,7 +44,13 @@ public class Bullet {
 
     private float shootingSpeedMultiplier;
 
-    public Bullet(Texture bulletTexture, float spread, float shootingSpeedMultiplier, Polygon shipBounds, boolean newGame) {
+    private Sprite laser;
+
+    private int offset;
+
+    public static Rectangle laserBounds;
+
+    public Bullet(Texture bulletTexture, Texture laser, float spread, float shootingSpeedMultiplier, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
         this.spread = spread;
         bullet = new Sprite(bulletTexture);
@@ -69,8 +75,12 @@ public class Bullet {
 
         this.shootingSpeedMultiplier = shootingSpeedMultiplier;
 
+        this.laser = new Sprite(laser);
+
         sound = MenuScreen.Sound;
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
+
+        laserBounds = new Rectangle();
     }
 
     public void Spawn(float damage, float scale, boolean is_uranium) {
@@ -107,6 +117,19 @@ public class Bullet {
     }
 
     public void draw(SpriteBatch batch, boolean is_paused) {
+
+        /*
+        int gradient = 0;
+        for(float i = bounds.getX(); i < 800; i += 3){
+            laser.setSize(3, 9);
+            laser.setPosition(i+72, bounds.getY()+16);
+            laser.setColor(new Color().fromHsv(gradient+offset, 1, 1).add(0,0,0,1));
+            laserBounds.setSize(800, 9).setPosition(72, bounds.getY()+16);
+            laser.draw(batch);
+            gradient+=1;
+        }
+        offset+=10;
+         */
 
         for (int i = 0; i < bullets.size; i ++) {
 

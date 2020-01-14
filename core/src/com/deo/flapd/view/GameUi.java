@@ -422,7 +422,7 @@ public class GameUi{
         shield.setValue(Shield);
 
         if(Health <= 0 && !exploded){
-            explosion.setPosition(bounds.getX(), bounds.getY());
+            explosion.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
             explosion.start();
             exploded = true;
             Health = -1000;
@@ -443,7 +443,7 @@ public class GameUi{
             font_main.setColor(0,0,0,1);
         }
 
-        if(Shield<100){
+        if(Shield<100 && !is_paused){
             Shield += 0.02;
         }
     }
