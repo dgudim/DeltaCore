@@ -113,7 +113,6 @@ public class Bullet {
             if(sound) {
                 shot.play(MenuScreen.SoundVolume/100);
             }
-
     }
 
     public void draw(SpriteBatch batch, boolean is_paused) {

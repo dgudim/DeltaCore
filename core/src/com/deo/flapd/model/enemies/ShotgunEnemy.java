@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.EnemyBullet_shotgun;
 import com.deo.flapd.view.GameUi;
@@ -169,6 +170,7 @@ public class ShotgunEnemy {
                 if(random.nextBoolean()) {
                     Bonus.Spawn(random.nextInt(3), 1, enemies.get(i4));
                 }
+                    Drops.drop(enemies.get(i4), 1, 2, 1);
                 UraniumCell.Spawn(enemies.get(i4), random.nextInt(4)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);

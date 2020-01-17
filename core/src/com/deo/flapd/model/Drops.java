@@ -60,19 +60,27 @@ public class Drops {
             degrees.add(random.nextFloat()*360);
             switch (category){
                 case(1):
-                    if(random.nextBoolean()){
-                        types.add(1);
-                    }else if (random.nextBoolean()){
-                        types.add(2);
+                    if(random.nextInt(5) == 3) {
+                        if (random.nextBoolean()) {
+                            types.add(1);
+                        } else if (random.nextBoolean()) {
+                            types.add(2);
+                        } else {
+                            types.add(0);
+                        }
                     }else{
                         types.add(0);
                     }
                     break;
                 case(2):
-                    if(random.nextBoolean()){
-                        types.add(3);
-                    }else if (random.nextBoolean()){
-                        types.add(4);
+                    if(random.nextInt(5) == 3) {
+                        if (random.nextBoolean()) {
+                            types.add(3);
+                        } else if (random.nextBoolean()) {
+                            types.add(4);
+                        } else {
+                            types.add(0);
+                        }
                     }else{
                         types.add(0);
                     }
