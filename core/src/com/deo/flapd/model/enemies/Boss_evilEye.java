@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.SpaceShip;
@@ -45,6 +46,8 @@ public class Boss_evilEye {
 
     private float rotation, posX, millis, shieldSize;
 
+    private long soundId;
+
     private Polygon shipBounds;
 
     private Random random;
@@ -55,16 +58,13 @@ public class Boss_evilEye {
 
     private ProgressBar.ProgressBarStyle healthBarStyle, healthBarStyle2;
 
-    private Sound explosion, shot;
+    private Sound explosion, shot, laserSaw;
 
     private Rectangle laserTip;
 
     private ParticleEffect fire;
 
-    private UraniumCell uraniumCell;
-    private Bonus bonus;
-
-    public Boss_evilEye(AssetManager assetManager, Polygon shipBounds, UraniumCell uraniumCell){
+    public Boss_evilEye(AssetManager assetManager, Polygon shipBounds){
         up_right = assetManager.get("boss_evil/evil_up_right.png");
         up_left = assetManager.get("boss_evil/evil_up_left.png");
         down_right = assetManager.get("boss_evil/evil_down_right.png");
@@ -83,8 +83,6 @@ public class Boss_evilEye {
 
         this.shipBounds = shipBounds;
 
-        this.uraniumCell = uraniumCell;
-
         cannonBounds = new Array<>();
         degrees = new Array<>();
         degrees2 = new Array<>();
@@ -97,6 +95,7 @@ public class Boss_evilEye {
         bodyBounds = new Rectangle().setSize(128).setPosition(1000, 176);
         posX = 320;
         shieldSize = 0;
+        soundId = 0;
         is_spawned = false;
         is_in_position = false;
         stage2 = false;
@@ -165,6 +164,7 @@ public class Boss_evilEye {
 
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun3.ogg"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        laserSaw = Gdx.audio.newSound(Gdx.files.internal("music/laserSaw.ogg"));
 
         fire = new ParticleEffect();
         fire.load(Gdx.files.internal("particles/fire2.p"), Gdx.files.internal("particles"));
@@ -180,6 +180,7 @@ public class Boss_evilEye {
         is_laserFire = false;
         animation = true;
         shieldSize = 0;
+        soundId = 0;
         health.setSize(12);
         cannonBounds.setSize(10);
         degrees.setSize(10);
@@ -239,6 +240,9 @@ public class Boss_evilEye {
                     healthBars.get(i).act(delta);
                 }else if(health.get(i) > -100){
                     explode(i, false);
+                    if(random.nextBoolean()) {
+                        Bonus.Spawn(random.nextInt(5), 1, cannonBounds.get(i));
+                    }
                     health.set(i, -100f);
                     cannonBounds.get(i).setSize(0).setPosition(-100, -100);
                     GameUi.Score += 100;
@@ -252,6 +256,7 @@ public class Boss_evilEye {
                 }
                 if(animation && !is_paused){
                     shieldSize += 240 * delta;
+                    laserSaw.setVolume(soundId, MathUtils.clamp(shieldSize/192, 0, 1));
                     if(shieldSize>=192){
                         animation = false;
                     }
@@ -311,6 +316,7 @@ public class Boss_evilEye {
 
             if(health.get(0) < 0 && health.get(1) < 0 && health.get(2) < 0 && health.get(3) < 0 && health.get(4) < 0 && health.get(5) < 0 && health.get(6) < 0 && health.get(7) < 0 && health.get(8) < 0 && health.get(9) < 0 && !stage2){
                 stage2 = true;
+                soundId = laserSaw.loop(0);
             }
 
             if(is_in_position) {
@@ -337,10 +343,11 @@ public class Boss_evilEye {
                             health.set(10, -100f);
                             explode(0, true);
                             GameUi.Score += 3000;
-                            uraniumCell.Spawn(bodyBounds.getX() + 64, bodyBounds.getY() + 64, random.nextInt(20)+5, 1, 1);
+                            UraniumCell.Spawn(bodyBounds.getX() + 64, bodyBounds.getY() + 64, random.nextInt(20)+5, 1, 1);
                             for (int i3 = 0; i3<5; i3++) {
-                                bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
+                                Bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
                             }
+                            laserSaw.stop();
                             reset();
                         }
                     }
@@ -459,6 +466,7 @@ public class Boss_evilEye {
     private void reset(){
         Spawn();
         is_spawned = false;
+        GameLogic.bossWave = false;
         fire.reset();
     }
 
@@ -469,6 +477,8 @@ public class Boss_evilEye {
         healthBars.clear();
         cannonBounds.clear();
         shot.dispose();
+        laserSaw.stop();
+        laserSaw.dispose();
         explosion.dispose();
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).dispose();
@@ -476,9 +486,4 @@ public class Boss_evilEye {
         }
         fire.dispose();
     }
-
-    public void postConstruct(Bonus bonus){
-        this.bonus = bonus;
-    }
-
 }

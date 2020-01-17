@@ -38,13 +38,9 @@ public class ShotgunEnemy {
 
     private float width, height, fire_x, fire_y;
 
-    private Bonus bonus;
-
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    private UraniumCell uraniumCell;
-
-    public ShotgunEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Bonus bonus, boolean easterEgg) {
+    public ShotgunEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, boolean easterEgg) {
         this.height = height;
         this.width = width;
         if(easterEgg) {
@@ -77,9 +73,6 @@ public class ShotgunEnemy {
         colors = new Array<>();
 
         sound = MenuScreen.Sound;
-
-        this.bonus = bonus;
-        this.uraniumCell = uraniumCell;
     }
 
     public void Spawn(float health, float scale) {
@@ -174,9 +167,9 @@ public class ShotgunEnemy {
                 explosionEffect.setPosition(enemies.get(i4).x + enemies.get(i4).width / 2, enemies.get(i4).y + enemies.get(i4).height / 2);
                 explosionEffect.start();
                 if(random.nextBoolean()) {
-                    bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemies.get(i4));
+                    Bonus.Spawn(random.nextInt(3), 1, enemies.get(i4));
                 }
-                uraniumCell.Spawn(enemies.get(i4), random.nextInt(4)+1, 1, 2);
+                UraniumCell.Spawn(enemies.get(i4), random.nextInt(4)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);

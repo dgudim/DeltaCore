@@ -196,13 +196,13 @@ public class GameLogic {
             }
         }
 
-        if (GameUi.Score > 70000 && !has1stBossSpawned) {
+        if (GameUi.Score > 30000 && !has1stBossSpawned) {
             bossWave = true;
             has1stBossSpawned = true;
             boss_battleShip.Spawn();
         }
 
-        if (GameUi.Score > 30000 && !has2ndBossSpawned) {
+        if (GameUi.Score > 70000 && !has2ndBossSpawned) {
             bossWave = true;
             has2ndBossSpawned = true;
             boss_evilEye.Spawn();

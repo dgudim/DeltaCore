@@ -39,9 +39,7 @@ public class BasicEnemy {
 
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    private UraniumCell uraniumCell;
-
-    public BasicEnemy(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, boolean easterEgg) {
+    public BasicEnemy( AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, boolean easterEgg) {
         if(easterEgg) {
             this.height = height;
             this.width = width + 40;
@@ -53,7 +51,6 @@ public class BasicEnemy {
             this.fire_x = fire_offset_x;
             this.fire_y = fire_offset_y;
         }
-        this.uraniumCell = uraniumCell;
         enemyBullet = new EnemyBullet(assetManager, Bwidth, Bheight, Boffset_x, Boffset_y, Bspread, easterEgg);
 
         if(easterEgg){
@@ -174,7 +171,7 @@ public class BasicEnemy {
                 explosionEffect.start();
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
-                uraniumCell.Spawn(enemies.get(i4), random.nextInt(3)+1, 1, 2);
+                UraniumCell.Spawn(enemies.get(i4), random.nextInt(3)+1, 1, 2);
                 enemies.removeIndex(i4);
                 healths.removeIndex(i4);
                 scales.removeIndex(i4);

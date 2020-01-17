@@ -88,14 +88,9 @@ public class Boss_battleShip {
 
     private boolean sound;
 
-    private UraniumCell uraniumCell;
-    private Bonus bonus;
-
-    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds, UraniumCell cell){
+    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds){
 
         this.shipBounds = shipBounds;
-
-        uraniumCell = cell;
 
         main = new Sprite();
         main_not_wrecked = new Sprite((Texture)assetManager.get("boss_ship/boss.png"));
@@ -439,10 +434,10 @@ public class Boss_battleShip {
                     stage2 = false;
                     deathAnimation = true;
                     for (int i = 0; i<10; i++) {
-                        bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
+                        Bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
                     }
                     GameUi.Score += 3000;
-                    uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
+                    UraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }
                 main.setPosition(bounds_body.getX(), bounds_body.getY());
                 main.setRotation(bounds_body.getRotation());
@@ -1127,9 +1122,4 @@ public class Boss_battleShip {
                 }
             }
     }
-
-    public void postConstruct(Bonus bonus){
-        this.bonus = bonus;
-    }
-
 }

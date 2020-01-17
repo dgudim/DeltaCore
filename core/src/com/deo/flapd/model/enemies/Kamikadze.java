@@ -38,13 +38,9 @@ public class Kamikadze {
 
     private float width, height;
 
-    private Bonus bonus;
-
     private static Array<Boolean> explosionQueue, remove_Enemy;
 
-    private UraniumCell uraniumCell;
-
-    public Kamikadze(UraniumCell uraniumCell, AssetManager assetManager, float width, float height, Polygon shipBounds, Bonus bonus, boolean easterEgg) {
+    public Kamikadze(AssetManager assetManager, float width, float height, Polygon shipBounds, boolean easterEgg) {
         bounds = shipBounds;
         this.height = height;
         this.width = width;
@@ -69,9 +65,6 @@ public class Kamikadze {
 
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
-
-        this.bonus = bonus;
-        this.uraniumCell = uraniumCell;
     }
 
     public void Spawn(float health, float scale, float explosionTimer) {
@@ -169,9 +162,9 @@ public class Kamikadze {
                 explosionEffect.setPosition(enemies.get(i4).x + enemies.get(i4).width / 2, enemies.get(i4).y + enemies.get(i4).height / 2);
                 explosionEffect.start();
                 if (random.nextBoolean()) {
-                    bonus.Spawn((int) (random.nextFloat() + 0.4) + 3, 1, enemies.get(i4));
+                    Bonus.Spawn(random.nextInt(4)+1, 1, enemies.get(i4));
                 }
-                uraniumCell.Spawn(enemies.get(i4), random.nextInt(5)+1, 1, 2);
+                UraniumCell.Spawn(enemies.get(i4), random.nextInt(5)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);

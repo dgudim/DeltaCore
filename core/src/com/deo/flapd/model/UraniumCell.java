@@ -16,12 +16,12 @@ import java.util.Random;
 public class UraniumCell {
 
     private Sprite cell;
-    private Array <Float> timers;
-    private Array <Rectangle> cells;
-    private Array <Float> degrees;
-    private Array <Integer> values;
-    private float width, height;
-    private Random random;
+    private static Array <Float> timers;
+    private static Array <Rectangle> cells;
+    private static Array <Float> degrees;
+    private static Array <Integer> values;
+    private static float width, height;
+    private static Random random;
     private float uiScaling;
 
     public UraniumCell(AssetManager assetManager, float width, float height, float uiScaling){
@@ -39,23 +39,11 @@ public class UraniumCell {
         this.uiScaling = uiScaling;
     }
 
-    public void Spawn (Rectangle originEnemy, int count, float scale, float timer){
-        for(int i = 0; i<count; i++) {
-            Rectangle cell = new Rectangle();
-
-            cell.x = originEnemy.getX() + originEnemy.width / 2 - width/2;
-            cell.y = originEnemy.getY() + originEnemy.height / 2 - height/2;
-
-            cell.setSize(width*scale, height*scale);
-
-            cells.add(cell);
-            timers.add(timer*(random.nextFloat()+0.2f));
-            degrees.add(random.nextFloat()*360);
-            values.add((random.nextInt(3))+1);
-        }
+    public static void Spawn (Rectangle originEnemy, int count, float scale, float timer){
+        Spawn(originEnemy.getX() + originEnemy.width / 2 - width/2, originEnemy.getY() + originEnemy.height / 2 - height/2, count, scale, timer);
     }
 
-    public void Spawn (Float x, float y, int count, float scale, float timer){
+    public static void Spawn (float x, float y, int count, float scale, float timer){
         for(int i = 0; i<count; i++) {
             Rectangle cell = new Rectangle();
 
@@ -73,10 +61,10 @@ public class UraniumCell {
 
     public void draw(SpriteBatch batch, boolean is_paused){
         for(int i = 0; i<cells.size; i++){
-             Rectangle cell = cells.get(i);
-             float degree = degrees.get(i);
-             float timer = timers.get(i);
-             float pack_level = values.get(i);
+            Rectangle cell = cells.get(i);
+            float degree = degrees.get(i);
+            float timer = timers.get(i);
+            float pack_level = values.get(i);
 
             this.cell.setPosition(cell.x, cell.y);
             this.cell.setSize(cell.width, cell.height);

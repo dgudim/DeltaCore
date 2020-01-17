@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Checkpoint;
+import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.BasicEnemy;
 import com.deo.flapd.model.Bullet;
@@ -78,6 +79,8 @@ public class GameScreen implements Screen{
 
     private Bonus bonus;
 
+    private Drops drops;
+
     private Executor executor;
 
     private ShaderProgram shaderProgram;
@@ -112,15 +115,13 @@ public class GameScreen implements Screen{
 
         uraniumCell = new UraniumCell(assetManager, 96, 96, prefs.getFloat("ui"));
 
-        boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds(), uraniumCell);
+        boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
 
-        boss_evilEye = new Boss_evilEye(assetManager, ship.getBounds(), uraniumCell);
+        boss_evilEye = new Boss_evilEye(assetManager, ship.getBounds());
 
         bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip, boss_evilEye);
 
-        boss_battleShip.postConstruct(bonus);
-
-        boss_evilEye.postConstruct(bonus);
+        drops = new Drops(assetManager, 96, 96, prefs.getFloat("ui"));
 
         gameUi = new GameUi(game, batch, assetManager, ship, newGame);
 
@@ -133,12 +134,12 @@ public class GameScreen implements Screen{
                 break;
         }
 
-        enemy = new BasicEnemy(uraniumCell, assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, prefs.getBoolean("easterEgg"));
-        enemy_sniper = new SniperEnemy(uraniumCell, assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, bonus, prefs.getBoolean("easterEgg"));
-        enemy_shotgun = new ShotgunEnemy(uraniumCell, assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, bonus, prefs.getBoolean("easterEgg"));
-        kamikadze = new Kamikadze(uraniumCell, assetManager,348, 192, ship.getBounds(), bonus, prefs.getBoolean("easterEgg"));
+        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, prefs.getBoolean("easterEgg"));
+        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, prefs.getBoolean("easterEgg"));
+        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, prefs.getBoolean("easterEgg"));
+        kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), prefs.getBoolean("easterEgg"));
 
-        meteorite = new Meteorite(uraniumCell, assetManager, bonus, newGame, prefs.getBoolean("easterEgg"));
+        meteorite = new Meteorite(assetManager, newGame, prefs.getBoolean("easterEgg"));
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
@@ -155,7 +156,7 @@ public class GameScreen implements Screen{
         ShaderProgram.pedantic = false;
         shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/glow.vertex"), Gdx.files.internal("shaders/glow.fragment"));
         DUtils.log("\n shader compiler log: " + shaderProgram.getLog() + " ==end of log== " + "\n");
-        if (prefs.getBoolean("shaders")) {
+        if (prefs.getBoolean("shader")) {
             batch.setShader(shaderProgram);
         }
     }
@@ -208,6 +209,8 @@ public class GameScreen implements Screen{
             checkpoint.draw(batch, is_paused);
 
             bonus.draw(batch, is_paused);
+
+            drops.draw(batch, is_paused);
 
             ship.DrawShield(is_paused);
 
@@ -281,65 +284,72 @@ public class GameScreen implements Screen{
 
     ship.dispose();
 
-    assetManager.unload("bg_layer1.png");
-    assetManager.unload("bg_layer2.png");
-    assetManager.unload("bg_layer3.png");
-    assetManager.unload("ship.png");
-    assetManager.unload("ColdShield.png");
-    assetManager.unload("HotShield.png");
-    assetManager.unload("pew3.png");
-    assetManager.unload("pew.png");
-    assetManager.unload("trainingbot.png");
-    assetManager.unload("enemy_shotgun.png");
-    assetManager.unload("enemy_sniper.png");
-    assetManager.unload("pew2.png");
-    assetManager.unload("Meteo.png");
-    assetManager.unload("atomic_bomb.png");
+    if(!prefs.getBoolean("fastLoading")) {
+        assetManager.unload("bg_layer1.png");
+        assetManager.unload("bg_layer2.png");
+        assetManager.unload("bg_layer3.png");
+        assetManager.unload("ship.png");
+        assetManager.unload("ColdShield.png");
+        assetManager.unload("HotShield.png");
+        assetManager.unload("pew3.png");
+        assetManager.unload("pew.png");
+        assetManager.unload("trainingbot.png");
+        assetManager.unload("enemy_shotgun.png");
+        assetManager.unload("enemy_sniper.png");
+        assetManager.unload("pew2.png");
+        assetManager.unload("Meteo.png");
+        assetManager.unload("atomic_bomb.png");
 
-    assetManager.unload("bonus_bullets.png");
-    assetManager.unload("bonus_health.png");
-    assetManager.unload("bonus_part.png");
-    assetManager.unload("bonus_shield.png");
-    assetManager.unload("bonus_boss.png");
+        assetManager.unload("bonus_bullets.png");
+        assetManager.unload("bonus_health.png");
+        assetManager.unload("bonus_part.png");
+        assetManager.unload("bonus_shield.png");
+        assetManager.unload("bonus_boss.png");
 
-    assetManager.unload("boss_ship/boss.png");
-    assetManager.unload("boss_ship/boss_dead.png");
-    assetManager.unload("boss_ship/bullet_blue.png");
-    assetManager.unload("boss_ship/bullet_red.png");
-    assetManager.unload("boss_ship/bullet_red_thick.png");
-    assetManager.unload("boss_ship/cannon1.png");
-    assetManager.unload("boss_ship/cannon2.png");
-    assetManager.unload("boss_ship/upperCannon_part1.png");
-    assetManager.unload("boss_ship/upperCannon_part2.png");
-    assetManager.unload("boss_ship/bigCannon.png");
+        assetManager.unload("boss_ship/boss.png");
+        assetManager.unload("boss_ship/boss_dead.png");
+        assetManager.unload("boss_ship/bullet_blue.png");
+        assetManager.unload("boss_ship/bullet_red.png");
+        assetManager.unload("boss_ship/bullet_red_thick.png");
+        assetManager.unload("boss_ship/cannon1.png");
+        assetManager.unload("boss_ship/cannon2.png");
+        assetManager.unload("boss_ship/upperCannon_part1.png");
+        assetManager.unload("boss_ship/upperCannon_part2.png");
+        assetManager.unload("boss_ship/bigCannon.png");
 
-    assetManager.unload("uraniumCell.png");
+        assetManager.unload("uraniumCell.png");
 
-    assetManager.unload("checkpoint.png");
-    assetManager.unload("checkpoint_green.png");
+        assetManager.unload("checkpoint.png");
+        assetManager.unload("checkpoint_green.png");
 
-    assetManager.unload("bu1.png");
-    assetManager.unload("bu2.png");
-    assetManager.unload("bu3.png");
+        assetManager.unload("bu1.png");
+        assetManager.unload("bu2.png");
+        assetManager.unload("bu3.png");
 
-    assetManager.unload("cat.png");
-    assetManager.unload("cat2.png");
-    assetManager.unload("cat_meteorite.png");
-    assetManager.unload("cat_bomb.png");
-    assetManager.unload("whiskas.png");
-    assetManager.unload("laser.png");
+        assetManager.unload("cat.png");
+        assetManager.unload("cat2.png");
+        assetManager.unload("cat_meteorite.png");
+        assetManager.unload("cat_bomb.png");
+        assetManager.unload("whiskas.png");
+        assetManager.unload("laser.png");
 
-    assetManager.unload("boss_evil/evil_cannon.png");
-    assetManager.unload("boss_evil/evil_center.png");
-    assetManager.unload("boss_evil/evil_down_left.png");
-    assetManager.unload("boss_evil/evil_down_right.png");
-    assetManager.unload("boss_evil/evil_up_left.png");
-    assetManager.unload("boss_evil/evil_up_right.png");
-    assetManager.unload("boss_evil/evil_left.png");
-    assetManager.unload("boss_evil/evil_right.png");
-    assetManager.unload("boss_evil/evil_down.png");
-    assetManager.unload("boss_evil/evil_up.png");
-    assetManager.unload("boss_evil/evil_base.png");
+        assetManager.unload("boss_evil/evil_cannon.png");
+        assetManager.unload("boss_evil/evil_center.png");
+        assetManager.unload("boss_evil/evil_down_left.png");
+        assetManager.unload("boss_evil/evil_down_right.png");
+        assetManager.unload("boss_evil/evil_up_left.png");
+        assetManager.unload("boss_evil/evil_up_right.png");
+        assetManager.unload("boss_evil/evil_left.png");
+        assetManager.unload("boss_evil/evil_right.png");
+        assetManager.unload("boss_evil/evil_down.png");
+        assetManager.unload("boss_evil/evil_up.png");
+        assetManager.unload("boss_evil/evil_base.png");
+
+        assetManager.unload("bonus_warp.png");
+        assetManager.unload("bonus_laser.png");
+        assetManager.unload("Circuit_Board.png");
+        assetManager.unload("crystal.png");
+    }
 
     boss_battleShip.dispose();
     boss_evilEye.dispose();
@@ -347,6 +357,7 @@ public class GameScreen implements Screen{
     music.dispose();
 
     bonus.dispose();
+    drops.dispose();
     uraniumCell.dispose();
     batch.setShader(null);
     shaderProgram.dispose();

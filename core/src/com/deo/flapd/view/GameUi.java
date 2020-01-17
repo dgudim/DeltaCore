@@ -81,7 +81,7 @@ public class GameUi{
 
     private boolean showFps;
 
-    private float lastFps, maxFps, minFps;
+    private float lastFps;
 
     private Preferences prefs;
 
@@ -467,15 +467,17 @@ public class GameUi{
         pause_skin.dispose();
         touchpad_skin.dispose();
 
-        assetManager.unload("firebutton.png");
-        assetManager.unload("weaponbutton.png");
-        assetManager.unload("pause.png");
-        assetManager.unload("level score indicator.png");
-        assetManager.unload("health indicator.png");
-        assetManager.unload("exit.png");
-        assetManager.unload("money_display.png");
-        assetManager.unload("resume.png");
-        assetManager.unload("restart.png");
+        if(!prefs.getBoolean("fastLoading")){
+            assetManager.unload("firebutton.png");
+            assetManager.unload("weaponbutton.png");
+            assetManager.unload("pause.png");
+            assetManager.unload("level score indicator.png");
+            assetManager.unload("health indicator.png");
+            assetManager.unload("exit.png");
+            assetManager.unload("money_display.png");
+            assetManager.unload("resume.png");
+            assetManager.unload("restart.png");
+        }
 
         knob.dispose();
         touch_bg.dispose();

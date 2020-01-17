@@ -101,7 +101,7 @@ public class Checkpoint {
             checkpoint_blue.draw(batch);
         }
 
-        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle())){
+        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && GameUi.Health>0){
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();

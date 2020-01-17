@@ -28,8 +28,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.Random;
-
 public class MenuScreen implements Screen{
 
     private float number;
@@ -97,7 +95,8 @@ public class MenuScreen implements Screen{
 
     private CheckBox fps;
     private CheckBox transparency;
-    private CheckBox shaders;
+    private CheckBox shader;
+    private CheckBox fastLoading;
     private Slider uiScaling;
     private Slider musicVolume;
     private Slider soundEffectsVolume;
@@ -361,7 +360,8 @@ public class MenuScreen implements Screen{
 
         fps = new CheckBox("",checkBoxStyle);
         transparency = new CheckBox("",checkBoxStyle);
-        shaders = new CheckBox("",checkBoxStyle);
+        shader = new CheckBox("",checkBoxStyle);
+        fastLoading = new CheckBox("",checkBoxStyle);
 
         uiScaling = new Slider(1, 2, 0.1f, false, sliderBarStyle);
         musicVolume = new Slider(0, 1, 0.1f, false, sliderBarStyle2);
@@ -374,7 +374,8 @@ public class MenuScreen implements Screen{
         difficultyControl.setValue(prefs.getFloat("difficulty"));
         fps.setChecked(prefs.getBoolean("showFps"));
         transparency.setChecked(prefs.getBoolean("transparency"));
-        shaders.setChecked(prefs.getBoolean("shaders"));
+        shader.setChecked(prefs.getBoolean("shader"));
+        fastLoading.setChecked(prefs.getBoolean("fastLoading"));
 
         fps.setBounds(13, 290, 50, 50);
         uiScaling.setBounds(10, 220, 250, 40);
@@ -382,10 +383,12 @@ public class MenuScreen implements Screen{
         difficultyControl.setBounds(20, 340, 170, 25);
         musicVolume.setBounds(310, 400, 170, 25);
         transparency.setBounds(13,100,50,50);
-        shaders.setBounds(13, 150, 50, 50);
+        shader.setBounds(13, 150, 50, 50);
+        fastLoading.setBounds(200, 290, 50, 50);
         fps.getImage().setScaling(Scaling.fill);
         transparency.getImage().setScaling(Scaling.fill);
-        shaders.getImage().setScaling(Scaling.fill);
+        shader.getImage().setScaling(Scaling.fill);
+        fastLoading.getImage().setScaling(Scaling.fill);
 
         Menu = new Stage(viewport, batch);
 
@@ -415,7 +418,8 @@ public class MenuScreen implements Screen{
         soundEffectsVolume.setVisible(false);
         difficultyControl.setVisible(false);
         transparency.setVisible(false);
-        shaders.setVisible(false);
+        shader.setVisible(false);
+        fastLoading.setVisible(false);
 
         Menu.addActor(fps);
         Menu.addActor(uiScaling);
@@ -423,7 +427,8 @@ public class MenuScreen implements Screen{
         Menu.addActor(soundEffectsVolume);
         Menu.addActor(difficultyControl);
         Menu.addActor(transparency);
-        Menu.addActor(shaders);
+        Menu.addActor(shader);
+        Menu.addActor(fastLoading);
 
         Menu.addActor(newGame_disabled);
         Menu.addActor(continue_disabled);
@@ -764,13 +769,21 @@ public class MenuScreen implements Screen{
             }
         });
 
-        shaders.addListener(new ChangeListener() {
+        shader.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                prefs.putBoolean("shaders", shaders.isChecked());
+                prefs.putBoolean("shader", shader.isChecked());
                 prefs.flush();
             }
         });
+
+        fastLoading.addListener(new ChangeListener() {
+               @Override
+               public void changed(ChangeEvent event, Actor actor) {
+                   prefs.putBoolean("fastLoading", fastLoading.isChecked());
+                   prefs.flush();
+               }
+           });
 
         Engine1.addListener(new InputListener(){
 
@@ -1165,7 +1178,7 @@ public class MenuScreen implements Screen{
                 prefs.putBoolean("easterEgg", easterEgg);
                 prefs.putBoolean("easterEgg_unlocked", true);
                 if(settings && !easterEgg_unlocked){
-                    shaders.setVisible(true);
+                    shader.setVisible(true);
                 }
                 easterEgg_unlocked = true;
                 prefs.flush();
@@ -1592,19 +1605,20 @@ public class MenuScreen implements Screen{
             font_main.draw(batch, "Music: " + MusicVolume + "%", 95, 420, 132, 1, false);
             font_main.draw(batch, "Sound effects: " + SoundVolume + "%", 95, 370, 132, 1, false);
             font_main.draw(batch, "Show Fps", 65, 320, 132, 1, false);
+            font_main.draw(batch, "Fast Loading", 280, 320, 132, 1, false);
             uiScale = (int) (uiScaling.getValue() * 100);
             font_main.draw(batch, "Ui Scaling: " + uiScale + " %", 325, 263, 132, 1, false);
             font_main.draw(batch, "(In game)", 325, 233, 132, 1, false);
             font_main.draw(batch, "Semi-transparent UI", 140, 128, 132, 1, false);
             if(easterEgg_unlocked) {
-                if(shaders.isChecked()) {
+                if(shader.isChecked()) {
                     font_main.setColor(new Color().fromHsv(millis3, 1, 1).add(0,0,0,1));
                     millis3+=80*delta;
                     if(millis3>350){
                         millis3 = 0;
                     }
                 }
-                    font_main.draw(batch, "Enable rainbow shader", 153, 178, 132, 1, false);
+                    font_main.draw(batch, "Enable cool shader", 131, 178, 132, 1, false);
             }
         }
 
@@ -1780,7 +1794,8 @@ public class MenuScreen implements Screen{
            switch (type){
                case(0):
                    fps.setVisible(false);
-                   shaders.setVisible(false);
+                   shader.setVisible(false);
+                   fastLoading.setVisible(false);
                    uiScaling.setVisible(false);
                    musicVolume.setVisible(false);
                    soundEffectsVolume.setVisible(false);
@@ -1806,8 +1821,9 @@ public class MenuScreen implements Screen{
                    Hide(0);
                    fps.setVisible(true);
                    if(easterEgg_unlocked) {
-                       shaders.setVisible(true);
+                       shader.setVisible(true);
                    }
+                   fastLoading.setVisible(true);
                    uiScaling.setVisible(true);
                    musicVolume.setVisible(true);
                    soundEffectsVolume.setVisible(true);

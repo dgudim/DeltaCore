@@ -218,12 +218,12 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void dispose() {
-
-        assetManager.unload("GameOverScreenButtons/game_over.png");
-        assetManager.unload("GameOverScreenButtons/menu_e.png");
-        assetManager.unload("GameOverScreenButtons/menu_d.png");
-        assetManager.unload("GameOverScreenButtons/restart_e.png");
-        assetManager.unload("GameOverScreenButtons/restart_d.png");
-
+        if(!prefs.getBoolean("fastLoading")) {
+            assetManager.unload("GameOverScreenButtons/game_over.png");
+            assetManager.unload("GameOverScreenButtons/menu_e.png");
+            assetManager.unload("GameOverScreenButtons/menu_d.png");
+            assetManager.unload("GameOverScreenButtons/restart_e.png");
+            assetManager.unload("GameOverScreenButtons/restart_d.png");
+        }
     }
 }

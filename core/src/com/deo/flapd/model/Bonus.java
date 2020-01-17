@@ -22,13 +22,13 @@ import java.util.Random;
 public class Bonus {
 
     private Polygon bounds;
-    private Array<Rectangle> bonuses;
-    private Array<Integer> types;
-    private Array<Float> anglesY;
+    private static Array<Rectangle> bonuses;
+    private static Array<Integer> types;
+    private static Array<Float> anglesY;
     private Array <ParticleEffect> explosions;
     private Sprite bonus_health, bonus_shield, bonus_part, bonus_bullets, boss;
 
-    private float width, height;
+    private static float width, height;
 
     private BitmapFont font_text;
 
@@ -37,7 +37,7 @@ public class Bonus {
     private Preferences prefs;
 
     private Texture bonus_bullets_t;
-    private Random random;
+    private static Random random;
 
     private Boss_battleShip boss_battleShip;
     private Boss_evilEye boss_evilEye;
@@ -73,21 +73,11 @@ public class Bonus {
         this.boss_evilEye = boss_evilEye;
     }
 
-    public void Spawn(int type, float scale, Rectangle enemy) {
-
-            Rectangle bonus = new Rectangle();
-
-            bonus.x = enemy.getX()+enemy.width/2-width/2;
-            bonus.y = enemy.getY()+enemy.height/2-height/2;
-
-            bonus.setSize(width*scale, height*scale);
-
-            bonuses.add(bonus);
-            types.add(type);
-            anglesY.add(random.nextFloat()*2-1);
+    public static void Spawn(int type, float scale, Rectangle enemy) {
+            Spawn(type, scale, enemy.getX()+enemy.width/2-width/2, enemy.getY()+enemy.height/2-height/2);
     }
 
-    public void Spawn(int type, float scale, float x, float y) {
+    public static void Spawn(int type, float scale, float x, float y) {
 
         Rectangle bonus = new Rectangle();
 
@@ -154,16 +144,16 @@ public class Bonus {
                 if(bonus.overlaps(bounds.getBoundingRectangle())){
                     if(type == 1){
                         removeBonus(i, true);
-                        if(GameUi.Shield<=80) {
-                            GameUi.Shield += 50;
+                        if(GameUi.Shield<=90) {
+                            GameUi.Shield += 10;
                         }else{
                             GameUi.Shield = 100;
                         }
                     }
                     if(type == 2){
                         removeBonus(i, true);
-                        if(GameUi.Health<=80) {
-                            GameUi.Health += 20;
+                        if(GameUi.Health<=90) {
+                            GameUi.Health += 10;
                         }else{
                             GameUi.Health = 100;
                         }
