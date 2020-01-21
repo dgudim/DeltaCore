@@ -89,6 +89,9 @@ public class MenuScreen implements Screen{
     private Image Cannon2;
     private Image Cannon3;
 
+    private Image trelloLink;
+    private Image gitHubLink;
+
     private Texture infoBg;
 
     private Image Lamp;
@@ -116,6 +119,7 @@ public class MenuScreen implements Screen{
     private boolean play;
     private boolean Music;
     private boolean Shop;
+    private boolean more;
     public static boolean Sound;
     private float MusicVolume;
     public static float SoundVolume;
@@ -284,6 +288,9 @@ public class MenuScreen implements Screen{
         upgrade = new Image((Texture)assetManager.get("shop/upgrade.png"));
         upgradeDisabled = new Image((Texture)assetManager.get("shop/upgradeDisabled.png"));
 
+        trelloLink = new Image((Texture)assetManager.get("trello.png"));
+        gitHubLink = new Image((Texture)assetManager.get("gitHub.png"));
+
         play_disabled.setBounds(545, 325, 250, 75);
         online_disabled.setBounds(545, 245, 250, 75);
         settings_disabled.setBounds(545, 165, 250, 75);
@@ -320,6 +327,9 @@ public class MenuScreen implements Screen{
         noDisabled.setBounds(-100, -100, 83.2f, 57.2f);
         upgrade.setBounds(-100, -100, 280.8f, 57.2f);
         upgradeDisabled.setBounds(-100, -100, 280.8f, 57.2f);
+
+        trelloLink.setBounds(15, 350, 50, 50);
+        gitHubLink.setBounds(15, 410, 50, 50);
 
         CategoryEngine.setBounds(245, 400, 60, 46);
         CategoryGun.setBounds(337, 405, 70, 38);
@@ -429,6 +439,8 @@ public class MenuScreen implements Screen{
         Menu.addActor(transparency);
         Menu.addActor(shader);
         Menu.addActor(fastLoading);
+        Menu.addActor(trelloLink);
+        Menu.addActor(gitHubLink);
 
         Menu.addActor(newGame_disabled);
         Menu.addActor(continue_disabled);
@@ -478,6 +490,9 @@ public class MenuScreen implements Screen{
         Cannon2.setVisible(false);
         Cannon3.setVisible(false);
 
+        trelloLink.setVisible(false);
+        gitHubLink.setVisible(false);
+
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
@@ -524,6 +539,7 @@ public class MenuScreen implements Screen{
                     info = false;
                     settings = false;
                     Shop = false;
+                    more = false;
                     Hide(2);
                 }
             }
@@ -561,6 +577,7 @@ public class MenuScreen implements Screen{
                     info = false;
                     play = false;
                     Shop = false;
+                    more = false;
                     Hide(1);
                 }
             }
@@ -583,6 +600,7 @@ public class MenuScreen implements Screen{
                     settings = false;
                     play = false;
                     Shop = false;
+                    more = false;
                     Hide(0);
                 }
             }
@@ -598,6 +616,17 @@ public class MenuScreen implements Screen{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 more_enabled.setVisible(false);
+                if (more){
+                    more = false;
+                    Hide(0);
+                }else {
+                    more = true;
+                    info = false;
+                    settings = false;
+                    play = false;
+                    Shop = false;
+                    Hide(6);
+                }
             }
         });
 
@@ -746,6 +775,7 @@ public class MenuScreen implements Screen{
                     info = false;
                     settings = false;
                     play = false;
+                    more = false;
                     switch(current_category){
                         case(1):
                             Hide(3);
@@ -1182,6 +1212,30 @@ public class MenuScreen implements Screen{
                 }
                 easterEgg_unlocked = true;
                 prefs.flush();
+            }
+        });
+
+        trelloLink.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.net.openURI("https://trello.com/b/FowZ4XAO/delta-core");
+            }
+        });
+
+        gitHubLink.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.net.openURI("https://github.com/dgudim/DeltaCore_");
             }
         });
 
@@ -1622,6 +1676,14 @@ public class MenuScreen implements Screen{
             }
         }
 
+        if(more){
+            batch.draw(infoBg, 5, 65, 531, 410);
+            font_main.setColor(Color.valueOf("#0FE500"));
+            font_main.getData().setScale(0.45f);
+            font_main.draw(batch, "Game source code", 110, 438, 132, 1, false);
+            font_main.draw(batch, "Official Trello list of planned features", 232.5f, 378, 132, 1, false);
+        }
+
         if(Music) {
 
             if (millis > 10) {
@@ -1763,6 +1825,9 @@ public class MenuScreen implements Screen{
         assetManager.unload("shop/Cannon2.png");
         assetManager.unload("shop/Cannon3.png");
 
+        assetManager.unload("trello.png");
+        assetManager.unload("gitHub.png");
+
         Menu.dispose();
         ShopStage.dispose();
         music.dispose();
@@ -1816,6 +1881,8 @@ public class MenuScreen implements Screen{
                    Cannon1.setVisible(false);
                    Cannon2.setVisible(false);
                    Cannon3.setVisible(false);
+                   trelloLink.setVisible(false);
+                   gitHubLink.setVisible(false);
                    break;
                case(1):
                    Hide(0);
@@ -1868,6 +1935,11 @@ public class MenuScreen implements Screen{
                    yesDisabled.setVisible(true);
                    noDisabled.setVisible(true);
                    upgradeDisabled.setVisible(true);
+                   break;
+               case(6):
+                   Hide(0);
+                   trelloLink.setVisible(true);
+                   gitHubLink.setVisible(true);
                    break;
            }
     }

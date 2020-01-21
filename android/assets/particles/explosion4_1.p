@@ -134,7 +134,7 @@ timeline1: 1.0
 - Tint - 
 colorsCount: 6
 colors0: 1.0
-colors1: 0.0
+colors1: 0.30588236
 colors2: 0.0
 colors3: 1.0
 colors4: 0.0
@@ -164,3 +164,4 @@ premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
 particle_square.jpg
+

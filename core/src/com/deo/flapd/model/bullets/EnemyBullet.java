@@ -57,7 +57,6 @@ public class EnemyBullet {
         degrees = new Array<>();
         explosionQueue = new Array<>();
         remove_Bullet = new Array<>();
-
         fires = new Array<>();
         explosions = new Array<>();
 
@@ -132,7 +131,6 @@ public class EnemyBullet {
                     removeBullet(i, false);
                 }
             }
-
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);

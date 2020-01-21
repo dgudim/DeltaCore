@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
+import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
@@ -243,6 +244,7 @@ public class Boss_evilEye {
                     if(random.nextBoolean()) {
                         Bonus.Spawn(random.nextInt(5), 1, cannonBounds.get(i));
                     }
+                        Drops.drop(bodyBounds, 1, 2, 3);
                     health.set(i, -100f);
                     cannonBounds.get(i).setSize(0).setPosition(-100, -100);
                     GameUi.Score += 100;
@@ -346,6 +348,7 @@ public class Boss_evilEye {
                             UraniumCell.Spawn(bodyBounds.getX() + 64, bodyBounds.getY() + 64, random.nextInt(20)+5, 1, 1);
                             for (int i3 = 0; i3<5; i3++) {
                                 Bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
+                                Drops.drop(bodyBounds, 1, 2, 5);
                             }
                             laserSaw.stop();
                             reset();

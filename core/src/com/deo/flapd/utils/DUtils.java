@@ -3,8 +3,14 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
+
+import java.util.Random;
 
 public abstract class DUtils {
+
+    private static Random random;
+
     public static void log(String contents){
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
             FileHandle file = Gdx.files.external("Android/data/!DeltaCore/logFull.txt");
@@ -26,5 +32,9 @@ public abstract class DUtils {
             FileHandle file = Gdx.files.external("!DeltaCore/log.txt");
             file.writeString("", false);
         }
+    }
+
+    public static int getRandomInRange(int min, int max){
+        return(MathUtils.random(max-min)+min);
     }
 }

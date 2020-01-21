@@ -170,7 +170,7 @@ public class ShotgunEnemy {
                 if(random.nextBoolean()) {
                     Bonus.Spawn(random.nextInt(3), 1, enemies.get(i4));
                 }
-                    Drops.drop(enemies.get(i4), 1, 2, 1);
+                    Drops.drop(enemies.get(i4), 1, 2, 0);
                 UraniumCell.Spawn(enemies.get(i4), random.nextInt(4)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);

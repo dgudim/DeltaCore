@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
+import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
@@ -433,9 +434,10 @@ public class Boss_battleShip {
                     is_spawned = false;
                     stage2 = false;
                     deathAnimation = true;
-                    for (int i = 0; i<10; i++) {
+                    for (int i = 0; i<5; i++) {
                         Bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
                     }
+                        Drops.drop(bounds_body.getBoundingRectangle(), 1, 2, 4);
                     GameUi.Score += 3000;
                     UraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }

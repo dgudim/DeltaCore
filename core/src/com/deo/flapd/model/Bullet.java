@@ -2,6 +2,7 @@ package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,14 +47,21 @@ public class Bullet {
 
     private Sprite laser;
 
-    private int offset;
+    private static Rectangle laserTip;
 
-    public static Rectangle laserBounds;
+    private int type;
 
-    public Bullet(Texture bulletTexture, Texture laser, float spread, float shootingSpeedMultiplier, Polygon shipBounds, boolean newGame) {
+    public Bullet(AssetManager assetManager, int type, float spread, float shootingSpeedMultiplier, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
         this.spread = spread;
-        bullet = new Sprite(bulletTexture);
+
+        this.type = type;
+
+        switch (type) {
+            case(1): bullet = new Sprite((Texture) assetManager.get("bu1.png"));break;
+            case(2): bullet = new Sprite((Texture) assetManager.get("bu2.png"));break;
+            case(3): bullet = new Sprite((Texture) assetManager.get("bu3.png"));break;
+        }
 
         prefs = Gdx.app.getPreferences("Preferences");
 
@@ -75,12 +83,12 @@ public class Bullet {
 
         this.shootingSpeedMultiplier = shootingSpeedMultiplier;
 
-        this.laser = new Sprite(laser);
+        this.laser = new Sprite((Texture)assetManager.get("laser.png"));
 
         sound = MenuScreen.Sound;
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
 
-        laserBounds = new Rectangle();
+        laserTip = new Rectangle();
     }
 
     public void Spawn(float damage, float scale, boolean is_uranium) {
@@ -172,6 +180,8 @@ public class Bullet {
                 ParticleEffect explosionEffect = new ParticleEffect();
                 if(types.get(i4)){
                     explosionEffect.load(Gdx.files.internal("particles/explosion3_4.p"), Gdx.files.internal("particles"));
+                }else if(type == 3){
+                    explosionEffect.load(Gdx.files.internal("particles/explosion3.p"), Gdx.files.internal("particles"));
                 }else{
                     explosionEffect.load(Gdx.files.internal("particles/explosion3_2.p"), Gdx.files.internal("particles"));
                 }

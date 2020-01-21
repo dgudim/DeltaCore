@@ -14,7 +14,7 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
-public class EnemyBullet_shotgun {
+public class EnemyBullet_shotgun{
 
     public static Array<Rectangle> bullets;
     public static Array<Float> damages;
@@ -57,7 +57,6 @@ public class EnemyBullet_shotgun {
         explosions = new Array<>();
         explosionQueue = new Array<>();
         remove_Bullet = new Array<>();
-
         fires = new Array<>();
 
         random = new Random();
@@ -118,6 +117,7 @@ public class EnemyBullet_shotgun {
 
             fire.setPosition(bullet.getX() + bullet.width / 2, bullet.getY() + bullet.height / 2);
             fire.draw(batch);
+
             if(!is_paused) {
                 fire.update(Gdx.graphics.getDeltaTime());
             }else{
@@ -180,12 +180,12 @@ public class EnemyBullet_shotgun {
         bullets.clear();
         damages.clear();
         degrees.clear();
+        explosionQueue.clear();
+        remove_Bullet.clear();
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
-        explosionQueue.clear();
-        remove_Bullet.clear();
     }
 
     public static void removeBullet(int i, boolean explode){

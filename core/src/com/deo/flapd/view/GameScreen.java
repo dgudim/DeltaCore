@@ -121,18 +121,11 @@ public class GameScreen implements Screen{
 
         bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip, boss_evilEye);
 
-        drops = new Drops(assetManager, 96, 96, prefs.getFloat("ui"));
+        drops = new Drops(assetManager, 48, 48, prefs.getFloat("ui"));
 
         gameUi = new GameUi(game, batch, assetManager, ship, newGame);
 
-        switch (prefs.getInteger("current_cannon")){
-            case(1):bullet = new Bullet((Texture)assetManager.get("bu1.png"), (Texture)assetManager.get("laser.png"),0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
-                break;
-            case(2):bullet = new Bullet((Texture)assetManager.get("bu2.png"), (Texture)assetManager.get("laser.png"),0.4f*MathUtils.clamp((1.2f-prefs.getInteger("cannon2upgradeLevel")*0.1f), 0.7f, 1.5f), 0.8f, ship.getBounds(), newGame);
-                break;
-            case(3):bullet = new Bullet((Texture)assetManager.get("bu3.png"), (Texture)assetManager.get("laser.png"),0.4f*MathUtils.clamp((0.8f-prefs.getInteger("cannon3upgradeLevel")*0.1f), 0.7f, 1.5f), 1.3f, ship.getBounds(), newGame);
-                break;
-        }
+        bullet = new Bullet(assetManager, prefs.getInteger("current_cannon"),0.4f*MathUtils.clamp((1.5f-prefs.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
 
         enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, prefs.getBoolean("easterEgg"));
         enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, prefs.getBoolean("easterEgg"));
@@ -217,7 +210,6 @@ public class GameScreen implements Screen{
             uraniumCell.draw(batch, is_paused);
 
             gameUi.draw(is_paused, delta);
-
             if(!is_paused){
                 movement = (int)(movement + (200 * delta));
                 if(movement> 2880){
@@ -345,10 +337,45 @@ public class GameScreen implements Screen{
         assetManager.unload("boss_evil/evil_up.png");
         assetManager.unload("boss_evil/evil_base.png");
 
-        assetManager.unload("bonus_warp.png");
-        assetManager.unload("bonus_laser.png");
-        assetManager.unload("Circuit_Board.png");
-        assetManager.unload("crystal.png");
+        assetManager.unload("items/bonus_warp.png");
+        assetManager.unload("items/bonus_warp2.png");
+        assetManager.unload("items/bonus_laser.png");
+        assetManager.unload("items/Circuit_Board.png");
+        assetManager.unload("items/crystal.png");
+        assetManager.unload("items/redCrystal.png");
+        assetManager.unload("items/core_yellow.png");
+        assetManager.unload("items/ore.png");
+        assetManager.unload("items/warp_ore.png");
+        assetManager.unload("items/warp_core.png");
+        assetManager.unload("items/cable.png");
+        assetManager.unload("items/orangeCrystal.png");
+        assetManager.unload("items/cyanCrystal.png");
+        assetManager.unload("items/purpleCrystal.png");
+        assetManager.unload("items/greenCrystal.png");
+        assetManager.unload("items/advancedChip.png");
+        assetManager.unload("items/craftingCard.png");
+        assetManager.unload("items/aiCard.png");
+        assetManager.unload("items/memoryCard.png");
+        assetManager.unload("items/card1.png");
+        assetManager.unload("items/card2.png");
+        assetManager.unload("items/energyCell.png");
+        assetManager.unload("items/fuelCell.png");
+        assetManager.unload("items/fuelCell2.png");
+        assetManager.unload("items/ironPlate.png");
+        assetManager.unload("items/ironPlate2.png");
+        assetManager.unload("items/cell1.png");
+        assetManager.unload("items/cell2.png");
+        assetManager.unload("items/screenCard.png");
+        assetManager.unload("items/processor1.png");
+        assetManager.unload("items/processor2.png");
+        assetManager.unload("items/processor3.png");
+        assetManager.unload("items/energyCrystal.png");
+        assetManager.unload("items/glassShard.png");
+        assetManager.unload("items/aiChip.png");
+        assetManager.unload("items/coolingUnit.png");
+        assetManager.unload("items/prism.png");
+        assetManager.unload("items/gun.png");
+        assetManager.unload("items/bolt.png");
     }
 
     boss_battleShip.dispose();

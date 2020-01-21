@@ -175,10 +175,45 @@ public class LoadingScreen implements Screen {
                 assetManager.load("boss_evil/evil_up.png", Texture.class);
                 assetManager.load("boss_evil/evil_base.png", Texture.class);
 
-                assetManager.load("bonus_warp.png", Texture.class);
-                assetManager.load("bonus_laser.png", Texture.class);
-                assetManager.load("Circuit_Board.png", Texture.class);
-                assetManager.load("crystal.png", Texture.class);
+                assetManager.load("items/bonus_warp.png", Texture.class);
+                assetManager.load("items/bonus_warp2.png", Texture.class);
+                assetManager.load("items/bonus_laser.png", Texture.class);
+                assetManager.load("items/Circuit_Board.png", Texture.class);
+                assetManager.load("items/crystal.png", Texture.class);
+                assetManager.load("items/redCrystal.png", Texture.class);
+                assetManager.load("items/core_yellow.png", Texture.class);
+                assetManager.load("items/ore.png", Texture.class);
+                assetManager.load("items/warp_ore.png", Texture.class);
+                assetManager.load("items/warp_core.png", Texture.class);
+                assetManager.load("items/cable.png", Texture.class);
+                assetManager.load("items/orangeCrystal.png", Texture.class);
+                assetManager.load("items/cyanCrystal.png", Texture.class);
+                assetManager.load("items/purpleCrystal.png", Texture.class);
+                assetManager.load("items/greenCrystal.png", Texture.class);
+                assetManager.load("items/advancedChip.png", Texture.class);
+                assetManager.load("items/craftingCard.png", Texture.class);
+                assetManager.load("items/aiCard.png", Texture.class);
+                assetManager.load("items/memoryCard.png", Texture.class);
+                assetManager.load("items/card1.png", Texture.class);
+                assetManager.load("items/card2.png", Texture.class);
+                assetManager.load("items/energyCell.png", Texture.class);
+                assetManager.load("items/fuelCell.png", Texture.class);
+                assetManager.load("items/fuelCell2.png", Texture.class);
+                assetManager.load("items/ironPlate.png", Texture.class);
+                assetManager.load("items/ironPlate2.png", Texture.class);
+                assetManager.load("items/cell1.png", Texture.class);
+                assetManager.load("items/cell2.png", Texture.class);
+                assetManager.load("items/screenCard.png", Texture.class);
+                assetManager.load("items/processor1.png", Texture.class);
+                assetManager.load("items/processor2.png", Texture.class);
+                assetManager.load("items/processor3.png", Texture.class);
+                assetManager.load("items/energyCrystal.png", Texture.class);
+                assetManager.load("items/glassShard.png", Texture.class);
+                assetManager.load("items/aiChip.png", Texture.class);
+                assetManager.load("items/coolingUnit.png", Texture.class);
+                assetManager.load("items/prism.png", Texture.class);
+                assetManager.load("items/gun.png", Texture.class);
+                assetManager.load("items/bolt.png", Texture.class);
                 break;
             case(2):
                 assetManager.load("greyishButton.png", Texture.class);
@@ -238,6 +273,9 @@ public class LoadingScreen implements Screen {
                 assetManager.load("shop/Cannon2.png", Texture.class);
                 assetManager.load("shop/Cannon3.png", Texture.class);
                 assetManager.load("bonus_part.png", Texture.class);
+
+                assetManager.load("trello.png", Texture.class);
+                assetManager.load("gitHub.png", Texture.class);
                 break;
         }
     }

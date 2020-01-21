@@ -144,6 +144,7 @@ public class Meteorite {
                         Bonus.Spawn(5, 1, meteorites.get(i4));
                     }
                 }
+                Drops.drop(meteorites.get(i4), 1,2, 1);
                 UraniumCell.Spawn(meteorites.get(i4), random.nextInt((int)(radiuses.get(i4)/17.5f))+2, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
