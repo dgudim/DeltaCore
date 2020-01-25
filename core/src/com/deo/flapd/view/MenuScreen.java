@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.utils.DUtils;
 
 public class MenuScreen implements Screen{
 
@@ -91,6 +92,7 @@ public class MenuScreen implements Screen{
 
     private Image trelloLink;
     private Image gitHubLink;
+    private Image secretCode;
 
     private Texture infoBg;
 
@@ -148,6 +150,8 @@ public class MenuScreen implements Screen{
     private boolean is2ndEngineUnlocked, is3rdEngineUnlocked, is2ndCannonUnlocked, is3rdCannonUnlocked;
 
     private boolean easterEgg, easterEgg_unlocked;
+
+    private int easterEggCounter;
 
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
 
@@ -290,6 +294,7 @@ public class MenuScreen implements Screen{
 
         trelloLink = new Image((Texture)assetManager.get("trello.png"));
         gitHubLink = new Image((Texture)assetManager.get("gitHub.png"));
+        secretCode = new Image((Texture)assetManager.get("secretCode.png"));
 
         play_disabled.setBounds(545, 325, 250, 75);
         online_disabled.setBounds(545, 245, 250, 75);
@@ -330,6 +335,7 @@ public class MenuScreen implements Screen{
 
         trelloLink.setBounds(15, 350, 50, 50);
         gitHubLink.setBounds(15, 410, 50, 50);
+        secretCode.setBounds(15, 290, 50, 50);
 
         CategoryEngine.setBounds(245, 400, 60, 46);
         CategoryGun.setBounds(337, 405, 70, 38);
@@ -441,6 +447,7 @@ public class MenuScreen implements Screen{
         Menu.addActor(fastLoading);
         Menu.addActor(trelloLink);
         Menu.addActor(gitHubLink);
+        Menu.addActor(secretCode);
 
         Menu.addActor(newGame_disabled);
         Menu.addActor(continue_disabled);
@@ -492,6 +499,7 @@ public class MenuScreen implements Screen{
 
         trelloLink.setVisible(false);
         gitHubLink.setVisible(false);
+        secretCode.setVisible(false);
 
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
@@ -1204,13 +1212,19 @@ public class MenuScreen implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                easterEgg = !easterEgg;
+                easterEggCounter++;
+                if(easterEggCounter>10){
+                    easterEgg = !easterEgg;
+                    if(!easterEgg_unlocked) {
+                        easterEgg_unlocked = true;
+                    }
+                    easterEggCounter = 0;
+                }
                 prefs.putBoolean("easterEgg", easterEgg);
                 prefs.putBoolean("easterEgg_unlocked", true);
                 if(settings && !easterEgg_unlocked){
                     shader.setVisible(true);
                 }
-                easterEgg_unlocked = true;
                 prefs.flush();
             }
         });
@@ -1239,7 +1253,7 @@ public class MenuScreen implements Screen{
             }
         });
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/main.ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/ambient"+DUtils.getRandomInRange(1, 5)+".ogg"));
 
     }
 
@@ -1628,18 +1642,19 @@ public class MenuScreen implements Screen{
 
         if(info){
             batch.draw(infoBg, 5,65, 531, 410);
-            font_main.getData().setScale(0.5f);
+            font_main.getData().setScale(0.48f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "ø¤º°°º¤ø,¸¸,ø¤º°[ Info ]°º¤ø,¸¸,ø¤º°°º¤ø", 5, 460, 531, 1, false);
             font_main.setColor(Color.valueOf("#00ff55"));
-            font_main.draw(batch, "Made by Deoxys", 5, 415, 531, 1, false);
+            font_main.draw(batch, "Made by Deoxys, Textures by DefenceX", 5, 415, 531, 1, false);
             font_main.setColor(Color.CYAN);
-            font_main.draw(batch, "Textures and Music by DefenseX", 5, 375, 531, 1, false);
+            font_main.draw(batch, "Music by Evan King", 5, 377, 531, 1, false);
+            font_main.setColor(Color.valueOf("#5DBCD2"));
             font_main.draw(batch, "Inspired by DefenseX, PetruCHIOrus", 5, 345, 531, 1, false);
             font_main.setColor(Color.valueOf("#cccc22"));
             font_main.draw(batch, "Testers: Misterowl, Kisliy_xleb", 5, 305, 531, 1, false);
             font_main.draw(batch, "LumixLab, Watermelon0guy, PYTHØN", 5, 275, 531, 1, false);
-            font_main.draw(batch, "Ha4upelmeney, Lukmanov", 5, 245, 531, 1, false);
+            font_main.draw(batch, "Ha4upelmeney, Lukmanov, ZerOn", 5, 245, 531, 1, false);
             font_main.setColor(Color.valueOf("#0FE500"));
             font_main.draw(batch, "Contributors: Volkov, DefenseX", 5, 210, 531, 1, false);
             font_main.draw(batch, "Zsingularityz", 5, 176, 531, 1, false);
@@ -1680,8 +1695,9 @@ public class MenuScreen implements Screen{
             batch.draw(infoBg, 5, 65, 531, 410);
             font_main.setColor(Color.valueOf("#0FE500"));
             font_main.getData().setScale(0.45f);
-            font_main.draw(batch, "Game source code", 110, 438, 132, 1, false);
-            font_main.draw(batch, "Official Trello list of planned features", 232.5f, 378, 132, 1, false);
+            font_main.draw(batch, "Game source code", 110, 440, 132, 1, false);
+            font_main.draw(batch, "Official Trello list of planned features", 232.5f, 380, 132, 1, false);
+            font_main.draw(batch, "Redeem secret code", 123, 320, 132, 1, false);
         }
 
         if(Music) {
@@ -1700,6 +1716,10 @@ public class MenuScreen implements Screen{
             millis2 = millis2 + 0.5f * delta;
 
             if(millis2 > 100){
+                music.dispose();
+                music = Gdx.audio.newMusic(Gdx.files.internal("music/ambient"+ DUtils.getRandomInRange(1, 5)+".ogg"));
+                music.setPosition(0);
+                music.setVolume(0);
                 music.play();
                 millis2 = 0;
             }
@@ -1737,7 +1757,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.2 Build 6", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.2 Build 7", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);
@@ -1827,6 +1847,7 @@ public class MenuScreen implements Screen{
 
         assetManager.unload("trello.png");
         assetManager.unload("gitHub.png");
+        assetManager.load("secretCode.png", Texture.class);
 
         Menu.dispose();
         ShopStage.dispose();
@@ -1883,6 +1904,7 @@ public class MenuScreen implements Screen{
                    Cannon3.setVisible(false);
                    trelloLink.setVisible(false);
                    gitHubLink.setVisible(false);
+                   secretCode.setVisible(false);
                    break;
                case(1):
                    Hide(0);
@@ -1940,6 +1962,7 @@ public class MenuScreen implements Screen{
                    Hide(0);
                    trelloLink.setVisible(true);
                    gitHubLink.setVisible(true);
+                   secretCode.setVisible(true);
                    break;
            }
     }

@@ -144,7 +144,7 @@ public class GameScreen implements Screen{
             Music = true;
         }
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/main2.ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+DUtils.getRandomInRange(1, 5)+".ogg"));
 
         ShaderProgram.pedantic = false;
         shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/glow.vertex"), Gdx.files.internal("shaders/glow.fragment"));
@@ -235,6 +235,10 @@ public class GameScreen implements Screen{
             millis2 = millis2 + 0.5f * Gdx.graphics.getDeltaTime();
 
             if(millis2 > 100){
+                music.dispose();
+                music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+DUtils.getRandomInRange(1, 5)+".ogg"));
+                music.setPosition(1);
+                music.setVolume(0);
                 music.play();
                 millis2 = 0;
             }

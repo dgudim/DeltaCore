@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class Drops {
 
-    private Sprite crystal, redCrystal, warp, laser, board, sunCore, ore, prism;
+    private Sprite ironPlate, bolt, ore, glassShard, coloringCrystal, ironPlateMK2, prism, cable, fuelCell, energyCell, fuelCellMK2, laserEmitter, warpShard, warpShardMK2, warpOre, warpCore, gun, orangeCrystal, cyanCrystal, purpleCrystal, greenCrystal, redCrystal, sunCore, energyCrystal, memoryCard, screenCard, bulkCard, bulkCardMK2, processor, processorMK2, processorMK3, storageCell, storageCellMK2, craftingCard, aiCard, circuitBoard, advancedChip, aiChip, coolingUnit;
     private static Array<Float> timers;
     private static Array <Rectangle> drops;
     private static Array <Float> degrees;
@@ -29,11 +29,11 @@ public class Drops {
     private Preferences prefs;
 
     public Drops(AssetManager assetManager, float width, float height, float uiScaling) {
-        crystal = new Sprite((Texture)assetManager.get("items/crystal.png"));
+        coloringCrystal = new Sprite((Texture)assetManager.get("items/crystal.png"));
         redCrystal = new Sprite((Texture)assetManager.get("items/redCrystal.png"));
-        warp = new Sprite((Texture)assetManager.get("items/bonus_warp.png"));
-        laser = new Sprite((Texture)assetManager.get("items/bonus_laser.png"));
-        board = new Sprite((Texture)assetManager.get("items/Circuit_Board.png"));
+        warpShard = new Sprite((Texture)assetManager.get("items/bonus_warp.png"));
+        laserEmitter = new Sprite((Texture)assetManager.get("items/bonus_laser.png"));
+        circuitBoard = new Sprite((Texture)assetManager.get("items/Circuit_Board.png"));
         sunCore = new Sprite((Texture)assetManager.get("items/core_yellow.png"));
         ore = new Sprite((Texture)assetManager.get("items/ore.png"));
         prism = new Sprite((Texture)assetManager.get("items/prism.png"));
@@ -123,7 +123,9 @@ public class Drops {
             }
             types.add(currentType);
     }
+
     public void draw(SpriteBatch batch, boolean is_paused) {
+        /*
         for (int i = 0; i < drops.size; i++) {
             Rectangle drop = drops.get(i);
             float degree = degrees.get(i);
@@ -200,6 +202,7 @@ public class Drops {
                 removeDrop(i);
             }
         }
+         */
     }
 
     private void removeDrop(int i){

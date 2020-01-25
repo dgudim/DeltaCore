@@ -276,6 +276,7 @@ public class LoadingScreen implements Screen {
 
                 assetManager.load("trello.png", Texture.class);
                 assetManager.load("gitHub.png", Texture.class);
+                assetManager.load("secretCode.png", Texture.class);
                 break;
         }
     }

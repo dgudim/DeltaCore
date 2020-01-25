@@ -65,7 +65,6 @@ public class Kamikadze {
         remove_Enemy = new Array<>();
 
         sound = MenuScreen.Sound;
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
     public void Spawn(float health, float scale, float explosionTimer) {
@@ -111,7 +110,7 @@ public class Kamikadze {
                 timers.set(i, timer);
             }
 
-            if (timer < ideal_timer/10) {
+            if (timer < 1) {
                 removeEnemy(i, true);
             }
 
