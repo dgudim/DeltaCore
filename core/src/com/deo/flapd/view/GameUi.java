@@ -81,6 +81,8 @@ public class GameUi{
 
     private boolean showFps;
 
+    private float lastFps, maxFps, minFps;
+
     private Preferences prefs;
 
     private Game game;
@@ -389,21 +391,24 @@ public class GameUi{
 
         }
 
-    public void draw(boolean is_paused) {
+    public void draw(boolean is_paused, float delta) {
         batch.end();
         stage.draw();
-        stage.act(Gdx.graphics.getDeltaTime());
+        stage.act(delta);
         batch.begin();
         font_numbers.getData().setScale(0.3f*uiScale);
         font_numbers.draw(batch, ""+Score, 537-263*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
         font_numbers.draw(batch, ""+money, (537-122)-(263+122)*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
         font_main.getData().setScale(0.27f*uiScale);
         font_main.draw(batch, "Difficulty: "+difficulty+"X", 544-263*(uiScale-1), 433-45*(uiScale-1), 100*uiScale,1, false);
-        font_main.getData().setScale(0.45f*uiScale);
 
         if(showFps) {
             font_main.setColor(Color.WHITE);
-            font_main.draw(batch, "Fps: " + Gdx.graphics.getFramesPerSecond(), 3, 475);
+            if(Math.abs(lastFps - 1/delta+1)>5) {
+                lastFps = 1 / delta;
+            }
+            font_main.getData().setScale(0.45f + 0.225f *(uiScale-1));
+            font_main.draw(batch, "Fps: " + String.format ("%.0f",lastFps), 3, 475);
         }
 
         if(is_paused) {
@@ -414,7 +419,7 @@ public class GameUi{
 
         if (is_paused){
             PauseStage.draw();
-            PauseStage.act(Gdx.graphics.getDeltaTime());
+            PauseStage.act(delta);
         }
 
         batch.begin();
@@ -431,7 +436,7 @@ public class GameUi{
         }
 
         if(exploded){
-            explosion.draw(batch, Gdx.graphics.getDeltaTime());
+            explosion.draw(batch, delta);
             if(explosion.isComplete()){
               game.setScreen(new GameOverScreen(game, batch, assetManager));
             }
@@ -455,7 +460,6 @@ public class GameUi{
     public void dispose(){
 
         stage.dispose();
-        PauseBg.dispose();
         PauseStage.dispose();
         font_main.dispose();
         font_numbers.dispose();

@@ -247,6 +247,16 @@ public class Boss_battleShip {
         healthBarStyle2.knobBefore = BarForeground4;
         healthBarStyle2.background = BarBackground2;
 
+        is_spawned = false;
+        animation2 = false;
+        animation3 = false;
+        stage2 = false;
+        offset = 0;
+        laserOffset = 0;
+        bodyOffset = 0;
+        millis2 = 0;
+        deathAnimation = false;
+
         health_cannon1 = new ProgressBar(0, 333, 0.01f, false, healthBarStyle);
         health_cannon2 = new ProgressBar(0, 333, 0.01f, false, healthBarStyle);
         health_cannon3 = new ProgressBar(0, 333, 0.01f, false, healthBarStyle);
@@ -429,7 +439,7 @@ public class Boss_battleShip {
                     stage2 = false;
                     deathAnimation = true;
                     for (int i = 0; i<10; i++) {
-                        bonus.Spawn(4, 1, posX + 278+i, posY + 86+i);
+                        bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
                     }
                     GameUi.Score += 3000;
                     uraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
@@ -630,7 +640,7 @@ public class Boss_battleShip {
                     bodyOffset++;
                 }
 
-                if(bounds_body.getBoundingRectangle().overlaps(shipBounds.getBoundingRectangle()) && !explodedCannons.get(0) && !stage2){
+                if(bounds_body.getBoundingRectangle().overlaps(shipBounds.getBoundingRectangle()) && !explodedCannons.get(0)){
                     if(shipBounds.getX()+76.8f>bounds_body.getX() && shipBounds.getX()+76.8f<bounds_body.getX()+30){
                         shipBounds.setPosition(bounds_body.getX()-76.8f, shipBounds.getY());
                     }

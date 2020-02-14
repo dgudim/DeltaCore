@@ -269,7 +269,6 @@ public class LoadingScreen implements Screen {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
-            DUtils.log("\n"+assetManager.getDiagnostics()+"\n");
             DUtils.log("\n"+fullStackTrace + "\n");
             DUtils.log("\n wiping data :) \n");
             prefs.clear();

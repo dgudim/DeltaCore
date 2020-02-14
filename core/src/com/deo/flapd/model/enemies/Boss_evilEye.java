@@ -43,13 +43,13 @@ public class Boss_evilEye {
 
     private Array<ParticleEffect> explosions;
 
-    private float rotation, posX, millis;
+    private float rotation, posX, millis, shieldSize;
 
     private Polygon shipBounds;
 
     private Random random;
 
-    private boolean is_spawned, is_in_position, stage2, is_laserFire;
+    private boolean is_spawned, is_in_position, stage2, is_laserFire, animation;
 
     private Array<ProgressBar> healthBars;
 
@@ -96,10 +96,12 @@ public class Boss_evilEye {
 
         bodyBounds = new Rectangle().setSize(128).setPosition(1000, 176);
         posX = 320;
+        shieldSize = 0;
         is_spawned = false;
         is_in_position = false;
         stage2 = false;
         is_laserFire = false;
+        animation = true;
 
         healthBarStyle = new ProgressBar.ProgressBarStyle();
         healthBarStyle2 = new ProgressBar.ProgressBarStyle();
@@ -176,6 +178,8 @@ public class Boss_evilEye {
         is_spawned = true;
         stage2 = false;
         is_laserFire = false;
+        animation = true;
+        shieldSize = 0;
         health.setSize(12);
         cannonBounds.setSize(10);
         degrees.setSize(10);
@@ -246,6 +250,12 @@ public class Boss_evilEye {
                     is_laserFire = true;
                     fire.start();
                 }
+                if(animation && !is_paused){
+                    shieldSize += 240 * delta;
+                    if(shieldSize>=192){
+                        animation = false;
+                    }
+                }
                 rotation = MathUtils.atan2( bodyBounds.getY() - shipBounds.getY() + 35.2f,  bodyBounds.getX() - shipBounds.getX() + 25.6f) * MathUtils.radiansToDegrees;
                 for(int i = 0; i < 300; i++){
                     laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth()/2 - MathUtils.cosDeg(rotation) * 2 * i, bodyBounds.getY() + 64 - laser.getHeight()/2 - MathUtils.sinDeg(rotation) * 2*i);
@@ -273,11 +283,11 @@ public class Boss_evilEye {
                             laser.draw(batch);
                         }
                         if(!is_paused) {
-                            if (GameUi.Shield >= 0.1f) {
-                                GameUi.Shield -= 0.1f;
+                            if (GameUi.Shield >= 0.2f) {
+                                GameUi.Shield -= 0.2f;
                                 SpaceShip.set_color(1, 0, 1, true);
                             } else {
-                                GameUi.Health = GameUi.Health - (0.1f - GameUi.Shield) / 2;
+                                GameUi.Health = GameUi.Health - (0.2f - GameUi.Shield) / 2;
                                 GameUi.Shield = 0;
                                 SpaceShip.set_color(1, 0, 1, false);
                             }
@@ -285,8 +295,8 @@ public class Boss_evilEye {
                         break;
                     }
                 }
-                shield.setPosition(bodyBounds.getX()-32, bodyBounds.getY()-32);
-                shield.setSize(192, 192);
+                shield.setPosition(bodyBounds.getX()+64-shieldSize/2, bodyBounds.getY()+64-shieldSize/2);
+                shield.setSize(shieldSize, shieldSize);
                 shield.setAlpha(MathUtils.clamp(health.get(11)/1000, 0,1));
                 shield.draw(batch);
                 healthBars.get(10).setPosition(bodyBounds.getX() + 24, bodyBounds.getY() - 15);
@@ -294,8 +304,8 @@ public class Boss_evilEye {
                 healthBars.get(10).draw(batch, 1);
                 healthBars.get(10).act(delta);
 
-                if(health.get(11) < 1000){
-                    health.set(11, health.get(11)+0.5f);
+                if(health.get(11) < 1000 && !is_paused){
+                    health.set(11, health.get(11)+90*delta);
                 }
             }
 
@@ -329,7 +339,7 @@ public class Boss_evilEye {
                             GameUi.Score += 3000;
                             uraniumCell.Spawn(bodyBounds.getX() + 64, bodyBounds.getY() + 64, random.nextInt(20)+5, 1, 1);
                             for (int i3 = 0; i3<5; i3++) {
-                                bonus.Spawn(4, 1, bodyBounds.getX() + i, bodyBounds.getY() + i);
+                                bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
                             }
                             reset();
                         }
@@ -375,6 +385,20 @@ public class Boss_evilEye {
                         removeBullet(i);
                     }
 
+                }
+            }
+            if(bodyBounds.overlaps(shipBounds.getBoundingRectangle())){
+                if(shipBounds.getX()+76.8f>bodyBounds.getX() && shipBounds.getX()+76.8f<bodyBounds.getX()+30){
+                    shipBounds.setPosition(bodyBounds.getX()-76.8f, shipBounds.getY());
+                }
+                if(shipBounds.getY()+57.6f>bodyBounds.getY() && shipBounds.getY()+57.6f<bodyBounds.getY()+30){
+                    shipBounds.setPosition(shipBounds.getX(), bodyBounds.getY()-57.6f);
+                }
+                if(shipBounds.getY()<bodyBounds.getY()+128 && shipBounds.getY()>bodyBounds.getY()+98){
+                    shipBounds.setPosition(shipBounds.getX(), bodyBounds.getY()+128);
+                }
+                if(shipBounds.getX()<bodyBounds.getX()+128 && shipBounds.getX()>bodyBounds.getX()+98){
+                    shipBounds.setPosition(bodyBounds.getX()+128, shipBounds.getY());
                 }
             }
         }
@@ -439,15 +463,6 @@ public class Boss_evilEye {
     }
 
     public void dispose(){
-        up_right.dispose();
-        up_left.dispose();
-        down_right.dispose();
-        down_left.dispose();
-        left.dispose();
-        right.dispose();
-        down.dispose();
-        up.dispose();
-        center.dispose();
         bullets.clear();
         degrees.clear();
         degrees2.clear();

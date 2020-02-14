@@ -213,7 +213,7 @@ public class GameScreen implements Screen{
 
             uraniumCell.draw(batch, is_paused);
 
-            gameUi.draw(is_paused);
+            gameUi.draw(is_paused, delta);
 
             if(!is_paused){
                 movement = (int)(movement + (200 * delta));
