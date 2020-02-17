@@ -1,0 +1,47 @@
+
+menuButtons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+blank2_disabled
+  rotate: false
+  xy: 1, 47
+  size: 250, 75
+  orig: 250, 75
+  offset: 0, 0
+  index: -1
+blank2_enabled
+  rotate: false
+  xy: 253, 47
+  size: 250, 75
+  orig: 250, 75
+  offset: 0, 0
+  index: -1
+blank2_over
+  rotate: false
+  xy: 505, 47
+  size: 250, 75
+  orig: 250, 75
+  offset: 0, 0
+  index: -1
+blank_enabled
+  rotate: false
+  xy: 1, 1
+  size: 160, 44
+  orig: 160, 44
+  offset: 0, 0
+  index: -1
+blank_over
+  rotate: false
+  xy: 757, 78
+  size: 160, 44
+  orig: 160, 44
+  offset: 0, 0
+  index: -1
+button_blank
+  rotate: false
+  xy: 163, 1
+  size: 160, 44
+  orig: 160, 44
+  offset: 0, 0
+  index: -1
