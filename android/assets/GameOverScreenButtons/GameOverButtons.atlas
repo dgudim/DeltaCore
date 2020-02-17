@@ -1,0 +1,54 @@
+
+GameOverButtons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+game_over
+  rotate: false
+  xy: 1, 93
+  size: 640, 384
+  orig: 640, 384
+  offset: 0, 0
+  index: -1
+menu_d
+  rotate: false
+  xy: 1, 47
+  size: 208, 44
+  orig: 208, 44
+  offset: 0, 0
+  index: -1
+menu_e
+  rotate: false
+  xy: 643, 433
+  size: 208, 44
+  orig: 208, 44
+  offset: 0, 0
+  index: -1
+menu_o
+  rotate: false
+  xy: 1, 1
+  size: 208, 44
+  orig: 208, 44
+  offset: 0, 0
+  index: -1
+restart_d
+  rotate: false
+  xy: 211, 47
+  size: 208, 44
+  orig: 208, 44
+  offset: 0, 0
+  index: -1
+restart_e
+  rotate: false
+  xy: 643, 387
+  size: 208, 44
+  orig: 208, 44
+  offset: 0, 0
+  index: -1
+restart_o
+  rotate: false
+  xy: 211, 1
+  size: 208, 44
+  orig: 208, 44
+  offset: 0, 0
+  index: -1
