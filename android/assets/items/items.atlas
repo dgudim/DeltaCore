@@ -1,0 +1,341 @@
+
+items.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cog
+  rotate: false
+  xy: 1, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+redCrystal
+  rotate: false
+  xy: 1, 16
+  size: 108, 108
+  orig: 108, 108
+  offset: 0, 0
+  index: -1
+prism
+  rotate: false
+  xy: 131, 158
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+chipset_big
+  rotate: false
+  xy: 229, 210
+  size: 86, 44
+  orig: 86, 44
+  offset: 0, 0
+  index: -1
+aiCard
+  rotate: false
+  xy: 229, 144
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+chipset
+  rotate: false
+  xy: 317, 210
+  size: 68, 44
+  orig: 68, 44
+  offset: 0, 0
+  index: -1
+bolt
+  rotate: false
+  xy: 295, 144
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+card1
+  rotate: false
+  xy: 387, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+card2
+  rotate: false
+  xy: 453, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cell1
+  rotate: false
+  xy: 519, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cell2
+  rotate: false
+  xy: 585, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coolingUnit
+  rotate: false
+  xy: 651, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+craftingCard
+  rotate: false
+  xy: 717, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+ironPlate
+  rotate: false
+  xy: 783, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+memoryCard
+  rotate: false
+  xy: 849, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+processor1
+  rotate: false
+  xy: 915, 190
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+crystal
+  rotate: false
+  xy: 981, 212
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+screenCard
+  rotate: false
+  xy: 131, 92
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+transistor
+  rotate: false
+  xy: 111, 26
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+fuelCell
+  rotate: false
+  xy: 197, 98
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+advancedChip
+  rotate: false
+  xy: 228, 80
+  size: 62, 62
+  orig: 62, 62
+  offset: 0, 0
+  index: -1
+energyCrystal
+  rotate: false
+  xy: 292, 82
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+fuelCell2
+  rotate: false
+  xy: 177, 32
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+warp_core
+  rotate: false
+  xy: 361, 188
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+cable
+  rotate: false
+  xy: 361, 154
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Circuit_Board
+  rotate: false
+  xy: 395, 156
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+energyCell
+  rotate: false
+  xy: 429, 156
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ironPlate2
+  rotate: false
+  xy: 463, 156
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+processor2
+  rotate: false
+  xy: 497, 156
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+processor3
+  rotate: false
+  xy: 531, 156
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+core_yellow
+  rotate: false
+  xy: 565, 157
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+bonus_laser
+  rotate: false
+  xy: 598, 160
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+bonus_warp
+  rotate: false
+  xy: 628, 167
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+bonus_warp2
+  rotate: false
+  xy: 651, 167
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+ore
+  rotate: false
+  xy: 981, 190
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+warp_ore
+  rotate: false
+  xy: 1003, 190
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+aiChip
+  rotate: false
+  xy: 674, 169
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+cable_fiber
+  rotate: false
+  xy: 111, 108
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+drone_engine
+  rotate: false
+  xy: 695, 172
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+fragment_core
+  rotate: false
+  xy: 713, 172
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+glassShard
+  rotate: false
+  xy: 731, 172
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+green_coil
+  rotate: false
+  xy: 749, 172
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+neon_coil
+  rotate: false
+  xy: 767, 172
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+cyanCrystal
+  rotate: false
+  xy: 1, 1
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+greenCrystal
+  rotate: false
+  xy: 111, 93
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+orangeCrystal
+  rotate: false
+  xy: 785, 175
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+purpleCrystal
+  rotate: false
+  xy: 16, 1
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+gun
+  rotate: false
+  xy: 800, 179
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
