@@ -1,0 +1,68 @@
+
+buttons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+gitHub_disabled
+  rotate: false
+  xy: 1, 1256
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+gitHub_enabled
+  rotate: false
+  xy: 1, 742
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+gitHub_over
+  rotate: false
+  xy: 515, 1256
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+trello_disabled
+  rotate: false
+  xy: 1, 228
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+trello_enabled
+  rotate: false
+  xy: 515, 742
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+trello_over
+  rotate: false
+  xy: 1029, 1256
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+secretCode_disabled
+  rotate: false
+  xy: 1, 1
+  size: 225, 225
+  orig: 225, 225
+  offset: 0, 0
+  index: -1
+secretCode_enabled
+  rotate: false
+  xy: 515, 515
+  size: 225, 225
+  orig: 225, 225
+  offset: 0, 0
+  index: -1
+secretCode_over
+  rotate: false
+  xy: 1029, 1029
+  size: 225, 225
+  orig: 225, 225
+  offset: 0, 0
+  index: -1

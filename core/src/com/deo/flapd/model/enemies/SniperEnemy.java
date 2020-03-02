@@ -76,6 +76,9 @@ public class SniperEnemy {
         colors = new Array<>();
 
         sound = MenuScreen.Sound;
+
+        enemy.setSize(0,0);
+        enemy.setPosition(1000, 1000);
     }
 
     public void Spawn(float health, float scale) {
@@ -109,8 +112,7 @@ public class SniperEnemy {
         millis = millis + 50 * Gdx.graphics.getDeltaTime();
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
-
+    public void drawBulletsAndEffects(SpriteBatch batch, boolean is_paused){
         enemyBullet.draw(batch, is_paused);
 
         for (int i = 0; i < enemies.size; i ++) {
@@ -118,12 +120,6 @@ public class SniperEnemy {
             Rectangle enemy = enemies.get(i);
             ParticleEffect fire = fires.get(i);
             float scale = scales.get(i);
-            Color color = colors.get(i);
-
-            this.enemy.setPosition(enemy.x, enemy.y);
-            this.enemy.setSize(enemy.width, enemy.height);
-            this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
-            this.enemy.setColor(color);
 
             fire.setPosition(enemy.x + fire_x * scale, enemy.y + fire_y * scale);
             fire.draw(batch);
@@ -132,6 +128,33 @@ public class SniperEnemy {
             }else{
                 fire.update(0);
             }
+        }
+
+        for(int i3 = 0; i3 < explosions.size; i3 ++){
+            explosions.get(i3).draw(batch);
+            if(!is_paused) {
+                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+            }else{
+                explosions.get(i3).update(0);
+            }
+            if(explosions.get(i3).isComplete()){
+                explosions.get(i3).dispose();
+                explosions.removeIndex(i3);
+            }
+        }
+    }
+
+    public void drawBase(SpriteBatch batch, boolean is_paused) {
+
+        for (int i = 0; i < enemies.size; i ++) {
+
+            Rectangle enemy = enemies.get(i);
+            Color color = colors.get(i);
+
+            this.enemy.setPosition(enemy.x, enemy.y);
+            this.enemy.setSize(enemy.width, enemy.height);
+            this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
+            this.enemy.setColor(color);
 
             this.enemy.draw(batch);
 
@@ -151,18 +174,7 @@ public class SniperEnemy {
                 }
             }
         }
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
-            explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
-                explosions.get(i3).dispose();
-                explosions.removeIndex(i3);
-            }
-        }
+
         for(int i4 = 0; i4 < enemies.size; i4++){
             if(explosionQueue.get(i4)) {
                 ParticleEffect explosionEffect = new ParticleEffect();

@@ -1,0 +1,124 @@
+
+workshop.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+craftingTerminal
+  rotate: false
+  xy: 1, 49
+  size: 128, 70
+  orig: 128, 70
+  offset: 0, 0
+  index: -1
+craftingTerminal_locked
+  rotate: false
+  xy: 131, 49
+  size: 128, 70
+  orig: 128, 70
+  offset: 0, 0
+  index: -1
+slot
+  rotate: false
+  xy: 1, 15
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+slot_disabled
+  rotate: false
+  xy: 261, 87
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+slot_disabled_down
+  rotate: false
+  xy: 35, 15
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+slot_disabled_over
+  rotate: false
+  xy: 261, 53
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+slot_enabled
+  rotate: false
+  xy: 295, 87
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+slot_over
+  rotate: false
+  xy: 69, 15
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+blank_shopButton_disabled
+  rotate: false
+  xy: 329, 97
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_enabled
+  rotate: false
+  xy: 103, 25
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_over
+  rotate: false
+  xy: 370, 97
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_red_disabled
+  rotate: false
+  xy: 144, 25
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_red_enabled
+  rotate: false
+  xy: 411, 97
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_red_over
+  rotate: false
+  xy: 185, 25
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+question
+  rotate: false
+  xy: 1, 1
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+question_enabled
+  rotate: false
+  xy: 295, 73
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+question_over
+  rotate: false
+  xy: 452, 107
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1

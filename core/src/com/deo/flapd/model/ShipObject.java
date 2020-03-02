@@ -1,7 +1,6 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -9,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Polygon;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -35,16 +35,13 @@ abstract class ShipObject {
 
     private boolean isFireStarted1, isFireStarted2, isFireStarted3;
 
-    private Preferences prefs;
-
     ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
         ship = new Sprite(shipTexture);
         shield = new Sprite(ShieldTexture);
-        prefs = Gdx.app.getPreferences("Preferences");
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
         if(!newGame) {
-            bounds.setPosition(prefs.getFloat("ShipX"), prefs.getFloat("ShipY"));
+            bounds.setPosition(DUtils.getFloat("ShipX"), DUtils.getFloat("ShipY"));
         }else{
             bounds.setPosition(x, y);
         }
@@ -60,7 +57,7 @@ abstract class ShipObject {
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
-        switch (prefs.getInteger("current_engine")){
+        switch (DUtils.getInteger("current_engine")){
             case(1):
                 fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
                 fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
@@ -102,11 +99,8 @@ abstract class ShipObject {
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
-
-    public void draw(SpriteBatch batch, boolean is_paused){
+    public void drawEffects(SpriteBatch batch, boolean is_paused){
         if(!exploded) {
-            ship.setPosition(bounds.getX(), bounds.getY());
-            ship.setRotation(bounds.getRotation());
             fire.setPosition(bounds.getX() + 10, bounds.getY() + 18);
             fire.draw(batch);
             fire2.setPosition(bounds.getX() + 4, bounds.getY() + 40);
@@ -123,6 +117,54 @@ abstract class ShipObject {
                 fire2.update(0);
             }
 
+            if (GameUi.Health < 70) {
+                if (!is_paused) {
+                    damage_fire.draw(batch, Gdx.graphics.getDeltaTime());
+                    if (!isFireStarted1) {
+                        damage_fire.start();
+                    }
+                } else {
+                    damage_fire.draw(batch, 0);
+                }
+            } else if (isFireStarted1) {
+                damage_fire.reset();
+                isFireStarted1 = false;
+            }
+
+            if (GameUi.Health < 50) {
+                if (!is_paused) {
+                    damage_fire2.draw(batch, Gdx.graphics.getDeltaTime());
+                    if (!isFireStarted2) {
+                        damage_fire2.start();
+                    }
+                } else {
+                    damage_fire2.draw(batch, 0);
+                }
+            } else if (isFireStarted2) {
+                damage_fire2.reset();
+                isFireStarted2 = false;
+            }
+
+            if (GameUi.Health < 30) {
+                if (!is_paused) {
+                    damage_fire3.draw(batch, Gdx.graphics.getDeltaTime());
+                    if (!isFireStarted3) {
+                        damage_fire3.start();
+                    }
+                } else {
+                    damage_fire3.draw(batch, 0);
+                }
+            } else if (isFireStarted3) {
+                damage_fire3.reset();
+                isFireStarted3 = false;
+            }
+        }
+    }
+
+    public void draw(SpriteBatch batch, boolean is_paused){
+        if(!exploded) {
+            ship.setPosition(bounds.getX(), bounds.getY());
+            ship.setRotation(bounds.getRotation());
             ship.setColor(red, green, blue, 1);
 
             if (!is_paused) {
@@ -136,52 +178,9 @@ abstract class ShipObject {
                     blue = blue + 0.05f;
                 }
             }
-
-            if(GameUi.Health < 70){
-                if(!is_paused){
-                    damage_fire.draw(batch, Gdx.graphics.getDeltaTime());
-                    if(!isFireStarted1){
-                        damage_fire.start();
-                    }
-                }else{
-                    damage_fire.draw(batch, 0);
-                }
-            }else if(isFireStarted1){
-                damage_fire.reset();
-                isFireStarted1 = false;
-            }
-
-            if(GameUi.Health < 50){
-                if(!is_paused){
-                    damage_fire2.draw(batch, Gdx.graphics.getDeltaTime());
-                    if(!isFireStarted2){
-                        damage_fire2.start();
-                    }
-                }else{
-                    damage_fire2.draw(batch, 0);
-                }
-            }else if(isFireStarted2){
-                damage_fire2.reset();
-                isFireStarted2 = false;
-            }
-
-            if(GameUi.Health < 30){
-                if(!is_paused){
-                    damage_fire3.draw(batch, Gdx.graphics.getDeltaTime());
-                    if(!isFireStarted3){
-                        damage_fire3.start();
-                    }
-                }else{
-                    damage_fire3.draw(batch, 0);
-                }
-            }else if(isFireStarted3){
-                damage_fire3.reset();
-                isFireStarted3 = false;
-            }
-
             ship.draw(batch);
         }else{
-            bounds.setPosition(-100, -100);
+            bounds.setScale(0,0);
         }
     }
 

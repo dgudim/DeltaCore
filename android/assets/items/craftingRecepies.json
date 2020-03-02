@@ -1,0 +1,209 @@
+    {
+      "transistor": {
+        "items": ["plastic", "iron shard", "cable"],
+        "itemCounts": [2, 1, 3],
+        "resultCount": 150,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "orange crystal": {
+        "items": ["red crystal", "blue ore"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "green crystal": {
+        "items": ["orange crystal", "green warp shard"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "cyan crystal": {
+        "items": ["green crystal", "cyan warp shard"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "purple crystal": {
+        "items": ["cyan crystal", "purple warp shard"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "fiber cable": {
+        "items": ["glass shard", "cable", "purple crystal"],
+        "itemCounts": [5, 5, 1],
+        "resultCount": 5,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "orange blank card": {
+        "items": ["iron plate", "cable", "orange crystal", "plastic", "bolt"],
+        "itemCounts": [2, 6, 1, 2, 4],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "cyan blank card": {
+        "items": ["iron plate", "cable", "cyan crystal", "plastic", "bolt"],
+        "itemCounts": [2, 6, 1, 2, 4],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "crafting card": {
+        "items": ["orange blank card", "cable", "plastic", "reinforced iron plate"],
+        "itemCounts": [1, 2, 1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "reinforced iron plate": {
+        "items": ["iron plate", "bolt"],
+        "itemCounts": [2, 6],
+        "resultCount": 2,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "cable": {
+        "items": ["wire", "rubber"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "motherboard": {
+        "items": ["cable", "iron plate", "plastic", "resistor", "transistor"],
+        "itemCounts": [10, 2, 5, 15, 50],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "iron shard": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "just a piece of metal"
+      },
+
+      "wire": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "non-coated piece of wire"
+      },
+
+      "red crystal": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "base ingredient for higher tier crystals"
+      },
+
+      "blue ore": {
+        "items": ["ore", "cyan warp shard"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": ""
+      },
+
+      "ore": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "space ore"
+      },
+
+      "cyan warp shard": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "mysterious glowing cyan shard, used to craft crystals"
+      },
+
+      "green warp shard": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "mysterious glowing green shard, used to craft crystals"
+      },
+
+      "rubber": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "black bouncy material, used in coating"
+      },
+
+      "iron plate": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "flat piece of metal"
+      },
+
+      "coloring crystal": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "shiny rainbow-colored crystal, commonly used to color stuff"
+      },
+
+      "resistor": {
+        "items": ["plastic", "wire", "iron shard"],
+        "itemCounts": [1, 1, 1],
+        "resultCount": 5,
+        "isCraftable":true,
+        "description": "a resistive conductor, mainly used in circuits"
+      },
+
+      "prism": {
+        "items": ["glass shard", "coloring crystal"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "special glass shape which splits the light, used in lasers"
+      },
+
+      "glass shard": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "just a piece of glass"
+      },
+
+      "plastic": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "just a piece of plastic"
+      }
+    }

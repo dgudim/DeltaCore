@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
@@ -94,17 +95,20 @@ public class Boss_battleShip {
         this.shipBounds = shipBounds;
 
         main = new Sprite();
-        main_not_wrecked = new Sprite((Texture)assetManager.get("boss_ship/boss.png"));
-        main_wrecked = new Sprite((Texture)assetManager.get("boss_ship/boss_dead.png"));
-        cannon_small = new Sprite((Texture)assetManager.get("boss_ship/cannon2.png"));
-        cannon_small2 = new Sprite((Texture)assetManager.get("boss_ship/cannon1.png"));
-        cannon_stage2 = new Sprite((Texture)assetManager.get("boss_ship/bigCannon.png"));
-        cannon_homing_part1 = new Sprite((Texture)assetManager.get("boss_ship/upperCannon_part1.png"));
-        cannon_homing_part2 = new Sprite((Texture)assetManager.get("boss_ship/upperCannon_part2.png"));
-        bullet = new Sprite((Texture)assetManager.get("boss_ship/bullet_blue.png"));
+
+        TextureAtlas bossAtlas = assetManager.get("boss_ship/bossShip.atlas");
+
+        main_not_wrecked = new Sprite(bossAtlas.findRegion("boss"));
+        main_wrecked = new Sprite(bossAtlas.findRegion("boss_dead"));
+        cannon_small = new Sprite(bossAtlas.findRegion("cannon2"));
+        cannon_small2 = new Sprite(bossAtlas.findRegion("cannon1"));
+        cannon_stage2 = new Sprite(bossAtlas.findRegion("bigCannon"));
+        cannon_homing_part1 = new Sprite(bossAtlas.findRegion("upperCannon_part1"));
+        cannon_homing_part2 = new Sprite(bossAtlas.findRegion("upperCannon_part2"));
+        bullet = new Sprite(bossAtlas.findRegion("bullet_blue"));
         bullet2 = new Sprite((Texture)assetManager.get("pew2.png"));
-        bullet3 = new Sprite((Texture)assetManager.get("boss_ship/bullet_red_thick.png"));
-        bullet4 = new Sprite((Texture)assetManager.get("boss_ship/bullet_red.png"));
+        bullet3 = new Sprite(bossAtlas.findRegion("bullet_red_thick"));
+        bullet4 = new Sprite(bossAtlas.findRegion("bullet_red"));
         main.set(main_not_wrecked);
 
         bullets_blue = new Array<>();

@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -41,8 +42,6 @@ public class Bullet {
 
     private static Array<Boolean> explosionQueue, remove_Bullet;
 
-    private Preferences prefs;
-
     private float shootingSpeedMultiplier;
 
     private Sprite laser;
@@ -57,13 +56,7 @@ public class Bullet {
 
         this.type = type;
 
-        switch (type) {
-            case(1): bullet = new Sprite((Texture) assetManager.get("bu1.png"));break;
-            case(2): bullet = new Sprite((Texture) assetManager.get("bu2.png"));break;
-            case(3): bullet = new Sprite((Texture) assetManager.get("bu3.png"));break;
-        }
-
-        prefs = Gdx.app.getPreferences("Preferences");
+        bullet = new Sprite((Texture) assetManager.get("bu"+type+".png"));
 
         random = new Random();
 
@@ -76,7 +69,7 @@ public class Bullet {
         types = new Array<>();
 
         if(!newGame){
-            bulletsShot = prefs.getInteger(" bulletsShot");
+            bulletsShot = DUtils.getInteger(" bulletsShot");
         }else {
             bulletsShot = 0;
         }

@@ -34,8 +34,8 @@ public class UraniumCell {
         degrees = new Array<>();
         values = new Array<>();
 
-        this.width = width;
-        this.height = height;
+        UraniumCell.width = width;
+        UraniumCell.height = height;
         this.uiScaling = uiScaling;
     }
 
@@ -53,7 +53,7 @@ public class UraniumCell {
             cell.setSize(width*scale, height*scale);
 
             cells.add(cell);
-            timers.add(timer*(random.nextFloat()+0.2f));
+            timers.add(timer*(random.nextFloat()+1));
             degrees.add(random.nextFloat()*360);
             values.add((int)MathUtils.clamp((random.nextInt(3)+1)*scale, 1, 4));
         }

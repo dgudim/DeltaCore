@@ -65,10 +65,13 @@ public class Kamikadze {
         remove_Enemy = new Array<>();
 
         sound = MenuScreen.Sound;
+
+        enemy.setSize(0,0);
+        enemy.setPosition(1000, 1000);
     }
 
     public void Spawn(float health, float scale, float explosionTimer) {
-        if(millis > 10) {
+        if(millis > -2) {
 
             Rectangle enemy = new Rectangle();
 
@@ -96,12 +99,50 @@ public class Kamikadze {
         millis = millis + 50 * Gdx.graphics.getDeltaTime();
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
-
+    public void drawEffects(SpriteBatch batch, boolean is_paused){
         for (int i = 0; i < enemies.size; i ++) {
 
             Rectangle enemy = enemies.get(i);
             ParticleEffect fire = fires.get(i);
+            float timer = timers.get(i);
+
+            if(!is_paused) {
+                timer = timer - 1*Gdx.graphics.getDeltaTime();
+                timers.set(i, timer);
+            }
+
+            if (timer < 1) {
+                removeEnemy(i, true);
+            }
+
+            fire.setPosition(enemy.x + enemy.width/2, enemy.y + enemy.height/2);
+            fire.draw(batch);
+            if(!is_paused) {
+                fire.update(Gdx.graphics.getDeltaTime());
+            }else{
+                fire.update(0);
+            }
+        }
+
+        for(int i3 = 0; i3 < explosions.size; i3 ++){
+            explosions.get(i3).draw(batch);
+            if(!is_paused) {
+                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+            }else{
+                explosions.get(i3).update(0);
+            }
+            if(explosions.get(i3).isComplete()){
+                explosions.get(i3).dispose();
+                explosions.removeIndex(i3);
+            }
+        }
+    }
+
+    public void drawBase(SpriteBatch batch, boolean is_paused) {
+
+        for (int i = 0; i < enemies.size; i ++) {
+
+            Rectangle enemy = enemies.get(i);
             float timer = timers.get(i);
             float ideal_timer = timers2.get(i);
 
@@ -126,14 +167,6 @@ public class Kamikadze {
             this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
             this.enemy.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(enemy.y-bounds.getY(), enemy.x-bounds.getX()));
 
-            fire.setPosition(enemy.x + enemy.width/2, enemy.y + enemy.height/2);
-            fire.draw(batch);
-            if(!is_paused) {
-                fire.update(Gdx.graphics.getDeltaTime());
-            }else{
-                fire.update(0);
-            }
-
             this.enemy.draw(batch);
 
             if (!is_paused) {
@@ -141,18 +174,6 @@ public class Kamikadze {
                 enemy.y = pos1.y;
             }
 
-        }
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
-            explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
-                explosions.get(i3).dispose();
-                explosions.removeIndex(i3);
-            }
         }
 
         for(int i4 = 0; i4 < enemies.size; i4++){

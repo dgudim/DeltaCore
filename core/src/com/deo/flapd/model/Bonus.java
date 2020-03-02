@@ -1,7 +1,6 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
@@ -34,8 +34,6 @@ public class Bonus {
 
     private float uiScale;
 
-    private Preferences prefs;
-
     private Texture bonus_bullets_t;
     private static Random random;
 
@@ -46,8 +44,6 @@ public class Bonus {
         bounds = shipBounds;
 
         random = new Random();
-
-        prefs = Gdx.app.getPreferences("Preferences");
 
         bonus_health = new Sprite((Texture)assetManager.get("bonus_health.png"));
         bonus_shield = new Sprite((Texture)assetManager.get("bonus_shield.png"));
@@ -65,9 +61,9 @@ public class Bonus {
         explosions = new Array<>();
         anglesY = new Array<>();
 
-        font_text = assetManager.get("fonts/font2.fnt");
+        font_text = assetManager.get("fonts/font2(old).fnt");
 
-        uiScale = prefs.getFloat("ui");
+        uiScale = DUtils.getFloat("ui");
 
         this.boss_battleShip = boss_battleShip;
         this.boss_evilEye = boss_evilEye;
@@ -163,14 +159,12 @@ public class Bonus {
                         if(GameLogic.bonuses_collected<10) {
                             GameLogic.bonuses_collected += 1;
                         }else{
-                            prefs.putInteger("cogs", prefs.getInteger("cogs")+1);
-                            prefs.flush();
+                            DUtils.addInteger("cogs", 1);
                         }
                     }
                     if(type == 4){
                         removeBonus(i, true);
-                        prefs.putInteger("cogs", prefs.getInteger("cogs")+1);
-                        prefs.flush();
+                        DUtils.addInteger("cogs", 1);
                     }
                     if(type == 5){
                         removeBonus(i, true);

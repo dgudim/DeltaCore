@@ -1,6 +1,7 @@
 package com.deo.flapd.view;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
@@ -21,12 +22,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.utils.DUtils;
+import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 
 public class GameUi{
@@ -58,17 +63,18 @@ public class GameUi{
     boolean is_firing;
     boolean is_firing_secondary;
 
-    private Image exit_button;
-    private Image continue_button;
-    private Image restart_button;
+    private TextButton exit_button;
+    private TextButton continue_button;
+    private TextButton restart_button;
     private Table Pause;
     private Skin pause_skin;
+    private TextButton.TextButtonStyle pauseButtonStyle;
 
-    private BitmapFont font_numbers, font_white, font_main;
+    private BitmapFont font_numbers, font_white, font_main, font_buttons;
 
     private SpriteBatch batch;
 
-    private Texture PauseBg, PauseBg2;
+    private Texture PauseBg, PauseBg2, pauseButton_e, pauseButton_o, pauseButton_d;
 
     public static float Shield;
     public static float Health;
@@ -82,8 +88,6 @@ public class GameUi{
     private boolean showFps;
 
     private float lastFps;
-
-    private Preferences prefs;
 
     private Game game;
 
@@ -100,57 +104,61 @@ public class GameUi{
 
     private SpaceShip ship;
 
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, SpaceShip Ship, boolean newGame){
+    private PostProcessor blurProcessor;
+
+    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, SpaceShip Ship, boolean newGame){
 
         this.game = game;
 
         this.assetManager = assetManager;
 
+        this.blurProcessor = blurProcessor;
+
         bounds = Ship.getBounds();
 
         ship = Ship;
 
-        prefs = Gdx.app.getPreferences("Preferences");
-
         if(!newGame){
-            Shield = prefs.getFloat("Shield");
-            Health = prefs.getFloat("Health");
-            Score = prefs.getInteger("Score");
-            moneyEarned = prefs.getInteger("moneyEarned");
-            money = prefs.getInteger("money");
+            Shield = DUtils.getFloat("Shield");
+            Health = DUtils.getFloat("Health");
+            Score = DUtils.getInteger("Score");
+            moneyEarned = DUtils.getInteger("moneyEarned");
+            money = DUtils.getInteger("money");
 
-            enemiesKilled = prefs.getInteger("enemiesKilled");
-            enemiesSpawned = prefs.getInteger("enemiesSpawned");
+            enemiesKilled = DUtils.getInteger("enemiesKilled");
+            enemiesSpawned = DUtils.getInteger("enemiesSpawned");
         }else {
             Shield = 100;
             Health = 100;
             Score = 0;
             moneyEarned = 0;
-            money = prefs.getInteger("money");
+            money = DUtils.getInteger("money");
 
             enemiesKilled = 0;
             enemiesSpawned = 0;
         }
 
-        uiScale = prefs.getFloat("ui");
+        uiScale = DUtils.getFloat("ui");
 
-        showFps = prefs.getBoolean("showFps");
+        showFps = DUtils.getBoolean("showFps");
 
-        difficulty = prefs.getFloat("difficulty");
+        difficulty = DUtils.getFloat("difficulty");
 
-        transparency = prefs.getBoolean("transparency");
+        transparency = DUtils.getBoolean("transparency");
 
         this.batch = batch;
 
         cam = new OrthographicCamera(800, 480);
-        viewport = new FitViewport(800, 480, cam);
+        viewport = new ScreenViewport(cam);
 
         knob = new Texture("knob.png");
         touch_bg = new Texture("bg_stick.png");
 
         PauseBg = new Texture("grey.png");
-
         PauseBg2 = new Texture("pauseBg.png");
+        pauseButton_e = new Texture("buttonPauseBlank_enabled.png");
+        pauseButton_o = new Texture("buttonPauseBlank_over.png");
+        pauseButton_d = new Texture("buttonPauseBlank_disabled.png");
 
         fireButton = new Image((Texture)assetManager.get("firebutton.png"));
         weaponChangeButton = new Image((Texture)assetManager.get("weaponbutton.png"));
@@ -158,9 +166,6 @@ public class GameUi{
         levelScore = new Image((Texture)assetManager.get("level score indicator.png"));
         money_display = new Image((Texture)assetManager.get("money_display.png"));
         pause2 = new Image((Texture)assetManager.get("health indicator.png"));
-        exit_button = new Image((Texture)assetManager.get("exit.png"));
-        continue_button = new Image((Texture)assetManager.get("resume.png"));
-        restart_button = new Image((Texture)assetManager.get("restart.png"));
 
         pause2.setBounds(658-142*(uiScale-1), 398-82*(uiScale-1), 142*uiScale, 82*uiScale);
         pause.setBounds(770-32*(uiScale-1), 450-32*(uiScale-1),29*uiScale,29*uiScale);
@@ -169,7 +174,8 @@ public class GameUi{
 
         font_numbers = assetManager.get("fonts/font.fnt");
         font_white = assetManager.get("fonts/font_white.fnt");
-        font_main = assetManager.get("fonts/font2.fnt");
+        font_main = assetManager.get("fonts/font2(old).fnt");
+        font_buttons = assetManager.get("fonts/font2.fnt");
 
         stage = new Stage(viewport, batch);
         PauseStage = new Stage(viewport, batch);
@@ -178,9 +184,40 @@ public class GameUi{
         multiplexer.addProcessor(PauseStage);
         Gdx.input.setInputProcessor(multiplexer);
 
+        pause_skin = new Skin();
+        pause_skin.add("pauseBg", PauseBg2);
+        pause_skin.add("button_e", pauseButton_e);
+        pause_skin.add("button_o", pauseButton_o);
+        pause_skin.add("button_d", pauseButton_d);
+
+        table = new Table();
+        table.bottom();
+        table.add(weaponChangeButton).padRight(5);
+        table.add(fireButton);
+        table.row();
+        table.setBounds(511-283*(uiScale-1.1f),5, 283.5f*(uiScale-0.1f), 69.75f*(uiScale-0.1f));
+
+        pauseButtonStyle = new TextButton.TextButtonStyle();
+        pauseButtonStyle.font = font_buttons;
+        pauseButtonStyle.up = pause_skin.getDrawable("button_d");
+        pauseButtonStyle.fontColor = Color.valueOf("#FF8000");
+        pauseButtonStyle.over = pause_skin.getDrawable("button_o");
+        pauseButtonStyle.overFontColor = Color.valueOf("#FF9505");
+        pauseButtonStyle.down = pause_skin.getDrawable("button_e");
+        pauseButtonStyle.downFontColor = Color.valueOf("#FFAF05");
+
+        exit_button = new TextButton("Exit", pauseButtonStyle);
+        continue_button = new TextButton("Continue", pauseButtonStyle);
+        restart_button = new TextButton("Restart", pauseButtonStyle);
         continue_button.setScale(uiScale);
         restart_button.setScale(uiScale);
         exit_button.setScale(uiScale);
+        exit_button.setTransform(true);
+        restart_button.setTransform(true);
+        continue_button.setTransform(true);
+        continue_button.getLabel().setFontScale(0.5f);
+        restart_button.getLabel().setFontScale(0.5f);
+        exit_button.getLabel().setFontScale(0.5f);
 
         Pause = new Table();
         Pause.setBounds(400-600*uiScale/2, 240-360*uiScale/2, 600*uiScale, 360*uiScale);
@@ -190,17 +227,7 @@ public class GameUi{
         Pause.row();
         Pause.add(exit_button).padRight(341*(uiScale-1));
 
-        pause_skin = new Skin();
-        pause_skin.add("pauseBg",PauseBg2);
-
         Pause.setBackground(pause_skin.getDrawable("pauseBg"));
-
-        table = new Table();
-        table.bottom();
-        table.add(weaponChangeButton).padRight(5);
-        table.add(fireButton);
-        table.row();
-        table.setBounds(511-283*(uiScale-1),5, 283.5f*uiScale, 69.75f*uiScale);
 
         touchpad_skin = new Skin();
         touchpad_skin.add("touchBg",touch_bg);
@@ -209,8 +236,8 @@ public class GameUi{
         touchpadStyle = new Touchpad.TouchpadStyle();
         touchpadStyle.background = touchpad_skin.getDrawable("touchBg");
         touchpadStyle.knob = touchpad_skin.getDrawable("touchKnob");
-        touchpadStyle.knob.setMinWidth(32*uiScale);
-        touchpadStyle.knob.setMinHeight(32*uiScale);
+        touchpadStyle.knob.setMinWidth(22*uiScale);
+        touchpadStyle.knob.setMinHeight(22*uiScale);
 
         touchpad = new Touchpad(0, touchpadStyle);
         touchpad.setResetOnTouchUp(true);
@@ -219,7 +246,7 @@ public class GameUi{
             touchpad.setColor(1, 1, 1, 0.7f);
         }
 
-        touchpad.setBounds(10, 10, 150*uiScale, 150*uiScale);
+        touchpad.setBounds(10, 10, 110*uiScale, 110*uiScale);
 
         healthBarStyle = new ProgressBar.ProgressBarStyle();
         shieldBarStyle = new ProgressBar.ProgressBarStyle();
@@ -344,54 +371,45 @@ public class GameUi{
             }
         });
 
-        continue_button.addListener(new InputListener(){
-
+        continue_button.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 if(GameScreen.is_paused) {
                     GameScreen.is_paused = false;
                 }
             }
         });
 
-        exit_button.addListener(new InputListener(){
+        exit_button.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 if(GameScreen.is_paused) {
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true, false));
+                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
                     GameScreen.is_paused = false;
                 }
             }
         });
 
-        restart_button.addListener(new InputListener(){
+        restart_button.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 if(GameScreen.is_paused) {
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true, false));
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
                     GameScreen.is_paused = false;
                 }
             }
         });
+
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
 
         }
 
     public void draw(boolean is_paused, float delta) {
+
+        if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
+            game.pause();
+        }
+
         batch.end();
         stage.draw();
         stage.act(delta);
@@ -435,13 +453,6 @@ public class GameUi{
             ship.explode();
         }
 
-        if(exploded){
-            explosion.draw(batch, delta);
-            if(explosion.isComplete()){
-              game.setScreen(new GameOverScreen(game, batch, assetManager));
-            }
-        }
-
         if(transparency){
             font_main.setColor(0,0,0,0.7f);
         }else{
@@ -453,8 +464,28 @@ public class GameUi{
         }
     }
 
+    void drawExplosion(float delta){
+        if(exploded){
+            explosion.draw(batch, delta);
+            if(explosion.isComplete()){
+                game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor));
+            }
+        }
+    }
+
     void resize(int width, int height){
         viewport.update(width, height);
+        cam.position.set(400, 240, 0);
+        float tempScaleH = height/480.0f;
+        float tempScaleW = width/800.0f;
+        float zoom;
+        if(tempScaleH<=tempScaleW){
+            zoom = tempScaleH;
+        }else{
+            zoom = tempScaleW;
+        }
+        cam.zoom = 1/zoom;
+        cam.update();
     }
 
     public void dispose(){
@@ -467,27 +498,17 @@ public class GameUi{
         pause_skin.dispose();
         touchpad_skin.dispose();
 
-        if(!prefs.getBoolean("fastLoading")){
-            assetManager.unload("firebutton.png");
-            assetManager.unload("weaponbutton.png");
-            assetManager.unload("pause.png");
-            assetManager.unload("level score indicator.png");
-            assetManager.unload("health indicator.png");
-            assetManager.unload("exit.png");
-            assetManager.unload("money_display.png");
-            assetManager.unload("resume.png");
-            assetManager.unload("restart.png");
-        }
-
         knob.dispose();
         touch_bg.dispose();
         PauseBg.dispose();
         PauseBg2.dispose();
+        pauseButton_e.dispose();
+        pauseButton_d.dispose();
+        pauseButton_o.dispose();
 
         explosion.dispose();
 
-        prefs.putInteger("money", money);
-        prefs.flush();
+        DUtils.putInteger("money", money);
     }
 
     float getDeltaX(){

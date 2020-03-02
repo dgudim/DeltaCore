@@ -11,14 +11,23 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.utils.DUtils;
+import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 public class GameOverScreen implements Screen {
 
@@ -29,10 +38,10 @@ public class GameOverScreen implements Screen {
     private Stage stage;
 
     private Image GameOver;
-    private Image Menu;
-    private Image Restart;
-    private Image Menu_disabled;
-    private Image Restart_disabled;
+    private Button Menu;
+    private Button Restart;
+    private Skin buttonSkin;
+    private Button.ButtonStyle buttonStyle, buttonStyle2;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -41,33 +50,32 @@ public class GameOverScreen implements Screen {
 
     private BitmapFont font_main;
 
-    private AssetManager assetManager;
-
     private Game game;
-
-    private Preferences prefs;
 
     private Boolean isNewHighScore;
 
-    public GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
+    private PostProcessor blurProcessor;
+
+    private boolean enableShader;
+
+    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
 
         this.batch = batch;
 
-        this.assetManager = assetManager;
-
         this.game = game;
 
-        prefs = Gdx.app.getPreferences("Preferences");
+        this.blurProcessor = blurProcessor;
+
+        enableShader = DUtils.getBoolean("bloom");
 
         Score = GameUi.Score;
 
-        highScore = prefs.getInteger("highScore");
+        highScore = DUtils.getInteger("highScore");
 
-        difficulty = prefs.getFloat("difficulty");
+        difficulty = DUtils.getFloat("difficulty");
 
         if(Score > highScore){
-            prefs.putInteger("highScore", Score);
-            prefs.flush();
+            DUtils.putInteger("highScore", Score);
             highScore = Score;
             isNewHighScore = true;
         }else{
@@ -85,68 +93,56 @@ public class GameOverScreen implements Screen {
         moneyEarned = GameUi.moneyEarned;
 
         camera = new OrthographicCamera(800, 480);
-        viewport = new FitViewport(800,480, camera);
-
-        assetManager.load("GameOverScreenButtons/game_over.png", Texture.class);
-        assetManager.load("GameOverScreenButtons/menu_e.png", Texture.class);
-        assetManager.load("GameOverScreenButtons/menu_d.png", Texture.class);
-        assetManager.load("GameOverScreenButtons/restart_e.png", Texture.class);
-        assetManager.load("GameOverScreenButtons/restart_d.png", Texture.class);
+        viewport = new ScreenViewport(camera);
 
         while (!assetManager.isFinished()) {
             assetManager.update();
         }
 
-        font_main = assetManager.get("fonts/font2.fnt");
+        font_main = assetManager.get("fonts/font2(old).fnt");
 
         stage = new Stage(viewport, batch);
 
-        GameOver = new Image((Texture)assetManager.get("GameOverScreenButtons/game_over.png"));
-        Menu = new Image((Texture)assetManager.get("GameOverScreenButtons/menu_e.png"));
-        Menu_disabled = new Image((Texture)assetManager.get("GameOverScreenButtons/menu_d.png"));
-        Restart = new Image((Texture)assetManager.get("GameOverScreenButtons/restart_e.png"));
-        Restart_disabled = new Image((Texture)assetManager.get("GameOverScreenButtons/restart_d.png"));
+        buttonSkin = new Skin();
+        buttonSkin.addRegions((TextureAtlas)assetManager.get("GameOverScreenButtons/GameOverButtons.atlas"));
+
+        buttonStyle = new Button.ButtonStyle();
+        buttonStyle.down = buttonSkin.getDrawable("restart_e");
+        buttonStyle.up = buttonSkin.getDrawable("restart_d");
+        buttonStyle.over = buttonSkin.getDrawable("restart_o");
+
+        buttonStyle2 = new Button.ButtonStyle();
+        buttonStyle2.down = buttonSkin.getDrawable("menu_e");
+        buttonStyle2.up = buttonSkin.getDrawable("menu_d");
+        buttonStyle2.over = buttonSkin.getDrawable("menu_o");
+
+        GameOver = new Image(((TextureAtlas) assetManager.get("GameOverScreenButtons/GameOverButtons.atlas")).findRegion("game_over"));
+        Menu = new Button(buttonStyle2);
+        Restart = new Button(buttonStyle);
 
         GameOver.setBounds(78, 235, 640, 384);
         Menu.setBounds(296, 73, 208, 44);
-        Menu_disabled.setBounds(296, 73, 208, 44);
-        Restart_disabled.setBounds(296, 13, 208, 44);
         Restart.setBounds(296, 13, 208, 44);
 
         stage.addActor(GameOver);
         stage.addActor(Menu);
-        stage.addActor(Menu_disabled);
         stage.addActor(Restart);
-        stage.addActor(Restart_disabled);
 
-        Menu.setVisible(false);
-        Restart.setVisible(false);
-
-        Menu_disabled.addListener(new InputListener(){
+        Menu.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Menu.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Menu.setVisible(false);
-                game.setScreen(new LoadingScreen(game, batch, assetManager, 2, true, false));
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }
         });
 
-        Restart_disabled.addListener(new InputListener(){
+        Restart.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Restart.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Restart.setVisible(false);
-                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true, false));
+            public void clicked(InputEvent event, float x, float y) {
+                if(DUtils.getFloat("Health")>0) {
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, false));
+                }else{
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
+                }
                 GameScreen.is_paused = false;
             }
         });
@@ -161,6 +157,10 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if(enableShader){
+            blurProcessor.capture();
+        }
 
         stage.draw();
         stage.act(delta);
@@ -194,11 +194,26 @@ public class GameOverScreen implements Screen {
         }
 
         batch.end();
+
+        if(enableShader){
+            blurProcessor.render();
+        }
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        camera.position.set(400, 240, 0);
+        float tempScaleH = height/480.0f;
+        float tempScaleW = width/800.0f;
+        float zoom;
+        if(tempScaleH<=tempScaleW){
+            zoom = tempScaleH;
+        }else{
+            zoom = tempScaleW;
+        }
+        camera.zoom = 1/zoom;
+        camera.update();
     }
 
     @Override
@@ -208,7 +223,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void resume() {
-
+        blurProcessor.rebind();
     }
 
     @Override
@@ -218,12 +233,6 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void dispose() {
-        if(!prefs.getBoolean("fastLoading")) {
-            assetManager.unload("GameOverScreenButtons/game_over.png");
-            assetManager.unload("GameOverScreenButtons/menu_e.png");
-            assetManager.unload("GameOverScreenButtons/menu_d.png");
-            assetManager.unload("GameOverScreenButtons/restart_e.png");
-            assetManager.unload("GameOverScreenButtons/restart_d.png");
-        }
+
     }
 }

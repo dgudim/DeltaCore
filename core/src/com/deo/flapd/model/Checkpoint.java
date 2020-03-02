@@ -1,7 +1,6 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -9,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
@@ -24,7 +24,6 @@ public class Checkpoint {
     private float destination_posX;
     private float destination_posY;
     private Random random;
-    private Preferences prefs;
 
     public Checkpoint(AssetManager assetManager, Polygon shipBounds){
         checkpoint_blue = new Sprite((Texture)assetManager.get("checkpoint.png"));
@@ -38,7 +37,10 @@ public class Checkpoint {
 
         bounds.setPosition(-200, -200);
 
-        prefs = Gdx.app.getPreferences("Preferences");
+        checkpoint_blue.setSize(0,0);
+        checkpoint_green.setSize(0,0);
+        checkpoint_blue.setPosition(1000, 1000);
+        checkpoint_green.setPosition(1000, 1000);
     }
 
     public void Spawn(float destination_posX, float destination_posY, float speed){
@@ -62,20 +64,7 @@ public class Checkpoint {
         checkpointState = false;
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused){
-
-        if(destination_posX < bounds.getX()){
-            bounds.setPosition(bounds.getX()-speed, bounds.getY());
-        }
-
-        if(destination_posY < bounds.getY()){
-            bounds.setPosition(bounds.getX(), bounds.getY()-speed);
-        }
-
-        if(destination_posY > bounds.getY()){
-            bounds.setPosition(bounds.getX(), bounds.getY()+speed);
-        }
-
+    public void drawEffects(SpriteBatch batch, boolean is_paused){
         if(effects) {
             fire.setPosition(bounds.getX() + 18, bounds.getY() + 14);
             fire2.setPosition(bounds.getX() + 84, bounds.getY() + 14);
@@ -87,6 +76,21 @@ public class Checkpoint {
                 fire.draw(batch, 0);
                 fire2.draw(batch, 0);
             }
+        }
+    }
+
+    public void drawBase(SpriteBatch batch, boolean is_paused){
+
+        if(destination_posX < bounds.getX()){
+            bounds.setPosition(bounds.getX()-speed, bounds.getY());
+        }
+
+        if(destination_posY < bounds.getY()){
+            bounds.setPosition(bounds.getX(), bounds.getY()-speed);
+        }
+
+        if(destination_posY > bounds.getY()){
+            bounds.setPosition(bounds.getX(), bounds.getY()+speed);
         }
 
         if(checkpointState){
@@ -101,27 +105,26 @@ public class Checkpoint {
             checkpoint_blue.draw(batch);
         }
 
-        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && GameUi.Health>0){
+        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && GameUi.Health>0 && !checkpointState){
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();
             speed = 5;
-            prefs.putInteger("enemiesKilled",GameUi.enemiesKilled);
-            prefs.putInteger("moneyEarned",GameUi.moneyEarned);
-            prefs.putInteger("enemiesSpawned",GameUi.enemiesSpawned);
-            prefs.putInteger("Score",GameUi.Score);
-            prefs.putFloat("Health",GameUi.Health);
-            prefs.putFloat("Shield",GameUi.Shield);
-            prefs.putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
-            prefs.putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
-            prefs.putInteger("bonuses_collected", GameLogic.bonuses_collected);
-            prefs.putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
-            prefs.putInteger("bulletsShot", Bullet.bulletsShot);
-            prefs.putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
-            prefs.putFloat("ShipX", shipBounds.getX());
-            prefs.putFloat("ShipY", shipBounds.getY());
-            prefs.putInteger("money", GameUi.money);
-            prefs.flush();
+            DUtils.putInteger("enemiesKilled",GameUi.enemiesKilled);
+            DUtils.putInteger("moneyEarned",GameUi.moneyEarned);
+            DUtils.putInteger("enemiesSpawned",GameUi.enemiesSpawned);
+            DUtils.putInteger("Score",GameUi.Score);
+            DUtils.putFloat("Health",GameUi.Health);
+            DUtils.putFloat("Shield",GameUi.Shield);
+            DUtils.putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
+            DUtils.putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
+            DUtils.putInteger("bonuses_collected", GameLogic.bonuses_collected);
+            DUtils.putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
+            DUtils.putInteger("bulletsShot", Bullet.bulletsShot);
+            DUtils.putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
+            DUtils.putFloat("ShipX", shipBounds.getX());
+            DUtils.putFloat("ShipY", shipBounds.getY());
+            DUtils.putInteger("money", GameUi.money);
         }
 
         if (bounds.getY() > 850 && checkpointState){

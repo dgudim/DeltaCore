@@ -1,0 +1,68 @@
+
+shopButtons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+upgrade
+  rotate: false
+  xy: 1, 185
+  size: 216, 44
+  orig: 216, 44
+  offset: 0, 0
+  index: -1
+upgradeDisabled
+  rotate: false
+  xy: 1, 139
+  size: 216, 44
+  orig: 216, 44
+  offset: 0, 0
+  index: -1
+upgradeOver
+  rotate: false
+  xy: 1, 93
+  size: 216, 44
+  orig: 216, 44
+  offset: 0, 0
+  index: -1
+no
+  rotate: false
+  xy: 1, 47
+  size: 64, 44
+  orig: 64, 44
+  offset: 0, 0
+  index: -1
+noDisabled
+  rotate: false
+  xy: 1, 1
+  size: 64, 44
+  orig: 64, 44
+  offset: 0, 0
+  index: -1
+noOver
+  rotate: false
+  xy: 67, 47
+  size: 64, 44
+  orig: 64, 44
+  offset: 0, 0
+  index: -1
+yes
+  rotate: false
+  xy: 67, 1
+  size: 64, 44
+  orig: 64, 44
+  offset: 0, 0
+  index: -1
+yesDisabled
+  rotate: false
+  xy: 133, 47
+  size: 64, 44
+  orig: 64, 44
+  offset: 0, 0
+  index: -1
+yesOver
+  rotate: false
+  xy: 133, 1
+  size: 64, 44
+  orig: 64, 44
+  offset: 0, 0
+  index: -1

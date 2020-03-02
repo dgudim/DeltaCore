@@ -2,8 +2,8 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -14,20 +14,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
+import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 public class MenuScreen implements Screen{
 
@@ -39,27 +44,21 @@ public class MenuScreen implements Screen{
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private Texture MenuBg;
+    private Image MenuBg;
     private Texture Bg;
     private Texture Ship;
+    private Image FillTexture;
     private Image buildNumber;
-    private Image info_enabled;
-    private Image info_disabled;
-    private Image more_enabled;
-    private Image more_disabled;
-    private Image play_enabled;
-    private Image play_disabled;
-    private Image settings_enabled;
-    private Image settings_disabled;
-    private Image online_enabled;
-    private Image online_disabled;
+    private TextButton infoButton;
+    private TextButton moreButton;
+    private TextButton playButton;
+    private TextButton settingsButton;
+    private TextButton onlineButton;
+    private TextButton workshopButton;
 
-    private Image continue_disabled;
-    private Image continue_enabled;
-    private Image shop_disabled;
-    private Image shop_enabled;
-    private Image newGame_disabled;
-    private Image newGame_enabled;
+    private TextButton continueGameButton;
+    private TextButton shopButton;
+    private TextButton newGameButton;
 
     private Texture shop;
     private Texture shopButton_small_enabled;
@@ -81,7 +80,7 @@ public class MenuScreen implements Screen{
     private Image Engine1;
     private Image Engine2;
     private Image Engine3;
-    private Image yes, yesDisabled, no, noDisabled, upgrade, upgradeDisabled;
+    private TextButton yes, no, upgrade;
 
     private Image CategoryGun;
     private Image CategoryGun2;
@@ -90,31 +89,26 @@ public class MenuScreen implements Screen{
     private Image Cannon2;
     private Image Cannon3;
 
-    private Image trelloLink;
-    private Image gitHubLink;
-    private Image secretCode;
+    private Button trelloLink;
+    private Button gitHubLink;
+    private Button secretCode;
+    private TextButton musicLink;
 
-    private Texture infoBg;
+    private Image infoBg;
 
     private Image Lamp;
 
     private CheckBox fps;
     private CheckBox transparency;
-    private CheckBox shader;
-    private CheckBox fastLoading;
+    private CheckBox bloom;
+    private CheckBox logging;
     private Slider uiScaling;
     private Slider musicVolume;
     private Slider soundEffectsVolume;
     private Slider difficultyControl;
-    private CheckBox.CheckBoxStyle checkBoxStyle;
-    private Skin checkBoxSkin;
-    private Slider.SliderStyle sliderBarStyle, sliderBarStyle2;
-    private Skin sliderBarSkin;
     private float uiScale;
 
-    private Preferences prefs;
-
-    private BitmapFont font_main, font_numbers;
+    private BitmapFont font_main, font_numbers, font_buttons;
 
     private boolean info;
     private boolean settings;
@@ -122,6 +116,7 @@ public class MenuScreen implements Screen{
     private boolean Music;
     private boolean Shop;
     private boolean more;
+    private boolean crafting;
     public static boolean Sound;
     private float MusicVolume;
     public static float SoundVolume;
@@ -135,11 +130,8 @@ public class MenuScreen implements Screen{
     private Music music;
     private float millis;
     private float millis2;
-    private int millis3;
 
     private Game game;
-
-    private AssetManager assetManager;
 
     private ParticleEffect fire, fire2;
 
@@ -153,19 +145,25 @@ public class MenuScreen implements Screen{
 
     private int easterEggCounter;
 
-       public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager){
+    private final int fillingThreshold = 7;
 
-        prefs = Gdx.app.getPreferences("Preferences");
+    private PostProcessor blurProcessor;
+
+    private boolean enableShader;
+
+    private SlotManager slotManager;
+
+       public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
 
         this.game = game;
 
-        this.assetManager = assetManager;
+        this.blurProcessor = blurProcessor;
 
         menu_offset = 1000;
 
-        uiScale = prefs.getFloat("ui");
-        MusicVolume = (int)(prefs.getFloat("musicVolume")*100);
-        SoundVolume = (int)(prefs.getFloat("soundEffectsVolume")*100);
+        uiScale = DUtils.getFloat("ui");
+        MusicVolume = (int)(DUtils.getFloat("musicVolume")*100);
+        SoundVolume = (int)(DUtils.getFloat("soundEffectsVolume")*100);
 
         if(MusicVolume > 0) {
             Music = true;
@@ -175,58 +173,61 @@ public class MenuScreen implements Screen{
             Sound = true;
         }
 
-        current_engine = prefs.getInteger("current_engine");
+        current_engine = DUtils.getInteger("current_engine");
         if(current_engine<1){
-            prefs.putInteger("current_engine", 1);
-            prefs.flush();
+            DUtils.putInteger("current_engine", 1);
             current_engine = 1;
         }
 
-        current_cannon = prefs.getInteger("current_cannon");
+        current_cannon = DUtils.getInteger("current_cannon");
         if(current_cannon<1){
-            prefs.putInteger("current_cannon", 1);
-            prefs.flush();
+            DUtils.putInteger("current_cannon", 1);
             current_cannon = 1;
         }
 
-        current_category = prefs.getInteger("current_category");
+        current_category = DUtils.getInteger("current_category");
         if(current_category<1){
-            prefs.putInteger("current_category", 1);
-            prefs.flush();
+            DUtils.putInteger("current_category", 1);
             current_category = 1;
         }
 
-        money = prefs.getInteger("money");
-        cogs = prefs.getInteger("cogs");
-        easterEgg = prefs.getBoolean("easterEgg");
-        easterEgg_unlocked = prefs.getBoolean("easterEgg_unlocked");
+        money = DUtils.getInteger("money");
+        cogs = DUtils.getInteger("cogs");
+        easterEgg = DUtils.getBoolean("easterEgg");
+        easterEgg_unlocked = DUtils.getBoolean("easterEgg_unlocked");
 
-        engine1upgradeLevel = prefs.getInteger("engine1upgradeLevel");
-        engine2upgradeLevel = prefs.getInteger("engine2upgradeLevel");
-        engine3upgradeLevel = prefs.getInteger("engine3upgradeLevel");
-        cannon1upgradeLevel = prefs.getInteger("cannon1upgradeLevel");
-        cannon2upgradeLevel = prefs.getInteger("cannon2upgradeLevel");
-        cannon3upgradeLevel = prefs.getInteger("cannon3upgradeLevel");
+        engine1upgradeLevel = DUtils.getInteger("engine1upgradeLevel");
+        engine2upgradeLevel = DUtils.getInteger("engine2upgradeLevel");
+        engine3upgradeLevel = DUtils.getInteger("engine3upgradeLevel");
+        cannon1upgradeLevel = DUtils.getInteger("cannon1upgradeLevel");
+        cannon2upgradeLevel = DUtils.getInteger("cannon2upgradeLevel");
+        cannon3upgradeLevel = DUtils.getInteger("cannon3upgradeLevel");
 
-        is2ndEngineUnlocked = prefs.getBoolean("is2ndEngineUnlocked");
-        is3rdEngineUnlocked = prefs.getBoolean("is3rdEngineUnlocked");
-        is2ndCannonUnlocked = prefs.getBoolean("is2ndCannonUnlocked");
-        is3rdCannonUnlocked = prefs.getBoolean("is3rdCannonUnlocked");
+        is2ndEngineUnlocked = DUtils.getBoolean("is2ndEngineUnlocked");
+        is3rdEngineUnlocked = DUtils.getBoolean("is3rdEngineUnlocked");
+        is2ndCannonUnlocked = DUtils.getBoolean("is2ndCannonUnlocked");
+        is3rdCannonUnlocked = DUtils.getBoolean("is3rdCannonUnlocked");
 
         this.batch = batch;
 
         camera = new OrthographicCamera(800, 480);
-        viewport = new FitViewport(800,480, camera);
+        viewport = new ScreenViewport(camera);
 
-        MenuBg = assetManager.get("menuBg.png");
+        MenuBg = new Image((Texture)assetManager.get("menuBg.png"));
         Lamp = new Image((Texture)(assetManager.get("lamp.png")));
-        infoBg = assetManager.get("infoBg.png");
+        infoBg = new Image((Texture)assetManager.get("infoBg.png"));
+        infoBg.setBounds(5, 65, 531, 410);
+        MenuBg.setBounds(0, 0, 800, 480);
 
-        font_main = assetManager.get("fonts/font2.fnt");
+        font_main = assetManager.get("fonts/font2(old).fnt");
         font_numbers = assetManager.get("fonts/font.fnt");
+        font_buttons = assetManager.get("fonts/font2.fnt");
 
         Bg = assetManager.get("bg_old.png");
         Bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        FillTexture = new Image((Texture)assetManager.get("menuFill.png"));
+        FillTexture.setSize(456, 72);
 
         Ship = assetManager.get("ship.png");
 
@@ -234,30 +235,6 @@ public class MenuScreen implements Screen{
         menu_purchase2 = assetManager.get("shop/menuBuy2.png");
 
         buildNumber = new Image((Texture)assetManager.get("greyishButton.png"));
-
-        info_enabled = new Image((Texture)assetManager.get("menuButtons/info_enabled.png"));
-        info_disabled = new Image((Texture)assetManager.get("menuButtons/info_disabled.png"));
-
-        more_enabled = new Image((Texture)assetManager.get("menuButtons/more_enabled.png"));
-        more_disabled = new Image((Texture)assetManager.get("menuButtons/more_disabled.png"));
-
-        play_enabled = new Image((Texture)assetManager.get("menuButtons/play_enabled.png"));
-        play_disabled = new Image((Texture)assetManager.get("menuButtons/play_disabled.png"));
-
-        settings_enabled = new Image((Texture)assetManager.get("menuButtons/settings_enabled.png"));
-        settings_disabled = new Image((Texture)assetManager.get("menuButtons/settings_disabled.png"));
-
-        online_enabled = new Image((Texture)assetManager.get("menuButtons/online_enabled.png"));
-        online_disabled = new Image((Texture)assetManager.get("menuButtons/online_disabled.png"));
-
-        continue_enabled  = new Image((Texture)assetManager.get("menuButtons/continue_e.png"));
-        continue_disabled  = new Image((Texture)assetManager.get("menuButtons/continue_d.png"));
-
-        newGame_enabled = new Image((Texture)assetManager.get("menuButtons/newGame_e.png"));
-        newGame_disabled = new Image((Texture)assetManager.get("menuButtons/newGame_d.png"));
-
-        shop_enabled = new Image((Texture)assetManager.get("menuButtons/shop_e.png"));
-        shop_disabled = new Image((Texture)assetManager.get("menuButtons/shop_d.png"));
 
         shop = assetManager.get("shop/main.png");
         shopButton_disabled = assetManager.get("shop/button_small.png");
@@ -285,38 +262,7 @@ public class MenuScreen implements Screen{
         CategoryGun = new Image((Texture)assetManager.get("shop/CategoryGun.png"));
         CategoryGun2 = new Image((Texture)assetManager.get("shop/CategoryGun2.png"));
 
-        yes = new Image((Texture)assetManager.get("shop/yes.png"));
-        yesDisabled = new Image((Texture)assetManager.get("shop/yesDisabled.png"));
-        no = new Image((Texture) assetManager.get("shop/no.png"));
-        noDisabled = new Image((Texture)assetManager.get("shop/noDisabled.png"));
-        upgrade = new Image((Texture)assetManager.get("shop/upgrade.png"));
-        upgradeDisabled = new Image((Texture)assetManager.get("shop/upgradeDisabled.png"));
-
-        trelloLink = new Image((Texture)assetManager.get("trello.png"));
-        gitHubLink = new Image((Texture)assetManager.get("gitHub.png"));
-        secretCode = new Image((Texture)assetManager.get("secretCode.png"));
-
-        play_disabled.setBounds(545, 325, 250, 75);
-        online_disabled.setBounds(545, 245, 250, 75);
-        settings_disabled.setBounds(545, 165, 250, 75);
-        info_disabled.setBounds(545, 85, 250, 75);
-        more_disabled.setBounds(545, 5, 250, 75);
         buildNumber.setBounds(5,5,150, 50);
-
-        play_enabled.setBounds(545, 325, 250, 75);
-        online_enabled.setBounds(545, 245, 250, 75);
-        settings_enabled.setBounds(545, 165, 250, 75);
-        info_enabled.setBounds(545, 85, 250, 75);
-        more_enabled.setBounds(545, 5, 250, 75);
-
-        continue_enabled.setBounds(180, 385, 160, 44);
-        continue_disabled.setBounds(180, 385, 160, 44);
-
-        newGame_enabled.setBounds(20, 385, 160, 44);
-        newGame_disabled.setBounds(20, 385, 160, 44);
-
-        shop_enabled.setBounds(340, 385, 160, 44);
-        shop_disabled.setBounds(340, 385, 160, 44);
 
         Engine3.setBounds(54.57f, 235.39801f, 114.66f, 45.864f);
         Engine2.setBounds(54.57f, 312.058f, 114.66f, 45.864f);
@@ -326,107 +272,223 @@ public class MenuScreen implements Screen{
         Cannon2.setBounds(42, 312.058f, 142.07649f, 45.901638f);
         Cannon3.setBounds(43, 235.39801f, 140.01207f, 45.866024f);
 
-        yes.setBounds(-100, -100, 83.2f, 57.2f);
-        no.setBounds(-100, -100, 83.2f, 57.2f);
-        yesDisabled.setBounds(-100, -100, 83.2f, 57.2f);
-        noDisabled.setBounds(-100, -100, 83.2f, 57.2f);
-        upgrade.setBounds(-100, -100, 280.8f, 57.2f);
-        upgradeDisabled.setBounds(-100, -100, 280.8f, 57.2f);
-
-        trelloLink.setBounds(15, 350, 50, 50);
-        gitHubLink.setBounds(15, 410, 50, 50);
-        secretCode.setBounds(15, 290, 50, 50);
-
         CategoryEngine.setBounds(245, 400, 60, 46);
-        CategoryGun.setBounds(337, 405, 70, 38);
+        CategoryGun.setBounds(337, 384, 75, 75);
         CategoryGun2.setBounds(445, 400, 46, 46);
 
         Lamp.setBounds(730, 430, 15, 35);
 
-        checkBoxSkin = new Skin();
+        Skin buttonSkin = new Skin();
+        buttonSkin.addRegions((TextureAtlas)assetManager.get("menuButtons/menuButtons.atlas"));
+        buttonSkin.addRegions((TextureAtlas)assetManager.get("menuButtons/buttons.atlas"));
+        buttonSkin.addRegions((TextureAtlas)assetManager.get("shop/shopButtons.atlas"));
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font_buttons;
+        textButtonStyle.downFontColor = Color.valueOf("#22370E");
+        textButtonStyle.overFontColor = Color.valueOf("#3D51232");
+        textButtonStyle.fontColor = Color.valueOf("#3D4931");
+        textButtonStyle.over = buttonSkin.getDrawable("blank_over");
+        textButtonStyle.down = buttonSkin.getDrawable("blank_enabled");
+        textButtonStyle.up = buttonSkin.getDrawable("button_blank");
+
+        TextButton.TextButtonStyle textButtonStyle2 = new TextButton.TextButtonStyle();
+        textButtonStyle2.font = font_buttons;
+        textButtonStyle2.downFontColor = Color.valueOf("#31FF25");
+        textButtonStyle2.overFontColor = Color.valueOf("#00DC00");
+        textButtonStyle2.fontColor = Color.valueOf("#46D33E");
+        textButtonStyle2.over = buttonSkin.getDrawable("blank2_over");
+        textButtonStyle2.down = buttonSkin.getDrawable("blank2_enabled");
+        textButtonStyle2.up = buttonSkin.getDrawable("blank2_disabled");
+
+        TextButton.TextButtonStyle textButtonStyle_music = new TextButton.TextButtonStyle();
+        textButtonStyle_music.font = font_main;
+        textButtonStyle_music.downFontColor = Color.valueOf("#00bdbd");
+        textButtonStyle_music.overFontColor = Color.valueOf("#00dbdb");
+        textButtonStyle_music.fontColor = Color.CYAN;
+
+        Button.ButtonStyle buttonStyle_code = new TextButton.TextButtonStyle();
+        buttonStyle_code.up = buttonSkin.getDrawable("secretCode_disabled");
+        buttonStyle_code.over = buttonSkin.getDrawable("secretCode_over");
+        buttonStyle_code.down = buttonSkin.getDrawable("secretCode_enabled");
+
+        Button.ButtonStyle buttonStyle_git = new TextButton.TextButtonStyle();
+        buttonStyle_git.up = buttonSkin.getDrawable("gitHub_disabled");
+        buttonStyle_git.over = buttonSkin.getDrawable("gitHub_over");
+        buttonStyle_git.down = buttonSkin.getDrawable("gitHub_enabled");
+
+        Button.ButtonStyle buttonStyle_trello = new TextButton.TextButtonStyle();
+        buttonStyle_trello.up = buttonSkin.getDrawable("trello_disabled");
+        buttonStyle_trello.over = buttonSkin.getDrawable("trello_over");
+        buttonStyle_trello.down = buttonSkin.getDrawable("trello_enabled");
+
+        TextButton.TextButtonStyle textButtonStyle_shop_no = new TextButton.TextButtonStyle();
+        textButtonStyle_shop_no.up = buttonSkin.getDrawable("noDisabled");
+        textButtonStyle_shop_no.down = buttonSkin.getDrawable("no");
+        textButtonStyle_shop_no.over = buttonSkin.getDrawable("noOver");
+        textButtonStyle_shop_no.font = font_buttons;
+        textButtonStyle_shop_no.downFontColor = Color.RED;
+        textButtonStyle_shop_no.overFontColor = Color.valueOf("#DD0000");
+        textButtonStyle_shop_no.fontColor = Color.SCARLET;
+
+        TextButton.TextButtonStyle textButtonStyle_shop_yes = new TextButton.TextButtonStyle();
+        textButtonStyle_shop_yes.up = buttonSkin.getDrawable("yesDisabled");
+        textButtonStyle_shop_yes.down = buttonSkin.getDrawable("yes");
+        textButtonStyle_shop_yes.over = buttonSkin.getDrawable("yesOver");
+        textButtonStyle_shop_yes.font = font_buttons;
+        textButtonStyle_shop_yes.downFontColor = Color.GREEN;
+        textButtonStyle_shop_yes.overFontColor = Color.valueOf("#00DD00");
+        textButtonStyle_shop_yes.fontColor = Color.LIME;
+
+        yes = new TextButton("yes",textButtonStyle_shop_yes);
+        yes.getLabel().setFontScale(0.45f);
+        no = new TextButton("no",textButtonStyle_shop_no);
+        no.getLabel().setFontScale(0.45f);
+        upgrade = new TextButton("upgrade",textButtonStyle_shop_yes);
+        upgrade.getLabel().setFontScale(0.45f);
+
+        yes.setBounds(-100, -100, 83.2f, 57.2f);
+        no.setBounds(-100, -100, 83.2f, 57.2f);
+        upgrade.setBounds(-100, -100, 300.8f, 57.2f);
+
+        gitHubLink = new Button(buttonStyle_git);
+        trelloLink = new Button(buttonStyle_trello);
+        secretCode = new Button(buttonStyle_code);
+        trelloLink.setBounds(15, 350, 50, 50);
+        gitHubLink.setBounds(15, 410, 50, 50);
+        secretCode.setBounds(15, 290, 50, 50);
+
+        workshopButton = new TextButton("Workshop" , textButtonStyle);
+        workshopButton.setBounds(343, 330, 160, 50);
+        workshopButton.getLabel().setFontScale(0.45f);
+
+        continueGameButton = new TextButton("Continue" , textButtonStyle);
+        continueGameButton.setBounds(180, 385, 160, 44);
+        continueGameButton.getLabel().setFontScale(0.45f);
+
+        newGameButton = new TextButton("New game" , textButtonStyle);
+        newGameButton.setBounds(17, 385, 160, 44);
+        newGameButton.getLabel().setFontScale(0.4f, 0.45f);
+
+        shopButton = new TextButton("Shop" , textButtonStyle);
+        shopButton.setBounds(343, 385, 160, 44);
+        shopButton.getLabel().setFontScale(0.45f);
+
+        infoButton = new TextButton("Info" , textButtonStyle2);
+        infoButton.setBounds(545, 85, 250, 75);
+        infoButton.getLabel().setFontScale(0.6f);
+
+        moreButton = new TextButton("More" , textButtonStyle2);
+        moreButton.setBounds(545, 5, 250, 75);
+        moreButton.getLabel().setFontScale(0.6f);
+
+        playButton = new TextButton("Play" , textButtonStyle2);
+        playButton.setBounds(545, 325, 250, 75);
+        playButton.getLabel().setFontScale(0.6f);
+
+        settingsButton = new TextButton("Settings" , textButtonStyle2);
+        settingsButton.setBounds(545, 165, 250, 75);
+        settingsButton.getLabel().setFontScale(0.6f);
+
+        onlineButton = new TextButton("Online" , textButtonStyle2);
+        onlineButton.setBounds(545, 245, 250, 75);
+        onlineButton.getLabel().setFontScale(0.6f);
+
+        musicLink = new  TextButton("Evan King" , textButtonStyle_music);
+        musicLink.setBounds(262, 359, 130, 30);
+        musicLink.getLabel().setFontScale(0.48f);
+
+        Skin checkBoxSkin = new Skin();
         checkBoxSkin.add("off", assetManager.get("checkBox_disabled.png"));
         checkBoxSkin.add("on", assetManager.get("checkBox_enabled.png"));
+        checkBoxSkin.add("off_over", assetManager.get("checkBox_disabled_over.png"));
+        checkBoxSkin.add("on_over", assetManager.get("checkBox_enabled_over.png"));
 
-        checkBoxStyle = new CheckBox.CheckBoxStyle();
+        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
         checkBoxStyle.checkboxOff = checkBoxSkin.getDrawable("off");
         checkBoxStyle.checkboxOn = checkBoxSkin.getDrawable("on");
+        checkBoxStyle.checkboxOnOver = checkBoxSkin.getDrawable("on_over");
+        checkBoxStyle.checkboxOver = checkBoxSkin.getDrawable("off_over");
         checkBoxStyle.font = font_main;
 
-        sliderBarSkin = new Skin();
+        Skin sliderBarSkin = new Skin();
         sliderBarSkin.add("knob", assetManager.get("progressBarKnob.png"));
         sliderBarSkin.add("knob2", assetManager.get("progressBarKnob.png"));
         sliderBarSkin.add("bg", assetManager.get("progressBarBg.png"));
         sliderBarSkin.add("bg2", assetManager.get("progressBarBg.png"));
+        sliderBarSkin.add("knob_over", assetManager.get("progressBarKnob_over.png"));
+        sliderBarSkin.add("knob_over2", assetManager.get("progressBarKnob_over.png"));
+        sliderBarSkin.add("knob_enabled", assetManager.get("progressBarKnob_enabled.png"));
+        sliderBarSkin.add("knob_enabled2", assetManager.get("progressBarKnob_enabled.png"));
 
-        sliderBarStyle = new Slider.SliderStyle();
+        Slider.SliderStyle sliderBarStyle = new Slider.SliderStyle();
         sliderBarStyle.background = sliderBarSkin.getDrawable("bg");
         sliderBarStyle.knob = sliderBarSkin.getDrawable("knob");
+        sliderBarStyle.knobOver = sliderBarSkin.getDrawable("knob_over");
+        sliderBarStyle.knobDown = sliderBarSkin.getDrawable("knob_enabled");
         sliderBarStyle.knob.setMinHeight(62.5f);
         sliderBarStyle.knob.setMinWidth(37.5f);
+        sliderBarStyle.knobOver.setMinHeight(62.5f);
+        sliderBarStyle.knobOver.setMinWidth(37.5f);
+        sliderBarStyle.knobDown.setMinHeight(62.5f);
+        sliderBarStyle.knobDown.setMinWidth(37.5f);
         sliderBarStyle.background.setMinHeight(62.5f);
         sliderBarStyle.background.setMinWidth(250.0f);
 
-        sliderBarStyle2 = new Slider.SliderStyle();
+        Slider.SliderStyle sliderBarStyle2 = new Slider.SliderStyle();
         sliderBarStyle2.background = sliderBarSkin.getDrawable("bg2");
         sliderBarStyle2.knob = sliderBarSkin.getDrawable("knob2");
+        sliderBarStyle2.knobOver = sliderBarSkin.getDrawable("knob_over2");
+        sliderBarStyle2.knobDown = sliderBarSkin.getDrawable("knob_enabled2");
         sliderBarStyle2.knob.setMinHeight(42.5f);
         sliderBarStyle2.knob.setMinWidth(27.5f);
+        sliderBarStyle2.knobOver.setMinHeight(42.5f);
+        sliderBarStyle2.knobOver.setMinWidth(27.5f);
+        sliderBarStyle2.knobDown.setMinHeight(42.5f);
+        sliderBarStyle2.knobDown.setMinWidth(27.5f);
         sliderBarStyle2.background.setMinHeight(42.5f);
         sliderBarStyle2.background.setMinWidth(230.0f);
 
-        fps = new CheckBox("",checkBoxStyle);
-        transparency = new CheckBox("",checkBoxStyle);
-        shader = new CheckBox("",checkBoxStyle);
-        fastLoading = new CheckBox("",checkBoxStyle);
+        fps = new CheckBox("", checkBoxStyle);
+        transparency = new CheckBox("", checkBoxStyle);
+        bloom = new CheckBox("", checkBoxStyle);
+        logging = new CheckBox("", checkBoxStyle);
 
         uiScaling = new Slider(1, 2, 0.1f, false, sliderBarStyle);
         musicVolume = new Slider(0, 1, 0.1f, false, sliderBarStyle2);
         soundEffectsVolume = new Slider(0, 1, 0.1f, false, sliderBarStyle2);
         difficultyControl = new Slider(1, 5, 0.1f, false, sliderBarStyle2);
 
-        uiScaling.setValue(prefs.getFloat("ui"));
-        musicVolume.setValue(prefs.getFloat("musicVolume"));
-        soundEffectsVolume.setValue(prefs.getFloat("soundEffectsVolume"));
-        difficultyControl.setValue(prefs.getFloat("difficulty"));
-        fps.setChecked(prefs.getBoolean("showFps"));
-        transparency.setChecked(prefs.getBoolean("transparency"));
-        shader.setChecked(prefs.getBoolean("shader"));
-        fastLoading.setChecked(prefs.getBoolean("fastLoading"));
+        uiScaling.setValue(DUtils.getFloat("ui"));
+        musicVolume.setValue(DUtils.getFloat("musicVolume"));
+        soundEffectsVolume.setValue(DUtils.getFloat("soundEffectsVolume"));
+        difficultyControl.setValue(DUtils.getFloat("difficulty"));
+        fps.setChecked(DUtils.getBoolean("showFps"));
+        transparency.setChecked(DUtils.getBoolean("transparency"));
+        bloom.setChecked(DUtils.getBoolean("bloom"));
+        logging.setChecked(DUtils.getBoolean("logging"));
 
         fps.setBounds(13, 290, 50, 50);
         uiScaling.setBounds(10, 220, 250, 40);
         soundEffectsVolume.setBounds(310, 350, 170, 25);
-        difficultyControl.setBounds(20, 340, 170, 25);
+        difficultyControl.setBounds(20, 300, 170, 25);
         musicVolume.setBounds(310, 400, 170, 25);
         transparency.setBounds(13,100,50,50);
-        shader.setBounds(13, 150, 50, 50);
-        fastLoading.setBounds(200, 290, 50, 50);
+        bloom.setBounds(200, 290, 50, 50);
+        logging.setBounds(340, 290, 50, 50);
         fps.getImage().setScaling(Scaling.fill);
         transparency.getImage().setScaling(Scaling.fill);
-        shader.getImage().setScaling(Scaling.fill);
-        fastLoading.getImage().setScaling(Scaling.fill);
+        bloom.getImage().setScaling(Scaling.fill);
+        logging.getImage().setScaling(Scaling.fill);
 
         Menu = new Stage(viewport, batch);
 
-        Menu.addActor(play_disabled);
-        Menu.addActor(online_disabled);
-        Menu.addActor(settings_disabled);
-        Menu.addActor(info_disabled);
-        Menu.addActor(more_disabled);
-
+        Menu.addActor(playButton);
+        Menu.addActor(onlineButton);
+        Menu.addActor(settingsButton);
+        Menu.addActor(infoButton);
+        Menu.addActor(moreButton);
         Menu.addActor(buildNumber);
-
-        Menu.addActor(play_enabled);
-        Menu.addActor(online_enabled);
-        Menu.addActor(settings_enabled);
-        Menu.addActor(info_enabled);
-        Menu.addActor(more_enabled);
-
-        play_enabled.setVisible(false);
-        online_enabled.setVisible(false);
-        settings_enabled.setVisible(false);
-        info_enabled.setVisible(false);
-        more_enabled.setVisible(false);
 
         fps.setVisible(false);
         uiScaling.setVisible(false);
@@ -434,8 +496,8 @@ public class MenuScreen implements Screen{
         soundEffectsVolume.setVisible(false);
         difficultyControl.setVisible(false);
         transparency.setVisible(false);
-        shader.setVisible(false);
-        fastLoading.setVisible(false);
+        bloom.setVisible(false);
+        logging.setVisible(false);
 
         Menu.addActor(fps);
         Menu.addActor(uiScaling);
@@ -443,19 +505,17 @@ public class MenuScreen implements Screen{
         Menu.addActor(soundEffectsVolume);
         Menu.addActor(difficultyControl);
         Menu.addActor(transparency);
-        Menu.addActor(shader);
-        Menu.addActor(fastLoading);
+        Menu.addActor(bloom);
+        Menu.addActor(logging);
         Menu.addActor(trelloLink);
         Menu.addActor(gitHubLink);
         Menu.addActor(secretCode);
+        Menu.addActor(musicLink);
 
-        Menu.addActor(newGame_disabled);
-        Menu.addActor(continue_disabled);
-        Menu.addActor(shop_disabled);
-
-        Menu.addActor(continue_enabled);
-        Menu.addActor(shop_enabled);
-        Menu.addActor(newGame_enabled);
+        Menu.addActor(newGameButton);
+        Menu.addActor(continueGameButton);
+        Menu.addActor(shopButton);
+        Menu.addActor(workshopButton);
 
         Menu.addActor(Engine1);
         Menu.addActor(Engine2);
@@ -467,21 +527,22 @@ public class MenuScreen implements Screen{
         Menu.addActor(CategoryGun);
         Menu.addActor(CategoryGun2);
 
+        slotManager = new SlotManager(assetManager);
+        slotManager.addSlots("items");
+        slotManager.setBounds(90, 70, 440, 400);
+        slotManager.attach(Menu);
+        slotManager.setVisible(false);
+
         ShopStage = new Stage(viewport, batch);
 
-        ShopStage.addActor(yesDisabled);
-        ShopStage.addActor(noDisabled);
-        ShopStage.addActor(upgradeDisabled);
         ShopStage.addActor(yes);
         ShopStage.addActor(no);
         ShopStage.addActor(upgrade);
 
-        newGame_enabled.setVisible(false);
-        continue_enabled.setVisible(false);
-        shop_enabled.setVisible(false);
-        newGame_disabled.setVisible(false);
-        continue_disabled.setVisible(false);
-        shop_disabled.setVisible(false);
+        newGameButton.setVisible(false);
+        continueGameButton.setVisible(false);
+        shopButton.setVisible(false);
+        workshopButton.setVisible(false);
         Engine1.setVisible(false);
         Engine2.setVisible(false);
         Engine3.setVisible(false);
@@ -500,6 +561,7 @@ public class MenuScreen implements Screen{
         trelloLink.setVisible(false);
         gitHubLink.setVisible(false);
         secretCode.setVisible(false);
+        musicLink.setVisible(false);
 
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
@@ -528,118 +590,86 @@ public class MenuScreen implements Screen{
         multiplexer.addProcessor(Menu);
         multiplexer.addProcessor(ShopStage);
 
-        play_disabled.addListener(new InputListener(){
+        playButton.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                play_enabled.setVisible(true);
-                return true;
+            public void clicked(InputEvent event, float x, float y) {
+                    if (play) {
+                        play = false;
+                        Hide(0);
+                    } else {
+                        play = true;
+                        info = false;
+                        settings = false;
+                        Shop = false;
+                        more = false;
+                        crafting = false;
+                        Hide(2);
+                    }
             }
+        });
 
+        onlineButton.addListener(new ClickListener(){
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                play_enabled.setVisible(false);
+            public void clicked(InputEvent event, float x, float y) {
 
-                if (play){
-                    play = false;
+            }
+        });
+
+        settingsButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                    if (settings) {
+                        settings = false;
+                        Hide(0);
+                    } else {
+                        settings = true;
+                        info = false;
+                        play = false;
+                        Shop = false;
+                        more = false;
+                        crafting = false;
+                        Hide(1);
+                    }
+            }
+        });
+
+        infoButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (info) {
+                    info = false;
                     Hide(0);
-                }else {
-                    play = true;
-                    info = false;
-                    settings = false;
-                    Shop = false;
-                    more = false;
-                    Hide(2);
-                }
-            }
-        });
-
-        online_disabled.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                online_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                online_enabled.setVisible(false);
-            }
-        });
-
-        settings_disabled.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                settings_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                settings_enabled.setVisible(false);
-
-                if (settings){
-                    settings = false;
-                    Hide(0);
-                }else {
-                    settings = true;
-                    info = false;
-                    play = false;
-                    Shop = false;
-                    more = false;
-                    Hide(1);
-                }
-            }
-        });
-
-        info_disabled.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                info_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                info_enabled.setVisible(false);
-                if (info){
-                    info = false;
-                }else {
+                } else {
                     info = true;
                     settings = false;
                     play = false;
                     Shop = false;
                     more = false;
-                    Hide(0);
+                    crafting = false;
+                    Hide(8);
                 }
             }
         });
 
-        more_disabled.addListener(new InputListener(){
+        moreButton.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                more_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                more_enabled.setVisible(false);
-                if (more){
-                    more = false;
-                    Hide(0);
-                }else {
-                    more = true;
-                    info = false;
-                    settings = false;
-                    play = false;
-                    Shop = false;
-                    Hide(6);
-                }
+            public void clicked(InputEvent event, float x, float y) {
+                    if (more) {
+                        more = false;
+                        Hide(0);
+                    } else {
+                        more = true;
+                        info = false;
+                        settings = false;
+                        play = false;
+                        Shop = false;
+                        crafting = false;
+                        Hide(6);
+                    }
             }
         });
 
         uiScaling.addListener(new InputListener() {
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -647,42 +677,23 @@ public class MenuScreen implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                prefs.putFloat("ui", uiScaling.getValue());
-                prefs.flush();
+                DUtils.putFloat("ui", uiScaling.getValue());
+            }
+        });
+
+        fps.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                DUtils.putBoolean("showFps", fps.isChecked());
             }
 
         });
 
-        fps.addListener(new InputListener(){
-
+        soundEffectsVolume.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
+            public void clicked(InputEvent event, float x, float y) {
+                DUtils.putFloat("soundEffectsVolume", soundEffectsVolume.getValue());
             }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                prefs.putBoolean("showFps", fps.isChecked());
-                prefs.flush();
-            }
-
-        });
-
-        soundEffectsVolume.addListener(new InputListener(){
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                prefs.putFloat("soundEffectsVolume", soundEffectsVolume.getValue());
-                prefs.flush();
-
-            }
-
         });
 
         musicVolume.addListener(new InputListener() {
@@ -694,7 +705,7 @@ public class MenuScreen implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                prefs.putFloat("musicVolume", musicVolume.getValue());
+                DUtils.putFloat("musicVolume", musicVolume.getValue());
 
                 Music = musicVolume.getValue() > 0;
 
@@ -707,8 +718,6 @@ public class MenuScreen implements Screen{
                         music.stop();
                     }
                 }
-
-                prefs.flush();
             }
         });
 
@@ -730,60 +739,52 @@ public class MenuScreen implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                prefs.putFloat("difficulty", (float)((int)(difficultyControl.getValue()*100))/100);
-                prefs.flush();
+                DUtils.putFloat("difficulty", (float)((int)(difficultyControl.getValue()*100))/100);
             }
         });
 
-        newGame_disabled.addListener(new InputListener(){
-
+        newGameButton.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                newGame_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                newGame_enabled.setVisible(false);
-                game.setScreen(new LoadingScreen(game, batch, assetManager, 1, true, false));
+            public void clicked(InputEvent event, float x, float y) {
+                /*
+                DUtils.putInteger("enemiesKilled",0);
+                DUtils.putInteger("moneyEarned",0);
+                DUtils.putInteger("enemiesSpawned",0);
+                DUtils.putInteger("Score",0);
+                DUtils.putFloat("Health",100);
+                DUtils.putFloat("Shield",100);
+                DUtils.putBoolean("has1stBossSpawned", false);
+                DUtils.putBoolean("has2ndBossSpawned", false);
+                DUtils.putInteger("bonuses_collected", 0);
+                DUtils.putInteger("lastCheckpoint", 0);
+                DUtils.putInteger("bulletsShot", 0);
+                DUtils.putInteger("meteoritesDestroyed", 0);
+                DUtils.putFloat("ShipX", 0);
+                DUtils.putFloat("ShipY", 220);
+                 */
+                game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
             }
         });
 
-        continue_disabled.addListener(new InputListener(){
-
+        continueGameButton.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                continue_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                continue_enabled.setVisible(false);
-                if(prefs.getFloat("Health")>0) {
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, 1, false, false));
+            public void clicked(InputEvent event, float x, float y) {
+                if(DUtils.getFloat("Health")>0) {
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, false));
                 }
             }
         });
 
-        shop_disabled.addListener(new InputListener(){
-
+        shopButton.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                shop_enabled.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                shop_enabled.setVisible(false);
+            public void clicked(InputEvent event, float x, float y) {
                 if(!Shop) {
                     Shop = true;
                     info = false;
                     settings = false;
                     play = false;
                     more = false;
+                    crafting = false;
                     switch(current_category){
                         case(1):
                             Hide(3);
@@ -799,39 +800,50 @@ public class MenuScreen implements Screen{
             }
         });
 
+        workshopButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                    if (crafting) {
+                        crafting = false;
+                        Hide(0);
+                    } else {
+                        crafting = true;
+                        info = false;
+                        settings = false;
+                        play = false;
+                        Shop = false;
+                        more = false;
+                        Hide(7);
+                    }
+            }
+        });
+
         transparency.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                prefs.putBoolean("transparency", transparency.isChecked());
-                prefs.flush();
+                DUtils.putBoolean("transparency", transparency.isChecked());
             }
         });
 
-        shader.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                prefs.putBoolean("shader", shader.isChecked());
-                prefs.flush();
-            }
-        });
-
-        fastLoading.addListener(new ChangeListener() {
+        bloom.addListener(new ChangeListener() {
                @Override
                public void changed(ChangeEvent event, Actor actor) {
-                   prefs.putBoolean("fastLoading", fastLoading.isChecked());
-                   prefs.flush();
+               enableShader = bloom.isChecked();
+               DUtils.putBoolean("bloom", bloom.isChecked());;
                }
-           });
+        });
 
-        Engine1.addListener(new InputListener(){
-
+        logging.addListener(new ChangeListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
+            public void changed(ChangeEvent event, Actor actor) {
+                DUtils.logging = logging.isChecked();
+                DUtils.putBoolean("logging", logging.isChecked());
             }
+        });
 
+        Engine1.addListener(new ClickListener(){
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 if(current_engine == 1){
                     menu_offset = 350;
                     menu_type = 2;
@@ -841,21 +853,14 @@ public class MenuScreen implements Screen{
                     menu_offset = 350;
                 }
                 current_engine = 1;
-                prefs.putInteger("current_engine", 1);
-                prefs.flush();
+                DUtils.putInteger("current_engine", 1);
                 UpdateFire();
             }
         });
 
-        Engine2.addListener(new InputListener(){
-
+        Engine2.addListener(new ClickListener(){
                @Override
-               public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                   return true;
-               }
-
-               @Override
-               public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+               public void clicked(InputEvent event, float x, float y) {
                    if(current_engine == 2){
                        menu_offset = 350;
                        if(is2ndEngineUnlocked) {
@@ -871,22 +876,15 @@ public class MenuScreen implements Screen{
                    }
                    current_engine = 2;
                    if(is2ndEngineUnlocked) {
-                       prefs.putInteger("current_engine", 2);
-                       prefs.flush();
+                       DUtils.putInteger("current_engine", 2);
                    }
                    UpdateFire();
                }
            });
 
-        Engine3.addListener(new InputListener(){
-
+        Engine3.addListener(new ClickListener(){
                @Override
-               public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                   return true;
-               }
-
-               @Override
-               public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+               public void clicked(InputEvent event, float x, float y) {
                    if(current_engine == 3){
                        menu_offset = 350;
                        if(is3rdEngineUnlocked) {
@@ -902,23 +900,15 @@ public class MenuScreen implements Screen{
                    }
                    current_engine = 3;
                    if(is3rdEngineUnlocked) {
-                       prefs.putInteger("current_engine", 3);
-                       prefs.flush();
+                       DUtils.putInteger("current_engine", 3);
                    }
                    UpdateFire();
                }
            });
 
-        yesDisabled.addListener(new InputListener(){
+        yes.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                yes.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                yes.setVisible(false);
+            public void clicked(InputEvent event, float x, float y) {
                 switch (current_category){
                     case(1):
                         switch (current_engine){
@@ -926,10 +916,9 @@ public class MenuScreen implements Screen{
                             if(money>=1500){
                                 is2ndEngineUnlocked = true;
                                 money = money-1500;
-                                prefs.putInteger("money",money);
-                                prefs.putBoolean("is2ndEngineUnlocked", true);
-                                prefs.putInteger("current_engine", 2);
-                                prefs.flush();
+                                DUtils.putInteger("money",money);
+                                DUtils.putBoolean("is2ndEngineUnlocked", true);
+                                DUtils.putInteger("current_engine", 2);
                                 menuAnimation = false;
                             }
                             break;
@@ -937,10 +926,9 @@ public class MenuScreen implements Screen{
                             if(money>=3500){
                                 is3rdEngineUnlocked = true;
                                 money = money-3500;
-                                prefs.putInteger("money",money);
-                                prefs.putBoolean("is3rdEngineUnlocked", true);
-                                prefs.putInteger("current_engine", 3);
-                                prefs.flush();
+                                DUtils.putInteger("money",money);
+                                DUtils.putBoolean("is3rdEngineUnlocked", true);
+                                DUtils.putInteger("current_engine", 3);
                                 menuAnimation = false;
                             }
                             break;
@@ -952,10 +940,9 @@ public class MenuScreen implements Screen{
                                 if(money>=2500){
                                     is2ndCannonUnlocked = true;
                                     money = money-2500;
-                                    prefs.putInteger("money",money);
-                                    prefs.putBoolean("is2ndCannonUnlocked", true);
-                                    prefs.putInteger("current_cannon", 2);
-                                    prefs.flush();
+                                    DUtils.putInteger("money",money);
+                                    DUtils.putBoolean("is2ndCannonUnlocked", true);
+                                    DUtils.putInteger("current_cannon", 2);
                                     menuAnimation = false;
                                 }
                                 break;
@@ -963,10 +950,9 @@ public class MenuScreen implements Screen{
                                 if(money>=4500){
                                     is3rdCannonUnlocked = true;
                                     money = money-4500;
-                                    prefs.putInteger("money",money);
-                                    prefs.putBoolean("is3rdCannonUnlocked", true);
-                                    prefs.putInteger("current_cannon", 3);
-                                    prefs.flush();
+                                    DUtils.putInteger("money",money);
+                                    DUtils.putBoolean("is3rdCannonUnlocked", true);
+                                    DUtils.putInteger("current_cannon", 3);
                                     menuAnimation = false;
                                 }
                                 break;
@@ -976,59 +962,42 @@ public class MenuScreen implements Screen{
             }
         });
 
-        noDisabled.addListener(new InputListener(){
+        no.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                no.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                no.setVisible(false);
+            public void clicked(InputEvent event, float x, float y) {
                 menuAnimation = false;
             }
         });
 
-        upgradeDisabled.addListener(new InputListener(){
+        upgrade.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                upgrade.setVisible(true);
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                upgrade.setVisible(false);
+            public void clicked(InputEvent event, float x, float y) {
                 switch (current_category){
                     case(1):switch (current_engine){
                         case(1):
                             if(cogs>=2+(2*engine1upgradeLevel/3)){
                                 cogs-=2+(2*engine1upgradeLevel/3);
-                                prefs.putInteger("cogs", cogs);
+                                DUtils.putInteger("cogs", cogs);
                                 engine1upgradeLevel++;
-                                prefs.putInteger("engine1upgradeLevel",engine1upgradeLevel);
-                                prefs.flush();
+                                DUtils.putInteger("engine1upgradeLevel",engine1upgradeLevel);
                                 menuAnimation = false;
                             }
                             break;
                         case(2):
                             if(cogs>=3+(2*engine2upgradeLevel/3)){
                                 cogs-=3+(2*engine2upgradeLevel/3);
-                                prefs.putInteger("cogs", cogs);
+                                DUtils.putInteger("cogs", cogs);
                                 engine2upgradeLevel++;
-                                prefs.putInteger("engine2upgradeLevel",engine2upgradeLevel);
-                                prefs.flush();
+                                DUtils.putInteger("engine2upgradeLevel",engine2upgradeLevel);
                                 menuAnimation = false;
                             }
                             break;
                         case(3):
                             if(cogs>=4+(2*engine3upgradeLevel/3)){
                                 cogs-=4+(2*engine3upgradeLevel/3);
-                                prefs.putInteger("cogs", cogs);
+                                DUtils.putInteger("cogs", cogs);
                                 engine3upgradeLevel++;
-                                prefs.putInteger("engine3upgradeLevel",engine3upgradeLevel);
-                                prefs.flush();
+                                DUtils.putInteger("engine3upgradeLevel",engine3upgradeLevel);
                                 menuAnimation = false;
                             }
                             break;
@@ -1039,30 +1008,27 @@ public class MenuScreen implements Screen{
                             case(1):
                                 if(cogs>=2+(2*cannon1upgradeLevel/3)){
                                     cogs-=2+(2*cannon1upgradeLevel/3);
-                                    prefs.putInteger("cogs", cogs);
+                                    DUtils.putInteger("cogs", cogs);
                                     cannon1upgradeLevel++;
-                                    prefs.putInteger("cannon1upgradeLevel",cannon1upgradeLevel);
-                                    prefs.flush();
+                                    DUtils.putInteger("cannon1upgradeLevel",cannon1upgradeLevel);
                                     menuAnimation = false;
                                 }
                                 break;
                             case(2):
                                 if(cogs>=3+(2*cannon2upgradeLevel/3)){
                                     cogs-=3+(2*cannon2upgradeLevel/3);
-                                    prefs.putInteger("cogs", cogs);
+                                    DUtils.putInteger("cogs", cogs);
                                     cannon2upgradeLevel++;
-                                    prefs.putInteger("cannon2upgradeLevel",cannon2upgradeLevel);
-                                    prefs.flush();
+                                    DUtils.putInteger("cannon2upgradeLevel",cannon2upgradeLevel);
                                     menuAnimation = false;
                                 }
                                 break;
                             case(3):
                                 if(cogs>=4+(2*cannon3upgradeLevel/3)){
                                     cogs-=4+(2*cannon3upgradeLevel/3);
-                                    prefs.putInteger("cogs", cogs);
+                                    DUtils.putInteger("cogs", cogs);
                                     cannon3upgradeLevel++;
-                                    prefs.putInteger("cannon3upgradeLevel",cannon3upgradeLevel);
-                                    prefs.flush();
+                                    DUtils.putInteger("cannon3upgradeLevel",cannon3upgradeLevel);
                                     menuAnimation = false;
                                 }
                                 break;
@@ -1083,8 +1049,7 @@ public class MenuScreen implements Screen{
                 current_category = 1;
                 menu_offset = 350;
                 menuAnimation = false;
-                prefs.putInteger("current_category", current_category);
-                prefs.flush();
+                DUtils.putInteger("current_category", current_category);
                 Hide(3);
             }
         });
@@ -1100,8 +1065,7 @@ public class MenuScreen implements Screen{
                 current_category = 2;
                 menu_offset = 350;
                 menuAnimation = false;
-                prefs.putInteger("current_category", current_category);
-                prefs.flush();
+                DUtils.putInteger("current_category", current_category);
                 Hide(4);
             }
         });
@@ -1117,8 +1081,7 @@ public class MenuScreen implements Screen{
                 current_category = 3;
                 menu_offset = 350;
                 menuAnimation = false;
-                prefs.putInteger("current_category", current_category);
-                prefs.flush();
+                DUtils.putInteger("current_category", current_category);
                 Hide(5);
             }
         });
@@ -1140,8 +1103,7 @@ public class MenuScreen implements Screen{
                     menu_offset = 350;
                 }
                 current_cannon = 1;
-                prefs.putInteger("current_cannon", 1);
-                prefs.flush();
+                DUtils.putInteger("current_cannon", 1);
             }
         });
 
@@ -1168,8 +1130,7 @@ public class MenuScreen implements Screen{
                 }
                 current_cannon = 2;
                 if(is2ndCannonUnlocked) {
-                    prefs.putInteger("current_cannon", 2);
-                    prefs.flush();
+                    DUtils.putInteger("current_cannon", 2);
                 }
             }
         });
@@ -1197,64 +1158,53 @@ public class MenuScreen implements Screen{
                    }
                    current_cannon = 3;
                    if(is3rdCannonUnlocked) {
-                       prefs.putInteger("current_cannon", 3);
-                       prefs.flush();
+                       DUtils.putInteger("current_cannon", 3);
                    }
                }
            });
 
-        buildNumber.addListener(new InputListener(){
-
+        buildNumber.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 easterEggCounter++;
                 if(easterEggCounter>10){
                     easterEgg = !easterEgg;
+                    DUtils.putBoolean("easterEgg", easterEgg);
                     if(!easterEgg_unlocked) {
                         easterEgg_unlocked = true;
+                        DUtils.putBoolean("easterEgg_unlocked", true);
                     }
                     easterEggCounter = 0;
                 }
-                prefs.putBoolean("easterEgg", easterEgg);
-                prefs.putBoolean("easterEgg_unlocked", true);
-                if(settings && !easterEgg_unlocked){
-                    shader.setVisible(true);
-                }
-                prefs.flush();
             }
         });
 
-        trelloLink.addListener(new InputListener(){
+        trelloLink.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 Gdx.net.openURI("https://trello.com/b/FowZ4XAO/delta-core");
             }
         });
 
-        gitHubLink.addListener(new InputListener(){
+        gitHubLink.addListener(new ClickListener(){
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 Gdx.net.openURI("https://github.com/dgudim/DeltaCore_");
+            }
+        });
+
+        musicLink.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.net.openURI("https://evankingmusic.com/");
             }
         });
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music/ambient"+DUtils.getRandomInRange(1, 5)+".ogg"));
 
+        Gdx.input.setCatchKey(Input.Keys.BACK, false);
+
+        enableShader = DUtils.getBoolean("bloom");
     }
 
     @Override
@@ -1266,24 +1216,36 @@ public class MenuScreen implements Screen{
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.setProjectionMatrix(camera.combined);
+
+        if (enableShader) {
+            blurProcessor.capture();
+        }
 
         batch.begin();
 
-        movement = (int)(movement + (200 * delta));
-        if(movement> 2880){
+        movement = (int) (movement + (200 * delta));
+        if (movement > 2880) {
             movement = 0;
         }
 
         batch.draw(Bg, 0, 0, movement, -240, 800, 720);
 
-        fire.setPosition(230+ship_offset, 268);
-        fire2.setPosition(224+ship_offset, 290);
+        fire.setPosition(230 + ship_offset, 268);
+        fire2.setPosition(224 + ship_offset, 290);
         fire.draw(batch);
         fire.update(delta);
         fire2.draw(batch);
         fire2.update(delta);
+
+        if (enableShader) {
+            batch.end();
+            blurProcessor.render();
+        batch.begin();
+        }
 
         batch.draw(Ship, 220+ship_offset, 250, 76.8f, 57.6f);
 
@@ -1384,14 +1346,7 @@ public class MenuScreen implements Screen{
                         case(1):
                             batch.draw(menu_purchase2, 5+menu_offset, 70, 530, 400);
                             yes.setPosition(427+menu_offset, 175);
-                            yesDisabled.setPosition(427+menu_offset, 175);
                             no.setPosition(234+menu_offset, 175);
-                            noDisabled.setPosition(234+menu_offset, 175);
-                            font_main.setColor(Color.RED);
-                            font_main.getData().setScale(0.7f);
-                            font_main.draw(batch,"NO", 225+menu_offset, 210, 100,1, false );
-                            font_main.setColor(Color.GREEN);
-                            font_main.draw(batch,"YES", 418+menu_offset, 210, 100,1, false );
                             if (current_engine == 2){
                                 font_main.setColor(Color.GREEN);
                                 font_main.getData().setScale(0.6f);
@@ -1405,12 +1360,8 @@ public class MenuScreen implements Screen{
                             }
                             break;
                         case(2):
-                            upgrade.setPosition(232+menu_offset, 175);
-                            upgradeDisabled.setPosition(232+menu_offset, 175);
+                            upgrade.setPosition(222+menu_offset, 175);
                             batch.draw(menu_purchase, 5+menu_offset, 70, 530, 400);
-                            font_main.setColor(Color.GREEN);
-                            font_main.getData().setScale(0.7f);
-                            font_main.draw(batch,"UPGRADE!", 325+menu_offset, 210, 100,1, false );
                             font_main.setColor(Color.GREEN);
                             font_main.getData().setScale(0.5f);
                             batch.draw(cog, 447+menu_offset, 320, 30, 30);
@@ -1539,14 +1490,7 @@ public class MenuScreen implements Screen{
                         case(1):
                             batch.draw(menu_purchase2, 5+menu_offset, 70, 530, 400);
                             yes.setPosition(427+menu_offset, 175);
-                            yesDisabled.setPosition(427+menu_offset, 175);
                             no.setPosition(234+menu_offset, 175);
-                            noDisabled.setPosition(234+menu_offset, 175);
-                            font_main.setColor(Color.RED);
-                            font_main.getData().setScale(0.7f);
-                            font_main.draw(batch,"NO", 225+menu_offset, 210, 100,1, false );
-                            font_main.setColor(Color.GREEN);
-                            font_main.draw(batch,"YES", 418+menu_offset, 210, 100,1, false );
                             if (current_cannon == 2){
                                 font_main.setColor(Color.GREEN);
                                 font_main.getData().setScale(0.6f);
@@ -1560,12 +1504,8 @@ public class MenuScreen implements Screen{
                             }
                             break;
                         case(2):
-                            upgrade.setPosition(232+menu_offset, 175);
-                            upgradeDisabled.setPosition(232+menu_offset, 175);
+                            upgrade.setPosition(222+menu_offset, 175);
                             batch.draw(menu_purchase, 5+menu_offset, 70, 530, 400);
-                            font_main.setColor(Color.GREEN);
-                            font_main.getData().setScale(0.7f);
-                            font_main.draw(batch,"UPGRADE!", 325+menu_offset, 210, 100,1, false );
                             font_main.setColor(Color.GREEN);
                             font_main.getData().setScale(0.4f);
                             batch.draw(cog, 445+menu_offset, 320, 30, 30);
@@ -1638,22 +1578,23 @@ public class MenuScreen implements Screen{
             ship_offset--;
         }
 
-        batch.draw(MenuBg, 0,0, 800, 480);
+        MenuBg.draw(batch, 1);
 
         if(info){
-            batch.draw(infoBg, 5,65, 531, 410);
+            infoBg.draw(batch, 1);
             font_main.getData().setScale(0.48f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "ø¤º°°º¤ø,¸¸,ø¤º°[ Info ]°º¤ø,¸¸,ø¤º°°º¤ø", 5, 460, 531, 1, false);
             font_main.setColor(Color.valueOf("#00ff55"));
-            font_main.draw(batch, "Made by Deoxys, Textures by DefenceX", 5, 415, 531, 1, false);
+            font_main.draw(batch, "Made by Deoxys", 5, 429, 531, 1, false);
+            font_main.draw(batch, "Textures by DefenceX, VKLowe, Deoxys", 5, 407, 531, 1, false);
             font_main.setColor(Color.CYAN);
-            font_main.draw(batch, "Music by Evan King", 5, 377, 531, 1, false);
+            font_main.draw(batch, "Music by ________", 5, 377, 531, 1, false);
             font_main.setColor(Color.valueOf("#5DBCD2"));
             font_main.draw(batch, "Inspired by DefenseX, PetruCHIOrus", 5, 345, 531, 1, false);
             font_main.setColor(Color.valueOf("#cccc22"));
-            font_main.draw(batch, "Testers: Misterowl, Kisliy_xleb", 5, 305, 531, 1, false);
-            font_main.draw(batch, "LumixLab, Watermelon0guy, PYTHØN", 5, 275, 531, 1, false);
+            font_main.draw(batch, "Testers: Misterowl, Nikita.Beloglazov", 5, 305, 531, 1, false);
+            font_main.draw(batch, "Kisliy_xleb, Watermelon0guy, PYTHØN", 5, 275, 531, 1, false);
             font_main.draw(batch, "Ha4upelmeney, Lukmanov, ZerOn", 5, 245, 531, 1, false);
             font_main.setColor(Color.valueOf("#0FE500"));
             font_main.draw(batch, "Contributors: Volkov, DefenseX", 5, 210, 531, 1, false);
@@ -1664,7 +1605,7 @@ public class MenuScreen implements Screen{
         }
 
         if(settings) {
-            batch.draw(infoBg, 5, 65, 531, 410);
+            infoBg.draw(batch, 1);
             font_main.getData().setScale(0.5f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "ø¤º°°º¤ø,¸¸,ø¤[ Settings ]¤ø,¸¸,ø¤º°°º¤ø", 5, 460, 531, 1, false);
@@ -1674,25 +1615,16 @@ public class MenuScreen implements Screen{
             font_main.draw(batch, "Music: " + MusicVolume + "%", 95, 420, 132, 1, false);
             font_main.draw(batch, "Sound effects: " + SoundVolume + "%", 95, 370, 132, 1, false);
             font_main.draw(batch, "Show Fps", 65, 320, 132, 1, false);
-            font_main.draw(batch, "Fast Loading", 280, 320, 132, 1, false);
+            font_main.draw(batch, "Bloom", 230, 320, 132, 1, false);
+            font_main.draw(batch, "Prefs Logging", 385, 330, 132, 1, true);
             uiScale = (int) (uiScaling.getValue() * 100);
-            font_main.draw(batch, "Ui Scaling: " + uiScale + " %", 325, 263, 132, 1, false);
-            font_main.draw(batch, "(In game)", 325, 233, 132, 1, false);
+            font_main.draw(batch, "Ui Scaling: " + uiScale + " %", 325, 260, 132, 1, false);
+            font_main.draw(batch, "(In game)", 325, 230, 132, 1, false);
             font_main.draw(batch, "Semi-transparent UI", 140, 128, 132, 1, false);
-            if(easterEgg_unlocked) {
-                if(shader.isChecked()) {
-                    font_main.setColor(new Color().fromHsv(millis3, 1, 1).add(0,0,0,1));
-                    millis3+=80*delta;
-                    if(millis3>350){
-                        millis3 = 0;
-                    }
-                }
-                    font_main.draw(batch, "Enable cool shader", 131, 178, 132, 1, false);
-            }
         }
 
         if(more){
-            batch.draw(infoBg, 5, 65, 531, 410);
+            infoBg.draw(batch, 1);
             font_main.setColor(Color.valueOf("#0FE500"));
             font_main.getData().setScale(0.45f);
             font_main.draw(batch, "Game source code", 110, 440, 132, 1, false);
@@ -1727,12 +1659,16 @@ public class MenuScreen implements Screen{
         }
 
         if(play){
-            batch.draw(infoBg, 5,65, 531, 410);
+            infoBg.draw(batch, 1);
             font_main.getData().setScale(0.5f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "ø¤º°º¤ø,¸¸,ø¤[ Play Menu ]¤ø,¸¸,ø¤º°º¤ø", 5, 460, 531, 1, false);
             font_main.setColor(new Color().fromHsv(120-difficultyControl.getValue()*20, 1.5f, 1).add(0,0,0,1));
-            font_main.draw(batch, "Difficulty: X"+(float)((int)(difficultyControl.getValue()*100))/100, 30, 355, 531, 1, false);
+            font_main.draw(batch, "Difficulty: X"+(float)((int)(difficultyControl.getValue()*100))/100, 30, 315, 531, 1, false);
+        }
+
+        if(crafting){
+            infoBg.draw(batch, 1);
         }
 
         if(lamp_animation) {
@@ -1746,7 +1682,8 @@ public class MenuScreen implements Screen{
         if(number<=0){
             lamp_animation = true;
         }
-        Lamp.setColor(1,1,1, number);
+        number = MathUtils.clamp(number, 0, 1);
+        Lamp.setColor(1,1, 1, number);
         Lamp.draw(batch, 1);
 
         batch.end();
@@ -1757,18 +1694,50 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.2 Build 7", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.3 Build 1", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);
             font_main.draw(batch, "cat edition", 5, 20, 150, 1, false);
         }
+
+        for(int i = 0; i< fillingThreshold; i++){
+            FillTexture.setPosition(0, -72*(i+1));
+            FillTexture.draw(batch, 1);
+            FillTexture.setPosition(456, -72*(i+1));
+            FillTexture.draw(batch, 1);
+            FillTexture.setPosition(0, 408+72*(i+1));
+            FillTexture.draw(batch, 1);
+            FillTexture.setPosition(456, 408+72*(i+1));
+            FillTexture.draw(batch, 1);
+        }
+
+        for(int i = 0; i<(fillingThreshold /6)+1; i++) {
+            for(int i2=0; i2<7; i2++) {
+                FillTexture.setPosition(-456 - 456 * i, 408-i2*72);
+                FillTexture.draw(batch, 1);
+                FillTexture.setPosition(800 + 456 * i, 408-i2*72);
+                FillTexture.draw(batch, 1);
+            }
+        }
+
         batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        camera.position.set(400, 240, 0);
+        float tempScaleH = height/480.0f;
+        float tempScaleW = width/800.0f;
+        float zoom;
+        if(tempScaleH<=tempScaleW){
+            zoom = tempScaleH;
+        }else{
+            zoom = tempScaleW;
+        }
+        camera.zoom = 1/zoom;
+        camera.update();
     }
 
     @Override
@@ -1777,6 +1746,7 @@ public class MenuScreen implements Screen{
 
     @Override
     public void resume() {
+        blurProcessor.rebind();
     }
 
     @Override
@@ -1787,115 +1757,36 @@ public class MenuScreen implements Screen{
 
     @Override
     public void dispose() {
-
-        assetManager.unload("greyishButton.png");
-        assetManager.unload("menuButtons/info_enabled.png");
-        assetManager.unload("menuButtons/info_disabled.png");
-        assetManager.unload("menuButtons/more_enabled.png");
-        assetManager.unload("menuButtons/more_disabled.png");
-        assetManager.unload("menuButtons/play_enabled.png");
-        assetManager.unload("menuButtons/play_disabled.png");
-        assetManager.unload("menuButtons/settings_enabled.png");
-        assetManager.unload("menuButtons/settings_disabled.png");
-        assetManager.unload("menuButtons/online_enabled.png");
-        assetManager.unload("menuButtons/online_disabled.png");
-
-        assetManager.unload("menuBg.png");
-        assetManager.unload("lamp.png");
-        assetManager.unload("infoBg.png");
-        assetManager.unload("bg_old.png");
-        assetManager.unload("ship.png");
-
-        assetManager.unload("checkBox_disabled.png");
-        assetManager.unload("checkBox_enabled.png");
-        assetManager.unload("progressBarKnob.png");
-        assetManager.unload("progressBarBg.png");
-
-        assetManager.unload("menuButtons/continue_e.png");
-        assetManager.unload("menuButtons/continue_d.png");
-        assetManager.unload("menuButtons/newGame_d.png");
-        assetManager.unload("menuButtons/shop_d.png");
-        assetManager.unload("menuButtons/newGame_e.png");
-        assetManager.unload("menuButtons/shop_e.png");
-
-        assetManager.unload("shop/main.png");
-        assetManager.unload("shop/button_small.png");
-        assetManager.unload("shop/button_small_enabled.png");
-        assetManager.unload("shop/button_tiny.png");
-        assetManager.unload("shop/button_tiny_enabled.png");
-
-        assetManager.unload("shop/engine1.png");
-        assetManager.unload("shop/engine2.png");
-        assetManager.unload("shop/engine3.png");
-
-        assetManager.unload("shop/menuBuy.png");
-        assetManager.unload("shop/menuBuy2.png");
-
-        assetManager.unload("shop/yes.png");
-        assetManager.unload("shop/yesDisabled.png");
-        assetManager.unload("shop/no.png");
-        assetManager.unload("shop/noDisabled.png");
-        assetManager.unload("shop/upgrade.png");
-        assetManager.unload("shop/upgradeDisabled.png");
-
-        assetManager.unload("shop/CategoryGun.png");
-        assetManager.unload("shop/CategoryGun2.png");
-        assetManager.unload("shop/CategoryEngine.png");
-        assetManager.unload("shop/Cannon1.png");
-        assetManager.unload("shop/Cannon2.png");
-        assetManager.unload("shop/Cannon3.png");
-
-        assetManager.unload("trello.png");
-        assetManager.unload("gitHub.png");
-        assetManager.load("secretCode.png", Texture.class);
-
         Menu.dispose();
         ShopStage.dispose();
         music.dispose();
-        checkBoxSkin.dispose();
-        sliderBarSkin.dispose();
         font_main.dispose();
         font_numbers.dispose();
         fire.dispose();
         fire2.dispose();
-        MenuBg.dispose();
-        Bg.dispose();
-        shop.dispose();
-        shopButton_small_enabled.dispose();
-        shopButton_small_disabled.dispose();
-        shopButton_enabled.dispose();
-        shopButton_disabled.dispose();
-        infoBg.dispose();
-        menu_purchase.dispose();
-        menu_purchase2.dispose();
-        Engine1_t.dispose();
-        Engine2_t.dispose();
-        Engine3_t.dispose();
-        Cannon1_t.dispose();
-        Cannon2_t.dispose();
-        Cannon3_t.dispose();
     }
 
    private void Hide(int type){
            switch (type){
                case(0):
                    fps.setVisible(false);
-                   shader.setVisible(false);
-                   fastLoading.setVisible(false);
+                   bloom.setVisible(false);
+                   logging.setVisible(false);
                    uiScaling.setVisible(false);
                    musicVolume.setVisible(false);
                    soundEffectsVolume.setVisible(false);
                    difficultyControl.setVisible(false);
-                   newGame_disabled.setVisible(false);
-                   continue_disabled.setVisible(false);
-                   shop_disabled.setVisible(false);
+                   newGameButton.setVisible(false);
+                   continueGameButton.setVisible(false);
+                   shopButton.setVisible(false);
+                   workshopButton.setVisible(false);
                    transparency.setVisible(false);
+                   yes.setVisible(false);
+                   no.setVisible(false);
+                   upgrade.setVisible(false);
                    Engine1.setVisible(false);
                    Engine2.setVisible(false);
                    Engine3.setVisible(false);
-                   yesDisabled.setVisible(false);
-                   noDisabled.setVisible(false);
-                   upgradeDisabled.setVisible(false);
                    CategoryGun.setVisible(false);
                    CategoryGun2.setVisible(false);
                    CategoryEngine.setVisible(false);
@@ -1905,14 +1796,14 @@ public class MenuScreen implements Screen{
                    trelloLink.setVisible(false);
                    gitHubLink.setVisible(false);
                    secretCode.setVisible(false);
+                   musicLink.setVisible(false);
+                   slotManager.setVisible(false);
                    break;
                case(1):
                    Hide(0);
                    fps.setVisible(true);
-                   if(easterEgg_unlocked) {
-                       shader.setVisible(true);
-                   }
-                   fastLoading.setVisible(true);
+                   bloom.setVisible(true);
+                   logging.setVisible(true);
                    uiScaling.setVisible(true);
                    musicVolume.setVisible(true);
                    soundEffectsVolume.setVisible(true);
@@ -1921,9 +1812,10 @@ public class MenuScreen implements Screen{
                case(2):
                    Hide(0);
                    difficultyControl.setVisible(true);
-                   newGame_disabled.setVisible(true);
-                   continue_disabled.setVisible(true);
-                   shop_disabled.setVisible(true);
+                   newGameButton.setVisible(true);
+                   continueGameButton.setVisible(true);
+                   shopButton.setVisible(true);
+                   workshopButton.setVisible(true);
                    break;
                case(3):
                    Hide(0);
@@ -1933,9 +1825,9 @@ public class MenuScreen implements Screen{
                    Engine1.setVisible(true);
                    Engine2.setVisible(true);
                    Engine3.setVisible(true);
-                   yesDisabled.setVisible(true);
-                   noDisabled.setVisible(true);
-                   upgradeDisabled.setVisible(true);
+                   yes.setVisible(true);
+                   no.setVisible(true);
+                   upgrade.setVisible(true);
                    break;
                case(4):
                    Hide(0);
@@ -1945,24 +1837,32 @@ public class MenuScreen implements Screen{
                    Cannon1.setVisible(true);
                    Cannon2.setVisible(true);
                    Cannon3.setVisible(true);
-                   yesDisabled.setVisible(true);
-                   noDisabled.setVisible(true);
-                   upgradeDisabled.setVisible(true);
+                   yes.setVisible(true);
+                   no.setVisible(true);
+                   upgrade.setVisible(true);
                    break;
                case(5):
                    Hide(0);
                    CategoryGun.setVisible(true);
                    CategoryGun2.setVisible(true);
                    CategoryEngine.setVisible(true);
-                   yesDisabled.setVisible(true);
-                   noDisabled.setVisible(true);
-                   upgradeDisabled.setVisible(true);
+                   yes.setVisible(true);
+                   no.setVisible(true);
+                   upgrade.setVisible(true);
                    break;
                case(6):
                    Hide(0);
                    trelloLink.setVisible(true);
                    gitHubLink.setVisible(true);
                    secretCode.setVisible(true);
+                   break;
+               case(7):
+                   Hide(0);
+                   slotManager.setVisible(true);
+                   break;
+               case(8):
+                   Hide(0);
+                   musicLink.setVisible(true);
                    break;
            }
     }

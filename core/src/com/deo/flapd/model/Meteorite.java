@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
@@ -34,16 +35,12 @@ public class Meteorite {
 
     private static Array<Boolean> explosionQueue, remove_Meteorite;
 
-    private Preferences prefs;
-
     public Meteorite(AssetManager assetManager, boolean newGame, boolean easterEgg) {
         if(easterEgg) {
             meteorite = new Sprite((Texture) assetManager.get("cat_meteorite.png"));
         }else{
             meteorite = new Sprite((Texture) assetManager.get("Meteo.png"));
         }
-
-        prefs = Gdx.app.getPreferences("Preferences");
 
         meteorites = new Array<>();
         radiuses = new Array<>();
@@ -56,7 +53,7 @@ public class Meteorite {
         remove_Meteorite = new Array<>();
 
         if(!newGame){
-            meteoritesDestroyed = prefs.getInteger("meteoritesDestroyed");
+            meteoritesDestroyed = DUtils.getInteger("meteoritesDestroyed");
         }else {
             meteoritesDestroyed = 0;
         }
@@ -67,6 +64,8 @@ public class Meteorite {
             }else{
                 explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
             }
+            meteorite.setSize(0,0);
+            meteorite.setPosition(1000,1000);
     }
 
     public void Spawn(float x, float degree, float radius) {
@@ -89,8 +88,7 @@ public class Meteorite {
             remove_Meteorite.add(false);
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
-
+    public void drawEffects(SpriteBatch batch, boolean is_paused){
         for (int i = 0; i < meteorites.size; i ++) {
 
             Rectangle meteorite = meteorites.get(i);
@@ -103,6 +101,26 @@ public class Meteorite {
             }else{
                 fire.update(0);
             }
+        }
+        for(int i3 = 0; i3 < explosions.size; i3 ++){
+            explosions.get(i3).draw(batch);
+            if(!is_paused) {
+                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+            }else{
+                explosions.get(i3).update(0);
+            }
+            if(explosions.get(i3).isComplete()){
+                explosions.get(i3).dispose();
+                explosions.removeIndex(i3);
+            }
+        }
+    }
+
+    public void drawBase(SpriteBatch batch, boolean is_paused) {
+
+        for (int i = 0; i < meteorites.size; i ++) {
+
+            Rectangle meteorite = meteorites.get(i);
 
             this.meteorite.setPosition(meteorite.x, meteorite.y);
             this.meteorite.setOrigin(radiuses.get(i), radiuses.get(i));
@@ -118,20 +136,8 @@ public class Meteorite {
                     Meteorite.removeMeteorite(i, false);
                 }
             }
+        }
 
-        }
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
-            explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
-                explosions.get(i3).dispose();
-                explosions.removeIndex(i3);
-            }
-        }
         for(int i4 = 0; i4 < meteorites.size; i4++){
             if(explosionQueue.get(i4)) {
                 ParticleEffect explosionEffect = new ParticleEffect();

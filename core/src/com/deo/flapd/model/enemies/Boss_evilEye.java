@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -39,7 +41,7 @@ public class Boss_evilEye {
 
     private Sprite shield, laser;
 
-    private Texture up_right, up_left, down_right, down_left, left, right, down, up, center;
+    private Image up_right, up_left, down_right, down_left, left, right, down, up, center;
 
     private Array<Float> degrees, degrees2, health;
 
@@ -66,19 +68,22 @@ public class Boss_evilEye {
     private ParticleEffect fire;
 
     public Boss_evilEye(AssetManager assetManager, Polygon shipBounds){
-        up_right = assetManager.get("boss_evil/evil_up_right.png");
-        up_left = assetManager.get("boss_evil/evil_up_left.png");
-        down_right = assetManager.get("boss_evil/evil_down_right.png");
-        down_left = assetManager.get("boss_evil/evil_down_left.png");
-        left = assetManager.get("boss_evil/evil_left.png");
-        right = assetManager.get("boss_evil/evil_right.png");
-        up = assetManager.get("boss_evil/evil_up.png");
-        down = assetManager.get("boss_evil/evil_down.png");
-        center = assetManager.get("boss_evil/evil_center.png");
+
+        TextureAtlas bossAtlas = assetManager.get("boss_evil/bossEvil.atlas");
+
+        up_right = new Image(bossAtlas.createSprite("evil_up_right"));
+        up_left = new Image(bossAtlas.createSprite("evil_up_left"));
+        down_right = new Image(bossAtlas.createSprite("evil_down_right"));
+        down_left = new Image(bossAtlas.createSprite("evil_down_left"));
+        left = new Image(bossAtlas.createSprite("evil_left"));
+        right = new Image(bossAtlas.createSprite("evil_right"));
+        up = new Image(bossAtlas.createSprite("evil_up"));
+        down = new Image(bossAtlas.createSprite("evil_down"));
+        center = new Image(bossAtlas.createSprite("evil_center"));
         laser = new Sprite((Texture)assetManager.get("laser.png"));
 
-        cannon = new Sprite((Texture)assetManager.get("boss_evil/evil_cannon.png"));
-        body = new Sprite((Texture)assetManager.get("boss_evil/evil_base.png"));
+        cannon = new Sprite(bossAtlas.findRegion("evil_cannon"));
+        body = new Sprite(bossAtlas.findRegion("evil_base"));
         bullet = new Sprite((Texture)assetManager.get("pew2.png"));
         shield = new Sprite((Texture)assetManager.get("HotShield.png"));
 
@@ -204,24 +209,33 @@ public class Boss_evilEye {
             if(!stage2) {
                 rotation = MathUtils.atan2(bodyBounds.getY() - shipBounds.getY() + 25, bodyBounds.getX() - shipBounds.getX()) * MathUtils.radiansToDegrees;
                 if (rotation >= -22.5 && rotation <= 22.5) {
-                    batch.draw(left, bodyBounds.getX(), bodyBounds.getY());
+                    left.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    left.draw(batch, 1);
                 } else if (rotation >= 22.5 && rotation <= 67.5) {
-                    batch.draw(down_left, bodyBounds.getX(), bodyBounds.getY());
+                    down_left.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    down_left.draw(batch, 1);
                 } else if (rotation >= 67.5 && rotation <= 112.5) {
-                    batch.draw(down, bodyBounds.getX(), bodyBounds.getY());
+                    down.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    down.draw(batch, 1);
                 } else if (rotation >= 112.5 && rotation <= 157.5) {
-                    batch.draw(down_right, bodyBounds.getX(), bodyBounds.getY());
+                    down_right.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    down_right.draw(batch, 1);
                 } else if ((rotation >= 157.5 && rotation <= 180) || (rotation >= -180 && rotation <= -157.5)) {
-                    batch.draw(right, bodyBounds.getX(), bodyBounds.getY());
+                    right.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    right.draw(batch, 1);
                 } else if (rotation >= -157.5 && rotation <= -112.5) {
-                    batch.draw(up_right, bodyBounds.getX(), bodyBounds.getY());
+                    up_right.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    up_right.draw(batch, 1);
                 } else if (rotation >= -112.5 && rotation <= -67.5) {
-                    batch.draw(up, bodyBounds.getX(), bodyBounds.getY());
+                    up.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    up.draw(batch, 1);
                 } else if (rotation >= -67.5 && rotation <= -22.5) {
-                    batch.draw(up_left, bodyBounds.getX(), bodyBounds.getY());
+                    up_left.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                    up_left.draw(batch, 1);
                 }
             }else{
-                batch.draw(center, bodyBounds.getX(), bodyBounds.getY());
+                center.setPosition(bodyBounds.getX(), bodyBounds.getY());
+                center.draw(batch, 1);
             }
 
             for (int i = 0; i < 10; i++) {
@@ -244,7 +258,7 @@ public class Boss_evilEye {
                     if(random.nextBoolean()) {
                         Bonus.Spawn(random.nextInt(5), 1, cannonBounds.get(i));
                     }
-                        Drops.drop(bodyBounds, 1, 2, 3);
+                        Drops.drop(cannonBounds.get(i), 1, 2, 3);
                     health.set(i, -100f);
                     cannonBounds.get(i).setSize(0).setPosition(-100, -100);
                     GameUi.Score += 100;

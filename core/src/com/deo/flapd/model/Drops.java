@@ -3,184 +3,227 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.utils.DUtils;
-
 import java.util.Random;
 
 public class Drops {
 
-    private Sprite ironPlate, bolt, ore, glassShard, coloringCrystal, ironPlateMK2, prism, cable, fuelCell, energyCell, fuelCellMK2, laserEmitter, warpShard, warpShardMK2, warpOre, warpCore, gun, orangeCrystal, cyanCrystal, purpleCrystal, greenCrystal, redCrystal, sunCore, energyCrystal, memoryCard, screenCard, bulkCard, bulkCardMK2, processor, processorMK2, processorMK3, storageCell, storageCellMK2, craftingCard, aiCard, circuitBoard, advancedChip, aiChip, coolingUnit;
+    private Sprite ironPlate, bolt, ore, glassShard, coloringCrystal, cog, warpShard, warpShardMK2, warpShardMK3, wire, energyCell, coreShard, redCrystal, ironShard, plastic, rubber, craftingCard;
     private static Array<Float> timers;
     private static Array <Rectangle> drops;
     private static Array <Float> degrees;
     private static Array <Integer> types;
-    private static float width, height;
+    private static float maxSize;
     private static Random random;
-    private float uiScaling;
     private static int currentType;
+    private float uiScaling;
+    private TextureAtlas itemAtlas;
 
-    private Preferences prefs;
+    public Drops(AssetManager assetManager, float maxSize, float uiScaling) {
 
-    public Drops(AssetManager assetManager, float width, float height, float uiScaling) {
-        coloringCrystal = new Sprite((Texture)assetManager.get("items/crystal.png"));
-        redCrystal = new Sprite((Texture)assetManager.get("items/redCrystal.png"));
-        warpShard = new Sprite((Texture)assetManager.get("items/bonus_warp.png"));
-        laserEmitter = new Sprite((Texture)assetManager.get("items/bonus_laser.png"));
-        circuitBoard = new Sprite((Texture)assetManager.get("items/Circuit_Board.png"));
-        sunCore = new Sprite((Texture)assetManager.get("items/core_yellow.png"));
-        ore = new Sprite((Texture)assetManager.get("items/ore.png"));
-        prism = new Sprite((Texture)assetManager.get("items/prism.png"));
+        this.uiScaling = uiScaling;
 
-        prefs = Gdx.app.getPreferences("Preferences");
+        itemAtlas = assetManager.get("items/items.atlas");
+
+        coloringCrystal = new Sprite(itemAtlas.findRegion("crystal"));
+        redCrystal = new Sprite(itemAtlas.findRegion("redCrystal"));
+        warpShard = new Sprite(itemAtlas.findRegion("bonus_warp"));
+        ore = new Sprite(itemAtlas.findRegion("ore"));
+        ironPlate = new Sprite(itemAtlas.findRegion("ironPlate"));
+        bolt = new Sprite(itemAtlas.findRegion("bolt"));
+        glassShard = new Sprite(itemAtlas.findRegion("glassShard"));
+        energyCell = new Sprite(itemAtlas.findRegion("energyCell"));
+        warpShardMK2 = new Sprite(itemAtlas.findRegion("bonus_warp2"));
+        warpShardMK3 = new Sprite(itemAtlas.findRegion("bonus_warp3"));
+        cog = new Sprite(itemAtlas.findRegion("cog"));
+        wire = new Sprite(itemAtlas.findRegion("wire"));
+        coreShard = new Sprite(itemAtlas.findRegion("fragment_core"));
+        plastic = new Sprite(itemAtlas.findRegion("plastic"));
+        ironShard = new Sprite(itemAtlas.findRegion("ironShard"));
+        rubber = new Sprite(itemAtlas.findRegion("rubber"));
+        craftingCard = new Sprite(itemAtlas.findRegion("craftingCard"));
 
         timers = new Array<>();
         drops = new Array<>();
         degrees = new Array<>();
         types = new Array<>();
-        this.width = width;
-        this.height = height;
-        this.uiScaling = uiScaling;
+        Drops.maxSize = maxSize;
         random = new Random();
+
+        coloringCrystal.setScale(maxSize/Math.max(coloringCrystal.getHeight(), coloringCrystal.getWidth()));
+        redCrystal.setScale(maxSize/Math.max(redCrystal.getHeight(), redCrystal.getWidth()));
+        warpShard.setScale(maxSize/Math.max(warpShard.getHeight(), warpShard.getWidth()));
+        ore.setScale(maxSize/Math.max(ore.getHeight(), ore.getWidth()));
+        ironPlate.setScale(maxSize/Math.max(ironPlate.getHeight(), ironPlate.getWidth()));
+        bolt.setScale(maxSize/Math.max(bolt.getHeight(), bolt.getWidth()));
+        glassShard.setScale(maxSize/Math.max(glassShard.getHeight(), glassShard.getWidth()));
+        energyCell.setScale(maxSize/Math.max(energyCell.getHeight(), energyCell.getWidth()));
+        warpShardMK2.setScale(maxSize/Math.max(warpShardMK2.getHeight(), warpShardMK2.getWidth()));
+        cog.setScale(maxSize/Math.max(cog.getHeight(), cog.getWidth()));
+        wire.setScale(maxSize/Math.max(wire.getHeight(), wire.getWidth()));
+        coreShard.setScale(maxSize/Math.max(coreShard.getHeight(), coreShard.getWidth()));
+        ironShard.setScale(maxSize/Math.max(ironShard.getHeight(), ironShard.getWidth()));
+        plastic.setScale(maxSize/Math.max(plastic.getHeight(), plastic.getWidth()));
+        rubber.setScale(maxSize/Math.max(rubber.getHeight(), rubber.getWidth()));
+        warpShardMK3.setScale(maxSize/Math.max(warpShardMK3.getHeight(), warpShardMK3.getWidth()));
     }
-    public static void drop(Rectangle originEnemy, float scale, float timer, int rarity){
-        drop(originEnemy.getX() + originEnemy.width / 2 - width/2, originEnemy.getY() + originEnemy.height / 2 - height/2, scale, timer, rarity);
+    public static void drop(Rectangle originEnemy, float count, float timer, int rarity){
+        drop(originEnemy.getX() + originEnemy.width / 2 - maxSize/2, originEnemy.getY() + originEnemy.height / 2 - maxSize/2, count, timer, rarity);
     }
 
-    public static void drop(float x, float y, float scale, float timer, int rarity){
+    public static void drop(float x, float y, float count, float timer, int rarity){
+        for(int i = 0; i<count; i++) {
             Rectangle drop = new Rectangle();
 
             drop.x = x;
             drop.y = y;
 
-            drop.setSize(width*scale, height*scale);
+            currentType = MathUtils.clamp(DUtils.getRandomInRange(1, rarity+4), 1, 14);
+            types.add(currentType);
 
             drops.add(drop);
-            timers.add(timer*(random.nextFloat()+0.2f));
-            degrees.add(random.nextFloat()*360);
+            timers.add(timer * (random.nextFloat() + 1));
+            degrees.add(random.nextFloat() * 360);
+        }
+    }
 
-            currentType = 0;
-            if(random.nextInt(3) > 1) {
-            if (random.nextInt(11) > 5 - rarity) {
-            if (random.nextInt(11) > 5 - rarity) {
-            if (random.nextInt(11) > 5 - rarity) {
-            if (random.nextInt(11) > 5 - rarity) {
-            if (random.nextInt(11) > 5 - rarity) {
-            if (random.nextInt(11) > 5 - rarity) {
-                if(random.nextInt(10)>5) {
-                    currentType = DUtils.getRandomInRange(34, 39);
-                }
-            }else{
-                if(random.nextInt(10)>5){
-                    currentType = DUtils.getRandomInRange(28 ,29);
-                }else if(random.nextInt(10)>3){
-                    currentType = DUtils.getRandomInRange(30, 31);
-                }else if(random.nextInt(10)>1){
-                    currentType = DUtils.getRandomInRange(32 ,33);
-                }
-            }
-            }else{
-                if(random.nextInt(10)>5){
-                    currentType = DUtils.getRandomInRange(23, 24);
-                }else if(random.nextInt(10)>3){
-                    currentType = DUtils.getRandomInRange(25 ,27);
-                }
-            }
-            }else{
-                if(random.nextInt(10)>5){
-                    currentType = DUtils.getRandomInRange(17 ,21);
-                }else if(random.nextInt(10)>3){
-                    currentType = 22;
-                }
-            }
-            }else{
-                if(random.nextInt(10)>5){
-                    currentType = DUtils.getRandomInRange(13 ,14);
-                }else if(random.nextInt(10)>3){
-                    currentType = DUtils.getRandomInRange(15 ,16);
-                }
-            }
-            }else{
-                if(random.nextInt(10)>5){
-                    currentType = DUtils.getRandomInRange(9 ,10);
-                }else if(random.nextInt(10)>3){
-                    currentType = DUtils.getRandomInRange(11 ,12);
-                }
-            }
-            }else{
-                if(random.nextInt(10)>5){
-                    currentType = DUtils.getRandomInRange(1 ,5);
-                }else if(random.nextInt(10)>3){
-                    currentType = DUtils.getRandomInRange(6 ,8);
-                }
-                }
-            }
-            types.add(currentType);
+    private Sprite getSpriteByType(int type){
+        Sprite item = new Sprite();
+        switch (type){
+            case(1):
+                item = coloringCrystal;
+                break;
+            case(2):
+                item = ore;
+                break;
+            case(3):
+                item = ironShard;
+                break;
+            case(4):
+                item = plastic;
+                break;
+            case(5):
+                item = rubber;
+                break;
+            case(6):
+                item = cog;
+                break;
+            case(7):
+                item = wire;
+                break;
+            case(8):
+                item = bolt;
+                break;
+            case(9):
+                item = ironPlate;
+                break;
+            case(10):
+                item = glassShard;
+                break;
+            case(11):
+                item = warpShard;
+                break;
+            case(12):
+                item = warpShardMK2;
+                break;
+            case(13):
+                item = warpShardMK3;
+                break;
+            case(14):
+                item = redCrystal;
+                break;
+            case(15):
+                item = craftingCard;
+                break;
+            case(16):
+                item = energyCell;
+                break;
+            case(17):
+                item = coreShard;
+                break;
+        }
+        return item;
+    }
+
+    private String getDropCodeNameByType(int type){
+        String item = "";
+        switch (type){
+            case(1):
+                item = "crystal";
+                break;
+            case(2):
+                item = "ore";
+                break;
+            case(3):
+                item = "ironShard";
+                break;
+            case(4):
+                item = "plastic";
+                break;
+            case(5):
+                item = "rubber";
+                break;
+            case(6):
+                item = "cog";
+                break;
+            case(7):
+                item = "wire";
+                break;
+            case(8):
+                item = "bolt";
+                break;
+            case(9):
+                item = "ironPlate";
+                break;
+            case(10):
+                item = "glassShard";
+                break;
+            case(11):
+                item = "bonus_warp";
+                break;
+            case(12):
+                item = "bonus_warp2";
+                break;
+            case(13):
+                item = "bonus_warp3";
+                break;
+            case(14):
+                item = "redCrystal";
+                break;
+            case(15):
+                item = "craftingCard";
+                break;
+            case(16):
+                item = "energyCell";
+                break;
+            case(17):
+                item = "fragment_core";
+                break;
+        }
+        return item;
     }
 
     public void draw(SpriteBatch batch, boolean is_paused) {
-        /*
+
         for (int i = 0; i < drops.size; i++) {
             Rectangle drop = drops.get(i);
+            int type = types.get(i);
+            Sprite target = getSpriteByType(type);
+            drop.setSize(maxSize, maxSize);
             float degree = degrees.get(i);
             float timer = timers.get(i);
 
-            switch (types.get(i)){
-                case(1):
-                    this.crystal.setPosition(drop.x, drop.y);
-                    this.crystal.setSize(drop.width, drop.height);
-                    this.crystal.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.crystal.draw(batch);
-                    break;
-                case(2):
-                    this.ore.setPosition(drop.x, drop.y);
-                    this.ore.setSize(drop.width, drop.height);
-                    this.ore.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.ore.draw(batch);
-                    break;
-                case(3):
-                    this.board.setPosition(drop.x, drop.y);
-                    this.board.setSize(drop.width, drop.height);
-                    this.board.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.board.draw(batch);
-                    break;
-                case(4):
-                    this.laser.setPosition(drop.x, drop.y);
-                    this.laser.setSize(drop.width, drop.height);
-                    this.laser.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.laser.draw(batch);
-                    break;
-                case(5):
-                    this.redCrystal.setPosition(drop.x, drop.y);
-                    this.redCrystal.setSize(drop.width, drop.height);
-                    this.redCrystal.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.redCrystal.draw(batch);
-                    break;
-                case(6):
-                    this.prism.setPosition(drop.x, drop.y);
-                    this.prism.setSize(drop.width, drop.height);
-                    this.prism.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.prism.draw(batch);
-                    break;
-                case(7):
-                    this.warp.setPosition(drop.x, drop.y);
-                    this.warp.setSize(drop.width, drop.height);
-                    this.warp.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.warp.draw(batch);
-                    break;
-                case(8):
-                    this.sunCore.setPosition(drop.x, drop.y);
-                    this.sunCore.setSize(drop.width, drop.height);
-                    this.sunCore.setOrigin(drop.width / 2f, drop.height / 2f);
-                    this.sunCore.draw(batch);
-                    break;
-            }
+            target.setPosition(drop.x+drop.width/2-target.getWidth()/2, drop.y+drop.height/2-target.getHeight()/2);
+            target.setOrigin(target.getWidth() / 2f, target.getHeight() / 2f);
+            target.draw(batch);
+
             if(!is_paused){
                 if(timer > 0) {
                     drop.x -= MathUtils.cosDeg(degree) * timer * 30 * Gdx.graphics.getDeltaTime();
@@ -202,40 +245,10 @@ public class Drops {
                 removeDrop(i);
             }
         }
-         */
     }
 
     private void removeDrop(int i){
-        switch (types.get(i)){
-            case(1):
-                prefs.putInteger("crystal", prefs.getInteger("crystal")+1);
-                prefs.flush();
-                break;
-            case(2):
-                prefs.putInteger("ore", prefs.getInteger("ore")+1);
-                prefs.flush();
-                break;
-            case(3):
-                prefs.putInteger("board", prefs.getInteger("board")+1);
-                prefs.flush();
-                break;
-            case(4):
-                prefs.putInteger("laser", prefs.getInteger("laser")+1);
-                prefs.flush();
-                break;
-            case(5):
-                prefs.putInteger("prism", prefs.getInteger("prism")+1);
-                prefs.flush();
-                break;
-            case(6):
-                prefs.putInteger("warp", prefs.getInteger("warp")+1);
-                prefs.flush();
-                break;
-            case(7):
-                prefs.putInteger("core", prefs.getInteger("core")+1);
-                prefs.flush();
-                break;
-        }
+        DUtils.addInteger("item_"+getDropCodeNameByType(types.get(i)), 1);
         timers.removeIndex(i);
         drops.removeIndex(i);
         degrees.removeIndex(i);
