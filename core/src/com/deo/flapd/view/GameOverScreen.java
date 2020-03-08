@@ -2,32 +2,31 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class GameOverScreen implements Screen {
 
@@ -58,6 +57,8 @@ public class GameOverScreen implements Screen {
 
     private boolean enableShader;
 
+    private AssetManager assetManager;
+
     GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
 
         this.batch = batch;
@@ -66,16 +67,18 @@ public class GameOverScreen implements Screen {
 
         this.blurProcessor = blurProcessor;
 
-        enableShader = DUtils.getBoolean("bloom");
+        this.assetManager = assetManager;
+
+        enableShader = getBoolean("bloom");
 
         Score = GameUi.Score;
 
-        highScore = DUtils.getInteger("highScore");
+        highScore = getInteger("highScore");
 
-        difficulty = DUtils.getFloat("difficulty");
+        difficulty = getFloat("difficulty");
 
         if(Score > highScore){
-            DUtils.putInteger("highScore", Score);
+            putInteger("highScore", Score);
             highScore = Score;
             isNewHighScore = true;
         }else{
@@ -138,7 +141,7 @@ public class GameOverScreen implements Screen {
         Restart.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(DUtils.getFloat("Health")>0) {
+                if(getFloat("Health")>0) {
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, false));
                 }else{
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
@@ -146,6 +149,9 @@ public class GameOverScreen implements Screen {
                 GameScreen.is_paused = false;
             }
         });
+
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
+
     }
 
     @Override
@@ -155,6 +161,11 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+        if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
+            game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
+        }
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -206,12 +217,7 @@ public class GameOverScreen implements Screen {
         camera.position.set(400, 240, 0);
         float tempScaleH = height/480.0f;
         float tempScaleW = width/800.0f;
-        float zoom;
-        if(tempScaleH<=tempScaleW){
-            zoom = tempScaleH;
-        }else{
-            zoom = tempScaleW;
-        }
+        float zoom = Math.min(tempScaleH, tempScaleW);
         camera.zoom = 1/zoom;
         camera.update();
     }

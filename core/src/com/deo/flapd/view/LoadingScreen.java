@@ -20,11 +20,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import static com.deo.flapd.utils.DUtils.clearPrefs;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getPrefs;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class LoadingScreen implements Screen {
 
@@ -46,7 +53,7 @@ public class LoadingScreen implements Screen {
 
     public LoadingScreen(Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor){
 
-        DUtils.log("\n started loading");
+        log("\n started loading");
         loadingTime = TimeUtils.millis();
 
         this.batch = batch;
@@ -96,7 +103,7 @@ public class LoadingScreen implements Screen {
 
         Gdx.gl20.glLineWidth(10);
 
-        enableShader = DUtils.getBoolean("bloom");
+        enableShader = getBoolean("bloom");
 
         load();
     }
@@ -108,6 +115,7 @@ public class LoadingScreen implements Screen {
 
     public void load() {
         assetManager.load("items/items.atlas", TextureAtlas.class);
+        assetManager.load("items/parts.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/menuButtons.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/buttons.atlas", TextureAtlas.class);
         assetManager.load("boss_evil/bossEvil.atlas", TextureAtlas.class);
@@ -178,27 +186,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("progressBarBg.png", Texture.class);
         assetManager.load("progressBarKnob_over.png", Texture.class);
         assetManager.load("progressBarKnob_enabled.png", Texture.class);
-
-
-        assetManager.load("shop/main.png", Texture.class);
-        assetManager.load("shop/button_small.png", Texture.class);
-        assetManager.load("shop/button_small_enabled.png", Texture.class);
-        assetManager.load("shop/button_tiny.png", Texture.class);
-        assetManager.load("shop/button_tiny_enabled.png", Texture.class);
-
-        assetManager.load("shop/engine1.png", Texture.class);
-        assetManager.load("shop/engine2.png", Texture.class);
-        assetManager.load("shop/engine3.png", Texture.class);
-
-        assetManager.load("shop/menuBuy.png", Texture.class);
-        assetManager.load("shop/menuBuy2.png", Texture.class);
-
-        assetManager.load("shop/CategoryGun.png", Texture.class);
-        assetManager.load("shop/CategoryGun2.png", Texture.class);
-        assetManager.load("shop/CategoryEngine.png", Texture.class);
-        assetManager.load("shop/Cannon1.png", Texture.class);
-        assetManager.load("shop/Cannon2.png", Texture.class);
-        assetManager.load("shop/Cannon3.png", Texture.class);
     }
 
     @Override
@@ -274,32 +261,38 @@ public class LoadingScreen implements Screen {
 
         try {
             if (assetManager.isFinished()) {
-                DUtils.log("\n loaded, elapsed time "+TimeUtils.timeSinceMillis(loadingTime)/1000.0f+"s");
+                float elapsedTime = TimeUtils.timeSinceMillis(loadingTime)/1000.0f;
+                float relativePercentage = (100 - elapsedTime * 100f / 3);
+                if(relativePercentage>=0){
+                    log("\n loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)");
+                }else{
+                    log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
+                }
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }
         }catch (ClassCastException | NumberFormatException e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
-            DUtils.log("\n"+fullStackTrace + "\n");
-            DUtils.log("\n wiping data :) \n");
-            DUtils.clearPrefs();
-            DUtils.putInteger("money", 7000);
-            DUtils.putFloat("ui", 1.25f);
-            DUtils.putFloat("soundEffectsVolume", 1);
-            DUtils.putFloat("musicVolume", 1 );
-            DUtils.putFloat("difficulty", 1);
-            DUtils.putBoolean("transparency", true);
-            DUtils.putBoolean("shaders", false);
-            DUtils.log("dump pf preferences "+DUtils.getPrefs()+"\n");
-            DUtils.log("...done...restarting");
+            log("\n"+fullStackTrace + "\n");
+            log("\n wiping data :) \n");
+            clearPrefs();
+            putInteger("money", 7000);
+            putFloat("ui", 1.25f);
+            putFloat("soundEffectsVolume", 1);
+            putFloat("musicVolume", 1 );
+            putFloat("difficulty", 1);
+            putBoolean("transparency", true);
+            putBoolean("shaders", false);
+            log("dump pf preferences "+getPrefs()+"\n");
+            log("...done...restarting");
         } catch (Exception e2) {
             StringWriter sw = new StringWriter();
             e2.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
-            DUtils.log("\n" + fullStackTrace + "\n");
-            DUtils.log("dump pf preferences "+DUtils.getPrefs()+"\n");
-            DUtils.log("force exiting");
+            log("\n" + fullStackTrace + "\n");
+            log("dump pf preferences "+getPrefs()+"\n");
+            log("force exiting");
             System.exit(1);
         }
     }
@@ -310,12 +303,7 @@ public class LoadingScreen implements Screen {
         camera.position.set(400, 240, 0);
         float tempScaleH = height/480.0f;
         float tempScaleW = width/800.0f;
-        float zoom;
-        if(tempScaleH<=tempScaleW){
-            zoom = tempScaleH;
-        }else{
-            zoom = tempScaleW;
-        }
+        float zoom = Math.min(tempScaleH, tempScaleW);
         camera.zoom = 1/zoom;
         Gdx.gl20.glLineWidth(10.0f/camera.zoom);
         camera.update();

@@ -19,6 +19,8 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
+import static com.deo.flapd.utils.DUtils.log;
+
 public final class ShaderLoader {
 	public static String BasePath = "";
 	public static boolean Pedantic = true;
@@ -34,7 +36,7 @@ public final class ShaderLoader {
 		}
 		log += "...";
 		Gdx.app.log( "ShaderLoader", "Compiling " + log );
-		DUtils.log("[ShaderLoader]" + " Compiling " + log + "\n");
+		log("[ShaderLoader]" + " Compiling " + log + "\n");
 
 		String vpSrc = Gdx.files.internal( BasePath + vertexFileName + ".vertex" ).readString();
 		String fpSrc = Gdx.files.internal( BasePath + fragmentFileName + ".fragment" ).readString();

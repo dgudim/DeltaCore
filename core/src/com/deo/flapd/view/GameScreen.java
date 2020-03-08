@@ -2,7 +2,6 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -28,13 +26,18 @@ import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.log;
 
 public class GameScreen implements Screen{
 
@@ -106,7 +109,7 @@ public class GameScreen implements Screen{
 
         ship = new SpaceShip(assetManager, 0, 204, 76.8f, 57.6f, newGame);
 
-        uraniumCell = new UraniumCell(assetManager, 96, 96, DUtils.getFloat("ui"));
+        uraniumCell = new UraniumCell(assetManager, 96, 96, getFloat("ui"));
 
         boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
 
@@ -114,32 +117,32 @@ public class GameScreen implements Screen{
 
         bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip, boss_evilEye);
 
-        drops = new Drops(assetManager, 48, DUtils.getFloat("ui"));
+        drops = new Drops(assetManager, 48, getFloat("ui"));
 
         gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship, newGame);
 
-        bullet = new Bullet(assetManager, DUtils.getInteger("current_cannon"),0.4f*MathUtils.clamp((1.5f-DUtils.getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
+        bullet = new Bullet(assetManager, getInteger("current_cannon"),0.4f*MathUtils.clamp((1.5f-getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
 
-        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, DUtils.getBoolean("easterEgg"));
-        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, DUtils.getBoolean("easterEgg"));
-        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, DUtils.getBoolean("easterEgg"));
-        kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), DUtils.getBoolean("easterEgg"));
+        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, getBoolean("easterEgg"));
+        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, getBoolean("easterEgg"));
+        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, getBoolean("easterEgg"));
+        kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), getBoolean("easterEgg"));
 
-        meteorite = new Meteorite(assetManager, newGame, DUtils.getBoolean("easterEgg"));
+        meteorite = new Meteorite(assetManager, newGame, getBoolean("easterEgg"));
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
         gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint, boss_evilEye);
 
-        musicVolume = DUtils.getFloat("musicVolume");
+        musicVolume = getFloat("musicVolume");
 
         if(musicVolume > 0) {
             Music = true;
         }
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+DUtils.getRandomInRange(1, 5)+".ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+getRandomInRange(1, 5)+".ogg"));
 
-        enableShader = DUtils.getBoolean("bloom");
+        enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
     }
 
@@ -166,7 +169,7 @@ public class GameScreen implements Screen{
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
                         String fullStackTrace = sw.toString();
-                        DUtils.log("\n"+fullStackTrace + "\n");
+                        log("\n"+fullStackTrace + "\n");
                     }
                 }
             });
@@ -256,7 +259,7 @@ public class GameScreen implements Screen{
 
             if(millis2 > 100){
                 music.dispose();
-                music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+DUtils.getRandomInRange(1, 5)+".ogg"));
+                music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+ getRandomInRange(1, 5)+".ogg"));
                 music.setPosition(1);
                 music.setVolume(0);
                 music.play();
@@ -273,12 +276,7 @@ public class GameScreen implements Screen{
         camera.position.set(400, 240, 0);
         float tempScaleH = height/480.0f;
         float tempScaleW = width/800.0f;
-        float zoom;
-        if(tempScaleH<=tempScaleW){
-            zoom = tempScaleH;
-        }else{
-            zoom = tempScaleW;
-        }
+        float zoom = Math.min(tempScaleH, tempScaleW);
         camera.zoom = 1/zoom;
         camera.update();
     }

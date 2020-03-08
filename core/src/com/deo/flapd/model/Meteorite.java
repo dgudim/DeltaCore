@@ -15,6 +15,8 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getInteger;
+
 public class Meteorite {
 
     public static Array<Rectangle> meteorites;
@@ -53,7 +55,7 @@ public class Meteorite {
         remove_Meteorite = new Array<>();
 
         if(!newGame){
-            meteoritesDestroyed = DUtils.getInteger("meteoritesDestroyed");
+            meteoritesDestroyed = getInteger("meteoritesDestroyed");
         }else {
             meteoritesDestroyed = 0;
         }
@@ -150,7 +152,7 @@ public class Meteorite {
                         Bonus.Spawn(5, 1, meteorites.get(i4));
                     }
                 }
-                Drops.drop(meteorites.get(i4), 1,2, 1);
+                Drops.drop(meteorites.get(i4), 2,2, 3);
                 UraniumCell.Spawn(meteorites.get(i4), random.nextInt((int)(radiuses.get(i4)/17.5f))+2, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);

@@ -184,7 +184,7 @@ public class SniperEnemy {
                 if(random.nextBoolean()) {
                     Bonus.Spawn(random.nextInt(2)+1, 1, enemies.get(i4));
                 }
-                    Drops.drop(enemies.get(i4), 1, 2, 1);
+                Drops.drop(enemies.get(i4), 1, 2, 2);
                 UraniumCell.Spawn(enemies.get(i4), random.nextInt(4)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);

@@ -9,7 +9,6 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
@@ -19,6 +18,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
+
+import static com.deo.flapd.utils.DUtils.clearLog;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getPrefs;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
 
 public class Main extends Game {
 
@@ -32,9 +39,9 @@ public class Main extends Game {
         batch = new SpriteBatch();
         assetManager = new AssetManager();
 
-        DUtils.clearLog();
+        clearLog();
         Date date = new Date();
-        DUtils.log("\n\n|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n");
+        log("\n\n|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n");
 
         ShaderLoader.BasePath = "shaders/";
         blurProcessor = new PostProcessor( false, false, Gdx.app.getType() == Application.ApplicationType.Desktop );
@@ -55,21 +62,26 @@ public class Main extends Game {
             assetManager.update();
         }
 
-        if (DUtils.getFloat("ui")<=0) {
-            DUtils.putFloat("ui", 1);
-            DUtils.putFloat("soundEffectsVolume", 1);
-            DUtils.putFloat("musicVolume", 1 );
-            DUtils.putFloat("difficulty", 1);
-            DUtils.putBoolean("transparency", true);
-            DUtils.putBoolean("bloom", true);
-            DUtils.log("\n------------first launch------------"+"\n");
+        if (getFloat("ui")<=0) {
+            putFloat("ui", 1);
+            putFloat("soundEffectsVolume", 1);
+            putFloat("musicVolume", 1 );
+            putFloat("difficulty", 1);
+            putBoolean("transparency", true);
+            putBoolean("bloom", true);
+            log("\n------------first launch------------"+"\n");
         }
 
-        if (!DUtils.getBoolean("enabled_craftingCard")){
-            for (int i = 1; i<17; i++) {
-                DUtils.putBoolean("enabled_"+getDropCodeNameByType(i), true);
+        if (!getBoolean("enabled_craftingCard")){
+            for (int i = 0; i<17; i++) {
+                putBoolean("enabled_"+getDropCodeNameByType(i), true);
             }
-            DUtils.log("\n------------enabled drops------------"+"\n");
+            putBoolean("enabled_orangeCrystal", true);
+            putBoolean("enabled_warp_ore", true);
+            putBoolean("enabled_card2", true);
+            putBoolean("enabled_cable", true);
+            putBoolean("enabled_ironPlate2", true);
+            log("\n------------enabled drops------------"+"\n");
         }
 
         this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor));
@@ -83,9 +95,9 @@ public class Main extends Game {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
-            DUtils.log("\n"+fullStackTrace + "\n");
-            DUtils.log("dump pf preferences "+DUtils.getPrefs()+"\n");
-            DUtils.log("force exiting");
+            log("\n"+fullStackTrace + "\n");
+            log("dump pf preferences "+getPrefs()+"\n");
+            log("force exiting");
             System.exit(1);
         }
     }
@@ -100,6 +112,9 @@ public class Main extends Game {
     private String getDropCodeNameByType(int type){
         String item = "";
         switch (type){
+            case(0):
+                item = "craftingCard";
+                break;
             case(1):
                 item = "crystal";
                 break;
@@ -143,12 +158,9 @@ public class Main extends Game {
                 item = "redCrystal";
                 break;
             case(15):
-                item = "craftingCard";
-                break;
-            case(16):
                 item = "energyCell";
                 break;
-            case(17):
+            case(16):
                 item = "fragment_core";
                 break;
         }

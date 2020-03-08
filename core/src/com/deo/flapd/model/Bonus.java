@@ -14,10 +14,12 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
+
+import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class Bonus {
 
@@ -63,7 +65,7 @@ public class Bonus {
 
         font_text = assetManager.get("fonts/font2(old).fnt");
 
-        uiScale = DUtils.getFloat("ui");
+        uiScale = getFloat("ui");
 
         this.boss_battleShip = boss_battleShip;
         this.boss_evilEye = boss_evilEye;
@@ -159,12 +161,12 @@ public class Bonus {
                         if(GameLogic.bonuses_collected<10) {
                             GameLogic.bonuses_collected += 1;
                         }else{
-                            DUtils.addInteger("cogs", 1);
+                            addInteger("cogs", 1);
                         }
                     }
                     if(type == 4){
                         removeBonus(i, true);
-                        DUtils.addInteger("cogs", 1);
+                        addInteger("cogs", 1);
                     }
                     if(type == 5){
                         removeBonus(i, true);

@@ -20,6 +20,8 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getInteger;
+
 public class Bullet {
 
     private Polygon bounds;
@@ -55,8 +57,8 @@ public class Bullet {
         this.spread = spread;
 
         this.type = type;
-
-        bullet = new Sprite((Texture) assetManager.get("bu"+type+".png"));
+        
+        bullet = new Sprite((Texture) assetManager.get("bu" + type + ".png"));
 
         random = new Random();
 
@@ -69,7 +71,7 @@ public class Bullet {
         types = new Array<>();
 
         if(!newGame){
-            bulletsShot = DUtils.getInteger(" bulletsShot");
+            bulletsShot = getInteger(" bulletsShot");
         }else {
             bulletsShot = 0;
         }

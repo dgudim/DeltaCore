@@ -441,7 +441,7 @@ public class Boss_battleShip {
                     for (int i = 0; i<5; i++) {
                         Bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
                     }
-                        Drops.drop(bounds_body.getBoundingRectangle(), 1, 2, 4);
+                    Drops.drop(bounds_body.getBoundingRectangle(), 5, 2, 5);
                     GameUi.Score += 3000;
                     UraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }

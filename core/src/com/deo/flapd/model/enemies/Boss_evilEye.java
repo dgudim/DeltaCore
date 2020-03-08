@@ -258,7 +258,7 @@ public class Boss_evilEye {
                     if(random.nextBoolean()) {
                         Bonus.Spawn(random.nextInt(5), 1, cannonBounds.get(i));
                     }
-                        Drops.drop(cannonBounds.get(i), 1, 2, 3);
+                    Drops.drop(cannonBounds.get(i), 1, 2, 3);
                     health.set(i, -100f);
                     cannonBounds.get(i).setSize(0).setPosition(-100, -100);
                     GameUi.Score += 100;
@@ -280,7 +280,7 @@ public class Boss_evilEye {
                 rotation = MathUtils.atan2( bodyBounds.getY() - shipBounds.getY() + 35.2f,  bodyBounds.getX() - shipBounds.getX() + 25.6f) * MathUtils.radiansToDegrees;
                 for(int i = 0; i < 300; i++){
                     laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth()/2 - MathUtils.cosDeg(rotation) * 2 * i, bodyBounds.getY() + 64 - laser.getHeight()/2 - MathUtils.sinDeg(rotation) * 2*i);
-                    laser.setColor(new Color().fromHsv(i/9, 1, 1).add(0,0,0,1));
+                    laser.setColor(new Color().fromHsv(i/9f, 1, 1).add(0,0,0,1));
                     laser.setSize(2, 9*health.get(10)/2000);
                     laserTip.setSize(2, 9*health.get(10)/2000).setPosition(laser.getX(), laser.getY());
                     laser.setRotation(rotation);
@@ -289,7 +289,7 @@ public class Boss_evilEye {
                     if(laserTip.overlaps(shipBounds.getBoundingRectangle())){
                         for(int i2 = i+1; i2 < i + 10; i2++){
                             laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth()/2 - MathUtils.cosDeg(rotation) * 2 * i2, bodyBounds.getY() + 64 - laser.getHeight()/2 - MathUtils.sinDeg(rotation) * 2 * i2);
-                            laser.setColor(new Color().fromHsv(i2/9, 1, 1).add(0,0,0,1));
+                            laser.setColor(new Color().fromHsv(i2/9f, 1, 1).add(0,0,0,1));
                             laser.setSize(2, 9*health.get(10)/2000);
                             laserTip.setSize(2, 9*health.get(10)/2000).setPosition(laser.getX(), laser.getY());
                             fire.setPosition(laser.getX(), laser.getY()+4.5f);
@@ -359,11 +359,11 @@ public class Boss_evilEye {
                             health.set(10, -100f);
                             explode(0, true);
                             GameUi.Score += 3000;
-                            UraniumCell.Spawn(bodyBounds.getX() + 64, bodyBounds.getY() + 64, random.nextInt(20)+5, 1, 1);
+                            UraniumCell.Spawn(bodyBounds, random.nextInt(20)+5, 1, 1);
                             for (int i3 = 0; i3<5; i3++) {
                                 Bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
-                                Drops.drop(bodyBounds, 1, 2, 5);
                             }
+                            Drops.drop(bodyBounds, 5, 2, 4);
                             laserSaw.stop();
                             reset();
                         }

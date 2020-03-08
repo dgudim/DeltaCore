@@ -10,8 +10,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.utils.DUtils;
 import java.util.Random;
+
+import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Drops {
 
@@ -74,18 +77,23 @@ public class Drops {
         rubber.setScale(maxSize/Math.max(rubber.getHeight(), rubber.getWidth()));
         warpShardMK3.setScale(maxSize/Math.max(warpShardMK3.getHeight(), warpShardMK3.getWidth()));
     }
-    public static void drop(Rectangle originEnemy, float count, float timer, int rarity){
+    public static void drop(Rectangle originEnemy, int count, float timer, int rarity){
         drop(originEnemy.getX() + originEnemy.width / 2 - maxSize/2, originEnemy.getY() + originEnemy.height / 2 - maxSize/2, count, timer, rarity);
     }
 
-    public static void drop(float x, float y, float count, float timer, int rarity){
+    public static void drop(float x, float y, int count, float timer, int rarity){
+        count+=MathUtils.clamp((int)(random.nextFloat()*4-2), 0, 100);
         for(int i = 0; i<count; i++) {
             Rectangle drop = new Rectangle();
 
             drop.x = x;
             drop.y = y;
 
-            currentType = MathUtils.clamp(DUtils.getRandomInRange(1, rarity+4), 1, 14);
+            currentType = MathUtils.clamp(getRandomInRange(rarity/2+1, rarity+10), 1, 14);
+            if(random.nextFloat()>0.85f*(getInteger("item_craftingCard")/4f+1) && getInteger("c_limit")<3){
+                currentType = 0;
+                addInteger("c_limit", 1);
+            }
             types.add(currentType);
 
             drops.add(drop);
@@ -97,6 +105,9 @@ public class Drops {
     private Sprite getSpriteByType(int type){
         Sprite item = new Sprite();
         switch (type){
+            case(0):
+                item = craftingCard;
+                break;
             case(1):
                 item = coloringCrystal;
                 break;
@@ -140,12 +151,9 @@ public class Drops {
                 item = redCrystal;
                 break;
             case(15):
-                item = craftingCard;
-                break;
-            case(16):
                 item = energyCell;
                 break;
-            case(17):
+            case(16):
                 item = coreShard;
                 break;
         }
@@ -155,6 +163,9 @@ public class Drops {
     private String getDropCodeNameByType(int type){
         String item = "";
         switch (type){
+            case(0):
+                item = "craftingCard";
+                break;
             case(1):
                 item = "crystal";
                 break;
@@ -198,12 +209,9 @@ public class Drops {
                 item = "redCrystal";
                 break;
             case(15):
-                item = "craftingCard";
-                break;
-            case(16):
                 item = "energyCell";
                 break;
-            case(17):
+            case(16):
                 item = "fragment_core";
                 break;
         }
@@ -248,7 +256,7 @@ public class Drops {
     }
 
     private void removeDrop(int i){
-        DUtils.addInteger("item_"+getDropCodeNameByType(types.get(i)), 1);
+        addInteger("item_"+getDropCodeNameByType(types.get(i)), 1);
         timers.removeIndex(i);
         drops.removeIndex(i);
         degrees.removeIndex(i);

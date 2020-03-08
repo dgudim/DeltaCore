@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -26,15 +27,22 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
-import com.deo.flapd.utils.DUtils;
+
+import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class CraftingDialogue {
 
     private Dialog dialog;
     private Array<ImageButton> requirementButtons;
     private Array<String> requirementNames;
+    private Slider quantityGlobal;
 
-    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, boolean locked, boolean showDescription, final SlotManager slotManager, final CraftingDialogue previousDialogue){
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean locked, boolean showDescription, final ItemSlotManager itemSlotManager, final CraftingDialogue previousDialogue){
 
         requirementButtons = new Array<>();
         requirementNames = new Array<>();
@@ -106,11 +114,13 @@ public class CraftingDialogue {
             question.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, result, true, true, slotManager, null);
+                    new CraftingDialogue(stage, assetManager, result, 1,true, true, itemSlotManager, null);
                 }
             });
 
             final Slider quantity = new Slider(1, 50, 1, false, sliderStyle);
+            quantity.setValue(requestedQuantity);
+            quantityGlobal = quantity;
 
             TextButton yes = new TextButton("craft", yesStyle);
             TextButton no = new TextButton("cancel", noStyle);
@@ -127,16 +137,19 @@ public class CraftingDialogue {
                 public void clicked(InputEvent event, float x, float y) {
                     boolean craftingAllowed = true;
                     for (int i = 0; i < itemCounts.length; i++) {
-                        if (DUtils.getInteger("item_" + getItemCodeNameByName(items[i])) < (int) (itemCounts[i] * quantity.getValue())) {
+                        if (getInteger("item_" + getItemCodeNameByName(items[i])) < (int) (itemCounts[i] * quantity.getValue())) {
                             craftingAllowed = false;
                         }
                     }
                     if (craftingAllowed) {
                         for (int i = 0; i < itemCounts.length; i++) {
-                            DUtils.subtractInteger("item_" + getItemCodeNameByName(items[i]), (int) (itemCounts[i] * quantity.getValue()));
+                            subtractInteger("item_" + getItemCodeNameByName(items[i]), (int) (itemCounts[i] * quantity.getValue()));
                         }
-                        DUtils.addInteger("item_" + getItemCodeNameByName(result), (int) (resultCount * quantity.getValue()));
+                        addInteger("item_" + getItemCodeNameByName(result), (int) (resultCount * quantity.getValue()));
                         dialog.hide();
+                        if(previousDialogue != null) {
+                            previousDialogue.updateRequirements();
+                        }
                     }
                 }
             });
@@ -147,10 +160,10 @@ public class CraftingDialogue {
             dialogStyle.titleFont = font;
             dialogStyle.background = buttonSkin.getDrawable("craftingTerminal");
 
-            final Label quantityText = new Label("quantity:1", labelStyle);
+            final Label quantityText = new Label("quantity:"+requestedQuantity, labelStyle);
             quantityText.setFontScale(0.08f);
 
-            final Label productQuantity = new Label(result + " " + DUtils.getInteger("item_" + getItemCodeNameByName(result)) + "+" + resultCount, labelStyle);
+            final Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + resultCount*requestedQuantity, labelStyle);
             productQuantity.setFontScale(0.06f);
 
             Image product = new Image(items1.findRegion(getItemCodeNameByName(result)));
@@ -163,8 +176,8 @@ public class CraftingDialogue {
             final Array<Label> labels = new Array<>();
             for (int i = 0; i < items.length; i++) {
                 Table requirement = new Table();
-                Label itemText = new Label(items[i] + " " + DUtils.getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + itemCounts[i], labelStyle);
-                if (itemCounts[i] > DUtils.getInteger("item_" + getItemCodeNameByName(items[i]))) {
+                Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + itemCounts[i]*requestedQuantity, labelStyle);
+                if (itemCounts[i]*requestedQuantity > getInteger("item_" + getItemCodeNameByName(items[i]))) {
                     itemText.setColor(Color.valueOf("#DF4400"));
                 }
                 labels.add(itemText);
@@ -187,10 +200,10 @@ public class CraftingDialogue {
                 item.addListener(new ClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new CraftingDialogue(stage, assetManager, items[finalI], !DUtils.getBoolean("enabled_" + getItemCodeNameByName(items[finalI])), false, slotManager, getDialogue());
+                        new CraftingDialogue(stage, assetManager, items[finalI], MathUtils.clamp((int)(itemCounts[finalI] * quantity.getValue())-getInteger("item_" + getItemCodeNameByName(items[finalI])), 1, 50), !getBoolean("enabled_" + getItemCodeNameByName(items[finalI])), false, itemSlotManager, getDialogue());
                     }
                 });
-                item.setDisabled(!DUtils.getBoolean("enabled_" + getItemCodeNameByName(items[i])));
+                item.setDisabled(!getBoolean("enabled_" + getItemCodeNameByName(items[i])));
                 item.setBounds(0, -1, 10, 10);
                 requirementButtons.add(item);
                 requirement.addActor(item);
@@ -214,14 +227,14 @@ public class CraftingDialogue {
                 public void changed(ChangeEvent event, Actor actor) {
                     quantityText.setText("quantity:" + (int) quantity.getValue());
                     for (int i = 0; i < itemCounts.length; i++) {
-                        labels.get(i).setText(items[i] + " " + DUtils.getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + (int) (itemCounts[i] * quantity.getValue()));
-                        if (itemCounts[i] * quantity.getValue() > DUtils.getInteger("item_" + getItemCodeNameByName(items[i]))) {
+                        labels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + (int)(itemCounts[i] * quantity.getValue()));
+                        if (itemCounts[i] * quantity.getValue() > getInteger("item_" + getItemCodeNameByName(items[i]))) {
                             labels.get(i).setColor(Color.valueOf("#DF4400"));
                         } else {
                             labels.get(i).setColor(Color.YELLOW);
                         }
                     }
-                    productQuantity.setText(result + " " + DUtils.getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
+                    productQuantity.setText(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
                 }
             });
             dialog.addActor(product);
@@ -229,10 +242,10 @@ public class CraftingDialogue {
             ingredients.setBounds(3, 28, 80, 39);
             no.setPosition(3, 3);
             yes.setPosition(86, 3);
-            dialog.setScale(3);
+            dialog.setScale(4);
             dialog.setSize(128, 70);
 
-            dialog.setPosition(80, 140);
+            dialog.setPosition(15, 130);
 
             stage.addActor(dialog);
         }else if(isCraftable(result) && !showDescription){
@@ -274,10 +287,10 @@ public class CraftingDialogue {
             yes.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if(DUtils.getInteger("item_craftingCard")>0){
-                        DUtils.subtractInteger("item_craftingCard", 1);
-                        DUtils.putBoolean("enabled_"+getItemCodeNameByName(result), true);
-                        slotManager.unlockSlot(result);
+                    if(getInteger("item_craftingCard")>0){
+                        subtractInteger("item_craftingCard", 1);
+                        putBoolean("enabled_"+getItemCodeNameByName(result), true);
+                        itemSlotManager.unlockSlot(result);
                         if(previousDialogue != null) {
                             previousDialogue.unlockItem(result);
                         }
@@ -303,13 +316,13 @@ public class CraftingDialogue {
             craftingCard.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, "crafting card", false, false, slotManager, null);
+                    new CraftingDialogue(stage, assetManager, "crafting card", 1,false, false, itemSlotManager, null);
                 }
             });
 
             Label.LabelStyle labelStyle = new Label.LabelStyle();
             labelStyle.font = font;
-            if(DUtils.getInteger("item_craftingCard")>0) {
+            if(getInteger("item_craftingCard")>0) {
                 labelStyle.fontColor = Color.YELLOW;
             }else{
                 labelStyle.fontColor = Color.valueOf("#DF4400");
@@ -319,7 +332,7 @@ public class CraftingDialogue {
             labelStyle2.font = font;
             labelStyle2.fontColor = Color.YELLOW;
 
-            Label itemText = new Label("crafting card "+DUtils.getInteger("item_craftingCard")+"/1", labelStyle);
+            Label itemText = new Label("crafting card "+getInteger("item_craftingCard")+"/1", labelStyle);
             Label text = new Label("Recipe locked\n", labelStyle2);
             text.setPosition(64, 57, 1);
             itemText.setPosition(64, 33, 1);
@@ -334,11 +347,10 @@ public class CraftingDialogue {
             dialog.addActor(itemText);
             dialog.addActor(no);
             dialog.addActor(yes);
-
-            dialog.setScale(3);
+            dialog.setScale(4);
             dialog.setSize(128, 70);
 
-            dialog.setPosition(80, 140);
+            dialog.setPosition(15, 130);
 
             stage.addActor(dialog);
 
@@ -406,7 +418,7 @@ public class CraftingDialogue {
             product.setBounds(93, 41, 25, 25);
             product.setScaling(Scaling.fit);
 
-            Label productQuantity = new Label(result + " " + DUtils.getInteger("item_" + getItemCodeNameByName(result)), labelStyle);
+            Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)), labelStyle);
             productQuantity.setFontScale(0.06f);
             productQuantity.setPosition(86, 29);
             productQuantity.setSize(39, 10);
@@ -433,11 +445,10 @@ public class CraftingDialogue {
             dialog.addActor(yes);
             dialog.addActor(yes2);
             dialog.addActor(yes3);
-
-            dialog.setScale(3);
+            dialog.setScale(4);
             dialog.setSize(128, 70);
 
-            dialog.setPosition(80, 140);
+            dialog.setPosition(15, 130);
 
             stage.addActor(dialog);
         }else{
@@ -500,7 +511,7 @@ public class CraftingDialogue {
             product.setBounds(93, 41, 25, 25);
             product.setScaling(Scaling.fit);
 
-            Label productQuantity = new Label(result + " " + DUtils.getInteger("item_" + getItemCodeNameByName(result)), labelStyle);
+            Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)), labelStyle);
             productQuantity.setFontScale(0.06f);
             productQuantity.setPosition(86, 29);
             productQuantity.setSize(39, 10);
@@ -526,11 +537,10 @@ public class CraftingDialogue {
             dialog.addActor(yes);
             dialog.addActor(yes2);
             dialog.addActor(yes3);
-
-            dialog.setScale(3);
+            dialog.setScale(4);
             dialog.setSize(128, 70);
 
-            dialog.setPosition(80, 140);
+            dialog.setPosition(15, 130);
 
             stage.addActor(dialog);
         }
@@ -576,161 +586,15 @@ public class CraftingDialogue {
         return Items.getInt("resultCount");
     }
 
-    private String getItemCodeNameByName(String name){
-        String item = "ohno";
-        switch (name){
-            case("coloring crystal"):
-                item = "crystal";
-                break;
-            case("ore"):
-            case("prism"):
-            case("bolt"):
-            case("cable"):
-            case("cog"):
-            case("plastic"):
-            case("transistor"):
-            case("rubber"):
-            case("wire"):
-            case("resistor"):
-                item = name;
-                break;
-            case("iron shard"):
-                item = "ironShard";
-                break;
-            case("iron plate"):
-                item = "ironPlate";
-                break;
-            case("glass shard"):
-                item = "glassShard";
-                break;
-            case("cyan warp shard"):
-                item = "bonus_warp";
-                break;
-            case("green warp shard"):
-                item = "bonus_warp2";
-                break;
-            case("purple warp shard"):
-                item = "bonus_warp3";
-                break;
-            case("red crystal"):
-                item = "redCrystal";
-                break;
-            case("energy cell"):
-                item = "energyCell";
-                break;
-            case("core shard"):
-                item = "fragment_core";
-                break;
-            case("green coil"):
-                item = "green_coil";
-                break;
-            case("cyan coil"):
-                item = "neon_coil";
-                break;
-            case("cyan crystal"):
-                item = "cyanCrystal";
-                break;
-            case("orange crystal"):
-                item = "orangeCrystal";
-                break;
-            case("green crystal"):
-                item = "greenCrystal";
-                break;
-            case("purple crystal"):
-                item = "purpleCrystal";
-                break;
-            case("drone engine"):
-                item = "drone_engine";
-                break;
-            case("red fuel cell"):
-                item = "fuelCell";
-                break;
-            case("cyan fuel cell"):
-                item = "fuelCell2";
-                break;
-            case("motherboard"):
-                item = "chipset";
-                break;
-            case("motherboard lvl2"):
-                item = "chipset_big";
-                break;
-            case("energy crystal"):
-                item = "energyCrystal";
-                break;
-            case("blue ore"):
-                item = "warp_ore";
-                break;
-            case("crafting card"):
-                item = "craftingCard";
-                break;
-            case("memory cell"):
-                item = "cell";
-                break;
-            case("memory cell lvl2"):
-                item = "cell2";
-                break;
-            case("cyan blank card"):
-                item = "card1";
-                break;
-            case("orange blank card"):
-                item = "card2";
-                break;
-            case("ai card"):
-                item = "aiCard";
-                break;
-            case("ai processor"):
-                item = "aiChip";
-                break;
-            case("processor"):
-                item = "processor1";
-                break;
-            case("processor lvl2"):
-                item = "processor2";
-                break;
-            case("processor lvl3"):
-                item = "processor3";
-                break;
-            case("reinforced iron plate"):
-                item = "ironPlate2";
-                break;
-            case("memory card"):
-                item = "memoryCard";
-                break;
-            case("screen card"):
-                item = "screenCard";
-                break;
-            case("green core"):
-                item = "warpCore";
-                break;
-            case("yellow core"):
-                item = "core_yellow";
-                break;
-            case("laser emitter"):
-                item = "bonus laser";
-                break;
-            case("laser coil"):
-                item = "gun";
-                break;
-            case("fiber cable"):
-                item = "cable_fiber";
-                break;
-            case("advanced chip"):
-                item = "advancedChip";
-                break;
-            case("circuit board"):
-                item = "Circuit_board";
-                break;
-            case("cooling unit"):
-                item = "coolingUnit";
-                break;
-        }
-        return item;
-    }
-
     public void unlockItem(String name){
         if(requirementNames.indexOf(name, false)>-1) {
             requirementButtons.get(requirementNames.indexOf(name, false)).setDisabled(false);
         }
+    }
+
+    public void updateRequirements(){
+        quantityGlobal.setValue(quantityGlobal.getValue()+1);
+        quantityGlobal.setValue(quantityGlobal.getValue()-1);
     }
 
     public CraftingDialogue getDialogue(){

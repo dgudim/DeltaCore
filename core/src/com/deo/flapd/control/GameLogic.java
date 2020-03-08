@@ -24,10 +24,13 @@ import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
+
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
 
 
 public class GameLogic {
@@ -77,37 +80,37 @@ public class GameLogic {
         this.checkpoint = checkpoint;
         this.boss_evilEye = boss_evilEye;
 
-        difficulty = DUtils.getFloat("difficulty");
+        difficulty = getFloat("difficulty");
 
-        switch (DUtils.getInteger("current_engine")){
+        switch (getInteger("current_engine")){
             case(1):
-                speedMultiplier =1f+DUtils.getInteger("engine1upgradeLevel")/10f;
+                speedMultiplier =1f+getInteger("engine1upgradeLevel")/10f;
                 break;
             case(2):
-                speedMultiplier = 1.4f+DUtils.getInteger("engine2upgradeLevel")/10f;
+                speedMultiplier = 1.4f+getInteger("engine2upgradeLevel")/10f;
                 break;
             case(3):
-                speedMultiplier = 1.7f+DUtils.getInteger("engine3upgradeLevel")/10f;
+                speedMultiplier = 1.7f+getInteger("engine3upgradeLevel")/10f;
                 break;
         }
 
-        switch (DUtils.getInteger("current_cannon")){
+        switch (getInteger("current_cannon")){
             case(1):
-                damage = 40+DUtils.getInteger("cannon1upgradeLevel");
+                damage = 40+getInteger("cannon1upgradeLevel");
                 break;
             case(2):
-                damage = 60+DUtils.getInteger("cannon2upgradeLevel");
+                damage = 60+getInteger("cannon2upgradeLevel");
                 break;
             case(3):
-                damage = 70+DUtils.getInteger("cannon3upgradeLevel");
+                damage = 70+getInteger("cannon3upgradeLevel");
                 break;
         }
 
         if(!newGame){
-            bonuses_collected = DUtils.getInteger("bonuses_collected");
-            lastCheckpoint = DUtils.getInteger("lastCheckpoint");
-            has1stBossSpawned = DUtils.getBoolean("has1stBossSpawned");
-            has2ndBossSpawned = DUtils.getBoolean("has2ndBossSpawned");
+            bonuses_collected = getInteger("bonuses_collected");
+            lastCheckpoint = getInteger("lastCheckpoint");
+            has1stBossSpawned = getBoolean("has1stBossSpawned");
+            has2ndBossSpawned = getBoolean("has2ndBossSpawned");
         }else {
             bonuses_collected = 0;
             lastCheckpoint = 0;
@@ -171,7 +174,7 @@ public class GameLogic {
             }
 
             if (random.nextInt(6000) == 5770) {
-                meteorite.Spawn(random.nextInt(480) * difficulty, (random.nextInt(60) - 30) / 10, random.nextInt(40) + 30);
+                meteorite.Spawn(random.nextInt(480) * difficulty, (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30);
             }
 
             for (int i2 = 0; i2 < BasicEnemy.enemies.size; i2++) {
@@ -201,13 +204,13 @@ public class GameLogic {
         if (GameUi.Score > 30000 && !has1stBossSpawned) {
             bossWave = true;
             has1stBossSpawned = true;
-            boss_battleShip.Spawn();
+            boss_evilEye.Spawn();
         }
 
         if (GameUi.Score > 70000 && !has2ndBossSpawned) {
             bossWave = true;
             has2ndBossSpawned = true;
-            boss_evilEye.Spawn();
+            boss_battleShip.Spawn();
         }
 
         if (bounds.getX() < 0) {

@@ -71,7 +71,7 @@ public class Kamikadze {
     }
 
     public void Spawn(float health, float scale, float explosionTimer) {
-        if(millis > -2) {
+        if(millis > 10) {
 
             Rectangle enemy = new Rectangle();
 
@@ -185,7 +185,7 @@ public class Kamikadze {
                 if (random.nextBoolean()) {
                     Bonus.Spawn(random.nextInt(4)+1, 1, enemies.get(i4));
                 }
-                    Drops.drop(enemies.get(i4), 1, 2, 2);
+                Drops.drop(enemies.get(i4), 1, 2, 3);
                 UraniumCell.Spawn(enemies.get(i4), random.nextInt(5)+1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);

@@ -1,10 +1,20 @@
     {
+      "crafting card": {
+        "items": ["orange blank card", "cable", "plastic", "reinforced iron plate"],
+        "itemCounts": [1, 2, 1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "a crucial piece of hardware, used to unlock other recepies",
+        "price": "auto"
+      },
+
       "transistor": {
         "items": ["plastic", "iron shard", "cable"],
         "itemCounts": [2, 1, 3],
         "resultCount": 150,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "orange crystal": {
@@ -12,7 +22,8 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "green crystal": {
@@ -20,7 +31,8 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "cyan crystal": {
@@ -28,7 +40,8 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "purple crystal": {
@@ -36,7 +49,8 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "fiber cable": {
@@ -44,7 +58,8 @@
         "itemCounts": [5, 5, 1],
         "resultCount": 5,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "orange blank card": {
@@ -52,7 +67,8 @@
         "itemCounts": [2, 6, 1, 2, 4],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "cyan blank card": {
@@ -60,15 +76,8 @@
         "itemCounts": [2, 6, 1, 2, 4],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
-      },
-
-      "crafting card": {
-        "items": ["orange blank card", "cable", "plastic", "reinforced iron plate"],
-        "itemCounts": [1, 2, 1, 1],
-        "resultCount": 1,
-        "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "reinforced iron plate": {
@@ -76,7 +85,8 @@
         "itemCounts": [2, 6],
         "resultCount": 2,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "cable": {
@@ -84,31 +94,35 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "motherboard": {
-        "items": ["cable", "iron plate", "plastic", "resistor", "transistor"],
-        "itemCounts": [10, 2, 5, 15, 50],
+        "items": ["cable", "iron plate", "plastic", "resistor", "transistor", "circuit board", "memory card"],
+        "itemCounts": [10, 2, 5, 15, 50, 1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "iron shard": {
-        "items": [""],
-        "itemCounts": [0],
-        "resultCount": 0,
-        "isCraftable":false,
-        "description": "just a piece of metal"
+        "items": ["ore"],
+        "itemCounts": [1],
+        "resultCount": 5,
+        "isCraftable":true,
+        "description": "just a piece of metal",
+        "price": "auto"
       },
 
       "wire": {
-        "items": [""],
-        "itemCounts": [0],
-        "resultCount": 0,
-        "isCraftable":false,
-        "description": "non-coated piece of wire"
+        "items": ["iron shard"],
+        "itemCounts": [1],
+        "resultCount": 5,
+        "isCraftable":true,
+        "description": "non-coated piece of wire",
+        "price": "auto"
       },
 
       "red crystal": {
@@ -116,7 +130,8 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "base ingredient for higher tier crystals"
+        "description": "base ingredient for higher tier crystals",
+        "price": "90"
       },
 
       "blue ore": {
@@ -124,7 +139,8 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": ""
+        "description": "",
+        "price": "auto"
       },
 
       "ore": {
@@ -132,7 +148,8 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "space ore"
+        "description": "space ore",
+        "price": "45"
       },
 
       "cyan warp shard": {
@@ -140,7 +157,8 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "mysterious glowing cyan shard, used to craft crystals"
+        "description": "mysterious glowing cyan shard, used to craft crystals",
+        "price": "60"
       },
 
       "green warp shard": {
@@ -148,7 +166,17 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "mysterious glowing green shard, used to craft crystals"
+        "description": "mysterious glowing green shard, used to craft crystals",
+        "price": "80"
+      },
+
+      "purple warp shard": {
+        "items": [""],
+        "itemCounts": [0],
+        "resultCount": 0,
+        "isCraftable":false,
+        "description": "mysterious glowing purple shard, used to craft crystals",
+        "price": "100"
       },
 
       "rubber": {
@@ -156,23 +184,26 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "black bouncy material, used in coating"
+        "description": "black bouncy material, used in coating",
+        "price": "15"
       },
 
       "iron plate": {
-        "items": [""],
-        "itemCounts": [0],
-        "resultCount": 0,
-        "isCraftable":false,
-        "description": "flat piece of metal"
+        "items": ["iron shard"],
+        "itemCounts": [2],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "flat piece of metal",
+        "price": "auto"
       },
 
       "coloring crystal": {
-        "items": [""],
-        "itemCounts": [0],
-        "resultCount": 0,
-        "isCraftable":false,
-        "description": "shiny rainbow-colored crystal, commonly used to color stuff"
+        "items": ["glass shard", "red crystal"],
+        "itemCounts": [1, 1],
+        "resultCount": 5,
+        "isCraftable":true,
+        "description": "shiny rainbow-colored crystal, commonly used to color stuff",
+        "price": "auto"
       },
 
       "resistor": {
@@ -180,7 +211,8 @@
         "itemCounts": [1, 1, 1],
         "resultCount": 5,
         "isCraftable":true,
-        "description": "a resistive conductor, mainly used in circuits"
+        "description": "a resistive conductor, mainly used in circuits",
+        "price": "auto"
       },
 
       "prism": {
@@ -188,7 +220,8 @@
         "itemCounts": [1, 1],
         "resultCount": 1,
         "isCraftable":true,
-        "description": "special glass shape which splits the light, used in lasers"
+        "description": "special glass shape which splits the light, used in lasers",
+        "price": "auto"
       },
 
       "glass shard": {
@@ -196,7 +229,8 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "just a piece of glass"
+        "description": "just a piece of glass",
+        "price": "20"
       },
 
       "plastic": {
@@ -204,6 +238,70 @@
         "itemCounts": [0],
         "resultCount": 0,
         "isCraftable":false,
-        "description": "just a piece of plastic"
+        "description": "just a piece of plastic",
+        "price": "25"
+      },
+
+      "bolt": {
+        "items": ["metal shard"],
+        "itemCounts": [1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "a nut and a bolt",
+        "price": "auto"
+      },
+
+      "cog": {
+        "items": ["iron plate"],
+        "itemCounts": [1],
+        "resultCount": 2,
+        "isCraftable":true,
+        "description": "a metal cog",
+        "price": "auto"
+      },
+
+      "reinforced glass pane": {
+        "items": ["glass shard", "green crystal"],
+        "itemCounts": [4, 1],
+        "resultCount": 2,
+        "isCraftable":true,
+        "description": "an extremely hard and durable glass pane",
+        "price": "auto"
+      },
+
+      "drone engine": {
+        "items": ["iron plate", "cyan crystal", "bolt", "cable", "energy cell", "red fuel cell", "plastic", "circuit board"],
+        "itemCounts": [2, 1, 6, 6, 1, 1, 6, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "a basic engine, mainly used in drones",
+        "price": "auto"
+      },
+
+      "red fuel cell": {
+        "items": ["iron plate", "orange crystal", "bolt", "red crystal", "glass shard"],
+        "itemCounts": [2, 1, 4, 1, 2],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "a basic fuel cell, mainly used in engines",
+        "price": "auto"
+      },
+
+      "cyan fuel cell": {
+        "items": ["red fuel cell", "cyan crystal"],
+        "itemCounts": [1, 1],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "an advanced fuel cell, mainly used in engines",
+        "price": "auto"
+      },
+
+      "circuit board": {
+        "items": ["iron plate", "resistor", "transistor", "glass shard", "wire"],
+        "itemCounts": [1, 5, 5, 2, 5],
+        "resultCount": 1,
+        "isCraftable":true,
+        "description": "a basic circuit board",
+        "price": "auto"
       }
     }

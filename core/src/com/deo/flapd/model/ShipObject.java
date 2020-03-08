@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Polygon;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
+
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
 
 abstract class ShipObject {
 
@@ -41,7 +43,7 @@ abstract class ShipObject {
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
         if(!newGame) {
-            bounds.setPosition(DUtils.getFloat("ShipX"), DUtils.getFloat("ShipY"));
+            bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
         }else{
             bounds.setPosition(x, y);
         }
@@ -57,7 +59,7 @@ abstract class ShipObject {
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
-        switch (DUtils.getInteger("current_engine")){
+        switch (getInteger("current_engine")){
             case(1):
                 fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
                 fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
@@ -119,10 +121,10 @@ abstract class ShipObject {
 
             if (GameUi.Health < 70) {
                 if (!is_paused) {
-                    damage_fire.draw(batch, Gdx.graphics.getDeltaTime());
                     if (!isFireStarted1) {
                         damage_fire.start();
                     }
+                    damage_fire.draw(batch, Gdx.graphics.getDeltaTime());
                 } else {
                     damage_fire.draw(batch, 0);
                 }
@@ -133,10 +135,10 @@ abstract class ShipObject {
 
             if (GameUi.Health < 50) {
                 if (!is_paused) {
-                    damage_fire2.draw(batch, Gdx.graphics.getDeltaTime());
                     if (!isFireStarted2) {
                         damage_fire2.start();
                     }
+                    damage_fire2.draw(batch, Gdx.graphics.getDeltaTime());
                 } else {
                     damage_fire2.draw(batch, 0);
                 }
@@ -147,10 +149,10 @@ abstract class ShipObject {
 
             if (GameUi.Health < 30) {
                 if (!is_paused) {
-                    damage_fire3.draw(batch, Gdx.graphics.getDeltaTime());
                     if (!isFireStarted3) {
                         damage_fire3.start();
                     }
+                    damage_fire3.draw(batch, Gdx.graphics.getDeltaTime());
                 } else {
                     damage_fire3.draw(batch, 0);
                 }

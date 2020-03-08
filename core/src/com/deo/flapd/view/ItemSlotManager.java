@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,22 +18,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.deo.flapd.utils.DUtils;
 
-public class SlotManager{
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 
-    private BitmapFont font;
-    private Table table;
-    private Skin slotSkin;
-    private TextureAtlas items;
-    private ScrollPane scrollPane;
-    private Stage stage;
-    private AssetManager assetManager;
-    private Array<ImageButton> slots;
-    private Array<String> results;
-    private SlotManager slotManager;
+public class ItemSlotManager {
 
-    public SlotManager(AssetManager assetManager){
+    BitmapFont font;
+    Table table;
+    Skin slotSkin;
+    TextureAtlas items;
+    ScrollPane scrollPane;
+    Stage stage;
+    AssetManager assetManager;
+    Array<ImageButton> slots;
+    Array<String> results;
+    ItemSlotManager itemSlotManager;
+
+    public ItemSlotManager(AssetManager assetManager){
 
         slotSkin = new Skin();
         slotSkin.addRegions((TextureAtlas)assetManager.get("shop/workshop.atlas"));
@@ -53,30 +54,33 @@ public class SlotManager{
         slots = new Array<>();
         results = new Array<>();
 
-        slotManager = this;
+        itemSlotManager = this;
     }
 
-    public void addSlots(String category){
-        switch (category){
-            case("items"):
-                JsonValue tree = getCraftingTree();
-                boolean nextRow = false;
-                for(int i = 0; i<tree.size; i++){
-                   addSlot(tree.get(i).name, nextRow);
-                    nextRow = !nextRow;
-                }
-                break;
-            case("parts"):
-                break;
+    public void addSlots(){
+        Array<String> notCraftableItems = new Array<>();
+        JsonValue tree = getCraftingTree();
+        boolean nextRow = false;
+        for(int i = 0; i<tree.size; i++){
+            if(isCraftable(tree.get(i).name)) {
+                addSlot(tree.get(i).name, nextRow);
+                nextRow = !nextRow;
+            }else{
+                notCraftableItems.add(tree.get(i).name);
+            }
+        }
+        for(int i = 0; i<notCraftableItems.size; i++){
+            addSlot(notCraftableItems.get(i), nextRow);
+            nextRow = !nextRow;
         }
     }
 
-    private void addSlot(final String result, boolean nextRow){
+    void addSlot(final String result, boolean nextRow){
 
         ImageButton.ImageButtonStyle slotStyle;
         ImageButton.ImageButtonStyle lockedSlotStyle;
 
-        final boolean locked = !DUtils.getBoolean("enabled_" + getItemCodeNameByName(result));
+        final boolean locked = !getBoolean("enabled_" + getItemCodeNameByName(result));
 
         lockedSlotStyle = new ImageButton.ImageButtonStyle();
         lockedSlotStyle.up = slotSkin.getDrawable("slot_disabled");
@@ -118,6 +122,9 @@ public class SlotManager{
         if(locked){
             slot.setStyle(lockedSlotStyle);
         }
+        if(!isCraftable(result)){
+            slot.setColor(0.85f, 0.85f, 1f, 1);
+        }
 
         Label text = new Label(result, labelStyle);
         if(locked) {
@@ -131,7 +138,7 @@ public class SlotManager{
         slot.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, locked, false, slotManager, null);
+                new CraftingDialogue(stage, assetManager, result, 1, locked, false, itemSlotManager, null);
             }
         });
 
@@ -156,162 +163,11 @@ public class SlotManager{
         batch.end();
     }
 
-    private String getItemCodeNameByName(String name){
-        String item = "ohno";
-        switch (name){
-            case("coloring crystal"):
-                item = "crystal";
-                break;
-            case("ore"):
-            case("prism"):
-            case("bolt"):
-            case("cable"):
-            case("cog"):
-            case("plastic"):
-            case("transistor"):
-            case("wire"):
-            case("rubber"):
-                item = name;
-                break;
-            case("iron shard"):
-                item = "ironShard";
-                break;
-            case("iron plate"):
-                item = "ironPlate";
-                break;
-            case("glass shard"):
-                item = "glassShard";
-                break;
-            case("cyan warp shard"):
-                item = "bonus_warp";
-                break;
-            case("green warp shard"):
-                item = "bonus_warp2";
-                break;
-            case("red crystal"):
-                item = "redCrystal";
-                break;
-            case("energy cell"):
-                item = "energyCell";
-                break;
-            case("core shard"):
-                item = "fragment_core";
-                break;
-            case("green coil"):
-                item = "green_coil";
-                break;
-            case("cyan coil"):
-                item = "neon_coil";
-                break;
-            case("cyan crystal"):
-                item = "cyanCrystal";
-                break;
-            case("orange crystal"):
-                item = "orangeCrystal";
-                break;
-            case("green crystal"):
-                item = "greenCrystal";
-                break;
-            case("purple crystal"):
-                item = "purpleCrystal";
-                break;
-            case("drone engine"):
-                item = "drone_engine";
-                break;
-            case("red fuel cell"):
-                item = "fuelCell";
-                break;
-            case("cyan fuel cell"):
-                item = "fuelCell2";
-                break;
-            case("motherboard"):
-                item = "chipset";
-                break;
-            case("motherboard lvl2"):
-                item = "chipset_big";
-                break;
-            case("energy crystal"):
-                item = "energyCrystal";
-                break;
-            case("blue ore"):
-                item = "warp_ore";
-                break;
-            case("crafting card"):
-                item = "craftingCard";
-                break;
-            case("memory cell"):
-                item = "cell";
-                break;
-            case("memory cell lvl2"):
-                item = "cell2";
-                break;
-            case("cyan blank card"):
-                item = "card1";
-                break;
-            case("orange blank card"):
-                item = "card2";
-                break;
-            case("ai card"):
-                item = "aiCard";
-                break;
-            case("ai processor"):
-                item = "aiChip";
-                break;
-            case("processor"):
-                item = "processor1";
-                break;
-            case("processor lvl2"):
-                item = "processor2";
-                break;
-            case("processor lvl3"):
-                item = "processor3";
-                break;
-            case("reinforced iron plate"):
-                item = "ironPlate2";
-                break;
-            case("memory card"):
-                item = "memoryCard";
-                break;
-            case("screen card"):
-                item = "screenCard";
-                break;
-            case("green core"):
-                item = "warpCore";
-                break;
-            case("yellow core"):
-                item = "core_yellow";
-                break;
-            case("laser emitter"):
-                item = "bonus laser";
-                break;
-            case("laser coil"):
-                item = "gun";
-                break;
-            case("fiber cable"):
-                item = "cable_fiber";
-                break;
-            case("advanced chip"):
-                item = "advancedChip";
-                break;
-            case("circuit board"):
-                item = "Circuit_board";
-                break;
-            case("cooling unit"):
-                item = "coolingUnit";
-                break;
-        }
-        return item;
-    }
-
     public void setBounds(float x, float y, float width, float height) {
         scrollPane.setBounds(x, y, width, height);
     }
 
-    public void setVisible(boolean visible){
-        scrollPane.setVisible(visible);
-    }
-
-    private JsonValue getCraftingTree(){
+    JsonValue getCraftingTree(){
         JsonReader json = new JsonReader();
         return json.parse(Gdx.files.internal("items/craftingRecepies.json"));
     }
@@ -347,9 +203,16 @@ public class SlotManager{
         slots.get(i).addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result_name, false, false, slotManager, null);
+                new CraftingDialogue(stage, assetManager, result_name, 1, false, false, itemSlotManager, null);
             }
         });
     }
 
+    private boolean isCraftable(String result){
+        JsonReader json = new JsonReader();
+        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
+        JsonValue craftingState = base.get(result).get("isCraftable");
+
+        return craftingState.asBoolean();
+    }
 }

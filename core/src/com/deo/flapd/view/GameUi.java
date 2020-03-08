@@ -30,8 +30,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.SpaceShip;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.putInteger;
 
 
 public class GameUi{
@@ -119,32 +123,32 @@ public class GameUi{
         ship = Ship;
 
         if(!newGame){
-            Shield = DUtils.getFloat("Shield");
-            Health = DUtils.getFloat("Health");
-            Score = DUtils.getInteger("Score");
-            moneyEarned = DUtils.getInteger("moneyEarned");
-            money = DUtils.getInteger("money");
+            Shield = getFloat("Shield");
+            Health = getFloat("Health");
+            Score = getInteger("Score");
+            moneyEarned = getInteger("moneyEarned");
+            money = getInteger("money");
 
-            enemiesKilled = DUtils.getInteger("enemiesKilled");
-            enemiesSpawned = DUtils.getInteger("enemiesSpawned");
+            enemiesKilled = getInteger("enemiesKilled");
+            enemiesSpawned = getInteger("enemiesSpawned");
         }else {
             Shield = 100;
             Health = 100;
             Score = 0;
             moneyEarned = 0;
-            money = DUtils.getInteger("money");
+            money = getInteger("money");
 
             enemiesKilled = 0;
             enemiesSpawned = 0;
         }
 
-        uiScale = DUtils.getFloat("ui");
+        uiScale = getFloat("ui");
 
-        showFps = DUtils.getBoolean("showFps");
+        showFps = getBoolean("showFps");
 
-        difficulty = DUtils.getFloat("difficulty");
+        difficulty = getFloat("difficulty");
 
-        transparency = DUtils.getBoolean("transparency");
+        transparency = getBoolean("transparency");
 
         this.batch = batch;
 
@@ -478,12 +482,7 @@ public class GameUi{
         cam.position.set(400, 240, 0);
         float tempScaleH = height/480.0f;
         float tempScaleW = width/800.0f;
-        float zoom;
-        if(tempScaleH<=tempScaleW){
-            zoom = tempScaleH;
-        }else{
-            zoom = tempScaleW;
-        }
+        float zoom = Math.min(tempScaleH, tempScaleW);
         cam.zoom = 1/zoom;
         cam.update();
     }
@@ -508,7 +507,7 @@ public class GameUi{
 
         explosion.dispose();
 
-        DUtils.putInteger("money", money);
+        putInteger("money", money);
     }
 
     float getDeltaX(){

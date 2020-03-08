@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.view.GameUi;
@@ -182,6 +183,7 @@ public class BasicEnemy {
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 UraniumCell.Spawn(enemies.get(i4), random.nextInt(3)+1, 1, 2);
+                Drops.drop(enemies.get(i4), 1, 2, 0);
                 enemies.removeIndex(i4);
                 healths.removeIndex(i4);
                 scales.removeIndex(i4);

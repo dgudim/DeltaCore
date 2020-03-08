@@ -1,0 +1,32 @@
+{
+  "stock engine": {
+    "items": [""],
+    "itemCounts": [0],
+    "upgradeLvl1":["iron plate"],
+    "upgradeLvl2":["cyan crystal"],
+    "upgradeLvl3":["cyan fuel cell"],
+    "upgradeLvl4":["advanced board"],
+    "upgradeLvl5":["green crystal"],
+    "description": ""
+  },
+  "nuclear engine": {
+    "items": ["red fuel cell", "cable", "plastic", "reinforced iron plate", "cyan crystal"],
+    "itemCounts": [2, 12, 6, 6, 2],
+    "upgradeLvl1":["reinforced iron plate"],
+    "upgradeLvl2":["cooling unit"],
+    "upgradeLvl3":["cyan fuel cell"],
+    "upgradeLvl4":["circuit board"],
+    "upgradeLvl5":["purple crystal"],
+    "description": ""
+  },
+  "plasma engine": {
+    "items": ["cyan fuel cell", "cable", "plastic", "reinforced iron plate", "purple crystal", "green coil"],
+    "itemCounts": [2, 23, 6, 6, 2, 2],
+    "upgradeLvl1":["composite iron plate"],
+    "upgradeLvl2":["cooling unit"],
+    "upgradeLvl3":["cyan fuel cell"],
+    "upgradeLvl4":["circuit board", "advanced chip"],
+    "upgradeLvl5":["purple crystal", "warp core"],
+    "description": ""
+  }
+}

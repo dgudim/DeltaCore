@@ -59,44 +59,65 @@ slot_over
   orig: 32, 32
   offset: 0, 0
   index: -1
-blank_shopButton_disabled
+blank_shopButton_cyan_disabled
   rotate: false
   xy: 329, 97
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
-blank_shopButton_enabled
+blank_shopButton_cyan_enabled
   rotate: false
   xy: 103, 25
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
-blank_shopButton_over
+blank_shopButton_cyan_over
   rotate: false
   xy: 370, 97
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
-blank_shopButton_red_disabled
+blank_shopButton_disabled
   rotate: false
   xy: 144, 25
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
-blank_shopButton_red_enabled
+blank_shopButton_enabled
   rotate: false
   xy: 411, 97
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
-blank_shopButton_red_over
+blank_shopButton_over
   rotate: false
   xy: 185, 25
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_red_disabled
+  rotate: false
+  xy: 452, 97
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_red_enabled
+  rotate: false
+  xy: 226, 25
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_red_over
+  rotate: false
+  xy: 295, 63
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
@@ -110,14 +131,14 @@ question
   index: -1
 question_enabled
   rotate: false
-  xy: 295, 73
+  xy: 493, 107
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 question_over
   rotate: false
-  xy: 452, 107
+  xy: 15, 1
   size: 12, 12
   orig: 12, 12
   offset: 0, 0

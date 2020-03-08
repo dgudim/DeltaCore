@@ -8,10 +8,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
+
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class Checkpoint {
 
@@ -110,21 +113,21 @@ public class Checkpoint {
             destination_posY = 900;
             destination_posX = bounds.getX();
             speed = 5;
-            DUtils.putInteger("enemiesKilled",GameUi.enemiesKilled);
-            DUtils.putInteger("moneyEarned",GameUi.moneyEarned);
-            DUtils.putInteger("enemiesSpawned",GameUi.enemiesSpawned);
-            DUtils.putInteger("Score",GameUi.Score);
-            DUtils.putFloat("Health",GameUi.Health);
-            DUtils.putFloat("Shield",GameUi.Shield);
-            DUtils.putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
-            DUtils.putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
-            DUtils.putInteger("bonuses_collected", GameLogic.bonuses_collected);
-            DUtils.putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
-            DUtils.putInteger("bulletsShot", Bullet.bulletsShot);
-            DUtils.putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
-            DUtils.putFloat("ShipX", shipBounds.getX());
-            DUtils.putFloat("ShipY", shipBounds.getY());
-            DUtils.putInteger("money", GameUi.money);
+            putInteger("enemiesKilled",GameUi.enemiesKilled);
+            putInteger("moneyEarned",GameUi.moneyEarned);
+            putInteger("enemiesSpawned",GameUi.enemiesSpawned);
+            putInteger("Score",GameUi.Score);
+            putFloat("Health",GameUi.Health);
+            putFloat("Shield",GameUi.Shield);
+            putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
+            putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
+            putInteger("bonuses_collected", GameLogic.bonuses_collected);
+            putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
+            putInteger("bulletsShot", Bullet.bulletsShot);
+            putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
+            putFloat("ShipX", shipBounds.getX());
+            putFloat("ShipY", shipBounds.getY());
+            putInteger("money", GameUi.money);
         }
 
         if (bounds.getY() > 850 && checkpointState){
