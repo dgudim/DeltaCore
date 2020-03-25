@@ -20,6 +20,8 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
+
 public class ShotgunEnemy {
 
     public static Array <Rectangle> enemies;
@@ -35,7 +37,7 @@ public class ShotgunEnemy {
 
     private Sound explosion;
 
-    private boolean sound;
+    private float soundVolume;
 
     private float width, height, fire_x, fire_y;
 
@@ -73,7 +75,7 @@ public class ShotgunEnemy {
 
         colors = new Array<>();
 
-        sound = MenuScreen.Sound;
+        soundVolume = getFloat("soundVolume");
 
         enemy.setSize(0,0);
         enemy.setPosition(1000, 1000);
@@ -121,6 +123,7 @@ public class ShotgunEnemy {
 
             fire.setPosition(enemy.x + fire_x * scale, enemy.y + fire_y * scale);
             fire.draw(batch);
+
             if(!is_paused) {
                 fire.update(Gdx.graphics.getDeltaTime());
             }else{
@@ -192,8 +195,8 @@ public class ShotgunEnemy {
                 fires.removeIndex(i4);
                 remove_Enemy.removeIndex(i4);
                 colors.removeIndex(i4);
-                if(sound) {
-                    explosion.play(MenuScreen.SoundVolume/100);
+                if(soundVolume>0) {
+                    explosion.play(soundVolume/100);
                 }
             }else if (remove_Enemy.get(i4)){
                 explosionQueue.removeIndex(i4);

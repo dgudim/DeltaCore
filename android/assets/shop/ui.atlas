@@ -1,0 +1,61 @@
+
+ui.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+progressBarBg
+  rotate: false
+  xy: 1, 1
+  size: 320, 80
+  orig: 320, 80
+  offset: 0, 0
+  index: -1
+checkBox_disabled
+  rotate: false
+  xy: 323, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+checkBox_disabled_over
+  rotate: false
+  xy: 405, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+checkBox_enabled
+  rotate: false
+  xy: 487, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+checkBox_enabled_over
+  rotate: false
+  xy: 569, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+progressBarKnob
+  rotate: false
+  xy: 651, 1
+  size: 40, 80
+  orig: 40, 80
+  offset: 0, 0
+  index: -1
+progressBarKnob_enabled
+  rotate: false
+  xy: 693, 1
+  size: 40, 80
+  orig: 40, 80
+  offset: 0, 0
+  index: -1
+progressBarKnob_over
+  rotate: false
+  xy: 735, 1
+  size: 40, 80
+  orig: 40, 80
+  offset: 0, 0
+  index: -1

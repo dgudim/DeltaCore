@@ -28,17 +28,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
-
-import sun.util.logging.resources.logging;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -46,6 +42,7 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.updateCamera;
 
 
 public class MenuScreen implements Screen{
@@ -68,8 +65,6 @@ public class MenuScreen implements Screen{
     private BitmapFont font_main, font_buttons;
 
     private boolean Music;
-    public static boolean Sound;
-    public static float SoundVolume;
 
     private Stage Menu, ShopStage;
 
@@ -85,7 +80,7 @@ public class MenuScreen implements Screen{
 
     private ParticleEffect fire, fire2;
 
-    private boolean easterEgg, easterEgg_unlocked;
+    private boolean easterEgg;
 
     private int easterEggCounter;
 
@@ -95,30 +90,20 @@ public class MenuScreen implements Screen{
 
     private boolean enableShader;
 
-    private ItemSlotManager craftingItemSlotManager;
+    private Tree craftingTree;
 
-    private PartSlotManager partCraftingItemSlotManager;
-
-    private CategoryManager workshopCategoryManager, menuCategoryManager;
+    private CategoryManager menuCategoryManager, workshopCategoryManager;
 
     private final Slider musicVolumeS;
 
        public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
-
         this.game = game;
 
         this.blurProcessor = blurProcessor;
 
-        SoundVolume = (int)(getFloat("soundEffectsVolume")*100);
-
         Music = getFloat("musicVolume") > 0;
 
-        if(SoundVolume > 0) {
-            Sound = true;
-        }
-
         easterEgg = getBoolean("easterEgg");
-        easterEgg_unlocked = getBoolean("easterEgg_unlocked");
 
         this.batch = batch;
 
@@ -140,133 +125,21 @@ public class MenuScreen implements Screen{
 
         Ship = assetManager.get("ship.png");
 
-           Image buildNumber = new Image((Texture) assetManager.get("greyishButton.png"));
-
+        Image buildNumber = new Image((Texture) assetManager.get("greyishButton.png"));
         buildNumber.setBounds(5,5,150, 50);
 
         Lamp.setBounds(730, 430, 15, 35);
 
-        Skin buttonSkin = new Skin();
-        buttonSkin.addRegions((TextureAtlas)assetManager.get("menuButtons/menuButtons.atlas"));
-        buttonSkin.addRegions((TextureAtlas)assetManager.get("menuButtons/buttons.atlas"));
-        buttonSkin.addRegions((TextureAtlas)assetManager.get("shop/shopButtons.atlas"));
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font_buttons;
-        textButtonStyle.downFontColor = Color.valueOf("#22370E");
-        textButtonStyle.overFontColor = Color.valueOf("#3D51232");
-        textButtonStyle.fontColor = Color.valueOf("#3D4931");
-        textButtonStyle.over = buttonSkin.getDrawable("blank_over");
-        textButtonStyle.down = buttonSkin.getDrawable("blank_enabled");
-        textButtonStyle.up = buttonSkin.getDrawable("button_blank");
-
-        TextButton.TextButtonStyle textButtonStyle2 = new TextButton.TextButtonStyle();
-        textButtonStyle2.font = font_buttons;
-        textButtonStyle2.downFontColor = Color.valueOf("#31FF25");
-        textButtonStyle2.overFontColor = Color.valueOf("#00DC00");
-        textButtonStyle2.fontColor = Color.valueOf("#46D33E");
-        textButtonStyle2.over = buttonSkin.getDrawable("blank2_over");
-        textButtonStyle2.down = buttonSkin.getDrawable("blank2_enabled");
-        textButtonStyle2.up = buttonSkin.getDrawable("blank2_disabled");
-
-        Button.ButtonStyle buttonStyle_git = new TextButton.TextButtonStyle();
-        buttonStyle_git.up = buttonSkin.getDrawable("gitHub_disabled");
-        buttonStyle_git.over = buttonSkin.getDrawable("gitHub_over");
-        buttonStyle_git.down = buttonSkin.getDrawable("gitHub_enabled");
-        buttonStyle_git.up.setMinWidth(60);
-        buttonStyle_git.up.setMinHeight(60);
-        buttonStyle_git.over.setMinWidth(60);
-        buttonStyle_git.over.setMinHeight(60);
-        buttonStyle_git.down.setMinWidth(60);
-        buttonStyle_git.down.setMinHeight(60);
-
-        Button.ButtonStyle buttonStyle_trello = new TextButton.TextButtonStyle();
-        buttonStyle_trello.up = buttonSkin.getDrawable("trello_disabled");
-        buttonStyle_trello.over = buttonSkin.getDrawable("trello_over");
-        buttonStyle_trello.down = buttonSkin.getDrawable("trello_enabled");
-        buttonStyle_trello.up.setMinWidth(60);
-        buttonStyle_trello.up.setMinHeight(60);
-        buttonStyle_trello.over.setMinWidth(60);
-        buttonStyle_trello.over.setMinHeight(60);
-        buttonStyle_trello.down.setMinWidth(60);
-        buttonStyle_trello.down.setMinHeight(60);
-
-        Skin checkBoxSkin = new Skin();
-        checkBoxSkin.add("off", assetManager.get("checkBox_disabled.png"));
-        checkBoxSkin.add("on", assetManager.get("checkBox_enabled.png"));
-        checkBoxSkin.add("off_over", assetManager.get("checkBox_disabled_over.png"));
-        checkBoxSkin.add("on_over", assetManager.get("checkBox_enabled_over.png"));
-
-        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
-        checkBoxStyle.checkboxOff = checkBoxSkin.getDrawable("off");
-        checkBoxStyle.checkboxOn = checkBoxSkin.getDrawable("on");
-        checkBoxStyle.checkboxOnOver = checkBoxSkin.getDrawable("on_over");
-        checkBoxStyle.checkboxOver = checkBoxSkin.getDrawable("off_over");
-        checkBoxStyle.font = font_main;
-        checkBoxStyle.checkboxOff.setMinHeight(40);
-        checkBoxStyle.checkboxOff.setMinWidth(40);
-        checkBoxStyle.checkboxOn.setMinHeight(40);
-        checkBoxStyle.checkboxOn.setMinWidth(40);
-        checkBoxStyle.checkboxOnOver.setMinHeight(40);
-        checkBoxStyle.checkboxOnOver.setMinWidth(40);
-        checkBoxStyle.checkboxOver.setMinHeight(40);
-        checkBoxStyle.checkboxOver.setMinWidth(40);
-
-        Skin sliderBarSkin = new Skin();
-        sliderBarSkin.add("knob", assetManager.get("progressBarKnob.png"));
-        sliderBarSkin.add("knob2", assetManager.get("progressBarKnob.png"));
-        sliderBarSkin.add("bg", assetManager.get("progressBarBg.png"));
-        sliderBarSkin.add("bg2", assetManager.get("progressBarBg.png"));
-        sliderBarSkin.add("knob_over", assetManager.get("progressBarKnob_over.png"));
-        sliderBarSkin.add("knob_over2", assetManager.get("progressBarKnob_over.png"));
-        sliderBarSkin.add("knob_enabled", assetManager.get("progressBarKnob_enabled.png"));
-        sliderBarSkin.add("knob_enabled2", assetManager.get("progressBarKnob_enabled.png"));
-
-        Slider.SliderStyle sliderBarStyle = new Slider.SliderStyle();
-        sliderBarStyle.background = sliderBarSkin.getDrawable("bg");
-        sliderBarStyle.knob = sliderBarSkin.getDrawable("knob");
-        sliderBarStyle.knobOver = sliderBarSkin.getDrawable("knob_over");
-        sliderBarStyle.knobDown = sliderBarSkin.getDrawable("knob_enabled");
-        sliderBarStyle.knob.setMinHeight(62.5f);
-        sliderBarStyle.knob.setMinWidth(37.5f);
-        sliderBarStyle.knobOver.setMinHeight(62.5f);
-        sliderBarStyle.knobOver.setMinWidth(37.5f);
-        sliderBarStyle.knobDown.setMinHeight(62.5f);
-        sliderBarStyle.knobDown.setMinWidth(37.5f);
-        sliderBarStyle.background.setMinHeight(62.5f);
-        sliderBarStyle.background.setMinWidth(250.0f);
-
-        Slider.SliderStyle sliderBarStyle2 = new Slider.SliderStyle();
-        sliderBarStyle2.background = sliderBarSkin.getDrawable("bg2");
-        sliderBarStyle2.knob = sliderBarSkin.getDrawable("knob2");
-        sliderBarStyle2.knobOver = sliderBarSkin.getDrawable("knob_over2");
-        sliderBarStyle2.knobDown = sliderBarSkin.getDrawable("knob_enabled2");
-        sliderBarStyle2.knob.setMinHeight(42.5f);
-        sliderBarStyle2.knob.setMinWidth(27.5f);
-        sliderBarStyle2.knobOver.setMinHeight(42.5f);
-        sliderBarStyle2.knobOver.setMinWidth(27.5f);
-        sliderBarStyle2.knobDown.setMinHeight(42.5f);
-        sliderBarStyle2.knobDown.setMinWidth(27.5f);
-        sliderBarStyle2.background.setMinHeight(42.5f);
-        sliderBarStyle2.background.setMinWidth(230.0f);
-
         UIComposer uiComposer = new UIComposer(assetManager);
-
-        uiComposer.addButtonStyle(buttonStyle_trello, "trello");
-        uiComposer.addButtonStyle(buttonStyle_git, "git");
-        uiComposer.addButtonStyle(textButtonStyle, "default");
-        uiComposer.addButtonStyle(textButtonStyle2, "default2");
-        uiComposer.addCheckBoxStyleStyle(checkBoxStyle, "default");
-        uiComposer.addSliderStyle(sliderBarStyle, "default_big");
-        uiComposer.addSliderStyle(sliderBarStyle2, "default");
+        uiComposer.loadStyles("defaultDark", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
 
         Table playScreenTable = new Table();
         playScreenTable.align(Align.topLeft);
         playScreenTable.setBounds(15, 60, 531, 410);
-        TextButton newGame = uiComposer.addTextButton("default", "new game", 0.4f);
-        TextButton continueGame = uiComposer.addTextButton("default", "continue", 0.4f);
-        TextButton workshop = uiComposer.addTextButton("default", "workshop", 0.4f);
-        final Table difficultyT = uiComposer.addSlider("default", 1, 5, 0.1f, "Difficulty ","X", "difficulty");
+        TextButton newGame = uiComposer.addTextButton("defaultDark", "new game", 0.4f);
+        TextButton continueGame = uiComposer.addTextButton("defaultDark", "continue", 0.4f);
+        TextButton workshop = uiComposer.addTextButton("defaultDark", "workshop", 0.4f);
+        final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, "Difficulty ","X", "difficulty");
         playScreenTable.add(newGame).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(continueGame).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(workshop).padTop(5).padBottom(5).align(Align.left).row();
@@ -278,13 +151,13 @@ public class MenuScreen implements Screen{
         Table settingsGroup = (Table)settingsPane.getActor();
         settingsGroup.align(Align.left);
         Table musicVolumeT, soundVolumeT, uiScaleT, bloomT, transparentUIT, prefsLoggingT, showFpsT;
-        musicVolumeT = uiComposer.addSlider("default", 0, 100, 1, "[#32ff32]Music volume ","%", "musicVolume");
-        soundVolumeT = uiComposer.addSlider("default", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundEffectsVolume");
-        uiScaleT = uiComposer.addSlider("default", 1, 2, 0.25f, "[#32ff32]Ui scale ", "X", "ui");
-        bloomT = uiComposer.addCheckBox("default", "[#32ff32]Bloom", "bloom");
-        transparentUIT = uiComposer.addCheckBox("default", "[#32ff32]Semi-transparent ui", "transparency");
-        prefsLoggingT = uiComposer.addCheckBox("default", "[#32ff32]Prefs logging", "logging");
-        showFpsT = uiComposer.addCheckBox("default", "[#32ff32]Show fps", "showFps");
+        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Music volume ","%", "musicVolume");
+        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundVolume");
+        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "[#32ff32]Ui scale ", "X", "ui");
+        bloomT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Bloom", "bloom");
+        transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Semi-transparent ui", "transparency");
+        prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Prefs logging", "logging");
+        showFpsT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Show fps", "showFps");
         settingsGroup.add(musicVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(soundVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(uiScaleT).padTop(5).padBottom(5).align(Align.left).row();
@@ -296,7 +169,7 @@ public class MenuScreen implements Screen{
         Table moreTable = new Table();
         moreTable.align(Align.topLeft);
         moreTable.setBounds(15, 62, 531, 410);
-        moreTable.add(uiComposer.addLinkButton("git", "[#32ff32]Game source code", "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(uiComposer.addLinkButton("gitHub", "[#32ff32]Game source code", "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]Official trello list of planned features", "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
 
         musicVolumeS = (Slider)musicVolumeT.getCells().get(0).getActor();
@@ -306,14 +179,6 @@ public class MenuScreen implements Screen{
         Menu = new Stage(viewport, batch);
 
         Menu.addActor(buildNumber);
-
-        craftingItemSlotManager = new ItemSlotManager(assetManager);
-        craftingItemSlotManager.addSlots();
-        craftingItemSlotManager.setBounds(90, 70, 440, 400);
-
-        partCraftingItemSlotManager = new PartSlotManager(assetManager);
-        partCraftingItemSlotManager.addSlots();
-        partCraftingItemSlotManager.setBounds(90, 70, 440, 400);
 
         ScrollPane infoText = (ScrollPane) uiComposer.addScrollText(
                 "[#00ff55]Made by Deoxys\n" +
@@ -335,31 +200,32 @@ public class MenuScreen implements Screen{
         menuCategoryManager.addCategory(settingsPane, "settings");
         menuCategoryManager.addCategory(infoText, "info");
         menuCategoryManager.addCategory(moreTable, "more");
-        menuCategoryManager.setBounds(545, 3);
+        menuCategoryManager.setBounds(545, 3, 400);
         menuCategoryManager.setBackgroundBounds(5, 62, 531, 410);
 
-        workshopCategoryManager = new CategoryManager(assetManager, font_buttons, 75, 30, 5, 0.26f, 1, true, false, "workshopSavedStade");
-        workshopCategoryManager.addCategory(craftingItemSlotManager.scrollPane, "items");
-        workshopCategoryManager.addCategory(partCraftingItemSlotManager.scrollPane, "parts");
+        craftingTree = LoadingScreen.craftingTree;
+        craftingTree.setVisible(false);
+
+        workshopCategoryManager = new CategoryManager(assetManager, font_buttons, 90, 40, 2.5f, 0.25f, 1, true, false, "lastClickedWorkshopButton");
+        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting");
         workshopCategoryManager.addCloseButton();
-        workshopCategoryManager.setBounds(14, 170);
-        workshopCategoryManager.setBackgroundBounds(5, -105, 531, 410);
-        menuCategoryManager.addOverrideActor(workshopCategoryManager);
+        workshopCategoryManager.setBounds(12.5f, 67, 403);
+        workshopCategoryManager.setBackgroundBounds(5, 62, 531, 410);
         workshopCategoryManager.setVisible(false);
+        menuCategoryManager.addOverrideActor(workshopCategoryManager);
 
         menuCategoryManager.attach(Menu);
         Menu.addActor(infoText);
         Menu.addActor(playScreenTable);
         Menu.addActor(moreTable);
         Menu.addActor(settingsPane);
+        workshopCategoryManager.attach(Menu);
         infoText.setVisible(false);
         moreTable.setVisible(false);
         playScreenTable.setVisible(false);
         settingsPane.setVisible(false);
 
-        workshopCategoryManager.attach(Menu);
-        craftingItemSlotManager.attach(Menu);
-        partCraftingItemSlotManager.attach(Menu);
+        craftingTree.attach(Menu);
 
         ShopStage = new Stage(viewport, batch);
 
@@ -390,9 +256,14 @@ public class MenuScreen implements Screen{
         multiplexer.addProcessor(Menu);
         multiplexer.addProcessor(ShopStage);
 
-        musicVolumeS.addListener(new ClickListener() {
+        musicVolumeS.addListener(new InputListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 putFloat("musicVolume", musicVolumeS.getValue());
 
                 Music = musicVolumeS.getValue() > 0;
@@ -458,7 +329,7 @@ public class MenuScreen implements Screen{
         workshop.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                workshopCategoryManager.setVisible(!workshopCategoryManager.isVisible());
+               workshopCategoryManager.setVisible(!workshopCategoryManager.isVisible());
             }
         });
 
@@ -485,10 +356,6 @@ public class MenuScreen implements Screen{
                 if(easterEggCounter>10){
                     easterEgg = !easterEgg;
                     putBoolean("easterEgg", easterEgg);
-                    if(!easterEgg_unlocked) {
-                        easterEgg_unlocked = true;
-                        putBoolean("easterEgg_unlocked", true);
-                    }
                     easterEggCounter = 0;
                 }
             }
@@ -556,7 +423,7 @@ public class MenuScreen implements Screen{
                 if (music.getPosition() > 65 && music.getPosition() < 69 && music.getVolume() > 0) {
                     music.setVolume(music.getVolume() - 0.05f);
                 }
-                if (music.getPosition() > 0 && music.getPosition() < 4 && music.getVolume() < musicVolumeS.getValue()) {
+                if (music.getPosition() > 0 && music.getPosition() < 4 && music.getVolume() < musicVolumeS.getValue()/100f) {
                     music.setVolume(music.getVolume() + 0.05f);
                 }
                 millis = 0;
@@ -625,19 +492,12 @@ public class MenuScreen implements Screen{
                 FillTexture.draw(batch, 1);
             }
         }
-
         batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        camera.position.set(400, 240, 0);
-        float tempScaleH = height/480.0f;
-        float tempScaleW = width/800.0f;
-        float zoom = Math.min(tempScaleH, tempScaleW);
-        camera.zoom = 1/zoom;
-        camera.update();
+        updateCamera(camera, viewport, width, height);
     }
 
     @Override

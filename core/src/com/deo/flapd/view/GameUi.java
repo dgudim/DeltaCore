@@ -36,6 +36,7 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.updateCamera;
 
 
 public class GameUi{
@@ -478,13 +479,7 @@ public class GameUi{
     }
 
     void resize(int width, int height){
-        viewport.update(width, height);
-        cam.position.set(400, 240, 0);
-        float tempScaleH = height/480.0f;
-        float tempScaleW = width/800.0f;
-        float zoom = Math.min(tempScaleH, tempScaleW);
-        cam.zoom = 1/zoom;
-        cam.update();
+        updateCamera(cam, viewport, width, height);
     }
 
     public void dispose(){

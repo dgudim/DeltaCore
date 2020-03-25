@@ -2,13 +2,16 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -16,12 +19,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
-import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class UIComposer {
 
@@ -43,6 +47,186 @@ public class UIComposer {
         buttonStyleNames = new Array<>();
         sliderStyleNames = new Array<>();
         sliderStyles = new Array<>();
+    }
+
+    void loadStyles(String... styleNames){
+        JsonValue styles = new JsonReader().parse(Gdx.files.internal("shop/styles.json"));
+        Array<BitmapFont> fonts = new Array<>();
+        String[] fontNames = styles.get("fonts").asStringArray();
+        Array<String> dependencies = new Array<>();
+        Skin textures = new Skin();
+        for (int i = 0; i<fontNames.length; i++){
+            fonts.add((BitmapFont)assetManager.get(fontNames[i]));
+        }
+        for(int i = 0; i<styleNames.length; i++) {
+            loadStyle(styles, styleNames[i], textures, dependencies, fonts);
+        }
+    }
+
+    private void loadStyle(JsonValue treeJson, String style, Skin textures, Array<String> dependencies, Array<BitmapFont> fonts){
+        dependencies.add(treeJson.get(style).get("loadFrom").asString());
+        textures.addRegions((TextureAtlas)assetManager.get(dependencies.get(dependencies.size-1)));
+        switch (treeJson.get(style).get("type").asString()){
+            case ("buttonStyle"):
+                loadButtonStyle(treeJson.get(style), textures);
+                break;
+            case ("textButtonStyle"):
+                loadTextButtonStyle(treeJson.get(style), textures, fonts);
+                break;
+            case("checkBoxStyle"):
+                loadCheckBoxStyle(treeJson.get(style), textures, fonts);
+                break;
+            case("sliderStyle"):
+                loadSliderStyle(treeJson.get(style), textures);
+                break;
+        }
+    }
+
+    private void loadButtonStyle(JsonValue style, Skin textures){
+        Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
+        setButtonStyleDimensionsAndTextures(style, buttonStyle, textures);
+        addButtonStyle(buttonStyle, style.name);
+    }
+
+    private void loadTextButtonStyle(JsonValue style, Skin textures, Array<BitmapFont> fonts){
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        setButtonStyleDimensionsAndTextures(style, buttonStyle, textures);
+        setTextButtonFontStyle(buttonStyle, style, fonts);
+        addButtonStyle(buttonStyle, style.name);
+    }
+
+    private void loadCheckBoxStyle(JsonValue style, Skin textures, Array<BitmapFont> fonts){
+        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
+        setCheckBoxStyleDimensionsAndTextures(style, checkBoxStyle, textures);
+        setCheckBoxFontStyle(checkBoxStyle, style, fonts);
+        addCheckBoxStyleStyle(checkBoxStyle, style.name);
+    }
+
+    private void loadSliderStyle(JsonValue style, Skin textures){
+        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+        setSliderStyleDimensionsAndTextures(style, sliderStyle, textures);
+        addSliderStyle(sliderStyle, style.name);
+    }
+
+    private void setButtonStyleDimensionsAndTextures(JsonValue styleJson, Button.ButtonStyle style, Skin textures){
+
+        style.up = textures.getDrawable(styleJson.get("up").get("texture").asString());
+        style.over = textures.getDrawable(styleJson.get("over").get("texture").asString());
+        style.down = textures.getDrawable(styleJson.get("down").get("texture").asString());
+
+        if(!styleJson.get("up").get("size").asStringArray()[0].equals("default")){
+            style.up.setMinWidth(styleJson.get("up").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("up").get("size").asStringArray()[1].equals("default")){
+            style.up.setMinHeight(styleJson.get("up").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("down").get("size").asStringArray()[0].equals("default")){
+            style.down.setMinWidth(styleJson.get("down").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("down").get("size").asStringArray()[1].equals("default")){
+            style.down.setMinHeight(styleJson.get("down").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("over").get("size").asStringArray()[0].equals("default")){
+            style.over.setMinWidth(styleJson.get("over").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("over").get("size").asStringArray()[1].equals("default")){
+            style.over.setMinHeight(styleJson.get("over").get("size").asIntArray()[1]);
+        }
+    }
+
+    private void setCheckBoxStyleDimensionsAndTextures(JsonValue styleJson, CheckBox.CheckBoxStyle style, Skin textures){
+
+        style.checkboxOn = textures.getDrawable(styleJson.get("on").get("texture").asString());
+        style.checkboxOnOver = textures.getDrawable(styleJson.get("onOver").get("texture").asString());
+        style.checkboxOff = textures.getDrawable(styleJson.get("off").get("texture").asString());
+        style.checkboxOver = textures.getDrawable(styleJson.get("offOver").get("texture").asString());
+
+        if(!styleJson.get("on").get("size").asStringArray()[0].equals("default")){
+            style.checkboxOn.setMinWidth(styleJson.get("on").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("on").get("size").asStringArray()[1].equals("default")){
+            style.checkboxOn.setMinHeight(styleJson.get("on").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("onOver").get("size").asStringArray()[0].equals("default")){
+            style.checkboxOnOver.setMinWidth(styleJson.get("onOver").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("onOver").get("size").asStringArray()[1].equals("default")){
+            style.checkboxOnOver.setMinHeight(styleJson.get("onOver").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("off").get("size").asStringArray()[0].equals("default")){
+            style.checkboxOff.setMinWidth(styleJson.get("off").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("off").get("size").asStringArray()[1].equals("default")){
+            style.checkboxOff.setMinHeight(styleJson.get("off").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("offOver").get("size").asStringArray()[0].equals("default")){
+            style.checkboxOver.setMinWidth(styleJson.get("offOver").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("offOver").get("size").asStringArray()[1].equals("default")){
+            style.checkboxOver.setMinHeight(styleJson.get("offOver").get("size").asIntArray()[1]);
+        }
+    }
+
+    private void setTextButtonFontStyle(TextButton.TextButtonStyle buttonStyle, JsonValue styleJson, Array<BitmapFont> fonts){
+        buttonStyle.font = fonts.get(styleJson.get("font").asInt());
+        if(!styleJson.get("up").get("fontColor").asString().equals("default")) {
+            buttonStyle.fontColor = Color.valueOf(styleJson.get("up").get("fontColor").asString());
+        }
+        if(!styleJson.get("over").get("fontColor").asString().equals("default")) {
+            buttonStyle.overFontColor = Color.valueOf(styleJson.get("over").get("fontColor").asString());
+        }
+        if(!styleJson.get("down").get("fontColor").asString().equals("default")) {
+            buttonStyle.downFontColor = Color.valueOf(styleJson.get("down").get("fontColor").asString());
+        }
+    }
+
+    private void setSliderStyleDimensionsAndTextures(JsonValue styleJson, Slider.SliderStyle style, Skin textures){
+
+        style.background = textures.getDrawable(styleJson.get("background").get("texture").asString());
+        style.knob = textures.getDrawable(styleJson.get("knob").get("texture").asString());
+        style.knobOver = textures.getDrawable(styleJson.get("knobOver").get("texture").asString());
+        style.knobDown = textures.getDrawable(styleJson.get("knobDown").get("texture").asString());
+
+        if(!styleJson.get("background").get("size").asStringArray()[0].equals("default")){
+            style.background.setMinWidth(styleJson.get("background").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("background").get("size").asStringArray()[1].equals("default")){
+            style.background.setMinHeight(styleJson.get("background").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("knob").get("size").asStringArray()[0].equals("default")){
+            style.knob.setMinWidth(styleJson.get("knob").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("knob").get("size").asStringArray()[1].equals("default")){
+            style.knob.setMinHeight(styleJson.get("knob").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("knobOver").get("size").asStringArray()[0].equals("default")){
+            style.knobOver.setMinWidth(styleJson.get("knobOver").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("knobOver").get("size").asStringArray()[1].equals("default")){
+            style.knobOver.setMinHeight(styleJson.get("knobOver").get("size").asIntArray()[1]);
+        }
+        if(!styleJson.get("knobDown").get("size").asStringArray()[0].equals("default")){
+            style.knobDown.setMinWidth(styleJson.get("knobDown").get("size").asIntArray()[0]);
+        }
+        if(!styleJson.get("knobDown").get("size").asStringArray()[1].equals("default")){
+            style.knobDown.setMinHeight(styleJson.get("knobDown").get("size").asIntArray()[1]);
+        }
+    }
+
+    private void setCheckBoxFontStyle(CheckBox.CheckBoxStyle checkBoxStyle, JsonValue styleJson, Array<BitmapFont> fonts){
+        checkBoxStyle.font = fonts.get(styleJson.get("font").asInt());
+        if(!styleJson.get("off").get("fontColor").asString().equals("default")) {
+            checkBoxStyle.fontColor = Color.valueOf(styleJson.get("off").get("fontColor").asString());
+        }
+        if(!styleJson.get("on").get("fontColor").asString().equals("default")) {
+            checkBoxStyle.checkedFontColor = Color.valueOf(styleJson.get("on").get("fontColor").asString());
+        }
+        if(!styleJson.get("offOver").get("fontColor").asString().equals("default")) {
+            checkBoxStyle.overFontColor = Color.valueOf(styleJson.get("offOver").get("fontColor").asString());
+        }
+        if(!styleJson.get("onOver").get("fontColor").asString().equals("default")) {
+            checkBoxStyle.checkedOverFontColor = Color.valueOf(styleJson.get("onOver").get("fontColor").asString());
+        }
     }
 
     Actor addScrollText(String text, BitmapFont font, float fontScale, boolean scrollable, boolean horizontal, float x, float y, float width, float height){
@@ -95,6 +279,7 @@ public class UIComposer {
     Table addCheckBox(String style, String text, final String valueKey){
         Table cell = new Table();
         final CheckBox checkBox = new CheckBox(text, checkBoxStyles.get(checkBoxStyleNames.indexOf(style, false)));
+        checkBox.getLabel().setFontScale(0.48f);
         checkBox.setChecked(getBoolean(valueKey));
         checkBox.getImageCell().padRight(5);
         checkBox.addListener(new ChangeListener() {
@@ -128,10 +313,10 @@ public class UIComposer {
         return new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false)));
     }
 
-    Table addButton(String style, String text){
+    Table addButton(String style, String text, float fontScale){
         Table table = new Table();
         table.add(new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false))));
-        table.add(addText(text, (BitmapFont)assetManager.get("fonts/font2(old).fnt"), 0.48f));
+        table.add(addText(text, (BitmapFont)assetManager.get("fonts/font2(old).fnt"), fontScale));
         return table;
     }
 
@@ -143,16 +328,14 @@ public class UIComposer {
     }
 
     Table addLinkButton(String style, String text, final String link){
-        Table cell = new Table();
-        Button button = new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false)));
-        button.addListener(new ClickListener(){
+        Table cell = addButton(style, text, 0.4f);
+        cell.getCells().get(1).padLeft(5);
+        cell.getCells().get(0).getActor().addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.net.openURI(link);
             }
         });
-        cell.add(button);
-        cell.add(addText(text, (BitmapFont)assetManager.get("fonts/font2(old).fnt"), 0.43f)).padLeft(5);
         return cell;
     }
 

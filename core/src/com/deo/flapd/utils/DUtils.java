@@ -4,7 +4,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Map;
 
@@ -252,7 +254,7 @@ public abstract class DUtils {
             case("resistor"):
                 item = name;
                 break;
-            case("iron shard"):
+            case("metal shard"):
                 item = "ironShard";
                 break;
             case("iron plate"):
@@ -364,7 +366,7 @@ public abstract class DUtils {
                 item = "core_yellow";
                 break;
             case("laser emitter"):
-                item = "bonus laser";
+                item = "bonus_laser";
                 break;
             case("laser coil"):
                 item = "gun";
@@ -387,7 +389,7 @@ public abstract class DUtils {
             case("composite iron plate"):
                 item = "ReinforcedIridiumIronPlate";
                 break;
-            case("stock engine"):
+            case("engines"):
                 item = "engine1";
                 break;
             case("nuclear engine"):
@@ -396,7 +398,32 @@ public abstract class DUtils {
             case("plasma engine"):
                 item = "engine3";
                 break;
+            case("cannons"):
+                item = "Cannon1";
+                break;
+            case("machine gun"):
+                item = "Cannon2";
+                break;
+            case("laser gun"):
+                item = "Cannon3";
+                break;
+            case("cores"):
+                item = "energyCore";
+                break;
+            case("copper coil"):
+                item = "coil_copper";
+                break;
         }
         return item;
+    }
+
+    public static void updateCamera(OrthographicCamera camera, Viewport viewport, int width, int height){
+        viewport.update(width, height);
+        camera.position.set(400, 240, 0);
+        float tempScaleH = height/480.0f;
+        float tempScaleW = width/800.0f;
+        float zoom = Math.min(tempScaleH, tempScaleW);
+        camera.zoom = 1/zoom;
+        camera.update();
     }
 }

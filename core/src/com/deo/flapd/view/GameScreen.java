@@ -38,6 +38,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen{
 
@@ -271,14 +272,8 @@ public class GameScreen implements Screen{
 
     @Override
     public void resize(int width, int height){
-        viewport.update(width, height);
+        updateCamera(camera, viewport, width, height);
         gameUi.resize(width, height);
-        camera.position.set(400, 240, 0);
-        float tempScaleH = height/480.0f;
-        float tempScaleW = width/800.0f;
-        float zoom = Math.min(tempScaleH, tempScaleW);
-        camera.zoom = 1/zoom;
-        camera.update();
     }
 
     @Override

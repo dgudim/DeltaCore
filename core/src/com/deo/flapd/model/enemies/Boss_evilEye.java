@@ -29,6 +29,8 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
+
 public class Boss_evilEye {
     private Sprite body;
     private Rectangle bodyBounds;
@@ -67,7 +69,11 @@ public class Boss_evilEye {
 
     private ParticleEffect fire;
 
+    private float soundVolume;
+
     public Boss_evilEye(AssetManager assetManager, Polygon shipBounds){
+
+        soundVolume = getFloat("soundVolume");
 
         TextureAtlas bossAtlas = assetManager.get("boss_evil/bossEvil.atlas");
 
@@ -449,8 +455,8 @@ public class Boss_evilEye {
                 bullet.setSize(10);
                 degrees2.add(MathUtils.radiansToDegrees * MathUtils.atan2(bullet.getY() - shipBounds.getY() - 30, bullet.getX() - shipBounds.getX() - 30));
                 bullets.add(bullet);
-                if (MenuScreen.Sound) {
-                    shot.play(MenuScreen.SoundVolume / 100);
+                if (soundVolume>0) {
+                    shot.play(soundVolume / 100);
                 }
             }
             millis = 0;
@@ -475,8 +481,8 @@ public class Boss_evilEye {
             explosionEffect.start();
         }
         explosions.add(explosionEffect);
-        if (MenuScreen.Sound) {
-            explosion.play(MenuScreen.SoundVolume / 100);
+        if (soundVolume>0) {
+            explosion.play(soundVolume / 100);
         }
     }
 

@@ -64,8 +64,8 @@ public class Main extends Game {
 
         if (getFloat("ui")<=0) {
             putFloat("ui", 1);
-            putFloat("soundEffectsVolume", 1);
-            putFloat("musicVolume", 1 );
+            putFloat("soundVolume", 100);
+            putFloat("musicVolume", 100);
             putFloat("difficulty", 1);
             putBoolean("transparency", true);
             putBoolean("bloom", true);
@@ -81,6 +81,7 @@ public class Main extends Game {
             putBoolean("enabled_card2", true);
             putBoolean("enabled_cable", true);
             putBoolean("enabled_ironPlate2", true);
+            putBoolean("enabled_engine1", true);
             log("\n------------enabled drops------------"+"\n");
         }
 

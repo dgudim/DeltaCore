@@ -4,7 +4,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -105,15 +109,26 @@ public class CategoryManager extends Actor{
                 setVisible(false);
             }
         });
-        buttons.add(category).padTop(pad).padBottom(pad).size(buttonWidth, buttonHeight).row();
+
+        category.setBounds(0, pad, buttonWidth, buttonHeight);
+        buttons.addActor(category);
     }
 
-    public void setBounds(float x, float y){
-        buttons.setBounds(x, y, buttonWidth, targets.size*(buttonHeight+2*pad));
+    public void setBounds(float x, float y, float height){
+        buttons.setBounds(x, y, buttonWidth, height);
     }
 
     public void setBackgroundBounds(float x, float y, float width, float height){
-        background.setBounds(x - buttons.getX(), y, width, height);
+        background.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
+    }
+
+    @Override
+    public void setDebug(boolean debug){
+        for(int i = 0; i<targets.size; i++){
+            targets.get(i).setDebug(debug);
+        }
+        buttons.setDebug(debug);
+        background.setDebug(debug);
     }
 
     public void open(int target){

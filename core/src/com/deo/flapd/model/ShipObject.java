@@ -33,7 +33,7 @@ abstract class ShipObject {
 
     private Sound explosion;
 
-    private boolean sound;
+    private float soundVolume;
 
     private boolean isFireStarted1, isFireStarted2, isFireStarted3;
 
@@ -96,7 +96,7 @@ abstract class ShipObject {
         isFireStarted1 = false;
         isFireStarted2 = false;
         isFireStarted3 = false;
-        sound = MenuScreen.Sound;
+        soundVolume = getFloat("soundVolume");
 
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
@@ -235,8 +235,8 @@ abstract class ShipObject {
 
     public void explode(){
         exploded = true;
-        if(sound){
-            explosion.play(MenuScreen.SoundVolume/100);
+        if(soundVolume>0){
+            explosion.play(soundVolume/100);
         }
     }
 

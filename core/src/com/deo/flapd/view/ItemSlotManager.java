@@ -33,9 +33,9 @@ public class ItemSlotManager {
     AssetManager assetManager;
     Array<ImageButton> slots;
     Array<String> results;
-    ItemSlotManager itemSlotManager;
+    ItemSlotManager[] slotManagers;
 
-    public ItemSlotManager(AssetManager assetManager){
+    ItemSlotManager(AssetManager assetManager){
 
         slotSkin = new Skin();
         slotSkin.addRegions((TextureAtlas)assetManager.get("shop/workshop.atlas"));
@@ -53,8 +53,6 @@ public class ItemSlotManager {
 
         slots = new Array<>();
         results = new Array<>();
-
-        itemSlotManager = this;
     }
 
     public void addSlots(){
@@ -115,7 +113,6 @@ public class ItemSlotManager {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
-
         labelStyle.fontColor = Color.WHITE;
 
         ImageButton slot = new ImageButton(slotStyle);
@@ -127,6 +124,7 @@ public class ItemSlotManager {
         }
 
         Label text = new Label(result, labelStyle);
+        text.setFontScale(0.2f);
         if(locked) {
             text.setColor(Color.GRAY);
         }else{
@@ -138,7 +136,7 @@ public class ItemSlotManager {
         slot.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, 1, locked, false, itemSlotManager, null);
+                new CraftingDialogue(stage, assetManager, result, 1, locked, false, null, null);
             }
         });
 
@@ -203,7 +201,7 @@ public class ItemSlotManager {
         slots.get(i).addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result_name, 1, false, false, itemSlotManager, null);
+                new CraftingDialogue(stage, assetManager, result_name, 1, false, false,null, null);
             }
         });
     }
@@ -214,5 +212,9 @@ public class ItemSlotManager {
         JsonValue craftingState = base.get(result).get("isCraftable");
 
         return craftingState.asBoolean();
+    }
+
+    void setSlotManagers(ItemSlotManager[] slotManagers){
+        this.slotManagers = slotManagers;
     }
 }

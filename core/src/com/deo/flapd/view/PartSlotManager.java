@@ -3,13 +3,11 @@ package com.deo.flapd.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -18,11 +16,8 @@ import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 
 public class PartSlotManager extends ItemSlotManager{
 
-    TextureAtlas parts;
-
-    public PartSlotManager(AssetManager assetManager) {
+    PartSlotManager(AssetManager assetManager) {
         super(assetManager);
-        parts = assetManager.get("items/parts.atlas");
     }
 
     @Override
@@ -53,10 +48,10 @@ public class PartSlotManager extends ItemSlotManager{
         slotStyle.over = slotSkin.getDrawable("slot_over");
         slotStyle.down = slotSkin.getDrawable("slot_enabled");
 
-        Image imageUp_scaled = new Image(this.parts.findRegion(getItemCodeNameByName(result)));
-        Image imageOver_scaled = new Image(this.parts.findRegion("over_"+getItemCodeNameByName(result)));
-        Image imageDisabled_scaled = new Image(this.parts.findRegion("disabled"+getItemCodeNameByName(result)));
-        Image imageDown_scaled = new Image(this.parts.findRegion("enabled_"+getItemCodeNameByName(result)));
+        Image imageUp_scaled = new Image(this.items.findRegion(getItemCodeNameByName(result)));
+        Image imageOver_scaled = new Image(this.items.findRegion("over_"+getItemCodeNameByName(result)));
+        Image imageDisabled_scaled = new Image(this.items.findRegion("disabled"+getItemCodeNameByName(result)));
+        Image imageDown_scaled = new Image(this.items.findRegion("enabled_"+getItemCodeNameByName(result)));
 
         float heightBefore = imageUp_scaled.getHeight();
         float widthBefore = imageUp_scaled.getWidth();
@@ -96,7 +91,7 @@ public class PartSlotManager extends ItemSlotManager{
         slot.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, 1, locked, false, itemSlotManager, null);
+                new CraftingDialogue(stage, assetManager, result, 1, locked, false, null, null);
             }
         });
 
@@ -113,5 +108,19 @@ public class PartSlotManager extends ItemSlotManager{
     JsonValue getCraftingTree() {
         JsonReader json = new JsonReader();
         return json.parse(Gdx.files.internal("items/partCraftingRecepies.json"));
+    }
+
+    @Override
+    public void unlockSlot(final String result_name) {
+        super.unlockSlot(result_name);
+        String result = getItemCodeNameByName(result_name);
+        int i = results.indexOf(result, false);
+        slots.get(i).removeListener(slots.get(i).getListeners().get(2));
+        slots.get(i).addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                new CraftingDialogue(stage, assetManager, result_name, 1, false, false, null, null);
+            }
+        });
     }
 }

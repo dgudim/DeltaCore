@@ -15,6 +15,7 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 
 public class Meteorite {
@@ -29,7 +30,7 @@ public class Meteorite {
 
     private Sound explosion;
 
-    private boolean sound;
+    private float soundVolume;
 
     public static int meteoritesDestroyed;
 
@@ -60,7 +61,7 @@ public class Meteorite {
             meteoritesDestroyed = 0;
         }
             random = new Random();
-            sound = MenuScreen.Sound;
+            soundVolume = getFloat("soundVolume");
             if(easterEgg) {
                 explosion = Gdx.audio.newSound(Gdx.files.internal("music/hitcat.ogg"));
             }else{
@@ -163,8 +164,8 @@ public class Meteorite {
                 fires.removeIndex(i4);
                 remove_Meteorite.removeIndex(i4);
                 degrees.removeIndex(i4);
-                if(sound) {
-                    explosion.play(MenuScreen.SoundVolume/100);
+                if(soundVolume>0) {
+                    explosion.play(soundVolume/100);
                 }
             }else if (remove_Meteorite.get(i4)){
                 explosionQueue.removeIndex(i4);

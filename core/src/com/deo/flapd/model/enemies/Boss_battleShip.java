@@ -29,6 +29,8 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
+
 public class Boss_battleShip {
 
     private Sprite main;
@@ -88,7 +90,7 @@ public class Boss_battleShip {
 
     private Sound shot, shot2, shot3, shot4, explosion;
 
-    private boolean sound;
+    private float soundVolume;
 
     public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds){
 
@@ -290,7 +292,7 @@ public class Boss_battleShip {
         health_cannon_homing.setAnimateDuration(0.25f);
         health_cannon_stage2.setAnimateDuration(0.25f);
 
-        sound = MenuScreen.Sound;
+        soundVolume = getFloat("soundVolume");
 
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun1.ogg"));
         shot2 = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
@@ -408,7 +410,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(8)){
                     explodedCannons.set(8, true);
-                    play_shot_Sound(1, sound, true, 9);
+                    play_shot_Sound(1,true, 9);
                     GameUi.Score += 2000;
                 }
                 bounds_cannon_front_big.setPosition(-100, -100);
@@ -433,7 +435,7 @@ public class Boss_battleShip {
                     main.set(main_wrecked);
                     explodedCannons.set(0, true);
                     animation3 = true;
-                    play_shot_Sound(2, sound, true, 0);
+                    play_shot_Sound(2, true, 0);
                     GameLogic.bossWave = false;
                     is_spawned = false;
                     stage2 = false;
@@ -468,7 +470,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(1)){
                     explodedCannons.set(1, true);
-                    play_shot_Sound(1, sound, true, 1);
+                    play_shot_Sound(1, true, 1);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon.setPosition(-100, -100);
@@ -486,7 +488,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(2)){
                     explodedCannons.set(2, true);
-                    play_shot_Sound(1, sound, true, 2);
+                    play_shot_Sound(1, true, 2);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon2.setPosition(-100, -100);
@@ -504,7 +506,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(3)){
                     explodedCannons.set(3, true);
-                    play_shot_Sound(1, sound, true, 3);
+                    play_shot_Sound(1, true, 3);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon3.setPosition(-100, -100);
@@ -522,7 +524,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(4)){
                     explodedCannons.set(4, true);
-                    play_shot_Sound(1, sound, true, 4);
+                    play_shot_Sound(1, true, 4);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon4.setPosition(-100, -100);
@@ -540,7 +542,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(5)){
                     explodedCannons.set(5, true);
-                    play_shot_Sound(1, sound, true, 5);
+                    play_shot_Sound(1, true, 5);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon5.setPosition(-100, -100);
@@ -558,7 +560,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(6)){
                     explodedCannons.set(6, true);
-                    play_shot_Sound(1, sound, true, 6);
+                    play_shot_Sound(1, true, 6);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon6.setPosition(-100, -100);
@@ -576,7 +578,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(7)){
                     explodedCannons.set(7, true);
-                    play_shot_Sound(1, sound, true, 7);
+                    play_shot_Sound(1, true, 7);
                     GameUi.Score += 1500;
                 }
                 bounds_cannon_front.setPosition(-100, -100);
@@ -599,7 +601,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(9)){
                     explodedCannons.set(9, true);
-                    play_shot_Sound(1, sound, true, 8);
+                    play_shot_Sound(1, true, 8);
                     GameUi.Score += 1500;
                 }
                 bounds_homing1.setPosition(-100, -100);
@@ -886,7 +888,7 @@ public class Boss_battleShip {
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon.getRotation());
 
-                        play_shot_Sound(2, sound, false, 0);
+                        play_shot_Sound(2, false, 0);
                     }
                     break;
                 case(2):
@@ -899,7 +901,7 @@ public class Boss_battleShip {
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon2.getRotation());
 
-                        play_shot_Sound(2, sound, false, 0);
+                        play_shot_Sound(2, false, 0);
                     }
                     break;
                 case(3):
@@ -912,7 +914,7 @@ public class Boss_battleShip {
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon3.getRotation());
 
-                        play_shot_Sound(2, sound, false, 0);
+                        play_shot_Sound(2, false, 0);
                     }
                     break;
                 case(4):
@@ -925,7 +927,7 @@ public class Boss_battleShip {
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon4.getRotation());
 
-                        play_shot_Sound(2, sound, false, 0);
+                        play_shot_Sound(2, false, 0);
                     }
                     break;
                 case(5):
@@ -938,7 +940,7 @@ public class Boss_battleShip {
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon5.getRotation());
 
-                        play_shot_Sound(2, sound, false, 0);
+                        play_shot_Sound(2, false, 0);
                     }
                     break;
                 case(6):
@@ -951,7 +953,7 @@ public class Boss_battleShip {
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon6.getRotation());
 
-                        play_shot_Sound(2, sound, false, 0);
+                        play_shot_Sound(2, false, 0);
                     }
                     break;
                 case(7): if(healths.get(8)>0) {
@@ -963,7 +965,7 @@ public class Boss_battleShip {
                     bullets_red.add(bullet);
                     degrees_red.add(bounds_cannon_front.getRotation());
 
-                    play_shot_Sound(1, sound, false, 0);
+                    play_shot_Sound(1, false, 0);
                 }
                     break;
                 case(8): if(healths.get(9)>0 && stage2) {
@@ -982,7 +984,7 @@ public class Boss_battleShip {
 
                     fires.add(fire);
 
-                    play_shot_Sound(4, sound, false, 0);
+                    play_shot_Sound(4, false, 0);
                 }
                     break;
                 case(9): if(healths.get(10)>0) {
@@ -994,7 +996,7 @@ public class Boss_battleShip {
                     bullets_red_long.add(bullet);
                     degrees_red_long.add(bounds_homing2.getRotation());
 
-                    play_shot_Sound(3, sound, false, 0);
+                    play_shot_Sound(3, false, 0);
                 }
                     break;
             }
@@ -1058,27 +1060,27 @@ public class Boss_battleShip {
 
     }
 
-    private void play_shot_Sound(int shotType, boolean sound, boolean explosion, int cannon) {
+    private void play_shot_Sound(int shotType, boolean explosion, int cannon) {
             if (!explosion) {
-                if (sound) {
+                if (soundVolume>0) {
                     switch (shotType) {
                         case (1):
-                            shot.play(MenuScreen.SoundVolume/100);
+                            shot.play(soundVolume/100);
                             break;
                         case (2):
-                            shot2.play(MenuScreen.SoundVolume/100);
+                            shot2.play(soundVolume/100);
                             break;
                         case (3):
-                            shot3.play(MenuScreen.SoundVolume/100);
+                            shot3.play(soundVolume/100);
                             break;
                         case (4):
-                            shot4.play(MenuScreen.SoundVolume/100);
+                            shot4.play(soundVolume/100);
                             break;
                     }
                 }
             } else {
-                if (sound) {
-                    this.explosion.play(MenuScreen.SoundVolume/100);
+                if (soundVolume>0) {
+                    this.explosion.play(soundVolume/100);
                 }
                 switch (shotType) {
                     case (1):

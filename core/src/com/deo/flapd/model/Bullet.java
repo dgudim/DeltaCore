@@ -20,6 +20,7 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 
 public class Bullet {
@@ -34,7 +35,7 @@ public class Bullet {
 
     private Sound shot;
 
-    private boolean sound;
+    private float soundVolume;
 
     public static int bulletsShot;
 
@@ -80,7 +81,7 @@ public class Bullet {
 
         this.laser = new Sprite((Texture)assetManager.get("laser.png"));
 
-        sound = MenuScreen.Sound;
+        soundVolume = getFloat("soundVolume");
         shot = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
 
         laserTip = new Rectangle();
@@ -113,8 +114,8 @@ public class Bullet {
 
             bulletsShot++;
 
-            if(sound) {
-                shot.play(MenuScreen.SoundVolume/100);
+            if(soundVolume>0) {
+                shot.play(soundVolume/100);
             }
     }
 

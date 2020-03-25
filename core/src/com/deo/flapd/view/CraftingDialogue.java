@@ -35,27 +35,64 @@ import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class CraftingDialogue {
+class CraftingDialogue {
 
     private Dialog dialog;
     private Array<ImageButton> requirementButtons;
     private Array<String> requirementNames;
     private Slider quantityGlobal;
+    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
 
-    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean locked, boolean showDescription, final ItemSlotManager itemSlotManager, final CraftingDialogue previousDialogue){
+    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean locked, boolean showDescription, final CraftingDialogue previousDialogue, final Node clickedOn){
 
         requirementButtons = new Array<>();
         requirementNames = new Array<>();
 
+        Skin buttonSkin = new Skin();
+        buttonSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
+
+        BitmapFont font = assetManager.get("fonts/font2.fnt");
+        BitmapFont font_text = assetManager.get("fonts/font2(old).fnt");
+        font.getData().setScale(0.13f);
+        font.setUseIntegerPositions(false);
+        font_text.getData().setScale(0.13f);
+        font_text.setUseIntegerPositions(false);
+
+        TextButton.TextButtonStyle yesStyle = new TextButton.TextButtonStyle();
+        yesStyle.up = buttonSkin.getDrawable("blank_shopButton_disabled");
+        yesStyle.over = buttonSkin.getDrawable("blank_shopButton_over");
+        yesStyle.down = buttonSkin.getDrawable("blank_shopButton_enabled");
+        yesStyle.font = font;
+        yesStyle.fontColor = Color.valueOf("#3D4931");
+        yesStyle.overFontColor = Color.valueOf("#3D51232");
+        yesStyle.downFontColor = Color.valueOf("#22370E");
+
+        TextButton.TextButtonStyle noStyle = new TextButton.TextButtonStyle();
+        noStyle.up = buttonSkin.getDrawable("blank_shopButton_red_disabled");
+        noStyle.over = buttonSkin.getDrawable("blank_shopButton_red_over");
+        noStyle.down = buttonSkin.getDrawable("blank_shopButton_red_enabled");
+        noStyle.font = font;
+        noStyle.fontColor = Color.valueOf("#493D31");
+        noStyle.overFontColor = Color.valueOf("#513D232");
+        noStyle.downFontColor = Color.valueOf("#37220E");
+
+        TextButton.TextButtonStyle equipStyle = new TextButton.TextButtonStyle();
+        equipStyle.up = buttonSkin.getDrawable("blank_shopButton_cyan_disabled");
+        equipStyle.over = buttonSkin.getDrawable("blank_shopButton_cyan_over");
+        equipStyle.down = buttonSkin.getDrawable("blank_shopButton_cyan_enabled");
+        equipStyle.font = font;
+        equipStyle.fontColor = Color.valueOf("#31493D");
+        equipStyle.overFontColor = Color.valueOf("#32513D");
+        equipStyle.downFontColor = Color.valueOf("#0E3732");
+
+        TextureAtlas items1 = assetManager.get("items/items.atlas");
+
         if(!locked && isCraftable(result) && !showDescription) {
-            final String[] items = getRequiredItemsFromCraftingTree(result);
-            final int[] itemCounts = getRequiredItemCountsFromCraftingTree(result);
-            final int resultCount = getResultCountFromCraftingTree(result);
+            final String[] items = getRequiredItems(result);
+            final int[] itemCounts = getRequiredItemCounts(result);
+            final int resultCount = getResultCount(result);
             requirementNames.addAll(items);
 
-            TextureAtlas items1 = assetManager.get("items/items.atlas");
-            Skin buttonSkin = new Skin();
-            buttonSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
             buttonSkin.add("knob", assetManager.get("progressBarKnob.png"));
             buttonSkin.add("knob2", assetManager.get("progressBarKnob.png"));
             buttonSkin.add("bg", assetManager.get("progressBarBg.png"));
@@ -63,31 +100,9 @@ public class CraftingDialogue {
             buttonSkin.add("knob_over", assetManager.get("progressBarKnob_over.png"));
             buttonSkin.add("knob_enabled", assetManager.get("progressBarKnob_enabled.png"));
 
-            BitmapFont font = assetManager.get("fonts/font2.fnt");
-            font.getData().setScale(0.13f);
-            font.setUseIntegerPositions(false);
-
             Label.LabelStyle labelStyle = new Label.LabelStyle();
-            labelStyle.font = font;
+            labelStyle.font = font_text;
             labelStyle.fontColor = Color.YELLOW;
-
-            TextButton.TextButtonStyle yesStyle = new TextButton.TextButtonStyle();
-            yesStyle.up = buttonSkin.getDrawable("blank_shopButton_disabled");
-            yesStyle.over = buttonSkin.getDrawable("blank_shopButton_over");
-            yesStyle.down = buttonSkin.getDrawable("blank_shopButton_enabled");
-            yesStyle.font = font;
-            yesStyle.fontColor = Color.valueOf("#3D4931");
-            yesStyle.overFontColor = Color.valueOf("#3D51232");
-            yesStyle.downFontColor = Color.valueOf("#22370E");
-
-            TextButton.TextButtonStyle noStyle = new TextButton.TextButtonStyle();
-            noStyle.up = buttonSkin.getDrawable("blank_shopButton_red_disabled");
-            noStyle.over = buttonSkin.getDrawable("blank_shopButton_red_over");
-            noStyle.down = buttonSkin.getDrawable("blank_shopButton_red_enabled");
-            noStyle.font = font;
-            noStyle.fontColor = Color.valueOf("#493D31");
-            noStyle.overFontColor = Color.valueOf("#513D232");
-            noStyle.downFontColor = Color.valueOf("#37220E");
 
             Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
             sliderStyle.background = buttonSkin.getDrawable("bg");
@@ -114,7 +129,7 @@ public class CraftingDialogue {
             question.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, result, 1,true, true, itemSlotManager, null);
+                    new CraftingDialogue(stage, assetManager, result, 1,true, true, null, clickedOn);
                 }
             });
 
@@ -161,14 +176,13 @@ public class CraftingDialogue {
             dialogStyle.background = buttonSkin.getDrawable("craftingTerminal");
 
             final Label quantityText = new Label("quantity:"+requestedQuantity, labelStyle);
-            quantityText.setFontScale(0.08f);
+            quantityText.setFontScale(0.1f);
+            quantityText.setAlignment(Align.center);
 
-            final Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + resultCount*requestedQuantity, labelStyle);
-            productQuantity.setFontScale(0.06f);
+            final Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + resultCount * requestedQuantity, labelStyle);
+            productQuantity.setFontScale(0.09f);
 
-            Image product = new Image(items1.findRegion(getItemCodeNameByName(result)));
-            product.setBounds(93, 41, 25, 25);
-            product.setScaling(Scaling.fit);
+            Image product = getProductImage(result, items1);
 
             dialog = new Dialog("", dialogStyle);
             dialog.addActor(no);
@@ -177,11 +191,11 @@ public class CraftingDialogue {
             for (int i = 0; i < items.length; i++) {
                 Table requirement = new Table();
                 Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + itemCounts[i]*requestedQuantity, labelStyle);
+                itemText.setFontScale(0.1f);
                 if (itemCounts[i]*requestedQuantity > getInteger("item_" + getItemCodeNameByName(items[i]))) {
-                    itemText.setColor(Color.valueOf("#DF4400"));
+                    itemText.setColor(Color.valueOf("#DD0000"));
                 }
                 labels.add(itemText);
-                itemText.setFontScale(0.08f);
                 ImageButton.ImageButtonStyle buttonStyle2 = new ImageButton.ImageButtonStyle();
                 Image upFit = new Image(items1.findRegion(getItemCodeNameByName(items[i])));
                 Image disabledFit = new Image(items1.findRegion("disabled" + getItemCodeNameByName(items[i])));
@@ -200,7 +214,9 @@ public class CraftingDialogue {
                 item.addListener(new ClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new CraftingDialogue(stage, assetManager, items[finalI], MathUtils.clamp((int)(itemCounts[finalI] * quantity.getValue())-getInteger("item_" + getItemCodeNameByName(items[finalI])), 1, 50), !getBoolean("enabled_" + getItemCodeNameByName(items[finalI])), false, itemSlotManager, getDialogue());
+                        new CraftingDialogue(stage, assetManager, items[finalI],
+                        MathUtils.clamp((int)(itemCounts[finalI] * quantity.getValue())-getInteger("item_" + getItemCodeNameByName(items[finalI])), 1, 50),
+                        !getBoolean("enabled_" + getItemCodeNameByName(items[finalI])), false, CraftingDialogue.this, clickedOn);
                     }
                 });
                 item.setDisabled(!getBoolean("enabled_" + getItemCodeNameByName(items[i])));
@@ -208,7 +224,8 @@ public class CraftingDialogue {
                 requirementButtons.add(item);
                 requirement.addActor(item);
                 requirement.add(itemText).pad(1).padLeft(12);
-                ingredientsTable.add(requirement).padBottom(2).padTop(2).row();
+                ingredientsTable.add(requirement).padBottom(2).padTop(2).align(Align.left).row();
+                ingredientsTable.align(Align.left).padLeft(1);
             }
             ScrollPane ingredients = new ScrollPane(ingredientsTable);
             dialog.addActor(ingredients);
@@ -229,9 +246,7 @@ public class CraftingDialogue {
                     for (int i = 0; i < itemCounts.length; i++) {
                         labels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + (int)(itemCounts[i] * quantity.getValue()));
                         if (itemCounts[i] * quantity.getValue() > getInteger("item_" + getItemCodeNameByName(items[i]))) {
-                            labels.get(i).setColor(Color.valueOf("#DF4400"));
-                        } else {
-                            labels.get(i).setColor(Color.YELLOW);
+                            labels.get(i).setColor(Color.valueOf("#DD0000"));
                         }
                     }
                     productQuantity.setText(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
@@ -249,30 +264,6 @@ public class CraftingDialogue {
 
             stage.addActor(dialog);
         }else if(isCraftable(result) && !showDescription){
-            BitmapFont font = assetManager.get("fonts/font2.fnt");
-            font.getData().setScale(0.13f);
-            font.setUseIntegerPositions(false);
-
-            Skin buttonSkin = new Skin();
-            buttonSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
-
-            TextButton.TextButtonStyle yesStyle = new TextButton.TextButtonStyle();
-            yesStyle.up = buttonSkin.getDrawable("blank_shopButton_disabled");
-            yesStyle.over = buttonSkin.getDrawable("blank_shopButton_over");
-            yesStyle.down = buttonSkin.getDrawable("blank_shopButton_enabled");
-            yesStyle.font = font;
-            yesStyle.fontColor = Color.valueOf("#3D4931");
-            yesStyle.overFontColor = Color.valueOf("#3D51232");
-            yesStyle.downFontColor = Color.valueOf("#22370E");
-
-            TextButton.TextButtonStyle noStyle = new TextButton.TextButtonStyle();
-            noStyle.up = buttonSkin.getDrawable("blank_shopButton_red_disabled");
-            noStyle.over = buttonSkin.getDrawable("blank_shopButton_red_over");
-            noStyle.down = buttonSkin.getDrawable("blank_shopButton_red_enabled");
-            noStyle.font = font;
-            noStyle.fontColor = Color.valueOf("#493D31");
-            noStyle.overFontColor = Color.valueOf("#513D232");
-            noStyle.downFontColor = Color.valueOf("#37220E");
 
             TextButton yes = new TextButton("unlock", yesStyle);
             TextButton no = new TextButton("cancel", noStyle);
@@ -290,7 +281,6 @@ public class CraftingDialogue {
                     if(getInteger("item_craftingCard")>0){
                         subtractInteger("item_craftingCard", 1);
                         putBoolean("enabled_"+getItemCodeNameByName(result), true);
-                        itemSlotManager.unlockSlot(result);
                         if(previousDialogue != null) {
                             previousDialogue.unlockItem(result);
                         }
@@ -301,8 +291,6 @@ public class CraftingDialogue {
 
             no.setPosition(3, 3);
             yes.setPosition(86, 3);
-
-            TextureAtlas items1 = assetManager.get("items/items.atlas");
 
             Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
             buttonStyle.up = new Image(items1.findRegion("craftingCard")).getDrawable();
@@ -316,7 +304,7 @@ public class CraftingDialogue {
             craftingCard.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, "crafting card", 1,false, false, itemSlotManager, null);
+                    new CraftingDialogue(stage, assetManager, "crafting card", 1,false, false, null, clickedOn);
                 }
             });
 
@@ -355,21 +343,6 @@ public class CraftingDialogue {
             stage.addActor(dialog);
 
         }else if(!showDescription){
-            BitmapFont font = assetManager.get("fonts/font2.fnt");
-            font.getData().setScale(0.13f);
-            font.setUseIntegerPositions(false);
-
-            Skin buttonSkin = new Skin();
-            buttonSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
-
-            TextButton.TextButtonStyle yesStyle = new TextButton.TextButtonStyle();
-            yesStyle.up = buttonSkin.getDrawable("blank_shopButton_disabled");
-            yesStyle.over = buttonSkin.getDrawable("blank_shopButton_over");
-            yesStyle.down = buttonSkin.getDrawable("blank_shopButton_enabled");
-            yesStyle.font = font;
-            yesStyle.fontColor = Color.valueOf("#3D4931");
-            yesStyle.overFontColor = Color.valueOf("#3D51232");
-            yesStyle.downFontColor = Color.valueOf("#22370E");
 
             TextButton yes = new TextButton("fine", yesStyle);
             TextButton yes2 = new TextButton("ok", yesStyle);
@@ -404,8 +377,6 @@ public class CraftingDialogue {
             yes2.setWidth(38);
             yes3.setPosition(86, 3);
 
-            TextureAtlas items1 = assetManager.get("items/items.atlas");
-
             Label.LabelStyle labelStyle = new Label.LabelStyle();
             labelStyle.font = font;
             labelStyle.fontColor = Color.YELLOW;
@@ -414,9 +385,7 @@ public class CraftingDialogue {
             text.setPosition(64, 63, 1);
             text.setFontScale(0.08f);
 
-            Image product = new Image(items1.findRegion(getItemCodeNameByName(result)));
-            product.setBounds(93, 41, 25, 25);
-            product.setScaling(Scaling.fit);
+            Image product = getProductImage(result, items1);
 
             Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)), labelStyle);
             productQuantity.setFontScale(0.06f);
@@ -425,7 +394,7 @@ public class CraftingDialogue {
             productQuantity.setWrap(true);
             productQuantity.setAlignment(Align.center);
 
-            Label description = new Label(getDescriptionFromCraftingTree(result), labelStyle);
+            Label description = new Label(getDescription(result), labelStyle);
             description.setWidth(78);
             description.setWrap(true);
             description.setFontScale(0.1f);
@@ -452,21 +421,6 @@ public class CraftingDialogue {
 
             stage.addActor(dialog);
         }else{
-            BitmapFont font = assetManager.get("fonts/font2.fnt");
-            font.getData().setScale(0.13f);
-            font.setUseIntegerPositions(false);
-
-            Skin buttonSkin = new Skin();
-            buttonSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
-
-            TextButton.TextButtonStyle yesStyle = new TextButton.TextButtonStyle();
-            yesStyle.up = buttonSkin.getDrawable("blank_shopButton_disabled");
-            yesStyle.over = buttonSkin.getDrawable("blank_shopButton_over");
-            yesStyle.down = buttonSkin.getDrawable("blank_shopButton_enabled");
-            yesStyle.font = font;
-            yesStyle.fontColor = Color.valueOf("#3D4931");
-            yesStyle.overFontColor = Color.valueOf("#3D51232");
-            yesStyle.downFontColor = Color.valueOf("#22370E");
 
             TextButton yes = new TextButton("fine", yesStyle);
             TextButton yes2 = new TextButton("ok", yesStyle);
@@ -501,15 +455,11 @@ public class CraftingDialogue {
             yes2.setWidth(38);
             yes3.setPosition(86, 3);
 
-            TextureAtlas items1 = assetManager.get("items/items.atlas");
-
             Label.LabelStyle labelStyle = new Label.LabelStyle();
             labelStyle.font = font;
             labelStyle.fontColor = Color.YELLOW;
 
-            Image product = new Image(items1.findRegion(getItemCodeNameByName(result)));
-            product.setBounds(93, 41, 25, 25);
-            product.setScaling(Scaling.fit);
+            Image product = getProductImage(result, items1);
 
             Label productQuantity = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)), labelStyle);
             productQuantity.setFontScale(0.06f);
@@ -518,7 +468,7 @@ public class CraftingDialogue {
             productQuantity.setWrap(true);
             productQuantity.setAlignment(Align.center);
 
-            Label description = new Label(getDescriptionFromCraftingTree(result), labelStyle);
+            Label description = new Label(getDescription(result), labelStyle);
             description.setWidth(78);
             description.setWrap(true);
             description.setFontScale(0.1f);
@@ -546,59 +496,46 @@ public class CraftingDialogue {
         }
     }
 
-    private String[] getRequiredItemsFromCraftingTree(String result){
-        JsonReader json = new JsonReader();
-        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-        JsonValue Items = base.get(result).get("items");
-
-        return Items.asStringArray();
+    private String[] getRequiredItems(String result){
+        return treeJson.get(result).get("items").asStringArray();
     }
 
-    private String getDescriptionFromCraftingTree(String result){
-        JsonReader json = new JsonReader();
-        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-        JsonValue description = base.get(result).get("description");
-
-        return description.asString();
+    private String getDescription(String result){
+        return treeJson.get(result).get("description").asString();
     }
 
     private boolean isCraftable(String result){
-        JsonReader json = new JsonReader();
-        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-        JsonValue craftingState = base.get(result).get("isCraftable");
-
-        return craftingState.asBoolean();
+        return treeJson.get(result).get("isCraftable").asBoolean();
     }
 
-    private int[] getRequiredItemCountsFromCraftingTree(String result){
-        JsonReader json = new JsonReader();
-        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-        JsonValue Items = base.get(result).get("itemCounts");
-
-        return Items.asIntArray();
+    private int[] getRequiredItemCounts(String result){
+        return treeJson.get(result).get("itemCounts").asIntArray();
     }
 
-    private int getResultCountFromCraftingTree(String result){
-        JsonReader json = new JsonReader();
-        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-        JsonValue Items = base.get(result);
-
-        return Items.getInt("resultCount");
+    private int getResultCount(String result){
+        return treeJson.get(result).getInt("resultCount");
     }
 
-    public void unlockItem(String name){
+    private void unlockItem(String name){
         if(requirementNames.indexOf(name, false)>-1) {
             requirementButtons.get(requirementNames.indexOf(name, false)).setDisabled(false);
         }
     }
 
-    public void updateRequirements(){
+    private void updateRequirements(){
         quantityGlobal.setValue(quantityGlobal.getValue()+1);
         quantityGlobal.setValue(quantityGlobal.getValue()-1);
     }
 
-    public CraftingDialogue getDialogue(){
-        return this;
+    private Image getProductImage(String result, TextureAtlas items){
+        Image product = new Image(items.findRegion(getItemCodeNameByName(result)));
+        product.setBounds(93, 41, 25, 25);
+        product.setScaling(Scaling.fit);
+        return product;
+    }
+
+    private String getType(String result){
+        return treeJson.get(result).get("type").asString();
     }
 
 }

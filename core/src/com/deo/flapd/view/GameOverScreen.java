@@ -27,6 +27,7 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameOverScreen implements Screen {
 
@@ -213,13 +214,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        camera.position.set(400, 240, 0);
-        float tempScaleH = height/480.0f;
-        float tempScaleW = width/800.0f;
-        float zoom = Math.min(tempScaleH, tempScaleW);
-        camera.zoom = 1/zoom;
-        camera.update();
+        updateCamera(camera, viewport, width, height);
     }
 
     @Override

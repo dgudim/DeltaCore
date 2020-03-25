@@ -1,0 +1,149 @@
+{
+  "dependencies": ["menuButtons/menuButtons.atlas", "menuButtons/buttons.atlas", "shop/ui.atlas"],
+  "fonts": ["fonts/font2(old).fnt", "fonts/font2.fnt"],
+  "separateTextures": [],
+
+  "trello":{
+    "type": "buttonStyle",
+    "up": {
+      "texture": "trello_disabled",
+      "size": [60, 60]
+    },
+    "over":{
+      "texture": "trello_over",
+      "size": [60, 60]
+    },
+    "down":{
+      "texture": "trello_enabled",
+      "size": [60, 60]
+    },
+    "loadFrom": "menuButtons/buttons.atlas"
+  },
+
+  "gitHub":{
+    "type": "buttonStyle",
+    "up": {
+      "texture": "gitHub_disabled",
+      "size": [60, 60]
+    },
+    "over":{
+      "texture": "gitHub_over",
+      "size": [60, 60]
+    },
+    "down":{
+      "texture": "gitHub_enabled",
+      "size": [60, 60]
+    },
+    "loadFrom": "menuButtons/buttons.atlas"
+  },
+
+  "defaultDark":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "button_blank",
+      "size": ["default", "default"],
+      "fontColor": "#3D4931"
+    },
+    "over":{
+      "texture": "blank_over",
+      "size": ["default", "default"],
+      "fontColor": "#3D5232"
+    },
+    "down":{
+      "texture": "blank_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#22370E"
+    },
+    "loadFrom": "menuButtons/menuButtons.atlas"
+  },
+
+  "defaultLight":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "blank2_disabled",
+      "size": ["default", "default"],
+      "fontColor": "#46D33E"
+    },
+    "over":{
+      "texture": "blank2_over",
+      "size": ["default", "default"],
+      "fontColor": "#00DC00"
+    },
+    "down":{
+      "texture": "blank2_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#31FF25"
+    },
+    "loadFrom": "menuButtons/menuButtons.atlas"
+  },
+
+  "checkBoxDefault":{
+    "type": "checkBoxStyle",
+    "font": 0,
+    "off": {
+      "texture": "checkBox_disabled",
+      "size": [40, 40],
+      "fontColor": "default"
+    },
+    "offOver":{
+      "texture": "checkBox_disabled_over",
+      "size": [40, 40],
+      "fontColor": "default"
+    },
+    "on":{
+      "texture": "checkBox_enabled",
+      "size": [40, 40],
+      "fontColor": "default"
+    },
+    "onOver":{
+      "texture": "checkBox_enabled_over",
+      "size": [40, 40],
+      "fontColor": "default"
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
+  "sliderDefaultBig":{
+    "type": "sliderStyle",
+    "background": {
+      "texture": "progressBarBg",
+      "size": [250, 62.5]
+    },
+    "knob":{
+      "texture": "progressBarKnob",
+      "size": [37.5, 62.5]
+    },
+    "knobDown":{
+      "texture": "progressBarKnob_enabled",
+      "size": [37.5, 62.5]
+    },
+    "knobOver":{
+      "texture": "progressBarKnob_over",
+      "size": [37.5, 62.5]
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
+  "sliderDefaultNormal":{
+    "type": "sliderStyle",
+    "background": {
+      "texture": "progressBarBg",
+      "size": [230, 42.5]
+    },
+    "knob":{
+      "texture": "progressBarKnob",
+      "size": [27.5, 42.5]
+    },
+    "knobDown":{
+      "texture": "progressBarKnob_enabled",
+      "size": [27.5, 42.5]
+    },
+    "knobOver":{
+      "texture": "progressBarKnob_over",
+      "size": [27.5, 42.5]
+    },
+    "loadFrom": "shop/ui.atlas"
+  }
+}

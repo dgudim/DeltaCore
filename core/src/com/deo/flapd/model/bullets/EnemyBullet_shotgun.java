@@ -14,6 +14,8 @@ import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
+
 public class EnemyBullet_shotgun{
 
     public static Array<Rectangle> bullets;
@@ -28,7 +30,7 @@ public class EnemyBullet_shotgun{
 
     private Sound shot;
 
-    private boolean sound;
+    private float soundVolume;
 
     private float Boffset_x, Boffset_y, width, height, spread;
 
@@ -61,7 +63,7 @@ public class EnemyBullet_shotgun{
 
         random = new Random();
 
-        sound = MenuScreen.Sound;
+        soundVolume = getFloat("soundVolume");
         if(easterEgg){
             shot = Gdx.audio.newSound(Gdx.files.internal("music/mewcat.ogg"));
         }else {
@@ -93,8 +95,8 @@ public class EnemyBullet_shotgun{
                 fires.add(fire);
             }
 
-            if(sound) {
-                shot.play(MenuScreen.SoundVolume/100);
+            if(soundVolume>0) {
+                shot.play(soundVolume/100);
             }
 
             millis = 0;

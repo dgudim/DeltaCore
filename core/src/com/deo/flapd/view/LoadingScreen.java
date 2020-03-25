@@ -24,6 +24,7 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
 
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -32,6 +33,7 @@ import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
 
@@ -50,8 +52,10 @@ public class LoadingScreen implements Screen {
     private PostProcessor blurProcessor;
     private boolean enableShader;
     private long loadingTime;
+    public static Tree craftingTree;
+    private String stateName;
 
-    public LoadingScreen(Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor){
+    public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor){
 
         log("\n started loading");
         loadingTime = TimeUtils.millis();
@@ -105,6 +109,8 @@ public class LoadingScreen implements Screen {
 
         enableShader = getBoolean("bloom");
 
+        stateName = "Loading";
+
         load();
     }
 
@@ -115,7 +121,6 @@ public class LoadingScreen implements Screen {
 
     public void load() {
         assetManager.load("items/items.atlas", TextureAtlas.class);
-        assetManager.load("items/parts.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/menuButtons.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/buttons.atlas", TextureAtlas.class);
         assetManager.load("boss_evil/bossEvil.atlas", TextureAtlas.class);
@@ -123,13 +128,19 @@ public class LoadingScreen implements Screen {
         assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
         assetManager.load("items/items.atlas", TextureAtlas.class);
         assetManager.load("shop/workshop.atlas", TextureAtlas.class);
+        assetManager.load("shop/slots.atlas", TextureAtlas.class);
         assetManager.load("shop/shopButtons.atlas", TextureAtlas.class);
+        assetManager.load("shop/ui.atlas", TextureAtlas.class);
+        assetManager.load("9bg.png", Texture.class);
 
         assetManager.load("bg_layer1.png", Texture.class);
         assetManager.load("bg_layer2.png", Texture.class);
         assetManager.load("bg_layer3.png", Texture.class);
         assetManager.load("ship.png", Texture.class);
         assetManager.load("ColdShield.png", Texture.class);
+        assetManager.load("enabled_ColdShield.png", Texture.class);
+        assetManager.load("over_ColdShield.png", Texture.class);
+        assetManager.load("disabledColdShield.png", Texture.class);
         assetManager.load("HotShield.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
@@ -177,21 +188,14 @@ public class LoadingScreen implements Screen {
         assetManager.load("infoBg.png", Texture.class);
         assetManager.load("bg_old.png", Texture.class);
         assetManager.load("ship.png", Texture.class);
-
-        assetManager.load("checkBox_disabled.png", Texture.class);
-        assetManager.load("checkBox_enabled.png", Texture.class);
-        assetManager.load("checkBox_disabled_over.png", Texture.class);
-        assetManager.load("checkBox_enabled_over.png", Texture.class);
-        assetManager.load("progressBarKnob.png", Texture.class);
-        assetManager.load("progressBarBg.png", Texture.class);
-        assetManager.load("progressBarKnob_over.png", Texture.class);
-        assetManager.load("progressBarKnob_enabled.png", Texture.class);
     }
 
     @Override
     public void render(float delta){
         Gdx.gl.glClearColor(0,0.2f,0.25f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        checkState();
 
         batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -248,7 +252,7 @@ public class LoadingScreen implements Screen {
         loadingBar.act(delta);
         main.getData().setScale(0.8f);
         main.setColor(Color.CYAN);
-        main.draw(batch, "Loading"+state, 0, 440, 800, 1, false);
+        main.draw(batch, stateName+state, 0, 440, 800, 1, false);
         main.getData().setScale(0.5f);
         main.setColor(Color.ORANGE);
         main.draw(batch, (int)(assetManager.getProgress()*100)+"%", 0, 47, 800, 1, false);
@@ -258,55 +262,12 @@ public class LoadingScreen implements Screen {
         if(enableShader){
             blurProcessor.render();
         }
-
-        try {
-            if (assetManager.isFinished()) {
-                float elapsedTime = TimeUtils.timeSinceMillis(loadingTime)/1000.0f;
-                float relativePercentage = (100 - elapsedTime * 100f / 3);
-                if(relativePercentage>=0){
-                    log("\n loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)");
-                }else{
-                    log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
-                }
-                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
-            }
-        }catch (ClassCastException | NumberFormatException e){
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String fullStackTrace = sw.toString();
-            log("\n"+fullStackTrace + "\n");
-            log("\n wiping data :) \n");
-            clearPrefs();
-            putInteger("money", 7000);
-            putFloat("ui", 1.25f);
-            putFloat("soundEffectsVolume", 1);
-            putFloat("musicVolume", 1 );
-            putFloat("difficulty", 1);
-            putBoolean("transparency", true);
-            putBoolean("shaders", false);
-            log("dump pf preferences "+getPrefs()+"\n");
-            log("...done...restarting");
-        } catch (Exception e2) {
-            StringWriter sw = new StringWriter();
-            e2.printStackTrace(new PrintWriter(sw));
-            String fullStackTrace = sw.toString();
-            log("\n" + fullStackTrace + "\n");
-            log("dump pf preferences "+getPrefs()+"\n");
-            log("force exiting");
-            System.exit(1);
-        }
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        camera.position.set(400, 240, 0);
-        float tempScaleH = height/480.0f;
-        float tempScaleW = width/800.0f;
-        float zoom = Math.min(tempScaleH, tempScaleW);
-        camera.zoom = 1/zoom;
+        updateCamera(camera, viewport, width, height);
         Gdx.gl20.glLineWidth(10.0f/camera.zoom);
-        camera.update();
     }
 
     @Override
@@ -346,6 +307,49 @@ public class LoadingScreen implements Screen {
     private float calculateProgressOffsetY(float rotation){
         rotation = 240 - MathUtils.sinDeg(rotation) * 550 * (progress+0.1f);
         return rotation;
+    }
+
+    private void checkState(){
+        try {
+            if(stateName.equals("Loading tree")){
+                craftingTree = new Tree(LoadingScreen.this.assetManager, 106, 66, 425, 401);
+                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
+            }
+            if (assetManager.isFinished()) {
+                float elapsedTime = TimeUtils.timeSinceMillis(loadingTime)/1000.0f;
+                float relativePercentage = (100 - elapsedTime * 100f / 3f);
+                if(relativePercentage>=0){
+                    log("\n loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)");
+                }else{
+                    log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
+                }
+                stateName = "Loading tree";
+            }
+        }catch (ClassCastException | NumberFormatException e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String fullStackTrace = sw.toString();
+            log("\n"+fullStackTrace + "\n");
+            log("\n wiping data :) \n");
+            clearPrefs();
+            putInteger("money", 7000);
+            putFloat("ui", 1.25f);
+            putFloat("soundEffectsVolume", 1);
+            putFloat("musicVolume", 1 );
+            putFloat("difficulty", 1);
+            putBoolean("transparency", true);
+            putBoolean("shaders", false);
+            log("dump pf preferences "+getPrefs()+"\n");
+            log("...done...restarting");
+        } catch (Exception e2) {
+            StringWriter sw = new StringWriter();
+            e2.printStackTrace(new PrintWriter(sw));
+            String fullStackTrace = sw.toString();
+            log("\n" + fullStackTrace + "\n");
+            log("dump pf preferences "+getPrefs()+"\n");
+            log("force exiting");
+            System.exit(1);
+        }
     }
 
 }
