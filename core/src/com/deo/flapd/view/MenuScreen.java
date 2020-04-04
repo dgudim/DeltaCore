@@ -14,23 +14,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
@@ -39,9 +38,11 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 
@@ -62,13 +63,13 @@ public class MenuScreen implements Screen{
 
     private Image Lamp;
 
-    private BitmapFont font_main, font_buttons;
+    private BitmapFont font_main;
 
     private boolean Music;
 
     private Stage Menu, ShopStage;
 
-    private int movement;
+    private float movement;
 
     private InputMultiplexer multiplexer;
 
@@ -96,10 +97,16 @@ public class MenuScreen implements Screen{
 
     private final Slider musicVolumeS;
 
-       public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
+    private JsonValue treeJson;
+
+    private String lastFireEffect;
+
+    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
         this.game = game;
 
         this.blurProcessor = blurProcessor;
+
+        treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
 
         Music = getFloat("musicVolume") > 0;
 
@@ -115,7 +122,6 @@ public class MenuScreen implements Screen{
         MenuBg.setBounds(0, 0, 800, 480);
 
         font_main = assetManager.get("fonts/font2(old).fnt");
-        font_buttons = assetManager.get("fonts/font2.fnt");
 
         Bg = assetManager.get("bg_old.png");
         Bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -131,14 +137,14 @@ public class MenuScreen implements Screen{
         Lamp.setBounds(730, 430, 15, 35);
 
         UIComposer uiComposer = new UIComposer(assetManager);
-        uiComposer.loadStyles("defaultDark", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
+        uiComposer.loadStyles("defaultLight", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
 
         Table playScreenTable = new Table();
         playScreenTable.align(Align.topLeft);
         playScreenTable.setBounds(15, 60, 531, 410);
-        TextButton newGame = uiComposer.addTextButton("defaultDark", "new game", 0.4f);
-        TextButton continueGame = uiComposer.addTextButton("defaultDark", "continue", 0.4f);
-        TextButton workshop = uiComposer.addTextButton("defaultDark", "workshop", 0.4f);
+        TextButton newGame = uiComposer.addTextButton("defaultLight", "new game", 0.4f);
+        TextButton continueGame = uiComposer.addTextButton("defaultLight", "continue", 0.4f);
+        TextButton workshop = uiComposer.addTextButton("defaultLight", "workshop", 0.4f);
         final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, "Difficulty ","X", "difficulty");
         playScreenTable.add(newGame).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(continueGame).padTop(5).padBottom(5).align(Align.left).row();
@@ -148,12 +154,13 @@ public class MenuScreen implements Screen{
         difficultyT.getCells().get(1).getActor().setColor(new Color().fromHsv(120-difficultyControl.getValue()*20, 1.5f, 1).add(0,0,0,1));
 
         ScrollPane settingsPane = uiComposer.createScrollGroup(15, 62, 531, 412, false, true);
+        settingsPane.setCancelTouchFocus(false);
         Table settingsGroup = (Table)settingsPane.getActor();
         settingsGroup.align(Align.left);
         Table musicVolumeT, soundVolumeT, uiScaleT, bloomT, transparentUIT, prefsLoggingT, showFpsT;
-        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Music volume ","%", "musicVolume");
-        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundVolume");
-        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "[#32ff32]Ui scale ", "X", "ui");
+        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Music volume ","%", "musicVolume", settingsPane);
+        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundVolume", settingsPane);
+        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "[#32ff32]Ui scale ", "X", "ui", settingsPane);
         bloomT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Bloom", "bloom");
         transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Semi-transparent ui", "transparency");
         prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Prefs logging", "logging");
@@ -194,23 +201,42 @@ public class MenuScreen implements Screen{
                 "® All right reserved",
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
 
-        menuCategoryManager = new CategoryManager(assetManager, font_buttons, 250, 75, 2.5f, 0.5f, 2, true, true, "lastClickedMenuButton");
-        menuCategoryManager.addCategory(playScreenTable, "play");
+        menuCategoryManager = new CategoryManager(assetManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
+        menuCategoryManager.addCategory(playScreenTable, "play").addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                updateFire();
+            }
+        });
         menuCategoryManager.addCategory(playScreenTable, "online");
         menuCategoryManager.addCategory(settingsPane, "settings");
         menuCategoryManager.addCategory(infoText, "info");
         menuCategoryManager.addCategory(moreTable, "more");
         menuCategoryManager.setBounds(545, 3, 400);
-        menuCategoryManager.setBackgroundBounds(5, 62, 531, 410);
+        menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
 
         craftingTree = LoadingScreen.craftingTree;
-        craftingTree.setVisible(false);
+        craftingTree.hide();
+        ItemSlotManager blackMarket = new ItemSlotManager(assetManager);
+        blackMarket.setBounds(105, 70, 425, 400);
 
-        workshopCategoryManager = new CategoryManager(assetManager, font_buttons, 90, 40, 2.5f, 0.25f, 1, true, false, "lastClickedWorkshopButton");
-        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting");
-        workshopCategoryManager.addCloseButton();
-        workshopCategoryManager.setBounds(12.5f, 67, 403);
-        workshopCategoryManager.setBackgroundBounds(5, 62, 531, 410);
+        workshopCategoryManager = new CategoryManager(assetManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
+        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting").addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                craftingTree.nodes.get(0).get(0).updateRoot();
+            }
+        });
+        workshopCategoryManager.addCategory(blackMarket.scrollPane, "market");
+        workshopCategoryManager.addCloseButton().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                updateFire();
+            }
+        });
+        workshopCategoryManager.setBounds(13, 67, 400);
+        workshopCategoryManager.setBackgroundBounds(5, 65, 531, 410);
+        workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
         workshopCategoryManager.setVisible(false);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
 
@@ -226,31 +252,15 @@ public class MenuScreen implements Screen{
         settingsPane.setVisible(false);
 
         craftingTree.attach(Menu);
+        blackMarket.attach(Menu);
 
         ShopStage = new Stage(viewport, batch);
 
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
-           switch (1){
-               case(1):
-                   fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
-                   fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
-                   break;
-               case(2):
-                   fire.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
-                   fire2.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
-                   break;
-               case(3):
-                   fire.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
-                   fire2.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
-                   break;
-           }
-
-           fire.setPosition(330, 268);
-           fire.start();
-           fire2.setPosition(324, 290);
-           fire2.start();
+        lastFireEffect = " ";
+        updateFire();
 
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(Menu);
@@ -388,15 +398,13 @@ public class MenuScreen implements Screen{
 
         batch.begin();
 
-        movement = (int) (movement + (200 * delta));
+        movement += (200 * delta);
         if (movement > 2880) {
             movement = 0;
         }
 
-        batch.draw(Bg, 0, 0, movement, -240, 800, 720);
+        batch.draw(Bg, 0, 0, (int)movement, -240, 800, 720);
 
-        fire.setPosition(230, 268);
-        fire2.setPosition(224, 290);
         fire.draw(batch);
         fire.update(delta);
         fire2.draw(batch);
@@ -522,5 +530,45 @@ public class MenuScreen implements Screen{
         music.dispose();
         fire.dispose();
         fire2.dispose();
+    }
+
+    private void loadFire(){
+        fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+        fire2.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+        fire.setPosition(230, 268);
+        fire2.setPosition(224, 290);
+        fire.start();
+        fire2.start();
+        lastFireEffect = treeJson.get(getString("currentEngine")).get("usesEffect").asString();
+    }
+
+    private void updateFire(){
+        if(lastFireEffect.equals(" ")){
+            loadFire();
+        }
+        if(!lastFireEffect.equals(treeJson.get(getString("currentEngine")).get("usesEffect").asString())) {
+            fire.reset();
+            fire2.reset();
+            loadFire();
+        }
+        String key = treeJson.get(getString("currentEngine")).get("usesEffect").asString()+"_color";
+        if(getString(key).equals("")){
+            float[] colors = fire.getEmitters().get(0).getTint().getColors();
+
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("{\"colors\":");
+            buffer.append('[');
+            buffer.append(colors[0]);
+            for (int i = 1; i < colors.length; i++) {
+                buffer.append(", ");
+                buffer.append(colors[i]);
+            }
+            buffer.append("]}");
+            putString(key, buffer.toString());
+        }else{
+            float[] colors = new JsonReader().parse(getString(key)).get("colors").asFloatArray();
+            fire.getEmitters().get(0).getTint().setColors(colors);
+            fire2.getEmitters().get(0).getTint().setColors(colors);
+        }
     }
 }

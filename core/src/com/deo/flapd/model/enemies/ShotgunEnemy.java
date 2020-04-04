@@ -82,7 +82,7 @@ public class ShotgunEnemy {
     }
 
     public void Spawn(float health, float scale) {
-        if(millis > 10) {
+        if(millis > 100) {
 
             Rectangle enemy = new Rectangle();
 
@@ -109,11 +109,10 @@ public class ShotgunEnemy {
             millis = 0;
             GameUi.enemiesSpawned++;
         }
-        millis = millis + 50 * Gdx.graphics.getDeltaTime();
     }
 
-    public void drawBulletsAndEffects(SpriteBatch batch, boolean is_paused){
-        enemyBullet.draw(batch, is_paused);
+    public void drawBulletsAndEffects(SpriteBatch batch, float delta, boolean is_paused){
+        enemyBullet.draw(batch, delta, is_paused);
 
         for (int i = 0; i < enemies.size; i ++) {
 
@@ -125,7 +124,7 @@ public class ShotgunEnemy {
             fire.draw(batch);
 
             if(!is_paused) {
-                fire.update(Gdx.graphics.getDeltaTime());
+                fire.update(delta);
             }else{
                 fire.update(0);
             }
@@ -134,7 +133,7 @@ public class ShotgunEnemy {
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
             if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                explosions.get(i3).update(delta);
             }else{
                 explosions.get(i3).update(0);
             }
@@ -145,7 +144,9 @@ public class ShotgunEnemy {
         }
     }
 
-    public void drawBase(SpriteBatch batch, boolean is_paused) {
+    public void drawBase(SpriteBatch batch, float delta, boolean is_paused) {
+
+        millis = millis + 50 * delta;
 
         for (int i = 0; i < enemies.size; i ++) {
 
@@ -160,7 +161,7 @@ public class ShotgunEnemy {
             this.enemy.draw(batch);
 
             if (!is_paused) {
-                enemy.x -= 70 * Gdx.graphics.getDeltaTime();
+                enemy.x -= 70 * delta;
 
                 if (enemy.x < -enemy.width - 110) {
                     ShotgunEnemy.removeEnemy(i, false);

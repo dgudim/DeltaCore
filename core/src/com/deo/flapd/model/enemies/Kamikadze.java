@@ -98,10 +98,9 @@ public class Kamikadze {
             millis = 0;
             GameUi.enemiesSpawned++;
         }
-        millis = millis + 50 * Gdx.graphics.getDeltaTime();
     }
 
-    public void drawEffects(SpriteBatch batch, boolean is_paused){
+    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
         for (int i = 0; i < enemies.size; i ++) {
 
             Rectangle enemy = enemies.get(i);
@@ -109,7 +108,7 @@ public class Kamikadze {
             float timer = timers.get(i);
 
             if(!is_paused) {
-                timer = timer - 1*Gdx.graphics.getDeltaTime();
+                timer = timer - 1*delta;
                 timers.set(i, timer);
             }
 
@@ -120,7 +119,7 @@ public class Kamikadze {
             fire.setPosition(enemy.x + enemy.width/2, enemy.y + enemy.height/2);
             fire.draw(batch);
             if(!is_paused) {
-                fire.update(Gdx.graphics.getDeltaTime());
+                fire.update(delta);
             }else{
                 fire.update(0);
             }
@@ -129,7 +128,7 @@ public class Kamikadze {
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
             if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                explosions.get(i3).update(delta);
             }else{
                 explosions.get(i3).update(0);
             }
@@ -140,7 +139,9 @@ public class Kamikadze {
         }
     }
 
-    public void drawBase(SpriteBatch batch, boolean is_paused) {
+    public void drawBase(SpriteBatch batch, float delta, boolean is_paused) {
+
+        millis = millis + 50 * delta;
 
         for (int i = 0; i < enemies.size; i ++) {
 
@@ -149,7 +150,7 @@ public class Kamikadze {
             float ideal_timer = timers2.get(i);
 
             if(!is_paused) {
-                timer = timer - 1*Gdx.graphics.getDeltaTime();
+                timer = timer - 1*delta;
                 timers.set(i, timer);
             }
 

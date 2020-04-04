@@ -8,11 +8,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getString;
 
 abstract class ShipObject {
 
@@ -59,20 +62,14 @@ abstract class ShipObject {
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
-        switch (getInteger("current_engine")){
-            case(1):
-                fire.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
-                fire2.load(Gdx.files.internal("particles/fire_engileleft_red_green.p"), Gdx.files.internal("particles"));
-                break;
-            case(2):
-                fire.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
-                fire2.load(Gdx.files.internal("particles/fire_engileleft_red_purple.p"), Gdx.files.internal("particles"));
-                break;
-            case(3):
-                fire.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
-                fire2.load(Gdx.files.internal("particles/fire_engileleft_blue_purple.p"), Gdx.files.internal("particles"));
-                break;
-        }
+        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+
+        fire.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
+        fire2.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
+
+        float[] colors = new JsonReader().parse(getString(treeJson.get(getString("currentEngine")).get("usesEffect").asString()+"_color")).get("colors").asFloatArray();
+        fire.getEmitters().get(0).getTint().setColors(colors);
+        fire2.getEmitters().get(0).getTint().setColors(colors);
 
         fire.start();
         fire2.start();
@@ -101,7 +98,7 @@ abstract class ShipObject {
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
-    public void drawEffects(SpriteBatch batch, boolean is_paused){
+    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
         if(!exploded) {
             fire.setPosition(bounds.getX() + 10, bounds.getY() + 18);
             fire.draw(batch);
@@ -112,8 +109,8 @@ abstract class ShipObject {
             damage_fire3.setPosition(bounds.getX() + 10, bounds.getY() + 25);
 
             if (!is_paused) {
-                fire.update(Gdx.graphics.getDeltaTime());
-                fire2.update(Gdx.graphics.getDeltaTime());
+                fire.update(delta);
+                fire2.update(delta);
             } else {
                 fire.update(0);
                 fire2.update(0);
@@ -124,7 +121,7 @@ abstract class ShipObject {
                     if (!isFireStarted1) {
                         damage_fire.start();
                     }
-                    damage_fire.draw(batch, Gdx.graphics.getDeltaTime());
+                    damage_fire.draw(batch, delta);
                 } else {
                     damage_fire.draw(batch, 0);
                 }
@@ -138,7 +135,7 @@ abstract class ShipObject {
                     if (!isFireStarted2) {
                         damage_fire2.start();
                     }
-                    damage_fire2.draw(batch, Gdx.graphics.getDeltaTime());
+                    damage_fire2.draw(batch, delta);
                 } else {
                     damage_fire2.draw(batch, 0);
                 }
@@ -152,7 +149,7 @@ abstract class ShipObject {
                     if (!isFireStarted3) {
                         damage_fire3.start();
                     }
-                    damage_fire3.draw(batch, Gdx.graphics.getDeltaTime());
+                    damage_fire3.draw(batch, delta);
                 } else {
                     damage_fire3.draw(batch, 0);
                 }

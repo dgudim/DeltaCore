@@ -12,7 +12,7 @@ import java.util.Map;
 
 public abstract class DUtils {
 
-    public static Preferences prefs = Gdx.app.getPreferences("Preferences");
+    private static Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
 
     public static void log(String contents){
@@ -65,7 +65,7 @@ public abstract class DUtils {
         }
     }
 
-    private static void putString(String key, String val){
+    public static void putString(String key, String val){
         prefs.putString(key, val);
         prefs.flush();
         if(logging) {
@@ -389,7 +389,7 @@ public abstract class DUtils {
             case("composite iron plate"):
                 item = "ReinforcedIridiumIronPlate";
                 break;
-            case("engines"):
+            case("grasshopper engine"):
                 item = "engine1";
                 break;
             case("nuclear engine"):
@@ -398,7 +398,7 @@ public abstract class DUtils {
             case("plasma engine"):
                 item = "engine3";
                 break;
-            case("cannons"):
+            case("small machine gun"):
                 item = "Cannon1";
                 break;
             case("machine gun"):

@@ -169,9 +169,9 @@ public class LoadingScreen implements Screen {
         assetManager.load("checkpoint.png", Texture.class);
         assetManager.load("checkpoint_green.png", Texture.class);
 
-        assetManager.load("bu1.png", Texture.class);
-        assetManager.load("bu2.png", Texture.class);
-        assetManager.load("bu3.png", Texture.class);
+        assetManager.load("bullet_Cannon1.png", Texture.class);
+        assetManager.load("bullet_Cannon2.png", Texture.class);
+        assetManager.load("bullet_Cannon3.png", Texture.class);
 
         assetManager.load("cat.png", Texture.class);
         assetManager.load("cat2.png", Texture.class);
@@ -186,6 +186,8 @@ public class LoadingScreen implements Screen {
         assetManager.load("menuFill.png", Texture.class);
         assetManager.load("lamp.png", Texture.class);
         assetManager.load("infoBg.png", Texture.class);
+        assetManager.load("infoBg2.png", Texture.class);
+        assetManager.load("treeBg.png", Texture.class);
         assetManager.load("bg_old.png", Texture.class);
         assetManager.load("ship.png", Texture.class);
     }
@@ -311,11 +313,7 @@ public class LoadingScreen implements Screen {
 
     private void checkState(){
         try {
-            if(stateName.equals("Loading tree")){
-                craftingTree = new Tree(LoadingScreen.this.assetManager, 106, 66, 425, 401);
-                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
-            }
-            if (assetManager.isFinished()) {
+            if (assetManager.isFinished() && stateName.equals("Loading")) {
                 float elapsedTime = TimeUtils.timeSinceMillis(loadingTime)/1000.0f;
                 float relativePercentage = (100 - elapsedTime * 100f / 3f);
                 if(relativePercentage>=0){
@@ -323,6 +321,12 @@ public class LoadingScreen implements Screen {
                 }else{
                     log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
                 }
+            }
+            if(stateName.equals("Loading tree")){
+                craftingTree = new Tree(LoadingScreen.this.assetManager, 105, 65, 430, 410);
+                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
+            }
+            if(assetManager.isFinished()){
                 stateName = "Loading tree";
             }
         }catch (ClassCastException | NumberFormatException e){
@@ -332,21 +336,12 @@ public class LoadingScreen implements Screen {
             log("\n"+fullStackTrace + "\n");
             log("\n wiping data :) \n");
             clearPrefs();
-            putInteger("money", 7000);
-            putFloat("ui", 1.25f);
-            putFloat("soundEffectsVolume", 1);
-            putFloat("musicVolume", 1 );
-            putFloat("difficulty", 1);
-            putBoolean("transparency", true);
-            putBoolean("shaders", false);
-            log("dump pf preferences "+getPrefs()+"\n");
             log("...done...restarting");
         } catch (Exception e2) {
             StringWriter sw = new StringWriter();
             e2.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
             log("\n" + fullStackTrace + "\n");
-            log("dump pf preferences "+getPrefs()+"\n");
             log("force exiting");
             System.exit(1);
         }

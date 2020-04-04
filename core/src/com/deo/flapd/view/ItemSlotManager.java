@@ -3,7 +3,6 @@ package com.deo.flapd.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,25 +14,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.TimeUtils;
 
-import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getLong;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.putLong;
+import static com.deo.flapd.utils.DUtils.putString;
 
 public class ItemSlotManager {
 
-    BitmapFont font;
-    Table table;
-    Skin slotSkin;
-    TextureAtlas items;
+    private BitmapFont font;
+    private Table table;
+    private Skin slotSkin;
+    private TextureAtlas items;
     ScrollPane scrollPane;
-    Stage stage;
-    AssetManager assetManager;
-    Array<ImageButton> slots;
-    Array<String> results;
-    ItemSlotManager[] slotManagers;
+    private Stage stage;
+    private AssetManager assetManager;
 
     ItemSlotManager(AssetManager assetManager){
 
@@ -44,41 +46,64 @@ public class ItemSlotManager {
 
         items = assetManager.get("items/items.atlas");
 
-        font = assetManager.get("fonts/font2.fnt");
+        font = assetManager.get("fonts/font2(old).fnt");
         font.getData().setScale(0.2f);
 
         table = new Table();
 
         scrollPane = new ScrollPane(table);
 
-        slots = new Array<>();
-        results = new Array<>();
+        long lastGenerationTime = getLong("lastGenTime");
+        if(TimeUtils.timeSinceMillis(lastGenerationTime)>18000000){
+            putLong("lastGenTime", TimeUtils.millis());
+            generateSlots();
+        }else{
+            loadSlots();
+        }
     }
 
-    public void addSlots(){
-        Array<String> notCraftableItems = new Array<>();
-        JsonValue tree = getCraftingTree();
-        boolean nextRow = false;
+    private void generateSlots(){
+        Array<String> itemsToAdd = new Array<>();
+        JsonValue tree = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+        Array<Integer> quantities= new Array<>();
+
         for(int i = 0; i<tree.size; i++){
-            if(isCraftable(tree.get(i).name)) {
-                addSlot(tree.get(i).name, nextRow);
-                nextRow = !nextRow;
-            }else{
-                notCraftableItems.add(tree.get(i).name);
+            if(tree.get(i).get("category").asString().equals("recepies")){
+                itemsToAdd.add(tree.get(i).name);
             }
         }
-        for(int i = 0; i<notCraftableItems.size; i++){
-            addSlot(notCraftableItems.get(i), nextRow);
+
+        boolean nextRow = false;
+        Array<String> addedItems = new Array<>();
+        int slotQuantity = getRandomInRange(itemsToAdd.size/4, itemsToAdd.size/2);
+        for(int i = 0; i<slotQuantity; i++){
+            int index = getRandomInRange(0, itemsToAdd.size-1);
+            int quantity = getRandomInRange(5, 15);
+            addedItems.add(itemsToAdd.get(index));
+            quantities.add(quantity);
+            addSlot(itemsToAdd.get(index), quantity, nextRow);
+            itemsToAdd.removeIndex(index);
+            nextRow = !nextRow;
+        }
+
+        putString("savedSlots", "{\"slots\":" + addedItems.toString() + ","+ "\"productQuantities\":" + quantities.toString() + "}");
+    }
+
+    private void loadSlots(){
+        JsonValue slotsJson = new JsonReader().parse(getString("savedSlots"));
+        int[] productQuantities = slotsJson.get("productQuantities").asIntArray();
+        String[] slotNames = slotsJson.get("slots").asStringArray();
+        boolean nextRow = false;
+        for(int i = 0; i<productQuantities.length; i++){
+            addSlot(slotNames[i], productQuantities[i], nextRow);
             nextRow = !nextRow;
         }
     }
 
-    void addSlot(final String result, boolean nextRow){
+    private void addSlot(final String result, final int availableQuantity, boolean nextRow){
 
         ImageButton.ImageButtonStyle slotStyle;
         ImageButton.ImageButtonStyle lockedSlotStyle;
-
-        final boolean locked = !getBoolean("enabled_" + getItemCodeNameByName(result));
 
         lockedSlotStyle = new ImageButton.ImageButtonStyle();
         lockedSlotStyle.up = slotSkin.getDrawable("slot_disabled");
@@ -116,105 +141,47 @@ public class ItemSlotManager {
         labelStyle.fontColor = Color.WHITE;
 
         ImageButton slot = new ImageButton(slotStyle);
-        if(locked){
-            slot.setStyle(lockedSlotStyle);
-        }
-        if(!isCraftable(result)){
-            slot.setColor(0.85f, 0.85f, 1f, 1);
-        }
 
         Label text = new Label(result, labelStyle);
-        text.setFontScale(0.2f);
-        if(locked) {
-            text.setColor(Color.GRAY);
-        }else{
-            text.setColor(Color.YELLOW);
-        }
+        text.setFontScale(0.28f, 0.3f);
+        text.setColor(Color.YELLOW);
+
+        Label quantity = new Label(""+availableQuantity, labelStyle);
+        quantity.setFontScale(0.4f);
+        quantity.setColor(Color.YELLOW);
+        quantity.setBounds(133, 88, 50, 20);
+        quantity.setAlignment(Align.right);
+
         slot.getImageCell().size(width, height).padBottom(5).row();
         slot.add(text).padRight(10).padLeft(10).padTop(10);
+        slot.addActor(quantity);
 
         slot.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, 1, locked, false, null, null);
+                new PurchaseDialogue(assetManager, stage, result, availableQuantity, ItemSlotManager.this);
             }
         });
 
-        slots.add(slot);
-        results.add(getItemCodeNameByName(result));
-
-        table.add(slot).pad(5).size(210, 120);
-        if(nextRow){
+        if(nextRow) {
+            table.add(slot).padBottom(5).padTop(5).padLeft(5).size(205, 120);
             table.row();
+        }else{
+            table.add(slot).padBottom(5).padTop(5).padRight(5).size(205, 120);
         }
     }
 
-    public void attach(Stage stage){
+    void attach(Stage stage){
         stage.addActor(scrollPane);
         this.stage = stage;
-    }
-
-    public void draw(Batch batch, float parentAlpha, float delta) {
-        batch.begin();
-        table.draw(batch, parentAlpha);
-        table.act(delta);
-        batch.end();
     }
 
     public void setBounds(float x, float y, float width, float height) {
         scrollPane.setBounds(x, y, width, height);
     }
 
-    JsonValue getCraftingTree(){
-        JsonReader json = new JsonReader();
-        return json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-    }
-
-    public void unlockSlot(final String result_name){
-
-        String result = getItemCodeNameByName(result_name);
-
-        int i = results.indexOf(result, false);
-
-        Image imageUp_scaled = new Image(this.items.findRegion(result));
-        Image imageOver_scaled = new Image(this.items.findRegion("over_"+result));
-        Image imageDown_scaled = new Image(this.items.findRegion("enabled_"+result));
-
-        float heightBefore = imageUp_scaled.getHeight();
-        float widthBefore = imageUp_scaled.getWidth();
-        float height = 64;
-        float width = (height/heightBefore)*widthBefore;
-
-        imageDown_scaled.setSize(width, height);
-        imageOver_scaled.setSize(width, height);
-        imageUp_scaled.setSize(width, height);
-
-        slots.get(i).getStyle().imageUp = imageUp_scaled.getDrawable();
-        slots.get(i).getStyle().imageDown = imageDown_scaled.getDrawable();
-        slots.get(i).getStyle().imageOver = imageOver_scaled.getDrawable();
-        slots.get(i).getStyle().up = slotSkin.getDrawable("slot");
-        slots.get(i).getStyle().over = slotSkin.getDrawable("slot_over");
-        slots.get(i).getStyle().down = slotSkin.getDrawable("slot_enabled");
-        slots.get(i).getCells().get(1).getActor().setColor(Color.YELLOW);
-
-        slots.get(i).removeListener(slots.get(i).getListeners().get(2));
-        slots.get(i).addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result_name, 1, false, false,null, null);
-            }
-        });
-    }
-
-    private boolean isCraftable(String result){
-        JsonReader json = new JsonReader();
-        JsonValue base = json.parse(Gdx.files.internal("items/craftingRecepies.json"));
-        JsonValue craftingState = base.get(result).get("isCraftable");
-
-        return craftingState.asBoolean();
-    }
-
-    void setSlotManagers(ItemSlotManager[] slotManagers){
-        this.slotManagers = slotManagers;
+    void update(){
+        table.clearChildren();
+        loadSlots();
     }
 }

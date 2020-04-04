@@ -1,13 +1,23 @@
 {
-  "engines": {
+  "grasshopper engine": {
     "description": "a base engine",
     "category": "root",
-    "type": "baseCategory"
+    "type": "baseCategory",
+    "isCraftable": false,
+    "parameters": ["[#22DDDD]speed"],
+    "parameterValues": [1],
+    "saveTo": "currentEngine",
+    "usesEffect": "fire_engine_left_red_green"
   },
-  "cannons": {
+  "small machine gun": {
     "description": "a base cannon",
     "category": "root",
-    "type": "baseCategory"
+    "type": "baseCategory",
+    "isCraftable": false,
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
+    "parameterValues": [50, 1.4, 0.7],
+    "saveTo": "currentCannon",
+    "usesEffect": "explosion3_2"
   },
   "nuclear engine": {
     "items": ["red fuel cell", "cable", "plastic", "reinforced iron plate", "cyan crystal"],
@@ -15,12 +25,14 @@
     "resultCount": 1,
     "description": "a slightly faster engine that works on nuclear fuel",
     "isCraftable": true,
-    "category": "engines",
-    "requires": [""],
+    "category": "grasshopper engine",
+    "requires": ["grasshopper engine"],
     "price": "auto",
     "type": "part",
-    "parameters": ["speed"],
-    "parameterValues": [1.3]
+    "parameters": ["[#526af7]speed"],
+    "parameterValues": [1.3],
+    "saveTo": "currentEngine",
+    "usesEffect": "fire_engine_left_red_purple"
   },
     "plasma engine": {
     "items": ["cyan fuel cell", "cable", "plastic", "reinforced iron plate", "purple crystal", "green coil"],
@@ -28,12 +40,14 @@
     "resultCount": 1,
     "description": "super fast engine that works on plasma",
     "isCraftable": true,
-    "category": "engines",
+    "category": "grasshopper engine",
     "requires": ["nuclear engine"],
     "price": "auto",
     "type": "part",
-    "parameters": ["speed"],
-    "parameterValues": [1.6]
+    "parameters": ["[#9454cc]speed"],
+    "parameterValues": [1.6],
+    "saveTo": "currentEngine",
+    "usesEffect": "fire_engine_left_blue_purple"
   },
   "machine gun": {
     "items": ["bolt", "cable", "reinforced iron plate", "cooling unit", "orange crystal"],
@@ -41,31 +55,35 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "cannons",
-    "requires": [""],
+    "category": "small machine gun",
+    "requires": ["small machine gun"],
     "price": "auto",
     "type": "part",
-    "parameters": ["damage"],
-    "parameterValues": [60]
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
+    "parameterValues": [70, 0.6, 0.9],
+    "saveTo": "currentCannon",
+    "usesEffect": "explosion3_2"
   },
   "laser gun": {
     "items": ["bolt", "cable", "reinforced iron plate", "cooling unit", "energy cell", "laser emitter"],
     "itemCounts": [17, 25, 9, 2, 1, 1],
     "resultCount": 1,
-    "description": "machine gun",
+    "description": "",
     "isCraftable": true,
-    "category": "cannons",
-    "requires": [""],
+    "category": "small machine gun",
+    "requires": ["machine gun"],
     "price": "auto",
     "type": "part",
-    "parameters": ["damage"],
-    "parameterValues": [60]
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
+    "parameterValues": [85, 0.3, 1],
+    "saveTo": "currentCannon",
+    "usesEffect": "explosion3"
   },
   "energy cell": {
     "items": ["iron plate", "bolt", "energy crystal", "glass shard"],
     "itemCounts": [2, 4, 1, 2],
     "resultCount": 1,
-    "description": "a basic energy cell, mainly used in cannons",
+    "description": "a basic energy cell, mainly used in cannons engine",
     "isCraftable": true,
     "category": "recepies",
     "requires": [""],
@@ -157,7 +175,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "90",
+    "price": "270",
     "type": "endItem"
   },
   "blue ore": {
@@ -179,7 +197,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "45",
+    "price": "225",
     "type": "endItem"
   },
   "cyan warp shard": {
@@ -190,7 +208,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "60",
+    "price": "240",
     "type": "endItem"
   },
   "purple warp shard": {
@@ -201,7 +219,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "60",
+    "price": "240",
     "type": "endItem"
   },
   "bolt": {
@@ -234,7 +252,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "20",
+    "price": "60",
     "type": "endItem"
   },
   "cable": {
@@ -267,7 +285,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "25",
+    "price": "100",
     "type": "endItem"
   },
   "iron plate": {
@@ -289,7 +307,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "15",
+    "price": "60",
     "type": "endItem"
   },
   "reinforced iron plate": {
@@ -333,7 +351,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "80",
+    "price": "290",
     "type": "endItem"
   },
   "purple crystal": {
@@ -374,6 +392,17 @@
     "itemCounts": [1, 2],
     "resultCount": 1,
     "description": "a copper coil",
+    "isCraftable":true,
+    "category": "recepies",
+    "requires": [""],
+    "price": "auto",
+    "type": "item"
+  },
+  "coloring crystal": {
+    "items": ["glass shard", "red crystal"],
+    "itemCounts": [1, 1],
+    "resultCount": 2,
+    "description": "a crystal used as a coloring pigment",
     "isCraftable":true,
     "category": "recepies",
     "requires": [""],

@@ -27,7 +27,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 
-public class UIComposer {
+class UIComposer {
 
     Array<Button.ButtonStyle> buttonStyles;
     Array<Slider.SliderStyle> sliderStyles;
@@ -56,7 +56,9 @@ public class UIComposer {
         Array<String> dependencies = new Array<>();
         Skin textures = new Skin();
         for (int i = 0; i<fontNames.length; i++){
-            fonts.add((BitmapFont)assetManager.get(fontNames[i]));
+            BitmapFont font = assetManager.get(fontNames[i]);
+            font.setUseIntegerPositions(false);
+            fonts.add(font);
         }
         for(int i = 0; i<styleNames.length; i++) {
             loadStyle(styles, styleNames[i], textures, dependencies, fonts);
@@ -64,8 +66,16 @@ public class UIComposer {
     }
 
     private void loadStyle(JsonValue treeJson, String style, Skin textures, Array<String> dependencies, Array<BitmapFont> fonts){
-        dependencies.add(treeJson.get(style).get("loadFrom").asString());
-        textures.addRegions((TextureAtlas)assetManager.get(dependencies.get(dependencies.size-1)));
+        String dependency;
+        if(treeJson.get(style) == null) {
+            throw new IllegalArgumentException("No style defined with name " + style);
+        }else{
+            dependency = treeJson.get(style).get("loadFrom").asString();
+        }
+        if(!dependencies.contains(dependency, false)) {
+            dependencies.add(dependency);
+            textures.addRegions((TextureAtlas)assetManager.get(dependency));
+        }
         switch (treeJson.get(style).get("type").asString()){
             case ("buttonStyle"):
                 loadButtonStyle(treeJson.get(style), textures);
@@ -261,22 +271,23 @@ public class UIComposer {
     }
 
 
-    void addButtonStyle(Button.ButtonStyle buttonStyle, String assignmentName){
+    private void addButtonStyle(Button.ButtonStyle buttonStyle, String assignmentName){
         buttonStyles.add(buttonStyle);
         buttonStyleNames.add(assignmentName);
     }
 
-    void addSliderStyle(Slider.SliderStyle sliderStyle, String assignmentName){
+    private void addSliderStyle(Slider.SliderStyle sliderStyle, String assignmentName){
         sliderStyles.add(sliderStyle);
         sliderStyleNames.add(assignmentName);
     }
 
-    void addCheckBoxStyleStyle(CheckBox.CheckBoxStyle checkBoxStyle, String assignmentName){
+    private void addCheckBoxStyleStyle(CheckBox.CheckBoxStyle checkBoxStyle, String assignmentName){
         checkBoxStyles.add(checkBoxStyle);
         checkBoxStyleNames.add(assignmentName);
     }
 
     Table addCheckBox(String style, String text, final String valueKey){
+        if (checkBoxStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         Table cell = new Table();
         final CheckBox checkBox = new CheckBox(text, checkBoxStyles.get(checkBoxStyleNames.indexOf(style, false)));
         checkBox.getLabel().setFontScale(0.48f);
@@ -292,9 +303,20 @@ public class UIComposer {
         return cell;
     }
 
+    Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
+        Table slider = addSlider(style, min, max, step, text, postText, valueKey);
+        slider.getCells().get(0).getActor().addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                scrollHolder.cancel();
+            }
+        });
+        return slider;
+    }
+
     Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey){
         Table cell = new Table();
-        final Slider slider = new Slider(min, max, step, false, sliderStyles.get(sliderStyleNames.indexOf(style, false)));
+        final Slider slider = addSlider(style, min, max, step);
         slider.setValue(getFloat(valueKey));
         final Label textLabel = addText(text + String.format("%.1f", getFloat(valueKey)) + postText, (BitmapFont)assetManager.get("fonts/font2(old).fnt"), 0.48f);
         slider.addListener(new ChangeListener() {
@@ -309,18 +331,25 @@ public class UIComposer {
         return cell;
     }
 
+    Slider addSlider(String style, int min, int max, float step){
+        if (sliderStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
+        return new Slider(min, max, step, false, sliderStyles.get(sliderStyleNames.indexOf(style, false)));
+    }
+
     Button addButton(String style){
+        if (buttonStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         return new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false)));
     }
 
     Table addButton(String style, String text, float fontScale){
         Table table = new Table();
-        table.add(new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false))));
+        table.add(addButton(style));
         table.add(addText(text, (BitmapFont)assetManager.get("fonts/font2(old).fnt"), fontScale));
         return table;
     }
 
     TextButton addTextButton(String style, String text, float fontScale){
+        if (buttonStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         TextButton button = new TextButton(text, (TextButton.TextButtonStyle)buttonStyles.get(buttonStyleNames.indexOf(style, false)));
         button.getLabel().setSize(5, 5);
         button.getLabel().setFontScale(fontScale);

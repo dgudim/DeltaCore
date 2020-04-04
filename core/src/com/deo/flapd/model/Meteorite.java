@@ -84,6 +84,7 @@ public class Meteorite {
 
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal("particles/particle_nowind.p"), Gdx.files.internal("particles"));
+            fire.scaleEffect(radius/25);
             fire.start();
 
             fires.add(fire);
@@ -91,7 +92,7 @@ public class Meteorite {
             remove_Meteorite.add(false);
     }
 
-    public void drawEffects(SpriteBatch batch, boolean is_paused){
+    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
         for (int i = 0; i < meteorites.size; i ++) {
 
             Rectangle meteorite = meteorites.get(i);
@@ -100,7 +101,7 @@ public class Meteorite {
             fire.setPosition(meteorite.x + meteorite.width/2, meteorite.y + meteorite.width/2);
             fire.draw(batch);
             if(!is_paused){
-                fire.update(Gdx.graphics.getDeltaTime());
+                fire.update(delta);
             }else{
                 fire.update(0);
             }
@@ -108,7 +109,7 @@ public class Meteorite {
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
             if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                explosions.get(i3).update(delta);
             }else{
                 explosions.get(i3).update(0);
             }
@@ -119,7 +120,7 @@ public class Meteorite {
         }
     }
 
-    public void drawBase(SpriteBatch batch, boolean is_paused) {
+    public void drawBase(SpriteBatch batch, float delta, boolean is_paused) {
 
         for (int i = 0; i < meteorites.size; i ++) {
 
@@ -131,9 +132,9 @@ public class Meteorite {
             this.meteorite.draw(batch);
 
             if (!is_paused){
-                meteorite.x += 130 * degrees.get(i) * Gdx.graphics.getDeltaTime();
-                meteorite.y -= 130 * Gdx.graphics.getDeltaTime();
-                this.meteorite.setRotation(this.meteorite.getRotation() + 1.5f / meteorites.size);
+                meteorite.x += 130 * degrees.get(i) * delta;
+                meteorite.y -= 130 * delta;
+                this.meteorite.setRotation(this.meteorite.getRotation() + 150*delta / meteorites.size);
 
                 if (meteorite.y < -radiuses.get(i) * 4 || meteorite.x > 1000 || meteorite.x < 0 - radiuses.get(i) * 4) {
                     Meteorite.removeMeteorite(i, false);

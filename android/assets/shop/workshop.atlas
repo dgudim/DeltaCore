@@ -3,142 +3,170 @@ workshop.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+colorDialog
+  rotate: false
+  xy: 1, 127
+  size: 94, 128
+  orig: 94, 128
+  offset: 0, 0
+  index: -1
 craftingTerminal
   rotate: false
-  xy: 1, 49
+  xy: 97, 185
   size: 128, 70
   orig: 128, 70
   offset: 0, 0
   index: -1
 craftingTerminal_locked
   rotate: false
-  xy: 131, 49
+  xy: 97, 113
   size: 128, 70
   orig: 128, 70
   offset: 0, 0
   index: -1
 slot
   rotate: false
-  xy: 1, 15
+  xy: 1, 93
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 slot_disabled
   rotate: false
-  xy: 261, 87
+  xy: 1, 59
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 slot_disabled_down
   rotate: false
-  xy: 35, 15
+  xy: 35, 93
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 slot_disabled_over
   rotate: false
-  xy: 261, 53
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-slot_enabled
-  rotate: false
-  xy: 295, 87
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-slot_over
-  rotate: false
-  xy: 69, 15
+  xy: 1, 25
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 blank_shopButton_cyan_disabled
   rotate: false
-  xy: 329, 97
+  xy: 1, 1
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
+slot_enabled
+  rotate: false
+  xy: 35, 59
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+slot_over
+  rotate: false
+  xy: 35, 25
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 blank_shopButton_cyan_enabled
   rotate: false
-  xy: 103, 25
+  xy: 42, 1
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_cyan_over
   rotate: false
-  xy: 370, 97
+  xy: 69, 89
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_disabled
   rotate: false
-  xy: 144, 25
+  xy: 69, 65
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_enabled
   rotate: false
-  xy: 411, 97
+  xy: 110, 89
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_over
   rotate: false
-  xy: 185, 25
+  xy: 69, 41
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_purple_disabled
+  rotate: false
+  xy: 110, 65
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_purple_enabled
+  rotate: false
+  xy: 151, 89
+  size: 39, 22
+  orig: 39, 22
+  offset: 0, 0
+  index: -1
+blank_shopButton_purple_over
+  rotate: false
+  xy: 110, 41
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_red_disabled
   rotate: false
-  xy: 452, 97
+  xy: 151, 65
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_red_enabled
   rotate: false
-  xy: 226, 25
+  xy: 151, 41
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 blank_shopButton_red_over
   rotate: false
-  xy: 295, 63
+  xy: 192, 89
   size: 39, 22
   orig: 39, 22
   offset: 0, 0
   index: -1
 question
   rotate: false
-  xy: 1, 1
+  xy: 69, 113
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 question_enabled
   rotate: false
-  xy: 493, 107
+  xy: 83, 113
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 question_over
   rotate: false
-  xy: 15, 1
+  xy: 69, 27
   size: 12, 12
   orig: 12, 12
   offset: 0, 0

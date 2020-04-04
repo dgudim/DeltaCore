@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -70,7 +71,7 @@ public class GameScreen implements Screen{
 
     public static boolean is_paused;
 
-    private int movement;
+    private float movement;
 
     private Game game;
 
@@ -110,7 +111,7 @@ public class GameScreen implements Screen{
 
         ship = new SpaceShip(assetManager, 0, 204, 76.8f, 57.6f, newGame);
 
-        uraniumCell = new UraniumCell(assetManager, 96, 96, getFloat("ui"));
+        uraniumCell = new UraniumCell(assetManager);
 
         boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
 
@@ -122,7 +123,7 @@ public class GameScreen implements Screen{
 
         gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship, newGame);
 
-        bullet = new Bullet(assetManager, getInteger("current_cannon"),0.4f*MathUtils.clamp((1.5f-getInteger("cannon1upgradeLevel")*0.1f), 0.7f, 1.5f), 1, ship.getBounds(), newGame);
+        bullet = new Bullet(assetManager, ship.getBounds(), newGame);
 
         enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, getBoolean("easterEgg"));
         enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, getBoolean("easterEgg"));
@@ -160,7 +161,7 @@ public class GameScreen implements Screen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if(!is_paused && !ship.isExploded()) {
-            gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
+            gameLogic.handleInput(delta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
             executor.execute(new Runnable(){
                 @Override
                 public void run(){
@@ -181,24 +182,24 @@ public class GameScreen implements Screen{
         }
             batch.begin();
 
-            batch.draw(bg1, 0, 0, movement / 4, -240, 800, 720);
-            batch.draw(bg2, 0, 0, movement / 2, -240, 800, 720);
-            batch.draw(bg3, 0, 0, movement, -240, 800, 720);
+            batch.draw(bg1, 0, 0, (int)(movement / 4), -240, 800, 720);
+            batch.draw(bg2, 0, 0, (int)(movement / 2), -240, 800, 720);
+            batch.draw(bg3, 0, 0, (int)movement, -240, 800, 720);
 
-            bonus.draw(batch, is_paused);
-            drops.draw(batch, is_paused);
-            uraniumCell.draw(batch, is_paused);
+            bonus.draw(batch, delta, is_paused);
+            drops.draw(batch, delta, is_paused);
+            uraniumCell.draw(batch, delta, is_paused);
 
-            ship.drawEffects(batch, is_paused);
-            enemy.drawBulletsAndEffects(batch, is_paused);
-            enemy_sniper.drawBulletsAndEffects(batch, is_paused);
-            enemy_shotgun.drawBulletsAndEffects(batch, is_paused);
-            kamikadze.drawEffects(batch, is_paused);
+            ship.drawEffects(batch, delta, is_paused);
+            enemy.drawBulletsAndEffects(batch, delta, is_paused);
+            enemy_sniper.drawBulletsAndEffects(batch, delta, is_paused);
+            enemy_shotgun.drawBulletsAndEffects(batch, delta, is_paused);
+            kamikadze.drawEffects(batch, delta, is_paused);
             boss_battleShip.draw(batch, is_paused, delta);
             boss_evilEye.draw(batch, is_paused, delta);
-            meteorite.drawEffects(batch, is_paused);
-            checkpoint.drawEffects(batch, is_paused);
-            bullet.draw(batch, is_paused);
+            meteorite.drawEffects(batch, delta, is_paused);
+            checkpoint.drawEffects(batch, delta, is_paused);
+            bullet.draw(batch, delta, is_paused);
 
             gameUi.drawExplosion(delta);
 
@@ -209,11 +210,11 @@ public class GameScreen implements Screen{
         }
 
             ship.drawBase(batch, is_paused);
-            enemy.drawBase(batch, is_paused);
-            enemy_sniper.drawBase(batch, is_paused);
-            enemy_shotgun.drawBase(batch, is_paused);
-            kamikadze.drawBase(batch, is_paused);
-            meteorite.drawBase(batch, is_paused);
+            enemy.drawBase(batch, delta, is_paused);
+            enemy_sniper.drawBase(batch, delta, is_paused);
+            enemy_shotgun.drawBase(batch, delta, is_paused);
+            kamikadze.drawBase(batch, delta, is_paused);
+            meteorite.drawBase(batch, delta, is_paused);
             checkpoint.drawBase(batch, is_paused);
 
             ship.DrawShield(batch, is_paused);
@@ -221,7 +222,7 @@ public class GameScreen implements Screen{
             gameUi.draw(is_paused, delta);
 
             if(!is_paused){
-                movement = (int)(movement + (200 * delta));
+                movement += (200 * delta);
                 if(movement> 2880){
                     movement = 0;
                 }
@@ -255,8 +256,8 @@ public class GameScreen implements Screen{
                 millis = 0;
             }
 
-            millis = millis + 50 * Gdx.graphics.getDeltaTime();
-            millis2 = millis2 + 0.5f * Gdx.graphics.getDeltaTime();
+            millis = millis + 50 * delta;
+            millis2 = millis2 + 0.5f * delta;
 
             if(millis2 > 100){
                 music.dispose();

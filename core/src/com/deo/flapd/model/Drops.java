@@ -18,22 +18,20 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Drops {
 
-    private Sprite ironPlate, bolt, ore, glassShard, coloringCrystal, cog, warpShard, warpShardMK2, warpShardMK3, wire, energyCell, coreShard, redCrystal, ironShard, plastic, rubber, craftingCard;
+    private Sprite ironPlate, bolt, ore, glassShard, coloringCrystal, cog, warpShard, warpShardMK2, warpShardMK3, wire, energyCell, coreShard, redCrystal, ironShard, plastic, rubber;
     private static Array<Float> timers;
     private static Array <Rectangle> drops;
     private static Array <Float> degrees;
     private static Array <Integer> types;
     private static float maxSize;
     private static Random random;
-    private static int currentType;
     private float uiScaling;
-    private TextureAtlas itemAtlas;
 
     public Drops(AssetManager assetManager, float maxSize, float uiScaling) {
 
         this.uiScaling = uiScaling;
 
-        itemAtlas = assetManager.get("items/items.atlas");
+        TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
 
         coloringCrystal = new Sprite(itemAtlas.findRegion("crystal"));
         redCrystal = new Sprite(itemAtlas.findRegion("redCrystal"));
@@ -51,7 +49,6 @@ public class Drops {
         plastic = new Sprite(itemAtlas.findRegion("plastic"));
         ironShard = new Sprite(itemAtlas.findRegion("ironShard"));
         rubber = new Sprite(itemAtlas.findRegion("rubber"));
-        craftingCard = new Sprite(itemAtlas.findRegion("craftingCard"));
 
         timers = new Array<>();
         drops = new Array<>();
@@ -89,12 +86,7 @@ public class Drops {
             drop.x = x;
             drop.y = y;
 
-            currentType = MathUtils.clamp(getRandomInRange(rarity/2+1, rarity+10), 1, 14);
-            if(random.nextFloat()>0.85f*(getInteger("item_craftingCard")/4f+1) && getInteger("c_limit")<3){
-                currentType = 0;
-                addInteger("c_limit", 1);
-            }
-            types.add(currentType);
+            types.add(MathUtils.clamp(getRandomInRange(rarity/2+1, rarity+10), 1, 14));
 
             drops.add(drop);
             timers.add(timer * (random.nextFloat() + 1));
@@ -105,9 +97,6 @@ public class Drops {
     private Sprite getSpriteByType(int type){
         Sprite item = new Sprite();
         switch (type){
-            case(0):
-                item = craftingCard;
-                break;
             case(1):
                 item = coloringCrystal;
                 break;
@@ -218,7 +207,7 @@ public class Drops {
         return item;
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
+    public void draw(SpriteBatch batch, float delta, boolean is_paused) {
 
         for (int i = 0; i < drops.size; i++) {
             Rectangle drop = drops.get(i);
@@ -234,8 +223,8 @@ public class Drops {
 
             if(!is_paused){
                 if(timer > 0) {
-                    drop.x -= MathUtils.cosDeg(degree) * timer * 30 * Gdx.graphics.getDeltaTime();
-                    drop.y -= MathUtils.sinDeg(degree) * timer * 30 * Gdx.graphics.getDeltaTime();
+                    drop.x -= MathUtils.cosDeg(degree) * timer * 30 * delta;
+                    drop.y -= MathUtils.sinDeg(degree) * timer * 30 * delta;
                 }else{
                     Vector2 pos1 = new Vector2();
                     pos1.set(drop.x, drop.y);
@@ -246,7 +235,7 @@ public class Drops {
                     drop.x = pos1.x;
                     drop.y = pos1.y;
                 }
-                timer = timer - 1 * Gdx.graphics.getDeltaTime();
+                timer = timer - 1 * delta;
                 timers.set(i, timer);
             }
             if(drop.y - drop.height/2 > 403-20*(uiScaling-1)-2*uiScaling && drop.x - drop.width/2> 344-400*(uiScaling-1)-10*uiScaling && drop.x - drop.width/2< 344-400*(uiScaling-1)+10*uiScaling){

@@ -67,14 +67,14 @@ public class Checkpoint {
         checkpointState = false;
     }
 
-    public void drawEffects(SpriteBatch batch, boolean is_paused){
+    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
         if(effects) {
             fire.setPosition(bounds.getX() + 18, bounds.getY() + 14);
             fire2.setPosition(bounds.getX() + 84, bounds.getY() + 14);
 
             if (!is_paused) {
-                fire.draw(batch, Gdx.graphics.getDeltaTime());
-                fire2.draw(batch, Gdx.graphics.getDeltaTime());
+                fire.draw(batch, delta);
+                fire2.draw(batch, delta);
             } else {
                 fire.draw(batch, 0);
                 fire2.draw(batch, 0);
@@ -84,16 +84,18 @@ public class Checkpoint {
 
     public void drawBase(SpriteBatch batch, boolean is_paused){
 
-        if(destination_posX < bounds.getX()){
-            bounds.setPosition(bounds.getX()-speed, bounds.getY());
-        }
+        if(!is_paused) {
+            if (destination_posX < bounds.getX()) {
+                bounds.setPosition(bounds.getX() - speed, bounds.getY());
+            }
 
-        if(destination_posY < bounds.getY()){
-            bounds.setPosition(bounds.getX(), bounds.getY()-speed);
-        }
+            if (destination_posY < bounds.getY()) {
+                bounds.setPosition(bounds.getX(), bounds.getY() - speed);
+            }
 
-        if(destination_posY > bounds.getY()){
-            bounds.setPosition(bounds.getX(), bounds.getY()+speed);
+            if (destination_posY > bounds.getY()) {
+                bounds.setPosition(bounds.getX(), bounds.getY() + speed);
+            }
         }
 
         if(checkpointState){

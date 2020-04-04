@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Drops;
@@ -31,6 +32,7 @@ import java.util.Random;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getString;
 
 
 public class GameLogic {
@@ -48,7 +50,7 @@ public class GameLogic {
 
     public static int lastCheckpoint;
 
-    private float speedMultiplier, damage;
+    private float speedMultiplier;
 
     private Game game;
 
@@ -82,29 +84,7 @@ public class GameLogic {
 
         difficulty = getFloat("difficulty");
 
-        switch (getInteger("current_engine")){
-            case(1):
-                speedMultiplier =1f+getInteger("engine1upgradeLevel")/10f;
-                break;
-            case(2):
-                speedMultiplier = 1.4f+getInteger("engine2upgradeLevel")/10f;
-                break;
-            case(3):
-                speedMultiplier = 1.7f+getInteger("engine3upgradeLevel")/10f;
-                break;
-        }
-
-        switch (getInteger("current_cannon")){
-            case(1):
-                damage = 40+getInteger("cannon1upgradeLevel");
-                break;
-            case(2):
-                damage = 60+getInteger("cannon2upgradeLevel");
-                break;
-            case(3):
-                damage = 70+getInteger("cannon3upgradeLevel");
-                break;
-        }
+        speedMultiplier = new JsonReader().parse(Gdx.files.internal("items/tree.json")).get(getString("currentEngine")).get("parameterValues").asIntArray()[0];
 
         if(!newGame){
             bonuses_collected = getInteger("bonuses_collected");
@@ -122,7 +102,7 @@ public class GameLogic {
         ShootingSpeed = bullet.getShootingSpeed();
     }
 
-    public void handleInput(float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary) {
+    public void handleInput(float delta, float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary) {
         deltaX*=speedMultiplier;
         deltaY*=speedMultiplier;
 
@@ -142,20 +122,20 @@ public class GameLogic {
             game.pause();
 
 
-        bounds.setPosition(bounds.getX() + 250 * deltaX * Gdx.graphics.getDeltaTime(), bounds.getY() + 250 * deltaY * Gdx.graphics.getDeltaTime());
+        bounds.setPosition(bounds.getX() + 250 * deltaX * delta, bounds.getY() + 250 * deltaY * delta);
         bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
 
         if (is_firing && millis > 10/ShootingSpeed) {
-            bullet.Spawn(damage,1, false);
+            bullet.Spawn(1,1, false);
             millis = 0;
         }
 
         if (is_firing_secondary && millis > 10/ShootingSpeed) {
-            bullet.Spawn(damage*2.25f, 1, true);
+            bullet.Spawn(2.25f, 1, true);
             millis = 0;
         }
 
-        millis = millis + 50 * (bonuses_collected / 50.0f + 1) * Gdx.graphics.getDeltaTime();
+        millis = millis + 50 * (bonuses_collected / 50.0f + 1) * delta;
 
         if (!bossWave) {
             if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && GameUi.enemiesKilled <= 3) {
@@ -174,7 +154,7 @@ public class GameLogic {
             }
 
             if (random.nextInt(6000) == 5770) {
-                meteorite.Spawn(random.nextInt(480) * difficulty, (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30);
+                meteorite.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30*difficulty);
             }
 
             for (int i2 = 0; i2 < BasicEnemy.enemies.size; i2++) {

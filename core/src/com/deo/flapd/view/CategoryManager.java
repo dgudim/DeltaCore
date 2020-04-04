@@ -10,11 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -25,16 +27,18 @@ import static com.deo.flapd.utils.DUtils.putInteger;
 public class CategoryManager extends Actor{
 
     private Table buttons;
-    private TextButton.TextButtonStyle buttonStyle;
     private float buttonWidth, buttonHeight, pad, fontScale;
     private Array<Actor> targets, overrideActors;
     private int categoryCounter;
-    private Image background;
+    private Image background, Tbackground;
     private boolean useBg;
     private boolean closeAtSecondClick;
     private String key;
+    private UIComposer uiComposer;
+    private String style;
+    private boolean useTbg;
 
-    public CategoryManager(AssetManager assetManager, BitmapFont font, float buttonWidth, float buttonHeight, float pad, float fontScale, int style, boolean useBackground, boolean closeAtSecondClick, String personalKey){
+    public CategoryManager(AssetManager assetManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey){
 
         buttons = new Table();
 
@@ -44,26 +48,21 @@ public class CategoryManager extends Actor{
         Skin mainSkin = new Skin();
         mainSkin.addRegions((TextureAtlas)assetManager.get("menuButtons/menuButtons.atlas"));
 
-        buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        if(style == 1) {
-            buttonStyle.downFontColor = Color.valueOf("#22370E");
-            buttonStyle.overFontColor = Color.valueOf("#3D51232");
-            buttonStyle.fontColor = Color.valueOf("#3D4931");
-            buttonStyle.over = mainSkin.getDrawable("blank_over");
-            buttonStyle.down = mainSkin.getDrawable("blank_enabled");
-            buttonStyle.up = mainSkin.getDrawable("button_blank");
-        }else if(style == 2){
-            buttonStyle.downFontColor = Color.valueOf("#31FF25");
-            buttonStyle.overFontColor = Color.valueOf("#00DC00");
-            buttonStyle.fontColor = Color.valueOf("#46D33E");
-            buttonStyle.over = mainSkin.getDrawable("blank2_over");
-            buttonStyle.down = mainSkin.getDrawable("blank2_enabled");
-            buttonStyle.up = mainSkin.getDrawable("blank2_disabled");
-        }
+        uiComposer = new UIComposer(assetManager);
+        uiComposer.loadStyles(style);
+        this.style = style;
 
-        background = new Image((Texture)assetManager.get("infoBg.png"));
-        background.setVisible(false);
+        this.background = new Image();
+        Tbackground = new Image();
+
+        if(!background.equals("")) {
+            this.background = new Image((Texture) assetManager.get(background+".png"));
+            this.background.setVisible(false);
+        }
+        if(!tableBackground.equals("")) {
+            Tbackground = new Image((Texture) assetManager.get(tableBackground+".png"));
+            Tbackground.setVisible(false);
+        }
 
         this.buttonWidth = buttonWidth;
         this.buttonHeight = buttonHeight;
@@ -71,14 +70,15 @@ public class CategoryManager extends Actor{
         this.fontScale = fontScale;
         this.closeAtSecondClick = closeAtSecondClick;
         key = personalKey;
-        useBg = useBackground;
+        useBg = !background.equals("");
+        useTbg = !tableBackground.equals("");
 
-        buttons.addActor(background);
+        buttons.addActor(this.background);
+        buttons.addActor(Tbackground);
     }
 
-    public void addCategory(Actor whatToOpen, String name){
-        TextButton category = new TextButton(name, buttonStyle);
-        category.getLabel().setFontScale(fontScale);
+    public Button addCategory(Actor whatToOpen, String name){
+        TextButton category = uiComposer.addTextButton(style, name, fontScale);
         targets.add(whatToOpen);
 
         final int target = categoryCounter;
@@ -96,12 +96,12 @@ public class CategoryManager extends Actor{
         categoryCounter++;
 
         buttons.add(category).padTop(pad).padBottom(pad).size(buttonWidth, buttonHeight).row();
+
+        return category;
     }
 
-    public void addCloseButton(){
-        TextButton category = new TextButton("back", buttonStyle);
-        category.getLabel().setFontScale(fontScale);
-        category.setText("back");
+    public Button addCloseButton(){
+        TextButton category = uiComposer.addTextButton(style, "back", fontScale);
 
         category.addListener(new ClickListener(){
             @Override
@@ -112,6 +112,7 @@ public class CategoryManager extends Actor{
 
         category.setBounds(0, pad, buttonWidth, buttonHeight);
         buttons.addActor(category);
+        return category;
     }
 
     public void setBounds(float x, float y, float height){
@@ -122,6 +123,10 @@ public class CategoryManager extends Actor{
         background.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
     }
 
+    public void setTableBackgroundBounds(float x, float y, float width, float height){
+        Tbackground.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
+    }
+
     @Override
     public void setDebug(boolean debug){
         for(int i = 0; i<targets.size; i++){
@@ -129,18 +134,21 @@ public class CategoryManager extends Actor{
         }
         buttons.setDebug(debug);
         background.setDebug(debug);
+        Tbackground.setDebug(debug);
     }
 
     public void open(int target){
         hideAll();
         targets.get(target).setVisible(true);
         background.setVisible(useBg);
+        Tbackground.setVisible(useTbg);
         putInteger(key, target);
     }
 
     public void close(){
         hideAll();
         background.setVisible(false);
+        Tbackground.setVisible(false);
     }
 
     void attach(Stage stage){
@@ -152,6 +160,9 @@ public class CategoryManager extends Actor{
         buttons.setVisible(visible);
         if(useBg) {
             background.setVisible(visible);
+        }
+        if(useTbg) {
+            Tbackground.setVisible(visible);
         }
         if(visible){
             open(getInteger(key));

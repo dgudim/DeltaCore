@@ -71,7 +71,7 @@ public class EnemyBullet_sniper {
     }
 
     public void Spawn(float damage,  Rectangle enemyBounds, float scale) {
-        if(millis > 10 && !GameScreen.is_paused) {
+        if(millis > 100 && !GameScreen.is_paused) {
 
             Rectangle bullet = new Rectangle();
 
@@ -92,10 +92,11 @@ public class EnemyBullet_sniper {
 
             millis = 0;
         }
-        millis=millis+50*Gdx.graphics.getDeltaTime();
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
+    public void draw(SpriteBatch batch, float delta, boolean is_paused) {
+
+        millis=millis+50*delta;
 
         for (int i = 0; i < bullets.size; i ++) {
 
@@ -108,8 +109,8 @@ public class EnemyBullet_sniper {
             this.bullet.draw(batch);
 
             if (!is_paused){
-                bullet.x -= 1100 * Gdx.graphics.getDeltaTime();
-                bullet.y -= 70 * angle * Gdx.graphics.getDeltaTime();
+                bullet.x -= 1100 * delta;
+                bullet.y -= 70 * angle * delta;
 
                 if (bullet.x < -32) {
                     removeBullet(i, false);
@@ -119,7 +120,7 @@ public class EnemyBullet_sniper {
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
             if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                explosions.get(i3).update(delta);
             }else{
                 explosions.get(i3).update(0);
             }

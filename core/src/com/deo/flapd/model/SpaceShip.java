@@ -20,7 +20,7 @@ public class SpaceShip extends ShipObject {
         super.drawShield(batch ,is_paused, MathUtils.clamp(GameUi.Shield/100, 0, 1));
     }
 
-    public void drawEffects(SpriteBatch batch, boolean is_paused){
-        super.drawEffects(batch, is_paused);
+    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
+        super.drawEffects(batch, delta, is_paused);
     }
 }

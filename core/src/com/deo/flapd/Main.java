@@ -9,6 +9,8 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.utils.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
@@ -22,10 +24,12 @@ import java.util.Date;
 import static com.deo.flapd.utils.DUtils.clearLog;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putString;
 
 public class Main extends Game {
 
@@ -69,20 +73,14 @@ public class Main extends Game {
             putFloat("difficulty", 1);
             putBoolean("transparency", true);
             putBoolean("bloom", true);
-            log("\n------------first launch------------"+"\n");
-        }
-
-        if (!getBoolean("enabled_craftingCard")){
-            for (int i = 0; i<17; i++) {
-                putBoolean("enabled_"+getDropCodeNameByType(i), true);
+            JsonValue tree = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+            for(int i = 0; i<tree.size; i++){
+                if(tree.get(i).get("type").asString().equals("baseCategory")){
+                    putBoolean("unlocked_"+getItemCodeNameByName(tree.get(i).name), true);
+                    putString(tree.get(i).get("saveTo").asString(), tree.get(i).name);
+                }
             }
-            putBoolean("enabled_orangeCrystal", true);
-            putBoolean("enabled_warp_ore", true);
-            putBoolean("enabled_card2", true);
-            putBoolean("enabled_cable", true);
-            putBoolean("enabled_ironPlate2", true);
-            putBoolean("enabled_engine1", true);
-            log("\n------------enabled drops------------"+"\n");
+            log("\n------------first launch------------"+"\n");
         }
 
         this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor));

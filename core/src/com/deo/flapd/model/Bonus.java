@@ -89,7 +89,7 @@ public class Bonus {
         anglesY.add(random.nextFloat()*2-1);
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused) {
+    public void draw(SpriteBatch batch, float delta, boolean is_paused) {
 
         for (int i = 0; i < bonuses.size; i ++) {
 
@@ -132,8 +132,8 @@ public class Bonus {
             }
 
             if (!is_paused){
-                bonus.y -= angleY * 15 * Gdx.graphics.getDeltaTime();
-                bonus.x -= 50 * Gdx.graphics.getDeltaTime();
+                bonus.y -= angleY * 15 * delta;
+                bonus.x -= 50 * delta;
 
                 if(bonus.y < -height || bonus.y > 480 || bonus.x < -height || bonus.x > 800){
                     removeBonus(i, false);
@@ -191,7 +191,7 @@ public class Bonus {
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
             if(!is_paused) {
-                explosions.get(i3).update(Gdx.graphics.getDeltaTime());
+                explosions.get(i3).update(delta);
             }else{
                 explosions.get(i3).update(0);
             }

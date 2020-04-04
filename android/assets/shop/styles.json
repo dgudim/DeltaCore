@@ -1,5 +1,4 @@
 {
-  "dependencies": ["menuButtons/menuButtons.atlas", "menuButtons/buttons.atlas", "shop/ui.atlas"],
   "fonts": ["fonts/font2(old).fnt", "fonts/font2.fnt"],
   "separateTextures": [],
 
@@ -37,7 +36,24 @@
     "loadFrom": "menuButtons/buttons.atlas"
   },
 
-  "defaultDark":{
+  "questionButton":{
+    "type": "buttonStyle",
+    "up": {
+      "texture": "question",
+      "size": [60, 60]
+    },
+    "over":{
+      "texture": "question_over",
+      "size": [60, 60]
+    },
+    "down":{
+      "texture": "question_enabled",
+      "size": [60, 60]
+    },
+    "loadFrom": "shop/workshop.atlas"
+  },
+
+  "defaultLight":{
     "type": "textButtonStyle",
     "font": 1,
     "up": {
@@ -58,7 +74,7 @@
     "loadFrom": "menuButtons/menuButtons.atlas"
   },
 
-  "defaultLight":{
+  "defaultDark":{
     "type": "textButtonStyle",
     "font": 1,
     "up": {
@@ -145,5 +161,110 @@
       "size": [27.5, 42.5]
     },
     "loadFrom": "shop/ui.atlas"
+  },
+
+  "sliderDefaultSmall":{
+    "type": "sliderStyle",
+    "background": {
+      "texture": "progressBarBg",
+      "size": [35, 10]
+    },
+    "knob":{
+      "texture": "progressBarKnob",
+      "size": [6, 10]
+    },
+    "knobDown":{
+      "texture": "progressBarKnob_enabled",
+      "size": [6, 10]
+    },
+    "knobOver":{
+      "texture": "progressBarKnob_over",
+      "size": [6, 10]
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
+  "workshopGreen":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "blank_shopButton_disabled",
+      "size": ["default", "default"],
+      "fontColor": "#3D4931"
+    },
+    "over":{
+      "texture": "blank_shopButton_over",
+      "size": ["default", "default"],
+      "fontColor": "#3D5232"
+    },
+    "down":{
+      "texture": "blank_shopButton_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#22370E"
+    },
+    "loadFrom": "shop/workshop.atlas"
+  },
+
+  "workshopRed":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "blank_shopButton_red_disabled",
+      "size": ["default", "default"],
+      "fontColor": "#493D31"
+    },
+    "over":{
+      "texture": "blank_shopButton_red_over",
+      "size": ["default", "default"],
+      "fontColor": "#513D32"
+    },
+    "down":{
+      "texture": "blank_shopButton_red_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#37220E"
+    },
+    "loadFrom": "shop/workshop.atlas"
+  },
+
+  "workshopCyan":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "blank_shopButton_cyan_disabled",
+      "size": ["default", "default"],
+      "fontColor": "#31493D"
+    },
+    "over":{
+      "texture": "blank_shopButton_cyan_over",
+      "size": ["default", "default"],
+      "fontColor": "#32313D"
+    },
+    "down":{
+      "texture": "blank_shopButton_cyan_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#0E3732"
+    },
+    "loadFrom": "shop/workshop.atlas"
+  },
+
+  "workshopPurple":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "blank_shopButton_purple_disabled",
+      "size": ["default", "default"],
+      "fontColor": "#31203D"
+    },
+    "over":{
+      "texture": "blank_shopButton_purple_over",
+      "size": ["default", "default"],
+      "fontColor": "#32203D"
+    },
+    "down":{
+      "texture": "blank_shopButton_purple_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#1C0929"
+    },
+    "loadFrom": "shop/workshop.atlas"
   }
 }

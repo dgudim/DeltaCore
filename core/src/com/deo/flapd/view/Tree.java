@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.log;
@@ -38,7 +39,7 @@ class Tree {
 
     private AssetManager assetManager;
     private Table treeTable;
-    private Array<Array<Node>> nodes;
+    Array<Array<Node>> nodes;
     private float height;
     private int branchCount;
     ScrollPane treeScrollView;
@@ -111,7 +112,6 @@ class Tree {
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         scrollPaneStyle.background = new NinePatchDrawable(new NinePatch((Texture)assetManager.get("9bg.png"), 5, 5, 5, 5));
-
         treeScrollView = new ScrollPane(treeTable, scrollPaneStyle);
         treeScrollView.setBounds(x, y, width, height);
     }
@@ -171,17 +171,14 @@ class Tree {
         return treeJson.get(result).get("items").asStringArray();
     }
 
-    void setVisible(boolean visible){
-        treeScrollView.setVisible(visible);
-    }
-
-    boolean isVisible(){
-        return treeScrollView.isVisible();
+    void hide(){
+        treeScrollView.setVisible(false);
     }
 
     void attach(Stage stage){
         stage.addActor(treeScrollView);
     }
+
 }
 
 class Node {
@@ -194,9 +191,10 @@ class Node {
     private Node parent;
     String name;
     private AssetManager assetManager;
-    int requestedQuantity = 1;
+    private int requestedQuantity = 1;
     private Label quantity;
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+    private float resultCount = 1;
 
     Node (final AssetManager assetManager, String item, float x, float y, float width, float height, final Table holder){
         this.holder = holder;
@@ -239,10 +237,12 @@ class Node {
         descriptionStyle.font = assetManager.get("fonts/font2(old).fnt");
         descriptionStyle.fontColor = Color.YELLOW;
 
+        node.setDisabled(getPartLockState());
+
         node.addListener(new ActorGestureListener(20, 0.4f, 0.6f, 0.15f){
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                new CraftingDialogue(holder.getStage(), assetManager, name, requestedQuantity, false, false, null, Node.this);
+                new CraftingDialogue(holder.getStage(), assetManager, name, (int)Math.ceil((requestedQuantity-getInteger("item_"+getItemCodeNameByName(name)))/resultCount), false, null, Node.this);
                 return true;
             }
             @Override
@@ -330,32 +330,29 @@ class Node {
         connectBranch(children, connectFromMiddle);
     }
 
-    void addQuantityLabel(){
-        if(!name.equals("ship")) {
-            if (getType().equals("item") || getType().equals("endItem")) {
-                Label.LabelStyle labelStyle = new Label.LabelStyle();
-                labelStyle.font = assetManager.get("fonts/font2(old).fnt");
-                Label quantity = new Label("", labelStyle);
-                quantity.setFontScale(0.2f);
-                quantity.setAlignment(Align.bottomLeft);
-                quantity.setPosition(7, 3);
-                node.addActor(quantity);
-                this.quantity = quantity;
-            }
+    private void addQuantityLabel(){
+        if (getType().equals("item") || getType().equals("endItem")) {
+            Label.LabelStyle labelStyle = new Label.LabelStyle();
+            labelStyle.font = assetManager.get("fonts/font2(old).fnt");
+            Label quantity = new Label("", labelStyle);
+            quantity.setFontScale(0.2f);
+            quantity.setAlignment(Align.bottomLeft);
+            quantity.setPosition(7, 3);
+            node.addActor(quantity);
+            this.quantity = quantity;
         }
     }
 
     void initialize(){
-        if(!name.equals("ship")) {
-            if (getType().equals("item") || getType().equals("endItem")) {
-                requestedQuantity = MathUtils.ceil(getRequestedQuantity()*parent.requestedQuantity/getResultCount());
-                quantity.setText(""+getInteger("item_"+getItemCodeNameByName(name))+"/"+requestedQuantity);
-                if(getInteger("item_"+getItemCodeNameByName(name))>=requestedQuantity){
-                    quantity.setColor(Color.YELLOW);
-                }else{
-                    quantity.setColor(Color.ORANGE);
-                }
+        if (getType().equals("item") || getType().equals("endItem")) {
+            requestedQuantity = MathUtils.ceil(getRequestedQuantity()*parent.requestedQuantity/getResultCount(true));
+            quantity.setText(""+getInteger("item_"+getItemCodeNameByName(name))+"/"+requestedQuantity);
+            if(getInteger("item_"+getItemCodeNameByName(name))>=requestedQuantity){
+                quantity.setColor(Color.YELLOW);
+            }else{
+                quantity.setColor(Color.ORANGE);
             }
+            resultCount = getResultCount(false);
         }
         for (int i = 0; i<children.size; i++){
             children.get(i).initialize();
@@ -370,25 +367,23 @@ class Node {
         root.update();
     }
 
-    void update(){
-        if(!name.equals("ship")) {
-            if (getType().equals("item") || getType().equals("endItem")) {
-                quantity.setText(""+getInteger("item_"+getItemCodeNameByName(name))+"/"+requestedQuantity);
-                if(getInteger("item_"+getItemCodeNameByName(name))>=requestedQuantity){
-                    quantity.setColor(Color.YELLOW);
-                }else{
-                    quantity.setColor(Color.ORANGE);
-                }
+    private void update(){
+        if (getType().equals("item") || getType().equals("endItem")) {
+            quantity.setText(""+getInteger("item_"+getItemCodeNameByName(name))+"/"+requestedQuantity);
+            if(getInteger("item_"+getItemCodeNameByName(name))>=requestedQuantity){
+                quantity.setColor(Color.YELLOW);
+            }else{
+                quantity.setColor(Color.ORANGE);
             }
         }
+        node.setDisabled(getPartLockState());
         for (int i = 0; i<children.size; i++){
             children.get(i).update();
         }
     }
 
     private Color getCategoryTint(){
-        Color color = new Color();
-        if(!name.equals("ship")) {
+        Color color;
             switch (getType()) {
                 case ("baseCategory"):
                     color = Color.GREEN;
@@ -402,15 +397,34 @@ class Node {
                 case ("endItem"):
                     color = Color.YELLOW;
                     break;
+                default:
+                    color = Color.WHITE;
+                    break;
             }
-        }else{
-            color = Color.WHITE;
-        }
+
         return color;
     }
 
+    private boolean getPartLockState(){
+        boolean locked = false;
+        if(getType().equals("part")) {
+            String[] requiredItems = treeJson.get(name).get("requires").asStringArray();
+            for (int i = 0; i < requiredItems.length; i++) {
+                locked = !getBoolean("unlocked_" + getItemCodeNameByName(requiredItems[i]));
+                if (locked) {
+                    break;
+                }
+            }
+        }
+        return locked;
+    }
+
     private String getType(){
-        return treeJson.get(name).get("type").asString();
+        if(name.equals("ship")) {
+            return "root";
+        }else {
+            return treeJson.get(name).get("type").asString();
+        }
     }
 
     private int getRequestedQuantity(){
@@ -418,11 +432,15 @@ class Node {
         return requestedQuantity;
     }
 
-    int[] getRequiredItems(){
+    private int[] getRequiredItems(){
         return treeJson.get(name).get("itemCounts").asIntArray();
     }
 
-    private float getResultCount(){
-        return treeJson.get(parent.name).get("resultCount").asInt();
+    private float getResultCount(boolean parent){
+        if(parent) {
+            return treeJson.get(this.parent.name).get("resultCount").asInt();
+        }else{
+            return treeJson.get(name).get("resultCount").asInt();
+        }
     }
 }
