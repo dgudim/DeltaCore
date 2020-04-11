@@ -1,0 +1,297 @@
+{
+  "training bot": {
+    "normal": {
+      "body": {
+        "texture": "trainingbot.png",
+        "explosionSound": "sfx/explosion.ogg",
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "fire": {
+          "count": 1,
+          "effect0": "particles/fire_engine_left_blue.p",
+          "offset0": [80, 10],
+          "scale0": 1
+        },
+        "speed": 110,
+        "health": 80,
+        "shootingFrequency": 0.25,
+        "hitColor": "#FF0000",
+        "height": 59.2,
+        "width": 83.2
+      },
+      "bullet": {
+        "texture": "pew2.png",
+        "shotSound": "sfx/gun2.ogg",
+        "speed": 150,
+        "spread": 0.4,
+        "bulletsPerShot": 1,
+        "damage": 10,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "explosionEffect": "particles/explosion3.p",
+        "height": 32,
+        "width": 32,
+        "offset": [0, 0]
+      }
+    },
+
+    "easterEgg":{
+      "body": {
+        "texture": "cat2.png",
+        "explosionSound": "sfx/hitcat.ogg",
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "fire": {
+          "count": 1,
+          "effect0": "particles/fire_engine_left_blue.p",
+          "offset0": [90, 20],
+          "scale0": 1
+        },
+        "speed": 110,
+        "health": 80,
+        "shootingFrequency": 0.25,
+        "hitColor": "#FF0000",
+        "height": 59.2,
+        "width": 115.2
+      },
+      "bullet": {
+        "texture": "whiskas.png",
+        "shootSound": "sfx/mewcat.ogg",
+        "speed": 150,
+        "spread": 0.4,
+        "bulletsPerShot": 1,
+        "damage": 10,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "explosionEffect": "particles/explosion3.p",
+        "height": 32,
+        "width": 32,
+        "offset": [0, 0]
+      }
+    },
+
+    "spawnFrequency": 0.1,
+    "spawnHeight": [20, 420],
+
+    "spawnConditions":{
+      "score":[-1, 3000],
+      "enemiesKilled":[-1, 5],
+      "bossWave": false
+    },
+
+    "drops": {
+      "timer": 2,
+      "rarity": [0, 1],
+      "count": [0, 1]
+    },
+    "money": {
+      "timer": 2,
+      "count": [0, 3]
+    },
+    "bonuses": {
+      "type": [0, 0],
+      "chance": 40
+    }
+},
+
+  "shotgun enemy": {
+    "normal": {
+      "body": {
+        "texture": "enemy_shotgun.png",
+        "explosionSound": "sfx/explosion.ogg",
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "fire": {
+          "count": 1,
+          "effect0": "particles/fire_engine_left_blue.p",
+          "offset0": [371, 80],
+          "scale0": 1
+        },
+        "speed": 70,
+        "health": 200,
+        "shootingFrequency": 0.2,
+        "hitColor": "#FF0000",
+        "height": 72,
+        "width": 194
+      },
+      "bullet": {
+        "texture": "pew2.png",
+        "shotSound": "sfx/gun2.ogg",
+        "speed": 80,
+        "spread": 2.4,
+        "bulletsPerShot": 7,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "explosionEffect": "particles/explosion3.p",
+        "height": 16,
+        "width": 16,
+        "offset": [3, 17]
+      }
+    },
+
+    "easterEgg":{
+      "body": {
+        "texture": "cat.png",
+        "explosionSound": "sfx/hitcat.ogg",
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "fire": {
+          "count": 1,
+          "effect0": "particles/fire_engine_left_blue.p",
+          "offset0": [321, 80],
+          "scale0": 1
+        },
+        "speed": 70,
+        "health": 200,
+        "shootingFrequency": 0.2,
+        "hitColor": "#FF0000",
+        "height": 72,
+        "width": 194
+      },
+      "bullet": {
+        "texture": "whiskas.png",
+        "shootSound": "sfx/mewcat.ogg",
+        "speed": 80,
+        "spread": 2.4,
+        "bulletsPerShot": 7,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "explosionEffect": "particles/explosion3.p",
+        "height": 16,
+        "width": 16,
+        "offset": [3, 17]
+      }
+    },
+
+    "spawnFrequency": 0.1,
+    "spawnHeight": [20, 420],
+
+    "spawnConditions": {
+      "score": [-1, 300000],
+      "enemiesKilled":[5, 3000],
+      "bossWave": false
+    },
+
+    "drops": {
+      "timer": 2,
+      "rarity": [0, 2],
+      "count": [0, 2]
+    },
+    "money": {
+      "timer": 2,
+      "count": [0, 5]
+    },
+    "bonuses": {
+      "type": [0, 2],
+      "chance": 70
+    }
+
+  },
+
+  "sniper enemy": {
+    "normal": {
+      "body": {
+        "texture": "enemy_sniper.png",
+        "explosionSound": "sfx/explosion.ogg",
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "fire": {
+          "count": 2,
+          "effect0": "particles/fire_engine_left_blue.p",
+          "offset0": [270, 114],
+          "scale0": 1,
+          "effect1": "particles/fire_engine_left_blue.p",
+          "offset1": [270, 74],
+          "scale1": 1
+        },
+        "speed": 80,
+        "health": 400,
+        "shootingFrequency": 0.07,
+        "hitColor": "#FF0000",
+        "height": 94,
+        "width": 168
+      },
+      "bullet": {
+        "texture": "pew.png",
+        "shotSound": "sfx/gun2.ogg",
+        "speed": 250,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 30,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 0.3,
+        "explosionEffect": "particles/explosion3.p",
+        "height": 12,
+        "width": 100,
+        "offset": [3, 17]
+      }
+    },
+
+    "easterEgg":{
+      "body": {
+        "texture": "cat2.png",
+        "explosionSound": "sfx/hitcat.ogg",
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "fire": {
+          "count": 1,
+          "effect0": "particles/fire_engine_left_blue.p",
+          "offset0": [275, 74],
+          "scale0": 1
+        },
+        "speed": 80,
+        "health": 400,
+        "shootingFrequency": 0.07,
+        "hitColor": "#FF0000",
+        "height": 94,
+        "width": 183
+      },
+      "bullet": {
+        "texture": "whiskas.png",
+        "shootSound": "sfx/mewcat.ogg",
+        "speed": 250,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 30,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 0.3,
+        "explosionEffect": "particles/explosion3.p",
+        "height": 12,
+        "width": 100,
+        "offset": [3, 17]
+      }
+    },
+
+    "spawnFrequency": 0.08,
+    "spawnHeight": [20, 420],
+
+    "spawnConditions": {
+      "score": [-1, 300000],
+      "enemiesKilled":[50, 5000],
+      "bossWave": false
+    },
+
+    "drops": {
+      "timer": 2,
+      "rarity": [0, 3],
+      "count": [0, 2]
+    },
+    "money": {
+      "timer": 2,
+      "count": [0, 7]
+    },
+    "bonuses": {
+      "type": [0, 3],
+      "chance": 90
+    }
+
+  }
+}

@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -37,7 +36,7 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue{
 
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager){
 
@@ -162,7 +161,7 @@ public class PurchaseDialogue{
 
                     for(int i = 0; i<slotsJson.get("productQuantities").asIntArray().length; i++){
                         quantities.add(slotsJson.get("productQuantities").asIntArray()[i]);
-                    };
+                    }
 
                     int index = items.indexOf(result, false);
 
@@ -175,6 +174,7 @@ public class PurchaseDialogue{
 
                     putString("savedSlots", "{\"slots\":" + items.toString() + ","+ "\"productQuantities\":" + quantities.toString() + "}");
 
+                    LoadingScreen.craftingTree.update();
                     itemSlotManager.update();
                     dialog.hide();
                 }
@@ -219,7 +219,7 @@ public class PurchaseDialogue{
         }else{
             return new int[]{price.asInt(), 0};
         }
-        priceArray[1] = (int)Math.ceil(priceArray[1]/2f)-1;
+        priceArray[1] = MathUtils.clamp((int)(Math.ceil(priceArray[1]/2f)-1)*4, 0, 15);
         return priceArray;
     }
 

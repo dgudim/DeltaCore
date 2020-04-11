@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import static com.deo.flapd.utils.DUtils.clearLog;
-import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getPrefs;
@@ -50,9 +49,9 @@ public class Main extends Game {
         ShaderLoader.BasePath = "shaders/";
         blurProcessor = new PostProcessor( false, false, Gdx.app.getType() == Application.ApplicationType.Desktop );
         Bloom bloom = new Bloom( (int)(Gdx.graphics.getWidth() * 0.25f), (int)(Gdx.graphics.getHeight() * 0.25f) );
+        bloom.setBlurPasses(2);
         bloom.setBloomIntesity(1.3f);
-        bloom.setBlurPasses(3);
-        blurProcessor.addEffect( bloom );
+        blurProcessor.addEffect(bloom);
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assetManager.setLoader(BitmapFont.class,".fnt", new BitmapFontLoader(resolver));

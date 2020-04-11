@@ -24,15 +24,10 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.concurrent.Executors;
 
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.utils.DUtils.putFloat;
-import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
@@ -52,7 +47,7 @@ public class LoadingScreen implements Screen {
     private PostProcessor blurProcessor;
     private boolean enableShader;
     private long loadingTime;
-    public static Tree craftingTree;
+    static Tree craftingTree;
     private String stateName;
 
     public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor){
@@ -131,6 +126,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("shop/slots.atlas", TextureAtlas.class);
         assetManager.load("shop/shopButtons.atlas", TextureAtlas.class);
         assetManager.load("shop/ui.atlas", TextureAtlas.class);
+        assetManager.load("bullets.atlas", TextureAtlas.class);
         assetManager.load("9bg.png", Texture.class);
 
         assetManager.load("bg_layer1.png", Texture.class);
@@ -168,10 +164,6 @@ public class LoadingScreen implements Screen {
 
         assetManager.load("checkpoint.png", Texture.class);
         assetManager.load("checkpoint_green.png", Texture.class);
-
-        assetManager.load("bullet_Cannon1.png", Texture.class);
-        assetManager.load("bullet_Cannon2.png", Texture.class);
-        assetManager.load("bullet_Cannon3.png", Texture.class);
 
         assetManager.load("cat.png", Texture.class);
         assetManager.load("cat2.png", Texture.class);

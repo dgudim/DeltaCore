@@ -1,0 +1,40 @@
+
+bullets.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bullet_Cannon4
+  rotate: false
+  xy: 1, 15
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+bullet_Cannon1
+  rotate: false
+  xy: 45, 37
+  size: 52, 20
+  orig: 52, 20
+  offset: 0, 0
+  index: -1
+bullet_Cannon2
+  rotate: false
+  xy: 45, 15
+  size: 52, 20
+  orig: 52, 20
+  offset: 0, 0
+  index: -1
+bullet_Cannon3
+  rotate: false
+  xy: 1, 1
+  size: 52, 12
+  orig: 52, 12
+  offset: 0, 0
+  index: -1
+bullet_Cannon5
+  rotate: false
+  xy: 55, 1
+  size: 52, 12
+  orig: 52, 12
+  offset: 0, 0
+  index: -1

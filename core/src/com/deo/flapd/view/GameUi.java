@@ -1,9 +1,9 @@
 package com.deo.flapd.view;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.SpaceShip;
@@ -35,6 +36,7 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
@@ -328,7 +330,7 @@ public class GameUi{
         PauseStage.addActor(Pause);
 
         explosion = new ParticleEffect();
-        explosion.load(Gdx.files.internal("particles/explosion2.p"), Gdx.files.internal("particles"));
+        explosion.load(Gdx.files.internal("particles/"+new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
 
         touchpad.addListener(new ChangeListener() {
 

@@ -1,7 +1,5 @@
 package com.deo.flapd.model;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,10 +8,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+
 import java.util.Random;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
-import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Drops {
@@ -79,7 +77,7 @@ public class Drops {
     }
 
     public static void drop(float x, float y, int count, float timer, int rarity){
-        count+=MathUtils.clamp((int)(random.nextFloat()*4-2), 0, 100);
+
         for(int i = 0; i<count; i++) {
             Rectangle drop = new Rectangle();
 
@@ -128,16 +126,16 @@ public class Drops {
                 item = glassShard;
                 break;
             case(11):
-                item = warpShard;
+                item = redCrystal;
                 break;
             case(12):
-                item = warpShardMK2;
+                item = warpShard;
                 break;
             case(13):
-                item = warpShardMK3;
+                item = warpShardMK2;
                 break;
             case(14):
-                item = redCrystal;
+                item = warpShardMK3;
                 break;
             case(15):
                 item = energyCell;
@@ -152,9 +150,6 @@ public class Drops {
     private String getDropCodeNameByType(int type){
         String item = "";
         switch (type){
-            case(0):
-                item = "craftingCard";
-                break;
             case(1):
                 item = "crystal";
                 break;
@@ -186,16 +181,16 @@ public class Drops {
                 item = "glassShard";
                 break;
             case(11):
-                item = "bonus_warp";
+                item = "redCrystal";
                 break;
             case(12):
-                item = "bonus_warp2";
+                item = "bonus_warp";
                 break;
             case(13):
-                item = "bonus_warp3";
+                item = "bonus_warp2";
                 break;
             case(14):
-                item = "redCrystal";
+                item = "bonus_warp3";
                 break;
             case(15):
                 item = "energyCell";

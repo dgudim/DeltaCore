@@ -7,11 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.view.GameScreen;
-import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -64,9 +62,9 @@ public class EnemyBullet_sniper {
 
         soundVolume = getFloat("soundVolume");
         if(easterEgg){
-            shot = Gdx.audio.newSound(Gdx.files.internal("music/mewcat.ogg"));
+            shot = Gdx.audio.newSound(Gdx.files.internal("sfx/mewcat.ogg"));
         }else {
-            shot = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
+            shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun2.ogg"));
         }
     }
 

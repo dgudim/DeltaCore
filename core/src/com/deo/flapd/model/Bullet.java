@@ -1,7 +1,6 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -9,16 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameUi;
-import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -57,13 +54,15 @@ public class Bullet {
 
     private String effect;
 
-    private float damage;
+    private float damage, width, height;
 
     public Bullet(AssetManager assetManager, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
 
-        bullet = new Sprite((Texture) assetManager.get("bullet_" + getItemCodeNameByName(getString("currentCannon")) + ".png"));
-        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+        TextureAtlas bullets = assetManager.get("bullets.atlas");
+
+        bullet = new Sprite (bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
+        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
         effect = treeJson.get(getString("currentCannon")).get("usesEffect").asString();
         String[] params = treeJson.get(getString("currentCannon")).get("parameters").asStringArray();
         float[] paramValues = treeJson.get(getString("currentCannon")).get("parameterValues").asFloatArray();
@@ -80,7 +79,7 @@ public class Bullet {
         }
         random = new Random();
 
-        bullets = new Array<>();
+        Bullet.bullets = new Array<>();
         damages = new Array<>();
         degrees = new Array<>();
         explosions = new Array<>();
@@ -97,19 +96,28 @@ public class Bullet {
         this.laser = new Sprite((Texture)assetManager.get("laser.png"));
 
         soundVolume = getFloat("soundVolume");
-        shot = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
+        shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun4.ogg"));
 
         laserTip = new Rectangle();
+
+        width = bullet.getWidth();
+        height = bullet.getHeight();
+
+        float scale = 20/height;
+        width = width*scale;
+        height = 20;
+
+        bullet.setOrigin(0, 10);
     }
 
-    public void Spawn(float damageMultiplier, float scale, boolean is_uranium) {
+    public void Spawn(float damageMultiplier, boolean is_uranium) {
 
             Rectangle bullet = new Rectangle();
 
-            bullet.x = bounds.getX() + 68;
-            bullet.y = bounds.getY() + 10 - 10*(scale-1);
+            bullet.setSize(width, height);
 
-            bullet.setSize(75*scale, 20*scale);
+            bullet.x = bounds.getX() + 68;
+            bullet.y = bounds.getY() + 10;
 
             bullets.add(bullet);
             explosionQueue.add(false);
@@ -157,7 +165,6 @@ public class Bullet {
 
             this.bullet.setPosition(bullet.x, bullet.y);
             this.bullet.setSize(bullet.width, bullet.height);
-            this.bullet.setOrigin(bullet.width / 2f, bullet.height / 2f);
             this.bullet.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(300*angle, 1500));
             if(types.get(i)){
                 this.bullet.setColor(Color.GREEN);

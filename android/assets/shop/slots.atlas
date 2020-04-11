@@ -3,7 +3,7 @@ slots.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-disabledslot
+disabled_slot
   rotate: false
   xy: 1, 1
   size: 121, 121

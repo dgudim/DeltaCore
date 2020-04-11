@@ -25,7 +25,6 @@ import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
-import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -294,11 +293,11 @@ public class Boss_battleShip {
 
         soundVolume = getFloat("soundVolume");
 
-        shot = Gdx.audio.newSound(Gdx.files.internal("music/gun1.ogg"));
-        shot2 = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
-        shot3 = Gdx.audio.newSound(Gdx.files.internal("music/gun3.ogg"));
-        shot4 = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun1.ogg"));
+        shot2 = Gdx.audio.newSound(Gdx.files.internal("sfx/gun2.ogg"));
+        shot3 = Gdx.audio.newSound(Gdx.files.internal("sfx/gun3.ogg"));
+        shot4 = Gdx.audio.newSound(Gdx.files.internal("sfx/gun4.ogg"));
+        explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
     }
 
     public void Spawn(){

@@ -1,12 +1,8 @@
 package com.deo.flapd.view;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,9 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -38,7 +31,7 @@ public class CategoryManager extends Actor{
     private String style;
     private boolean useTbg;
 
-    public CategoryManager(AssetManager assetManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey){
+    CategoryManager(AssetManager assetManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey){
 
         buttons = new Table();
 
@@ -77,7 +70,7 @@ public class CategoryManager extends Actor{
         buttons.addActor(Tbackground);
     }
 
-    public Button addCategory(Actor whatToOpen, String name){
+    Button addCategory(Actor whatToOpen, String name){
         TextButton category = uiComposer.addTextButton(style, name, fontScale);
         targets.add(whatToOpen);
 
@@ -100,7 +93,7 @@ public class CategoryManager extends Actor{
         return category;
     }
 
-    public Button addCloseButton(){
+    Button addCloseButton(){
         TextButton category = uiComposer.addTextButton(style, "back", fontScale);
 
         category.addListener(new ClickListener(){
@@ -119,11 +112,11 @@ public class CategoryManager extends Actor{
         buttons.setBounds(x, y, buttonWidth, height);
     }
 
-    public void setBackgroundBounds(float x, float y, float width, float height){
+    void setBackgroundBounds(float x, float y, float width, float height){
         background.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
     }
 
-    public void setTableBackgroundBounds(float x, float y, float width, float height){
+    void setTableBackgroundBounds(float x, float y, float width, float height){
         Tbackground.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
     }
 
@@ -137,7 +130,7 @@ public class CategoryManager extends Actor{
         Tbackground.setDebug(debug);
     }
 
-    public void open(int target){
+    private void open(int target){
         hideAll();
         targets.get(target).setVisible(true);
         background.setVisible(useBg);
@@ -145,7 +138,7 @@ public class CategoryManager extends Actor{
         putInteger(key, target);
     }
 
-    public void close(){
+    private void close(){
         hideAll();
         background.setVisible(false);
         Tbackground.setVisible(false);

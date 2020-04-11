@@ -8,14 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -33,12 +29,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.Arrays;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
@@ -90,7 +84,7 @@ public class ColorCustomizationDialogue {
         Table crystal = new Table();
         ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
         itemButtonStyle.imageUp = new Image(items.findRegion("crystal")).getDrawable();
-        itemButtonStyle.imageDisabled = new Image(items.findRegion("disabledcrystal")).getDrawable();
+        itemButtonStyle.imageDisabled = new Image(items.findRegion("disabled_crystal")).getDrawable();
         itemButtonStyle.imageDown = new Image(items.findRegion("enabled_crystal")).getDrawable();
         itemButtonStyle.imageOver = new Image(items.findRegion("over_crystal")).getDrawable();
         ImageButton item = new ImageButton(itemButtonStyle);
@@ -173,6 +167,7 @@ public class ColorCustomizationDialogue {
                     writeFireColor(colors, particleEffect);
                     if(!Arrays.equals(colors, notEditedColors)) {
                         subtractInteger("item_crystal", 1);
+                        LoadingScreen.craftingTree.update();
                     }
                     fire.dispose();
                     fire2.dispose();
@@ -298,8 +293,8 @@ public class ColorCustomizationDialogue {
     private Array<ParticleEffect> loadFire(String particleEffect){
         ParticleEffect fire = new ParticleEffect();
         ParticleEffect fire2 = new ParticleEffect();
-        fire.load(Gdx.files.internal("particles/" + particleEffect+".p"), Gdx.files.internal("particles"));
-        fire2.load(Gdx.files.internal("particles/" + particleEffect+".p"), Gdx.files.internal("particles"));
+        fire.load(Gdx.files.internal("particles/"+particleEffect+".p"), Gdx.files.internal("particles"));
+        fire2.load(Gdx.files.internal("particles/"+particleEffect+".p"), Gdx.files.internal("particles"));
         fire.scaleEffect(0.7f);
         fire2.scaleEffect(0.7f);
         fire.start();

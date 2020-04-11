@@ -16,7 +16,6 @@ import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.EnemyBullet_sniper;
 import com.deo.flapd.view.GameUi;
-import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -59,10 +58,10 @@ public class SniperEnemy {
 
         if(easterEgg){
             enemy = new Sprite((Texture) assetManager.get("cat2.png"));
-            explosion = Gdx.audio.newSound(Gdx.files.internal("music/hitcat.ogg"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/hitcat.ogg"));
         }else {
             enemy = new Sprite((Texture) assetManager.get("enemy_sniper.png"));
-            explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+            explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
         }
 
         enemies = new Array<>();

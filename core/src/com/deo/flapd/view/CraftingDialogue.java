@@ -44,7 +44,7 @@ class CraftingDialogue {
     private Stage stage;
     private AssetManager assetManager;
     private int requestedQuantity;
-    private Node clickedOn;
+    private boolean updateTree;
     private Array<ImageButton> requirementButtons;
     private Array<String> requirementNames;
     private Slider quantityGlobal;
@@ -54,22 +54,22 @@ class CraftingDialogue {
     private Label.LabelStyle yellowLabelStyle, defaultLabelStyle;
     private final Slider quantity;
     private TextureAtlas itemAtlas;
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
-        this(stage, assetManager, result, 1, false, null, null);
+        this(stage, assetManager, result, 1, false, null, false);
     }
 
     CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, boolean showDescription) {
-        this(stage, assetManager, result, 1, showDescription, null, null);
+        this(stage, assetManager, result, 1, showDescription, null, false);
     }
 
-    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final CraftingDialogue previousDialogue, final Node clickedOn){
+    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final CraftingDialogue previousDialogue, final boolean updateTree){
         this.stage = stage;
         this.assetManager = assetManager;
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
-        this.clickedOn = clickedOn;
+        this.updateTree = updateTree;
 
         requirementButtons = new Array<>();
         requirementNames = new Array<>();
@@ -182,8 +182,8 @@ class CraftingDialogue {
                                     if (previousDialogue != null) {
                                         previousDialogue.updateRequirements();
                                     }
-                                    if(clickedOn != null) {
-                                        clickedOn.updateRoot();
+                                    if(updateTree) {
+                                        LoadingScreen.craftingTree.update();
                                     }
                                 }
                             }
@@ -360,7 +360,7 @@ class CraftingDialogue {
             labels.add(itemText);
             ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
             itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(getItemCodeNameByName(items[i]))).getDrawable();
-            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion("disabled" + getItemCodeNameByName(items[i]))).getDrawable();
+            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion("disabled_" + getItemCodeNameByName(items[i]))).getDrawable();
             itemButtonStyle.imageDown = new Image(itemAtlas.findRegion("enabled_" + getItemCodeNameByName(items[i]))).getDrawable();
             itemButtonStyle.imageOver = new Image(itemAtlas.findRegion("over_" + getItemCodeNameByName(items[i]))).getDrawable();
             ImageButton item = new ImageButton(itemButtonStyle);
@@ -370,13 +370,17 @@ class CraftingDialogue {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(stage, assetManager, items[finalI],
-                            MathUtils.clamp((int)(itemCounts[finalI] * quantity.getValue())-getInteger("item_" + getItemCodeNameByName(items[finalI])), 1, 50),
-                            false, CraftingDialogue.this, clickedOn);
+                            (int)Math.ceil((itemCounts[finalI]-getInteger("item_"+getItemCodeNameByName(items[finalI])))/treeJson.get(items[finalI]).get("resultCount").asFloat()),
+                            false, CraftingDialogue.this, updateTree);
                 }
             });
 
+            float scale = 10/Math.max(item.getWidth(),  item.getHeight());
+            float width = item.getWidth()*scale;
+            float height = item.getHeight()*scale;
+
             requirementButtons.add(item);
-            requirement.add(item).size(10, 10);
+            requirement.add(item).size(width, height);
             requirement.add(itemText).pad(1).padLeft(2);
             ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(1);
@@ -430,7 +434,7 @@ class CraftingDialogue {
         question.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, 1,true, null, clickedOn);
+                new CraftingDialogue(stage, assetManager, result, 1,true, null, updateTree);
             }
         });
         dialog.addActor(question);
@@ -496,7 +500,7 @@ class CraftingDialogue {
             }
             ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
             itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(getItemCodeNameByName(requiredItems[i]))).getDrawable();
-            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion("disabled" + getItemCodeNameByName(requiredItems[i]))).getDrawable();
+            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion("disabled_" + getItemCodeNameByName(requiredItems[i]))).getDrawable();
             itemButtonStyle.imageDown = new Image(itemAtlas.findRegion("enabled_" + getItemCodeNameByName(requiredItems[i]))).getDrawable();
             itemButtonStyle.imageOver = new Image(itemAtlas.findRegion("over_" + getItemCodeNameByName(requiredItems[i]))).getDrawable();
             ImageButton item = new ImageButton(itemButtonStyle);
@@ -505,19 +509,23 @@ class CraftingDialogue {
             item.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, requiredItems[finalI], 1, false, CraftingDialogue.this, clickedOn);
+                    new CraftingDialogue(stage, assetManager, requiredItems[finalI], 1, false, CraftingDialogue.this, updateTree);
                     dialog.hide();
                 }
             });
 
+            float scale = 20/Math.max(item.getWidth(),  item.getHeight());
+            float width = item.getWidth()*scale;
+            float height = item.getHeight()*scale;
+
             requirementButtons.add(item);
-            requirement.add(item).size(20, 20);
+            requirement.add(item).size(width, height);
             requirement.add(itemText).pad(1).padLeft(2).align(Align.center);
             ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(1);
             ScrollPane ingredients = new ScrollPane(ingredientsTable);
 
-            ingredients.setBounds(3, 28, 80, 39);
+            ingredients.setBounds(3, 28, 80, 32);
             dialog.addActor(ingredients);
         }
     }
@@ -536,6 +544,7 @@ class CraftingDialogue {
                 equip.setColor(Color.GREEN);
                 equip.getLabel().setText("equipped");
                 equip.getLabel().setFontScale(0.11f);
+                LoadingScreen.craftingTree.update();
             }
         });
 

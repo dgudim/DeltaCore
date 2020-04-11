@@ -25,7 +25,6 @@ import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.view.GameUi;
-import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -174,9 +173,9 @@ public class Boss_evilEye {
         healthBar2.setSize(80, 14);
         healthBars.add(healthBar2);
 
-        shot = Gdx.audio.newSound(Gdx.files.internal("music/gun3.ogg"));
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
-        laserSaw = Gdx.audio.newSound(Gdx.files.internal("music/laserSaw.ogg"));
+        shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun3.ogg"));
+        explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
+        laserSaw = Gdx.audio.newSound(Gdx.files.internal("sfx/laserSaw.ogg"));
 
         fire = new ParticleEffect();
         fire.load(Gdx.files.internal("particles/fire2.p"), Gdx.files.internal("particles"));
@@ -310,11 +309,12 @@ public class Boss_evilEye {
                             laser.draw(batch);
                         }
                         if(!is_paused) {
-                            if (GameUi.Shield >= 0.2f) {
-                                GameUi.Shield -= 0.2f;
+                            float multiplier = laser.getWidth()/8;
+                            if (GameUi.Shield >= 0.2f*multiplier) {
+                                GameUi.Shield -= 0.2f*multiplier;
                                 SpaceShip.set_color(1, 0, 1, true);
                             } else {
-                                GameUi.Health = GameUi.Health - (0.2f - GameUi.Shield) / 2;
+                                GameUi.Health = GameUi.Health - (0.2f*multiplier - GameUi.Shield) / 2;
                                 GameUi.Shield = 0;
                                 SpaceShip.set_color(1, 0, 1, false);
                             }

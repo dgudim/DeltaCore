@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,17 +32,18 @@ import com.badlogic.gdx.utils.TimeUtils;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
 
 class Tree {
 
     private AssetManager assetManager;
     private Table treeTable;
-    Array<Array<Node>> nodes;
+    private Array<Array<Node>> nodes;
     private float height;
     private int branchCount;
     ScrollPane treeScrollView;
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     Tree(AssetManager assetManager, float x, float y, float width, float height){
         this.height = height;
@@ -81,10 +81,12 @@ class Tree {
             for(int i2 = 0; i2 < nodes.get(i).size; i2++){
                 treeTable.addActor(nodes.get(i).get(i2).node);
                 if(nodes.get(i).get(i2).node.getX() > targetWidth){
-                    targetWidth = (int)(nodes.get(i).get(i2).node.getX()+45);
+                    targetWidth = (int)(nodes.get(i).get(i2).node.getX()+50);
                 }
             }
         }
+
+        targetWidth +=5;
 
         Pixmap pixmap0 = new Pixmap(targetWidth, 1, Pixmap.Format.RGBA8888);
         pixmap0.setColor(Color.CLEAR);
@@ -97,10 +99,10 @@ class Tree {
             nodes.get(0).get(0).children.get(i).setVisible(false, false);
         }
 
-        nodes.get(0).get(0).initialize();
+        nodes.get(0).get(0).initialize().update();
 
         float elapsedTime = TimeUtils.timeSinceMillis(loadingTime);
-        float relativePercentage = (100 - elapsedTime/(branchCount-1) * 100f / 3f);
+        float relativePercentage = (100 - elapsedTime/(branchCount-1) * 100f / 0.29f);
         if(relativePercentage>=0){
             log("\n done, elapsed time " + elapsedTime + "ms(" + relativePercentage + "% better than average), total branch count " + (branchCount-1));
         }else{
@@ -112,13 +114,21 @@ class Tree {
 
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         scrollPaneStyle.background = new NinePatchDrawable(new NinePatch((Texture)assetManager.get("9bg.png"), 5, 5, 5, 5));
+
+        Pixmap pixmap = new Pixmap(4, 5, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.DARK_GRAY);
+        pixmap.fill();
+        TextureRegionDrawable scrollBar = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        pixmap.dispose();
+        scrollPaneStyle.hScrollKnob = scrollBar;
+
         treeScrollView = new ScrollPane(treeTable, scrollPaneStyle);
         treeScrollView.setBounds(x, y, width, height);
     }
 
     private void addBase(){
         Array<Node> base = new Array<>();
-        base.add(new Node(assetManager, "ship", 5, height-85, 70, 70, treeTable));
+        base.add(new Node(assetManager, "ship", 5, height-85, 70, 70, treeTable, treeJson));
         nodes.add(base);
     }
 
@@ -135,7 +145,7 @@ class Tree {
                 }else{
                     nodeHeight = maxHeight - 5;
                 }
-                Node nextNode = new Node(assetManager, currentCategories.get(i), root.node.getX() + 70, nodeHeight - 55 * i, 50, 50, treeTable);
+                Node nextNode = new Node(assetManager, currentCategories.get(i), root.node.getX() + 70, nodeHeight - 55 * i, 50, 50, treeTable, treeJson);
                 addItems(categories, items, nextNode.name, nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -155,8 +165,8 @@ class Tree {
 
             for (int i = 0; i < items.length; i++) {
                 float nodeHeight;
-                nodeHeight = maxHeight - 5;
-                Node nextNode = new Node(assetManager, items[i], root.node.getX() + 80, nodeHeight - 55 * i, 50, 50, treeTable);
+                nodeHeight = maxHeight + 15;
+                Node nextNode = new Node(assetManager, items[i], root.node.getX() + 80, nodeHeight - 55 * i, 50, 50, treeTable, treeJson);
                 loadCraftingRecipe(items[i], nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -179,6 +189,10 @@ class Tree {
         stage.addActor(treeScrollView);
     }
 
+    void update(){
+        nodes.get(0).get(0).updateRoot();
+    }
+
 }
 
 class Node {
@@ -193,12 +207,13 @@ class Node {
     private AssetManager assetManager;
     private int requestedQuantity = 1;
     private Label quantity;
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+    private JsonValue treeJson;
     private float resultCount = 1;
 
-    Node (final AssetManager assetManager, String item, float x, float y, float width, float height, final Table holder){
+    Node (final AssetManager assetManager, String item, float x, float y, float width, float height, final Table holder, JsonValue treeJson){
         this.holder = holder;
         this.assetManager = assetManager;
+        this.treeJson = treeJson;
         name = item;
         bounds = new Vector2(x+width/2f, y+height/2f);
         branches = new Array<>();
@@ -210,11 +225,11 @@ class Node {
         nodeStyle.imageUp = new Image(items.findRegion(getItemCodeNameByName(item))).getDrawable();
         nodeStyle.imageOver = new Image(items.findRegion("over_"+getItemCodeNameByName(item))).getDrawable();
         nodeStyle.imageDown = new Image(items.findRegion("enabled_"+getItemCodeNameByName(item))).getDrawable();
-        nodeStyle.imageDisabled = new Image(items.findRegion("disabled"+getItemCodeNameByName(item))).getDrawable();
+        nodeStyle.imageDisabled = new Image(items.findRegion("disabled_"+getItemCodeNameByName(item))).getDrawable();
         nodeStyle.up = nodeSkin.getDrawable("slot");
         nodeStyle.down = nodeSkin.getDrawable("enabled_slot");
         nodeStyle.over = nodeSkin.getDrawable("over_slot");
-        nodeStyle.disabled= nodeSkin.getDrawable("disabledslot");
+        nodeStyle.disabled= nodeSkin.getDrawable("disabled_slot");
         node = new ImageButton(nodeStyle);
         switch (item){
             case("ship"):
@@ -242,7 +257,7 @@ class Node {
         node.addListener(new ActorGestureListener(20, 0.4f, 0.6f, 0.15f){
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                new CraftingDialogue(holder.getStage(), assetManager, name, (int)Math.ceil((requestedQuantity-getInteger("item_"+getItemCodeNameByName(name)))/resultCount), false, null, Node.this);
+                new CraftingDialogue(holder.getStage(), assetManager, name, (int)Math.ceil((requestedQuantity-getInteger("item_"+getItemCodeNameByName(name)))/resultCount), false, null, true);
                 return true;
             }
             @Override
@@ -343,20 +358,14 @@ class Node {
         }
     }
 
-    void initialize(){
+    Node initialize(){
         if (getType().equals("item") || getType().equals("endItem")) {
-            requestedQuantity = MathUtils.ceil(getRequestedQuantity()*parent.requestedQuantity/getResultCount(true));
-            quantity.setText(""+getInteger("item_"+getItemCodeNameByName(name))+"/"+requestedQuantity);
-            if(getInteger("item_"+getItemCodeNameByName(name))>=requestedQuantity){
-                quantity.setColor(Color.YELLOW);
-            }else{
-                quantity.setColor(Color.ORANGE);
-            }
             resultCount = getResultCount(false);
         }
         for (int i = 0; i<children.size; i++){
             children.get(i).initialize();
         }
+        return this;
     }
 
     void updateRoot(){
@@ -367,8 +376,9 @@ class Node {
         root.update();
     }
 
-    private void update(){
+    void update(){
         if (getType().equals("item") || getType().equals("endItem")) {
+            requestedQuantity = MathUtils.ceil(getRequestedQuantity()*MathUtils.clamp(parent.requestedQuantity-getInteger("item_"+getItemCodeNameByName(parent.name)), 1, 10000)/getResultCount(true));
             quantity.setText(""+getInteger("item_"+getItemCodeNameByName(name))+"/"+requestedQuantity);
             if(getInteger("item_"+getItemCodeNameByName(name))>=requestedQuantity){
                 quantity.setColor(Color.YELLOW);
@@ -377,19 +387,25 @@ class Node {
             }
         }
         node.setDisabled(getPartLockState());
+        node.setColor(getCategoryTint());
         for (int i = 0; i<children.size; i++){
             children.get(i).update();
         }
     }
 
     private Color getCategoryTint(){
-        Color color;
+        Color color = Color.WHITE;
             switch (getType()) {
                 case ("baseCategory"):
-                    color = Color.GREEN;
+                    if(getString(treeJson.get(name).get("saveTo").asString()).equals(name)){
+                        color = Color.GREEN;
+                    }
                     break;
                 case ("part"):
                     color = Color.SKY;
+                    if(getString(treeJson.get(name).get("saveTo").asString()).equals(name)){
+                        color = Color.GREEN;
+                    }
                     break;
                 case ("item"):
                     color = Color.CYAN;
@@ -401,7 +417,6 @@ class Node {
                     color = Color.WHITE;
                     break;
             }
-
         return color;
     }
 
@@ -423,13 +438,14 @@ class Node {
         if(name.equals("ship")) {
             return "root";
         }else {
+            if(treeJson.get(name) == null) throw new IllegalArgumentException("no item declared with name "+name);
             return treeJson.get(name).get("type").asString();
         }
     }
 
     private int getRequestedQuantity(){
-        requestedQuantity = parent.getRequiredItems()[parent.children.indexOf(this, false)];
-        return requestedQuantity;
+        if(parent.children.indexOf(this, false)>=parent.getRequiredItems().length) throw new IllegalArgumentException("item count mismatch at "+parent.name);
+        return parent.getRequiredItems()[parent.children.indexOf(this, false)];
     }
 
     private int[] getRequiredItems(){

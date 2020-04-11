@@ -5,28 +5,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.UraniumCell;
-import com.deo.flapd.model.enemies.BasicEnemy;
-import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
+import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.model.enemies.Kamikadze;
-import com.deo.flapd.model.enemies.ShotgunEnemy;
-import com.deo.flapd.model.enemies.SniperEnemy;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import java.io.PrintWriter;
@@ -36,7 +32,6 @@ import java.util.concurrent.Executors;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.updateCamera;
@@ -50,9 +45,6 @@ public class GameScreen implements Screen{
     private final int fillingThreshold = 7;
 
     private Bullet bullet;
-    private BasicEnemy enemy;
-    private SniperEnemy enemy_sniper;
-    private ShotgunEnemy enemy_shotgun;
     private Meteorite meteorite;
     private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
@@ -88,6 +80,8 @@ public class GameScreen implements Screen{
     private PostProcessor postProcessor;
 
     private boolean enableShader;
+
+    private Enemies enemies;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame){
 
@@ -125,16 +119,16 @@ public class GameScreen implements Screen{
 
         bullet = new Bullet(assetManager, ship.getBounds(), newGame);
 
-        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, getBoolean("easterEgg"));
-        enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, getBoolean("easterEgg"));
-        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 2.4f, 371, 80, getBoolean("easterEgg"));
         kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), getBoolean("easterEgg"));
+
+        enemies = new Enemies(assetManager);
+        enemies.loadEnemies();
 
         meteorite = new Meteorite(assetManager, newGame, getBoolean("easterEgg"));
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
-        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip, checkpoint, boss_evilEye);
+        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, meteorite, kamikadze, boss_battleShip, checkpoint, boss_evilEye);
 
         musicVolume = getFloat("musicVolume");
 
@@ -191,9 +185,7 @@ public class GameScreen implements Screen{
             uraniumCell.draw(batch, delta, is_paused);
 
             ship.drawEffects(batch, delta, is_paused);
-            enemy.drawBulletsAndEffects(batch, delta, is_paused);
-            enemy_sniper.drawBulletsAndEffects(batch, delta, is_paused);
-            enemy_shotgun.drawBulletsAndEffects(batch, delta, is_paused);
+            enemies.drawEffects(batch);
             kamikadze.drawEffects(batch, delta, is_paused);
             boss_battleShip.draw(batch, is_paused, delta);
             boss_evilEye.draw(batch, is_paused, delta);
@@ -210,9 +202,8 @@ public class GameScreen implements Screen{
         }
 
             ship.drawBase(batch, is_paused);
-            enemy.drawBase(batch, delta, is_paused);
-            enemy_sniper.drawBase(batch, delta, is_paused);
-            enemy_shotgun.drawBase(batch, delta, is_paused);
+            enemies.draw(batch);
+            enemies.update(delta);
             kamikadze.drawBase(batch, delta, is_paused);
             meteorite.drawBase(batch, delta, is_paused);
             checkpoint.drawBase(batch, is_paused);
@@ -297,9 +288,6 @@ public class GameScreen implements Screen{
     public void dispose() {
 
     gameUi.dispose();
-    enemy.dispose();
-    enemy_shotgun.dispose();
-    enemy_sniper.dispose();
     meteorite.dispose();
     bullet.dispose();
 

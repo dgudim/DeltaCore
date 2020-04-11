@@ -3,7 +3,7 @@ items.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-disabledengine3
+disabled_engine3
   rotate: false
   xy: 1, 831
   size: 472, 192
@@ -31,7 +31,7 @@ over_engine3
   orig: 472, 192
   offset: 0, 0
   index: -1
-disabledengine2
+disabled_engine2
   rotate: false
   xy: 475, 657
   size: 428, 172
@@ -59,7 +59,7 @@ over_engine2
   orig: 428, 172
   offset: 0, 0
   index: -1
-disabledengine1
+disabled_engine1
   rotate: false
   xy: 1379, 879
   size: 360, 144
@@ -94,7 +94,7 @@ Cannon3
   orig: 272, 96
   offset: 0, 0
   index: -1
-disabledCannon3
+disabled_Cannon3
   rotate: false
   xy: 1, 25
   size: 272, 96
@@ -122,7 +122,7 @@ Cannon2
   orig: 260, 84
   offset: 0, 0
   index: -1
-disabledCannon2
+disabled_Cannon2
   rotate: false
   xy: 949, 765
   size: 260, 84
@@ -150,7 +150,7 @@ Cannon1
   orig: 232, 76
   offset: 0, 0
   index: -1
-disabledCannon1
+disabled_Cannon1
   rotate: false
   xy: 905, 437
   size: 232, 76
@@ -171,7 +171,7 @@ over_Cannon1
   orig: 232, 76
   offset: 0, 0
   index: -1
-disabledironShard
+disabled_ironShard
   rotate: false
   xy: 597, 99
   size: 150, 150
@@ -199,7 +199,7 @@ over_ironShard
   orig: 150, 150
   offset: 0, 0
   index: -1
-disabledprism
+disabled_prism
   rotate: false
   xy: 597, 1
   size: 96, 96
@@ -220,7 +220,7 @@ cog
   orig: 128, 128
   offset: 0, 0
   index: -1
-disabledcog
+disabled_cog
   rotate: false
   xy: 1319, 569
   size: 128, 128
@@ -241,7 +241,7 @@ over_cog
   orig: 128, 128
   offset: 0, 0
   index: -1
-disabledredCrystal
+disabled_redCrystal
   rotate: false
   xy: 1449, 623
   size: 108, 108
@@ -276,7 +276,7 @@ chipset_big
   orig: 86, 44
   offset: 0, 0
   index: -1
-disabledchipset_big
+disabled_chipset_big
   rotate: false
   xy: 693, 291
   size: 86, 44
@@ -325,7 +325,7 @@ bolt
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledbolt
+disabled_bolt
   rotate: false
   xy: 1669, 667
   size: 64, 64
@@ -374,7 +374,7 @@ crystal
   orig: 42, 42
   offset: 0, 0
   index: -1
-disabledcrystal
+disabled_crystal
   rotate: false
   xy: 905, 787
   size: 42, 42
@@ -416,56 +416,56 @@ craftingCard
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledaiCard
+disabled_aiCard
   rotate: false
   xy: 1801, 599
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledcard1
+disabled_card1
   rotate: false
   xy: 1867, 665
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledcard2
+disabled_card2
   rotate: false
   xy: 1867, 599
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledcell1
+disabled_cell1
   rotate: false
   xy: 1933, 665
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledcell2
+disabled_cell2
   rotate: false
   xy: 1933, 599
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledcoolingUnit
+disabled_coolingUnit
   rotate: false
   xy: 1735, 533
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledcraftingCard
+disabled_craftingCard
   rotate: false
   xy: 1801, 533
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledironPlate
+disabled_ironPlate
   rotate: false
   xy: 1867, 533
   size: 64, 64
@@ -493,7 +493,7 @@ over_ironPlate
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledmemoryCard
+disabled_memoryCard
   rotate: false
   xy: 1933, 533
   size: 64, 64
@@ -507,7 +507,7 @@ chipset
   orig: 68, 44
   offset: 0, 0
   index: -1
-disabledchipset
+disabled_chipset
   rotate: false
   xy: 521, 49
   size: 68, 44
@@ -528,49 +528,49 @@ Circuit_Board
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledcable
+disabled_cable
   rotate: false
   xy: 2015, 923
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledCircuit_Board
+disabled_Circuit_Board
   rotate: false
   xy: 2015, 889
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledenergyCell
+disabled_energyCell
   rotate: false
   xy: 2015, 855
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledglass_panel
+disabled_glass_panel
   rotate: false
   xy: 2015, 821
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledironPlate2
+disabled_ironPlate2
   rotate: false
   xy: 2015, 787
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledplastic
+disabled_plastic
   rotate: false
   xy: 2015, 753
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledohno
+disabled_ohno
   rotate: false
   xy: 781, 285
   size: 50, 50
@@ -605,7 +605,7 @@ enabled_chipset
   orig: 68, 44
   offset: 0, 0
   index: -1
-disabledprocessor1
+disabled_processor1
   rotate: false
   xy: 1033, 305
   size: 64, 64
@@ -619,14 +619,14 @@ Cannon4
   orig: 68, 24
   offset: 0, 0
   index: -1
-disabledscreenCard
+disabled_screenCard
   rotate: false
   xy: 1291, 481
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledtransistor
+disabled_transistor
   rotate: false
   xy: 1291, 415
   size: 64, 64
@@ -745,21 +745,21 @@ Cannon5
   orig: 68, 24
   offset: 0, 0
   index: -1
-disabledCannon4
+disabled_Cannon4
   rotate: false
   xy: 1169, 303
   size: 68, 24
   orig: 68, 24
   offset: 0, 0
   index: -1
-disabledCannon5
+disabled_Cannon5
   rotate: false
   xy: 935, 313
   size: 68, 24
   orig: 68, 24
   offset: 0, 0
   index: -1
-disabledprocessor2
+disabled_processor2
   rotate: false
   xy: 2015, 719
   size: 32, 32
@@ -864,14 +864,14 @@ processor1
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabledprocessor3
+disabled_processor3
   rotate: false
   xy: 1363, 699
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledrubber
+disabled_rubber
   rotate: false
   xy: 1397, 699
   size: 32, 32
@@ -899,7 +899,7 @@ rubber
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledfuelCell
+disabled_fuelCell
   rotate: false
   xy: 903, 259
   size: 29, 58
@@ -927,7 +927,7 @@ advancedChip
   orig: 62, 62
   offset: 0, 0
   index: -1
-disabledadvancedChip
+disabled_advancedChip
   rotate: false
   xy: 1130, 239
   size: 62, 62
@@ -941,7 +941,7 @@ enabled_advancedChip
   orig: 62, 62
   offset: 0, 0
   index: -1
-disabledfuelCell2
+disabled_fuelCell2
   rotate: false
   xy: 1999, 659
   size: 29, 58
@@ -962,7 +962,7 @@ enabled_fuelCell2
   orig: 29, 58
   offset: 0, 0
   index: -1
-disabledwarp_core
+disabled_warp_core
   rotate: false
   xy: 905, 765
   size: 24, 20
@@ -1004,7 +1004,7 @@ fuelCell
   orig: 29, 58
   offset: 0, 0
   index: -1
-disabledenergyCrystal
+disabled_energyCrystal
   rotate: false
   xy: 1718, 471
   size: 60, 60
@@ -1039,7 +1039,7 @@ fuelCell2
   orig: 29, 58
   offset: 0, 0
   index: -1
-disabledwire
+disabled_wire
   rotate: false
   xy: 1099, 403
   size: 32, 32
@@ -1053,7 +1053,7 @@ bonus_laser
   orig: 28, 28
   offset: 0, 0
   index: -1
-disabledbonus_laser
+disabled_bonus_laser
   rotate: false
   xy: 305, 1
   size: 28, 28
@@ -1081,7 +1081,7 @@ core_yellow
   orig: 31, 31
   offset: 0, 0
   index: -1
-disabledresistor
+disabled_resistor
   rotate: false
   xy: 1, 6
   size: 35, 17
@@ -1123,35 +1123,35 @@ coil_copper
   orig: 16, 16
   offset: 0, 0
   index: -1
-disabledcable_fiber
+disabled_cable_fiber
   rotate: false
   xy: 1431, 715
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-disabledcoil_copper
+disabled_coil_copper
   rotate: false
   xy: 931, 769
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-disableddrone_engine
+disabled_drone_engine
   rotate: false
   xy: 1193, 703
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-disabledfragment_core
+disabled_fragment_core
   rotate: false
   xy: 1669, 517
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-disabledglassShard
+disabled_glassShard
   rotate: false
   xy: 381, 251
   size: 16, 16
@@ -1179,14 +1179,14 @@ over_glassShard
   orig: 16, 16
   offset: 0, 0
   index: -1
-disabledgreen_coil
+disabled_green_coil
   rotate: false
   xy: 449, 337
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-disabledIrradiantGlassPane
+disabled_IrradiantGlassPane
   rotate: false
   xy: 399, 251
   size: 16, 16
@@ -1214,7 +1214,7 @@ enabled_energyCell
   orig: 32, 32
   offset: 0, 0
   index: -1
-enabled_glass_panel2
+enabled_glass_panel
   rotate: false
   xy: 1393, 245
   size: 32, 32
@@ -1368,7 +1368,7 @@ wire
   orig: 32, 32
   offset: 0, 0
   index: -1
-disabledcore_yellow
+disabled_core_yellow
   rotate: false
   xy: 1665, 182
   size: 31, 31
@@ -1396,35 +1396,35 @@ bonus_warp3
   orig: 21, 21
   offset: 0, 0
   index: -1
-disabledbonus_warp
+disabled_bonus_warp
   rotate: false
   xy: 1423, 524
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-disabledbonus_warp2
+disabled_bonus_warp2
   rotate: false
   xy: 1687, 452
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-disabledbonus_warp3
+disabled_bonus_warp3
   rotate: false
   xy: 335, 8
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-disabledore
+disabled_ore
   rotate: false
   xy: 358, 1
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
-disabledwarp_ore
+disabled_warp_ore
   rotate: false
   xy: 380, 1
   size: 20, 20
@@ -1473,7 +1473,7 @@ warp_ore
   orig: 20, 20
   offset: 0, 0
   index: -1
-disabledenergyCore
+disabled_energyCore
   rotate: false
   xy: 417, 253
   size: 12, 14
@@ -1522,7 +1522,7 @@ aiChip
   orig: 19, 19
   offset: 0, 0
   index: -1
-disabledneon_coil
+disabled_neon_coil
   rotate: false
   xy: 763, 273
   size: 16, 16
@@ -1571,7 +1571,7 @@ over_bonus_warp3
   orig: 21, 21
   offset: 0, 0
   index: -1
-disabledaiChip
+disabled_aiChip
   rotate: false
   xy: 555, 2
   size: 19, 19
@@ -1592,7 +1592,7 @@ over_aiChip
   orig: 19, 19
   offset: 0, 0
   index: -1
-disabledReinforcedIridiumIronPlate
+disabled_ReinforcedIridiumIronPlate
   rotate: false
   xy: 1239, 311
   size: 16, 16
@@ -1697,7 +1697,7 @@ energyCore
   orig: 12, 14
   offset: 0, 0
   index: -1
-disabledgun
+disabled_gun
   rotate: false
   xy: 1423, 513
   size: 9, 9
@@ -1732,35 +1732,35 @@ cyanCrystal
   orig: 13, 13
   offset: 0, 0
   index: -1
-disabledcyanCrystal
+disabled_cyanCrystal
   rotate: false
   xy: 1363, 821
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
-disableddrone_engine2
+disabled_drone_engine2
   rotate: false
   xy: 1363, 806
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
-disabledgreenCrystal
+disabled_greenCrystal
   rotate: false
   xy: 1363, 791
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
-disabledorangeCrystal
+disabled_orangeCrystal
   rotate: false
   xy: 1363, 776
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
-disabledpurpleCrystal
+disabled_purpleCrystal
   rotate: false
   xy: 1363, 761
   size: 13, 13

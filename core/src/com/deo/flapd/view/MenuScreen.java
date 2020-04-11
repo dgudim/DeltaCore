@@ -106,7 +106,7 @@ public class MenuScreen implements Screen{
 
         this.blurProcessor = blurProcessor;
 
-        treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+        treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
         Music = getFloat("musicVolume") > 0;
 
@@ -201,6 +201,26 @@ public class MenuScreen implements Screen{
                 "® All right reserved",
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
 
+        craftingTree = LoadingScreen.craftingTree;
+        craftingTree.hide();
+        craftingTree.update();
+        final ItemSlotManager blackMarket = new ItemSlotManager(assetManager);
+        blackMarket.setBounds(105, 70, 425, 400);
+
+        workshopCategoryManager = new CategoryManager(assetManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
+        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting");
+        workshopCategoryManager.addCategory(blackMarket.holderGroup, "market");
+        workshopCategoryManager.addCloseButton().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                updateFire();
+            }
+        });
+        workshopCategoryManager.setBounds(13, 67, 400);
+        workshopCategoryManager.setBackgroundBounds(5, 65, 531, 410);
+        workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
+        workshopCategoryManager.setVisible(false);
+
         menuCategoryManager = new CategoryManager(assetManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
         menuCategoryManager.addCategory(playScreenTable, "play").addListener(new ClickListener(){
             @Override
@@ -214,30 +234,6 @@ public class MenuScreen implements Screen{
         menuCategoryManager.addCategory(moreTable, "more");
         menuCategoryManager.setBounds(545, 3, 400);
         menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
-
-        craftingTree = LoadingScreen.craftingTree;
-        craftingTree.hide();
-        ItemSlotManager blackMarket = new ItemSlotManager(assetManager);
-        blackMarket.setBounds(105, 70, 425, 400);
-
-        workshopCategoryManager = new CategoryManager(assetManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
-        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting").addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                craftingTree.nodes.get(0).get(0).updateRoot();
-            }
-        });
-        workshopCategoryManager.addCategory(blackMarket.scrollPane, "market");
-        workshopCategoryManager.addCloseButton().addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                updateFire();
-            }
-        });
-        workshopCategoryManager.setBounds(13, 67, 400);
-        workshopCategoryManager.setBackgroundBounds(5, 65, 531, 410);
-        workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
-        workshopCategoryManager.setVisible(false);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
 
         menuCategoryManager.attach(Menu);
@@ -347,7 +343,7 @@ public class MenuScreen implements Screen{
                @Override
                public void changed(ChangeEvent event, Actor actor) {
                enableShader = bloomS.isChecked();
-               putBoolean("bloom", bloomS.isChecked());;
+               putBoolean("bloom", bloomS.isChecked());
                }
         });
 
@@ -474,7 +470,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.3 Build 1", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.5 b5", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);
@@ -533,8 +529,8 @@ public class MenuScreen implements Screen{
     }
 
     private void loadFire(){
-        fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
-        fire2.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+        fire.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
+        fire2.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
         fire.setPosition(230, 268);
         fire2.setPosition(224, 290);
         fire.start();

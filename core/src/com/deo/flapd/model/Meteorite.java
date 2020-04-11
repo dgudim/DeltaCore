@@ -1,7 +1,6 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.utils.DUtils;
-import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -63,9 +60,9 @@ public class Meteorite {
             random = new Random();
             soundVolume = getFloat("soundVolume");
             if(easterEgg) {
-                explosion = Gdx.audio.newSound(Gdx.files.internal("music/hitcat.ogg"));
+                explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/hitcat.ogg"));
             }else{
-                explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+                explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
             }
             meteorite.setSize(0,0);
             meteorite.setPosition(1000,1000);

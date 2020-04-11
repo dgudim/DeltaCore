@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.Map;
-
 public abstract class DUtils {
 
     private static Preferences prefs = Gdx.app.getPreferences("Preferences");
@@ -137,11 +135,24 @@ public abstract class DUtils {
         }
     }
 
-    public static Map<String, ?> getPrefs() {
+    public static String getPrefs() {
+
+        StringBuilder prefsString = new StringBuilder();
+
+        int size = prefs.get().size();
+
+        Object[] keys = prefs.get().keySet().toArray();
+        Object[] values = prefs.get().values().toArray();
+        for(int i = 0; i<size; i++){
+            prefsString.append(keys[i]);
+            prefsString.append(" = ");
+            prefsString.append(values[i]);
+            prefsString.append(";\n");
+        }
         if(logging) {
             log("\n dumped preferences \n");
         }
-        return (prefs.get());
+        return prefsString.toString();
     }
 
     public static int getInteger(String key){
@@ -237,7 +248,7 @@ public abstract class DUtils {
     }
 
     public static String getItemCodeNameByName(String name){
-        String item = "ohno";
+        String item;
         switch (name){
             case("coloring crystal"):
                 item = "crystal";
@@ -311,7 +322,7 @@ public abstract class DUtils {
             case("motherboard"):
                 item = "chipset";
                 break;
-            case("motherboard lvl2"):
+            case("motherboard mk2"):
                 item = "chipset_big";
                 break;
             case("energy crystal"):
@@ -324,9 +335,9 @@ public abstract class DUtils {
                 item = "craftingCard";
                 break;
             case("memory cell"):
-                item = "cell";
+                item = "cell1";
                 break;
-            case("memory cell lvl2"):
+            case("memory cell mk2"):
                 item = "cell2";
                 break;
             case("cyan blank card"):
@@ -344,10 +355,10 @@ public abstract class DUtils {
             case("processor"):
                 item = "processor1";
                 break;
-            case("processor lvl2"):
+            case("processor mk2"):
                 item = "processor2";
                 break;
-            case("processor lvl3"):
+            case("processor mk3"):
                 item = "processor3";
                 break;
             case("reinforced iron plate"):
@@ -386,7 +397,7 @@ public abstract class DUtils {
             case("reinforced glass pane"):
                 item = "IrradiantGlassPane";
                 break;
-            case("composite iron plate"):
+            case("composite plate"):
                 item = "ReinforcedIridiumIronPlate";
                 break;
             case("grasshopper engine"):
@@ -412,6 +423,31 @@ public abstract class DUtils {
                 break;
             case("copper coil"):
                 item = "coil_copper";
+                break;
+            case("glass rod"):
+                item = "glass_panel";
+                break;
+            case("star core"):
+                item = "core_yellow";
+                break;
+            case("warp core"):
+                item = "warp_core";
+                break;
+            case("energy core"):
+                item = "energyCore";
+                break;
+            case("rail gun"):
+                item = "Cannon5";
+                break;
+            case("coil gun"):
+                item = "Cannon4";
+                break;
+            case("ai chip"):
+                item = "aiChip";
+                break;
+            default:
+                log("\n no texture for item "+name);
+                item = "ohno";
                 break;
         }
         return item;

@@ -6,15 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.view.GameUi;
-import com.deo.flapd.view.MenuScreen;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 
 abstract class ShipObject {
@@ -62,7 +59,7 @@ abstract class ShipObject {
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
-        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
         fire.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
         fire2.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
@@ -95,7 +92,7 @@ abstract class ShipObject {
         isFireStarted3 = false;
         soundVolume = getFloat("soundVolume");
 
-        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
+        explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
     }
 
     public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
