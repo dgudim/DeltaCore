@@ -115,7 +115,7 @@ public class GameScreen implements Screen{
 
         drops = new Drops(assetManager, 48, getFloat("ui"));
 
-        gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship, newGame);
+        gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship);
 
         bullet = new Bullet(assetManager, ship.getBounds(), newGame);
 

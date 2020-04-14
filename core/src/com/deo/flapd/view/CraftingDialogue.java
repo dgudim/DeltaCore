@@ -293,7 +293,7 @@ class CraftingDialogue {
     private String getStats(){
         StringBuilder stats = new StringBuilder();
         String[] statsArray = treeJson.get(result).get("parameters").asStringArray();
-        float[] statsValues = treeJson.get(result).get("parameterValues").asFloatArray();
+        String[] statsValues = treeJson.get(result).get("parameterValues").asStringArray();
         for (int i = 0; i<statsArray.length; i++){
             stats.append("\n").append(statsArray[i]).append(": ").append(statsValues[i]);
         }

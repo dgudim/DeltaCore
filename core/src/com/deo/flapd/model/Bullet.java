@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.deo.flapd.view.GameUi;
+import com.deo.flapd.control.GameLogic;
 
 import java.util.Random;
 
@@ -28,7 +28,7 @@ public class Bullet {
 
     private Polygon bounds;
     public static Array<Rectangle> bullets;
-    public static Array<Float> damages;
+    public static Array<Integer> damages;
     private Array<Float> degrees;
     private Array <ParticleEffect> explosions;
     private Array <Boolean> types;
@@ -54,7 +54,9 @@ public class Bullet {
 
     private String effect;
 
-    private float damage, width, height;
+    private float width, height;
+
+    private int damage;
 
     public Bullet(AssetManager assetManager, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
@@ -68,7 +70,7 @@ public class Bullet {
         float[] paramValues = treeJson.get(getString("currentCannon")).get("parameterValues").asFloatArray();
         for (int i = 0; i<params.length; i++){
             if(params[i].endsWith("damage")){
-                damage = paramValues[i];
+                damage = (int) paramValues[i];
             }
             if(params[i].endsWith("shooting speed")){
                 shootingSpeedMultiplier = paramValues[i];
@@ -122,10 +124,10 @@ public class Bullet {
             bullets.add(bullet);
             explosionQueue.add(false);
             remove_Bullet.add(false);
-            if(GameUi.money > 0 && is_uranium) {
+            if(GameLogic.money > 0 && is_uranium) {
                 types.add(true);
-                damages.add(damage*damageMultiplier);
-                GameUi.money--;
+                damages.add((int) (damage*damageMultiplier));
+                GameLogic.money--;
             }else{
                 types.add(false);
                 damages.add(damage);

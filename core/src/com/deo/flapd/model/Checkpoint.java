@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -110,17 +109,17 @@ public class Checkpoint {
             checkpoint_blue.draw(batch);
         }
 
-        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && GameUi.Health>0 && !checkpointState){
+        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && SpaceShip.Health>0 && !checkpointState){
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();
             speed = 5;
-            putInteger("enemiesKilled",GameUi.enemiesKilled);
-            putInteger("moneyEarned",GameUi.moneyEarned);
-            putInteger("enemiesSpawned",GameUi.enemiesSpawned);
-            putInteger("Score",GameUi.Score);
-            putFloat("Health",GameUi.Health);
-            putFloat("Shield",GameUi.Shield);
+            putInteger("enemiesKilled",GameLogic.enemiesKilled);
+            putInteger("moneyEarned",GameLogic.moneyEarned);
+            putInteger("enemiesSpawned",GameLogic.enemiesSpawned);
+            putInteger("Score",GameLogic.Score);
+            putFloat("Health", SpaceShip.Health);
+            putFloat("Shield", SpaceShip.Shield);
             putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
             putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
             putInteger("bonuses_collected", GameLogic.bonuses_collected);
@@ -129,7 +128,7 @@ public class Checkpoint {
             putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
             putFloat("ShipX", shipBounds.getX());
             putFloat("ShipY", shipBounds.getY());
-            putInteger("money", GameUi.money);
+            putInteger("money", GameLogic.money);
         }
 
         if (bounds.getY() > 850 && checkpointState){

@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
-import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -55,8 +54,8 @@ public class Bonus {
 
         bonus_bullets_t = assetManager.get("bonus_bullets.png");
 
-        this.width = width;
-        this.height = height;
+        Bonus.width = width;
+        Bonus.height = height;
 
         bonuses = new Array<>();
         types = new Array<>();
@@ -142,18 +141,18 @@ public class Bonus {
                 if(bonus.overlaps(bounds.getBoundingRectangle())){
                     if(type == 1){
                         removeBonus(i, true);
-                        if(GameUi.Shield<=90) {
-                            GameUi.Shield += 10;
+                        if(SpaceShip.Shield<=90) {
+                            SpaceShip.Shield += 10;
                         }else{
-                            GameUi.Shield = 100;
+                            SpaceShip.Shield = 100;
                         }
                     }
                     if(type == 2){
                         removeBonus(i, true);
-                        if(GameUi.Health<=90) {
-                            GameUi.Health += 10;
+                        if(SpaceShip.Health<=90) {
+                            SpaceShip.Health += 10;
                         }else{
-                            GameUi.Health = 100;
+                            SpaceShip.Health = 100;
                         }
                     }
                     if(type == 3){

@@ -14,7 +14,6 @@ import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Kamikadze;
-import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -38,6 +37,11 @@ public class GameLogic {
     public static boolean bossWave, has1stBossSpawned, has2ndBossSpawned;
 
     public static int lastCheckpoint;
+
+    public static int Score;
+    public static int enemiesKilled;
+    public static int enemiesSpawned;
+    public static int money, moneyEarned;
 
     private float speedMultiplier;
 
@@ -74,12 +78,25 @@ public class GameLogic {
             lastCheckpoint = getInteger("lastCheckpoint");
             has1stBossSpawned = getBoolean("has1stBossSpawned");
             has2ndBossSpawned = getBoolean("has2ndBossSpawned");
+
+            Score = getInteger("Score");
+            moneyEarned = getInteger("moneyEarned");
+
+            enemiesKilled = getInteger("enemiesKilled");
+            enemiesSpawned = getInteger("enemiesSpawned");
         }else {
             bonuses_collected = 0;
             lastCheckpoint = 0;
             has1stBossSpawned = false;
             has2ndBossSpawned = false;
+
+            Score = 0;
+            moneyEarned = 0;
+
+            enemiesKilled = 0;
+            enemiesSpawned = 0;
         }
+        money = getInteger("money");
         bossWave = false;
 
         ShootingSpeed = bullet.getShootingSpeed();
@@ -122,9 +139,9 @@ public class GameLogic {
 
         if (!bossWave) {
 
-            if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && GameUi.enemiesKilled >= 50) {
-                if ((random.nextInt(40) == 5 || random.nextInt(400) > 370) && GameUi.enemiesKilled >= 50) {
-                    kamikadze.Spawn(800 * difficulty, 0.3f, 7);
+            if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && enemiesKilled >= 50) {
+                if ((random.nextInt(40) == 5 || random.nextInt(400) > 370) && enemiesKilled >= 50) {
+                    kamikadze.Spawn((int) (800 * difficulty), 0.3f, 7);
                 }
             }
 
@@ -132,19 +149,19 @@ public class GameLogic {
                 meteorite.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30*difficulty);
             }
 
-            if(GameUi.Score > lastCheckpoint+9000 && !bossWave){
-                lastCheckpoint = GameUi.Score;
+            if(Score > lastCheckpoint+9000 && !bossWave){
+                lastCheckpoint = Score;
                 checkpoint.Spawn(random.nextInt(300)+150, random.nextInt(201)+100, 1);
             }
         }
 
-        if (GameUi.Score > 30000 && !has1stBossSpawned) {
+        if (Score > 30000 && !has1stBossSpawned) {
             bossWave = true;
             has1stBossSpawned = true;
             boss_evilEye.Spawn();
         }
 
-        if (GameUi.Score > 70000 && !has2ndBossSpawned) {
+        if (Score > 70000 && !has2ndBossSpawned) {
             bossWave = true;
             has2ndBossSpawned = true;
             boss_battleShip.Spawn();
@@ -173,18 +190,11 @@ public class GameLogic {
 
                 if (enemy.overlaps(bounds.getBoundingRectangle())) {
 
-                    if (GameUi.Shield >= Kamikadze.healths.get(i)) {
-                        GameUi.Shield -= Kamikadze.healths.get(i);
-                        SpaceShip.set_color(1, 0, 1, true);
-                    } else {
-                        GameUi.Health = GameUi.Health - (Kamikadze.healths.get(i) - GameUi.Shield) / 5;
-                        GameUi.Shield = 0;
-                        SpaceShip.set_color(1, 0, 1, false);
-                    }
+                    SpaceShip.takeDamage(Kamikadze.healths.get(i));
 
-                    GameUi.Score = (int) (GameUi.Score + Kamikadze.healths.get(i) / 2);
+                    Score = Score + Kamikadze.healths.get(i) / 2;
 
-                    GameUi.enemiesKilled++;
+                    enemiesKilled++;
 
                     Kamikadze.removeEnemy(i, true);
 
@@ -193,7 +203,7 @@ public class GameLogic {
                 for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
                     if (enemy.overlaps(Bullet.bullets.get(i2))) {
 
-                        GameUi.Score = (int) (GameUi.Score + 30 + enemy.x / 20);
+                        Score = (int) (Score + 30 + enemy.x / 20);
 
                         Kamikadze.healths.set(i, Kamikadze.healths.get(i) - Bullet.damages.get(i2));
 
@@ -203,7 +213,7 @@ public class GameLogic {
 
                             Kamikadze.removeEnemy(i, true);
 
-                            GameUi.enemiesKilled++;
+                            enemiesKilled++;
                         }
                     }
                 }
@@ -216,7 +226,7 @@ public class GameLogic {
                             Kamikadze.removeEnemy(i, true);
 
                         } else if (Meteorite.healths.get(i3) < Kamikadze.healths.get(i)) {
-                            Kamikadze.healths.set(i, Kamikadze.healths.get(i) - Meteorite.healths.get(i3));
+                            Kamikadze.healths.set(i, (int) (Kamikadze.healths.get(i)  - Meteorite.healths.get(i3)));
                             Meteorite.removeMeteorite(i3, true);
 
                             Meteorite.meteoritesDestroyed++;
@@ -242,16 +252,9 @@ public class GameLogic {
 
                 if (meteorite.overlaps(bounds.getBoundingRectangle())) {
 
-                    if (GameUi.Shield >= Meteorite.healths.get(i)) {
-                        GameUi.Shield -= Meteorite.healths.get(i);
-                        SpaceShip.set_color(1, 0, 1, true);
-                    } else {
-                        GameUi.Health = GameUi.Health - (Meteorite.healths.get(i) - GameUi.Shield) / 5;
-                        GameUi.Shield = 0;
-                        SpaceShip.set_color(1, 0, 1, false);
-                    }
+                    SpaceShip.takeDamage(Meteorite.healths.get(i));
 
-                    GameUi.Score = (int) (GameUi.Score + Meteorite.radiuses.get(i) / 2);
+                    Score = (int) (Score + Meteorite.radiuses.get(i) / 2);
 
                     Meteorite.removeMeteorite(i, true);
 
@@ -262,7 +265,7 @@ public class GameLogic {
                 for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
                     if (meteorite.overlaps(Bullet.bullets.get(i2))) {
 
-                        GameUi.Score = (int) (GameUi.Score + radius / 2);
+                        Score = (int) (Score + radius / 2);
 
                         Meteorite.healths.set(i, Meteorite.healths.get(i) - Bullet.damages.get(i2));
 

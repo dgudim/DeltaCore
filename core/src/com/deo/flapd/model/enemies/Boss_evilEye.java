@@ -24,7 +24,6 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
-import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -266,7 +265,7 @@ public class Boss_evilEye {
                     Drops.drop(cannonBounds.get(i), 1, 2, 3);
                     health.set(i, -100f);
                     cannonBounds.get(i).setSize(0).setPosition(-100, -100);
-                    GameUi.Score += 100;
+                    GameLogic.Score += 100;
                 }
             }
 
@@ -309,15 +308,8 @@ public class Boss_evilEye {
                             laser.draw(batch);
                         }
                         if(!is_paused) {
-                            float multiplier = laser.getWidth()/8;
-                            if (GameUi.Shield >= 0.2f*multiplier) {
-                                GameUi.Shield -= 0.2f*multiplier;
-                                SpaceShip.set_color(1, 0, 1, true);
-                            } else {
-                                GameUi.Health = GameUi.Health - (0.2f*multiplier - GameUi.Shield) / 2;
-                                GameUi.Shield = 0;
-                                SpaceShip.set_color(1, 0, 1, false);
-                            }
+                            float multiplier = laser.getWidth()/4;
+                            SpaceShip.takeDamage(0.2f*multiplier);
                         }
                         break;
                     }
@@ -364,7 +356,7 @@ public class Boss_evilEye {
                         if(health.get(10) > -100f && health.get(10) < 0){
                             health.set(10, -100f);
                             explode(0, true);
-                            GameUi.Score += 3000;
+                            GameLogic.Score += 3000;
                             UraniumCell.Spawn(bodyBounds, random.nextInt(20)+5, 1, 1);
                             for (int i3 = 0; i3<5; i3++) {
                                 Bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
@@ -400,14 +392,7 @@ public class Boss_evilEye {
                     bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        if (GameUi.Shield >= 1) {
-                            GameUi.Shield -= 1;
-                            SpaceShip.set_color(1, 0, 1, true);
-                        } else {
-                            GameUi.Health = GameUi.Health - (1 - GameUi.Shield)/3;
-                            GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 1, false);
-                        }
+                        SpaceShip.takeDamage(1);
                         removeBullet(i);
                     }
 

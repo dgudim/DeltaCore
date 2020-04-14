@@ -9,14 +9,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.deo.flapd.view.GameUi;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
 
 abstract class ShipObject {
 
-    private Polygon bounds;
+    public static Polygon bounds;
     private Sprite ship;
     private Sprite shield;
 
@@ -37,14 +36,20 @@ abstract class ShipObject {
 
     private boolean isFireStarted1, isFireStarted2, isFireStarted3;
 
+    public static float Health, Shield;
+
     ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
         ship = new Sprite(shipTexture);
         shield = new Sprite(ShieldTexture);
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
         if(!newGame) {
+            Shield = getFloat("Shield");
+            Health = getFloat("Health");
             bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
         }else{
+            Shield = 100;
+            Health = 100;
             bounds.setPosition(x, y);
         }
 
@@ -113,7 +118,7 @@ abstract class ShipObject {
                 fire2.update(0);
             }
 
-            if (GameUi.Health < 70) {
+            if (Health < 70) {
                 if (!is_paused) {
                     if (!isFireStarted1) {
                         damage_fire.start();
@@ -127,7 +132,7 @@ abstract class ShipObject {
                 isFireStarted1 = false;
             }
 
-            if (GameUi.Health < 50) {
+            if (Health < 50) {
                 if (!is_paused) {
                     if (!isFireStarted2) {
                         damage_fire2.start();
@@ -141,7 +146,7 @@ abstract class ShipObject {
                 isFireStarted2 = false;
             }
 
-            if (GameUi.Health < 30) {
+            if (Health < 30) {
                 if (!is_paused) {
                     if (!isFireStarted3) {
                         damage_fire3.start();
@@ -224,6 +229,17 @@ abstract class ShipObject {
             red2 = red1;
             green2 = green1;
             blue2 = blue1;
+        }
+    }
+
+    public static void takeDamage(float damage){
+        if (Shield >= damage) {
+            Shield -= damage;
+            set_color(1, 0, 1, true);
+        } else {
+            Health = Health - (damage - Shield) / 5;
+            Shield = 0;
+            SpaceShip.set_color(1, 0, 1, false);
         }
     }
 

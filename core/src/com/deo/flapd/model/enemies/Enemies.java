@@ -2,13 +2,11 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.view.GameUi;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
@@ -20,7 +18,6 @@ public class Enemies {
     private Array<EnemyData> enemies;
     private Array<String> enemyNames;
     private Array<Enemy> enemyEntities;
-    private Array<ParticleEffect> explosions;
     private String type;
 
     public Enemies(AssetManager assetManager){
@@ -28,7 +25,6 @@ public class Enemies {
         enemies = new Array<>();
         enemyNames = new Array<>();
         enemyEntities = new Array<>();
-        explosions = new Array<>();
         if(getBoolean("easterEgg")){
             type = "easterEgg";
         }else{
@@ -59,43 +55,22 @@ public class Enemies {
         for(int i = 0; i<enemyEntities.size; i++){
             enemyEntities.get(i).drawEffects(batch);
         }
-        for(int i = 0; i<explosions.size; i++){
-            explosions.get(i).draw(batch);
-        }
     }
 
     public void update(float delta){
         for(int i = 0; i<enemies.size; i++){
             EnemyData currentData = enemies.get(i);
-            if(currentData.millis>currentData.spawnFrequency*100 && getRandomInRange(0, 45)>=15 && currentData.onBossWave == GameLogic.bossWave && GameUi.Score >= currentData.scoreSpawnConditions[0] && GameUi.Score <= currentData.scoreSpawnConditions[1] && GameUi.enemiesKilled >= currentData.enemyCountSpawnConditions[0] && GameUi.enemiesKilled <= currentData.enemyCountSpawnConditions[1]){
+            if(currentData.millis>currentData.spawnDelay*100 && getRandomInRange(0, 45)>=15 && currentData.onBossWave == GameLogic.bossWave && GameLogic.Score >= currentData.scoreSpawnConditions[0] && GameLogic.Score <= currentData.scoreSpawnConditions[1] && GameLogic.enemiesKilled >= currentData.enemyCountSpawnConditions[0] && GameLogic.enemiesKilled <= currentData.enemyCountSpawnConditions[1]){
                 SpawnEnemy(currentData);
                 currentData.millis = 0;
             }
-            currentData.millis += currentData.spawnFrequency*delta*100;
+            currentData.millis += delta*20;
         }
         for(int i = 0; i<enemyEntities.size; i++){
-            Enemy currentEnemy = enemyEntities.get(i);
-            currentEnemy.update(delta);
-            if(currentEnemy.data.x<-currentEnemy.data.width-currentEnemy.data.fireParticleEffects.get(0).getBoundingBox().getWidth()-20){
-                currentEnemy.dispose();
+            enemyEntities.get(i).update(delta);
+            if(enemyEntities.get(i).queuedForDeletion){
+                enemyEntities.get(i).dispose();
                 enemyEntities.removeIndex(i);
-            }
-            if(currentEnemy.data.health<=0){
-                ParticleEffect explosion = new ParticleEffect();
-                explosion.load(Gdx.files.internal(currentEnemy.data.explosionEffect), Gdx.files.internal("particles"));
-                explosion.setPosition(currentEnemy.data.x+currentEnemy.data.width/2, currentEnemy.data.y+currentEnemy.data.height/2);
-                explosion.scaleEffect(currentEnemy.data.explosionScale);
-                explosion.start();
-                explosions.add(explosion);
-                currentEnemy.dispose();
-                enemyEntities.removeIndex(i);
-            }
-        }
-        for(int i = 0; i<explosions.size; i++){
-            ParticleEffect currentExplosion = explosions.get(i);
-            currentExplosion.update(delta);
-            if (currentExplosion.isComplete()){
-                currentExplosion.dispose();
             }
         }
     }

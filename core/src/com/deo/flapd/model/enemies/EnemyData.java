@@ -7,16 +7,17 @@ import com.badlogic.gdx.utils.JsonValue;
 
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
-class EnemyData {
+public class EnemyData {
 
     String name;
     String texture;
     String explosionSound;
-    String explosionEffect;
+    String explosion;
+    ParticleEffect explosionParticleEffect;
     float explosionScale;
 
-    float x;
-    float y;
+    public float x;
+    public float y;
 
     float width;
     float height;
@@ -32,7 +33,7 @@ class EnemyData {
 
     int speed;
 
-    float shootingFrequency;
+    float shootingDelay;
 
     float millis;
 
@@ -46,7 +47,7 @@ class EnemyData {
 
     int[] scoreSpawnConditions;
 
-    float spawnFrequency;
+    float spawnDelay;
 
     int[] enemyCountSpawnConditions;
 
@@ -69,19 +70,19 @@ class EnemyData {
     JsonValue enemyInfo;
 
     EnemyData(JsonValue enemyInfo, String type){
-
+        JsonValue enemyBodyInfo = enemyInfo.get(type).get("body");
         fireParticleEffects = new Array<>();
         this.type = type;
         this.enemyInfo = enemyInfo;
 
         name = enemyInfo.name;
-        texture = enemyInfo.get(type).get("body").get("texture").asString();
-        explosionSound = enemyInfo.get(type).get("body").get("explosionSound").asString();
-        explosionEffect = enemyInfo.get(type).get("body").get("explosionEffect").asString();
-        explosionScale = enemyInfo.get(type).get("body").get("explosionScale").asFloat();
+        texture = enemyBodyInfo.get("texture").asString();
+        explosionSound = enemyBodyInfo.get("explosionSound").asString();
+        explosion = enemyBodyInfo.get("explosionEffect").asString();
+        explosionScale = enemyBodyInfo.get("explosionScale").asFloat();
 
-        width = enemyInfo.get(type).get("body").get("width").asFloat();
-        height = enemyInfo.get(type).get("body").get("height").asFloat();
+        width = enemyBodyInfo.get("width").asFloat();
+        height = enemyBodyInfo.get("height").asFloat();
 
         x = 805;
         y = 0;
@@ -94,25 +95,25 @@ class EnemyData {
         fireScales = new float[fireEffectCount];
         fireParticleEffects.setSize(fireEffectCount);
         spawnHeight = enemyInfo.get("spawnHeight").asIntArray();
-        spawnFrequency = enemyInfo.get("spawnFrequency").asFloat();
+        spawnDelay = enemyInfo.get("spawnDelay").asFloat();
         enemyCountSpawnConditions = enemyInfo.get("spawnConditions").get("enemiesKilled").asIntArray();
         scoreSpawnConditions = enemyInfo.get("spawnConditions").get("score").asIntArray();
         onBossWave = enemyInfo.get("spawnConditions").get("bossWave").asBoolean();
 
         for(int i = 0; i<fireEffectCount; i++){
-            fireOffsetsX[i] = enemyInfo.get(type).get("body").get("fire").get("offset"+i).asIntArray()[0];
-            fireOffsetsY[i] = enemyInfo.get(type).get("body").get("fire").get("offset"+i).asIntArray()[1];
-            fireEffects[i] = enemyInfo.get(type).get("body").get("fire").get("effect"+i).asString();
-            fireScales[i] = enemyInfo.get(type).get("body").get("fire").get("scale"+i).asFloat();
+            fireOffsetsX[i] = enemyBodyInfo.get("fire").get("offset"+i).asIntArray()[0];
+            fireOffsetsY[i] = enemyBodyInfo.get("fire").get("offset"+i).asIntArray()[1];
+            fireEffects[i] = enemyBodyInfo.get("fire").get("effect"+i).asString();
+            fireScales[i] = enemyBodyInfo.get("fire").get("scale"+i).asFloat();
         }
 
-        health = enemyInfo.get(type).get("body").get("health").asInt();
+        health = enemyBodyInfo.get("health").asInt();
 
-        speed = enemyInfo.get(type).get("body").get("speed").asInt();
+        speed = enemyBodyInfo.get("speed").asInt();
 
-        shootingFrequency = enemyInfo.get(type).get("body").get("shootingFrequency").asFloat();
+        shootingDelay = enemyBodyInfo.get("shootingDelay").asFloat();
 
-        hitColor = enemyInfo.get(type).get("body").get("hitColor").asString();
+        hitColor = enemyBodyInfo.get("hitColor").asString();
 
         dropTimer = enemyInfo.get("drops").get("timer").asInt();
         dropCount = enemyInfo.get("drops").get("count").asIntArray();
@@ -130,6 +131,7 @@ class EnemyData {
     protected EnemyData clone(){
         EnemyData copy = new EnemyData(enemyInfo, type);
         copy.y = getRandomInRange(copy.spawnHeight[0], copy.spawnHeight[1]);
+        copy.shootingDelay += getRandomInRange(-7, 7)/100f;
         return copy;
     }
 }

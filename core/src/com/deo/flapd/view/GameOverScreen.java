@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -72,7 +73,7 @@ public class GameOverScreen implements Screen {
 
         enableShader = getBoolean("bloom");
 
-        Score = GameUi.Score;
+        Score = GameLogic.Score;
 
         highScore = getInteger("highScore");
 
@@ -86,15 +87,15 @@ public class GameOverScreen implements Screen {
             isNewHighScore = false;
         }
 
-        enemiesKilled = GameUi.enemiesKilled;
+        enemiesKilled = GameLogic.enemiesKilled;
 
         bulletsShot = Bullet.bulletsShot;
 
         meteoritesDestroyed = Meteorite.meteoritesDestroyed;
 
-        enemiesSpawned = GameUi.enemiesSpawned;
+        enemiesSpawned = GameLogic.enemiesSpawned;
 
-        moneyEarned = GameUi.moneyEarned;
+        moneyEarned = GameLogic.moneyEarned;
 
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);

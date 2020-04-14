@@ -30,12 +30,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.updateCamera;
@@ -83,12 +83,6 @@ public class GameUi{
 
     private Texture PauseBg, PauseBg2, pauseButton_e, pauseButton_o, pauseButton_d;
 
-    public static float Shield;
-    public static float Health;
-    public static int Score;
-    public static int enemiesKilled;
-    public static int enemiesSpawned;
-    public static int money, moneyEarned;
     private float uiScale;
     private float difficulty;
 
@@ -113,7 +107,7 @@ public class GameUi{
 
     private PostProcessor blurProcessor;
 
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, SpaceShip Ship, boolean newGame){
+    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, SpaceShip Ship){
 
         this.game = game;
 
@@ -124,26 +118,6 @@ public class GameUi{
         bounds = Ship.getBounds();
 
         ship = Ship;
-
-        if(!newGame){
-            Shield = getFloat("Shield");
-            Health = getFloat("Health");
-            Score = getInteger("Score");
-            moneyEarned = getInteger("moneyEarned");
-            money = getInteger("money");
-
-            enemiesKilled = getInteger("enemiesKilled");
-            enemiesSpawned = getInteger("enemiesSpawned");
-        }else {
-            Shield = 100;
-            Health = 100;
-            Score = 0;
-            moneyEarned = 0;
-            money = getInteger("money");
-
-            enemiesKilled = 0;
-            enemiesSpawned = 0;
-        }
 
         uiScale = getFloat("ui");
 
@@ -422,8 +396,8 @@ public class GameUi{
         stage.act(delta);
         batch.begin();
         font_numbers.getData().setScale(0.3f*uiScale);
-        font_numbers.draw(batch, ""+Score, 537-263*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
-        font_numbers.draw(batch, ""+money, (537-122)-(263+122)*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
+        font_numbers.draw(batch, ""+ GameLogic.Score, 537-263*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
+        font_numbers.draw(batch, ""+GameLogic.money, (537-122)-(263+122)*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
         font_main.getData().setScale(0.27f*uiScale);
         font_main.draw(batch, "Difficulty: "+difficulty+"X", 544-263*(uiScale-1), 433-45*(uiScale-1), 100*uiScale,1, false);
 
@@ -448,15 +422,15 @@ public class GameUi{
         }
 
         batch.begin();
-        health.setValue(Health);
-        shield.setValue(Shield);
+        health.setValue(SpaceShip.Health);
+        shield.setValue(SpaceShip.Shield);
 
-        if(Health <= 0 && !exploded){
+        if(SpaceShip.Health <= 0 && !exploded){
             explosion.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
             explosion.start();
             exploded = true;
-            Health = -1000;
-            Shield = -1000;
+            SpaceShip.Health = -1000;
+            SpaceShip.Shield = -1000;
             ship.explode();
         }
 
@@ -466,8 +440,8 @@ public class GameUi{
             font_main.setColor(0,0,0,1);
         }
 
-        if(Shield<100 && !is_paused){
-            Shield += 0.02;
+        if(SpaceShip.Shield<100 && !is_paused){
+            SpaceShip.Shield += 2*delta;
         }
     }
 
@@ -504,7 +478,7 @@ public class GameUi{
 
         explosion.dispose();
 
-        putInteger("money", money);
+        putInteger("money", GameLogic.money);
     }
 
     float getDeltaX(){

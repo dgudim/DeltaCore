@@ -12,10 +12,10 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.UraniumCell;
-import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -24,7 +24,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 public class Kamikadze {
 
     public static Array <Rectangle> enemies;
-    public static Array <Float> healths;
+    public static Array <Integer> healths;
     private Array <ParticleEffect> fires;
     private Array <ParticleEffect> explosions;
     private Array <Float> timers;
@@ -71,7 +71,7 @@ public class Kamikadze {
         enemy.setPosition(1000, 1000);
     }
 
-    public void Spawn(float health, float scale, float explosionTimer) {
+    public void Spawn(int health, float scale, float explosionTimer) {
         if(millis > 10) {
 
             Rectangle enemy = new Rectangle();
@@ -95,7 +95,7 @@ public class Kamikadze {
             remove_Enemy.add(false);
 
             millis = 0;
-            GameUi.enemiesSpawned++;
+            GameLogic.enemiesSpawned++;
         }
     }
 

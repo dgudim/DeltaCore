@@ -24,7 +24,6 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
-import com.deo.flapd.view.GameUi;
 
 import java.util.Random;
 
@@ -410,7 +409,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(8)){
                     explodedCannons.set(8, true);
                     play_shot_Sound(1,true, 9);
-                    GameUi.Score += 2000;
+                    GameLogic.Score += 2000;
                 }
                 bounds_cannon_front_big.setPosition(-100, -100);
             }
@@ -443,7 +442,7 @@ public class Boss_battleShip {
                         Bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
                     }
                     Drops.drop(bounds_body.getBoundingRectangle(), 5, 2, 5);
-                    GameUi.Score += 3000;
+                    GameLogic.Score += 3000;
                     UraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
                 }
                 main.setPosition(bounds_body.getX(), bounds_body.getY());
@@ -470,7 +469,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(1)){
                     explodedCannons.set(1, true);
                     play_shot_Sound(1, true, 1);
-                    GameUi.Score += 1000;
+                    GameLogic.Score += 1000;
                 }
                 bounds_cannon.setPosition(-100, -100);
             }
@@ -488,7 +487,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(2)){
                     explodedCannons.set(2, true);
                     play_shot_Sound(1, true, 2);
-                    GameUi.Score += 1000;
+                    GameLogic.Score += 1000;
                 }
                 bounds_cannon2.setPosition(-100, -100);
             }
@@ -506,7 +505,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(3)){
                     explodedCannons.set(3, true);
                     play_shot_Sound(1, true, 3);
-                    GameUi.Score += 1000;
+                    GameLogic.Score += 1000;
                 }
                 bounds_cannon3.setPosition(-100, -100);
             }
@@ -524,7 +523,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(4)){
                     explodedCannons.set(4, true);
                     play_shot_Sound(1, true, 4);
-                    GameUi.Score += 1000;
+                    GameLogic.Score += 1000;
                 }
                 bounds_cannon4.setPosition(-100, -100);
             }
@@ -542,7 +541,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(5)){
                     explodedCannons.set(5, true);
                     play_shot_Sound(1, true, 5);
-                    GameUi.Score += 1000;
+                    GameLogic.Score += 1000;
                 }
                 bounds_cannon5.setPosition(-100, -100);
             }
@@ -560,7 +559,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(6)){
                     explodedCannons.set(6, true);
                     play_shot_Sound(1, true, 6);
-                    GameUi.Score += 1000;
+                    GameLogic.Score += 1000;
                 }
                 bounds_cannon6.setPosition(-100, -100);
             }
@@ -578,7 +577,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(7)){
                     explodedCannons.set(7, true);
                     play_shot_Sound(1, true, 7);
-                    GameUi.Score += 1500;
+                    GameLogic.Score += 1500;
                 }
                 bounds_cannon_front.setPosition(-100, -100);
             }
@@ -601,7 +600,7 @@ public class Boss_battleShip {
                 if(!explodedCannons.get(9)){
                     explodedCannons.set(9, true);
                     play_shot_Sound(1, true, 8);
-                    GameUi.Score += 1500;
+                    GameLogic.Score += 1500;
                 }
                 bounds_homing1.setPosition(-100, -100);
                 bounds_homing2.setPosition(-100, -100);
@@ -669,14 +668,7 @@ public class Boss_battleShip {
                     bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        if (GameUi.Shield >= 5) {
-                            GameUi.Shield -= 5;
-                            SpaceShip.set_color(1, 0, 1, true);
-                        } else {
-                            GameUi.Health = GameUi.Health - (5 - GameUi.Shield) / 5;
-                            GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 1, false);
-                        }
+                        SpaceShip.takeDamage(5);
                         removeBullet(i, 1);
                     }
 
@@ -701,14 +693,7 @@ public class Boss_battleShip {
                     bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        if (GameUi.Shield >= 10) {
-                            GameUi.Shield -= 10;
-                            SpaceShip.set_color(1, 0, 1, true);
-                        } else {
-                            GameUi.Health = GameUi.Health - (10 - GameUi.Shield) / 5;
-                            GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 1, false);
-                        }
+                        SpaceShip.takeDamage(10);
                         removeBullet(i, 2);
                     }
 
@@ -753,14 +738,7 @@ public class Boss_battleShip {
                     bullets_red_big_timers.set(i, timer);
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        if (GameUi.Shield >= 15) {
-                            GameUi.Shield -= 15;
-                            SpaceShip.set_color(1, 0, 1, true);
-                        } else {
-                            GameUi.Health = GameUi.Health - (15 - GameUi.Shield) / 5;
-                            GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 0, false);
-                        }
+                        SpaceShip.takeDamage(15);
                         removeBullet(i, 3);
                     }
 
@@ -790,14 +768,7 @@ public class Boss_battleShip {
                     bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                     if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        if (GameUi.Shield >= 7) {
-                            GameUi.Shield -= 7;
-                            SpaceShip.set_color(1, 0, 1, true);
-                        } else {
-                            GameUi.Health = GameUi.Health - (7 - GameUi.Shield) / 5;
-                            GameUi.Shield = 0;
-                            SpaceShip.set_color(1, 0, 0, false);
-                        }
+                        SpaceShip.takeDamage(7);
                         removeBullet(i, 4);
                     }
 

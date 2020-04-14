@@ -1,6 +1,5 @@
 package com.deo.flapd.model;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,7 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.view.GameUi;
+import com.deo.flapd.control.GameLogic;
 
 import java.util.Random;
 
@@ -100,8 +99,8 @@ public class UraniumCell {
         timers.removeIndex(i);
         cells.removeIndex(i);
         degrees.removeIndex(i);
-        GameUi.money += values.get(i);
-        GameUi.moneyEarned += values.get(i);
+        GameLogic.money += values.get(i);
+        GameLogic.moneyEarned += values.get(i);
         values.removeIndex(i);
     }
 
