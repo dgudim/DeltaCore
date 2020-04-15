@@ -43,33 +43,33 @@ abstract class ShipObject {
         shield = new Sprite(ShieldTexture);
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
-        if(!newGame) {
+        if (!newGame) {
             Shield = getFloat("Shield");
             Health = getFloat("Health");
             bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
-        }else{
+        } else {
             Shield = 100;
             Health = 100;
             bounds.setPosition(x, y);
         }
 
         ship.setOrigin(width / 2f, height / 2f);
-        shield.setOrigin((width+30) / 2f, (height+30) / 2f);
+        shield.setOrigin((width + 30) / 2f, (height + 30) / 2f);
 
         ship.setSize(width, height);
         ship.setPosition(x, y);
-        shield.setSize(width+30, height+30);
-        shield.setPosition(x, y-10);
+        shield.setSize(width + 30, height + 30);
+        shield.setPosition(x, y - 10);
 
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
 
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-        fire.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
-        fire2.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
+        fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+        fire2.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
 
-        float[] colors = new JsonReader().parse(getString(treeJson.get(getString("currentEngine")).get("usesEffect").asString()+"_color")).get("colors").asFloatArray();
+        float[] colors = new JsonReader().parse(getString(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color")).get("colors").asFloatArray();
         fire.getEmitters().get(0).getTint().setColors(colors);
         fire2.getEmitters().get(0).getTint().setColors(colors);
 
@@ -100,8 +100,8 @@ abstract class ShipObject {
         explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
     }
 
-    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
-        if(!exploded) {
+    public void drawEffects(SpriteBatch batch, float delta) {
+        if (!exploded) {
             fire.setPosition(bounds.getX() + 10, bounds.getY() + 18);
             fire.draw(batch);
             fire2.setPosition(bounds.getX() + 4, bounds.getY() + 40);
@@ -110,51 +110,34 @@ abstract class ShipObject {
             damage_fire2.setPosition(bounds.getX() + 10, bounds.getY() + 25);
             damage_fire3.setPosition(bounds.getX() + 10, bounds.getY() + 25);
 
-            if (!is_paused) {
-                fire.update(delta);
-                fire2.update(delta);
-            } else {
-                fire.update(0);
-                fire2.update(0);
-            }
+            fire.update(delta);
+            fire2.update(delta);
 
             if (Health < 70) {
-                if (!is_paused) {
-                    if (!isFireStarted1) {
-                        damage_fire.start();
-                    }
-                    damage_fire.draw(batch, delta);
-                } else {
-                    damage_fire.draw(batch, 0);
+                if (!isFireStarted1) {
+                    damage_fire.start();
                 }
+                damage_fire.draw(batch, delta);
             } else if (isFireStarted1) {
                 damage_fire.reset();
                 isFireStarted1 = false;
             }
 
             if (Health < 50) {
-                if (!is_paused) {
-                    if (!isFireStarted2) {
-                        damage_fire2.start();
-                    }
-                    damage_fire2.draw(batch, delta);
-                } else {
-                    damage_fire2.draw(batch, 0);
+                if (!isFireStarted2) {
+                    damage_fire2.start();
                 }
+                damage_fire2.draw(batch, delta);
             } else if (isFireStarted2) {
                 damage_fire2.reset();
                 isFireStarted2 = false;
             }
 
             if (Health < 30) {
-                if (!is_paused) {
-                    if (!isFireStarted3) {
-                        damage_fire3.start();
-                    }
-                    damage_fire3.draw(batch, delta);
-                } else {
-                    damage_fire3.draw(batch, 0);
+                if (!isFireStarted3) {
+                    damage_fire3.start();
                 }
+                damage_fire3.draw(batch, delta);
             } else if (isFireStarted3) {
                 damage_fire3.reset();
                 isFireStarted3 = false;
@@ -162,56 +145,53 @@ abstract class ShipObject {
         }
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused){
-        if(!exploded) {
+    public void draw(SpriteBatch batch, float delta) {
+        if (!exploded) {
             ship.setPosition(bounds.getX(), bounds.getY());
             ship.setRotation(bounds.getRotation());
             ship.setColor(red, green, blue, 1);
 
-            if (!is_paused) {
-                if (red < 1) {
-                    red = red + 0.05f;
-                }
-                if (green < 1) {
-                    green = green + 0.05f;
-                }
-                if (blue < 1) {
-                    blue = blue + 0.05f;
-                }
+            if (red < 1) {
+                red = red + 5 * delta;
             }
+            if (green < 1) {
+                green = green + 5 * delta;
+            }
+            if (blue < 1) {
+                blue = blue + 5 * delta;
+            }
+
             ship.draw(batch);
-        }else{
-            bounds.setScale(0,0);
+        } else {
+            bounds.setScale(0, 0);
         }
     }
 
-    void drawShield(SpriteBatch batch, boolean is_paused, float alpha){
-        if(!exploded) {
+    void drawShield(SpriteBatch batch, float alpha, float delta) {
+        if (!exploded) {
             shield.setPosition(bounds.getX() - 20, bounds.getY() - 15);
             shield.setRotation(bounds.getRotation());
             shield.setColor(red2, green2, blue2, alpha);
 
-            if (!is_paused) {
-                if (red2 < 1) {
-                    red2 = red2 + 0.05f;
-                }
-                if (green2 < 1) {
-                    green2 = green2 + 0.05f;
-                }
-                if (blue2 < 1) {
-                    blue2 = blue2 + 0.05f;
-                }
+            if (red2 < 1) {
+                red2 = red2 + 5 * delta;
+            }
+            if (green2 < 1) {
+                green2 = green2 + 5 * delta;
+            }
+            if (blue2 < 1) {
+                blue2 = blue2 + 5 * delta;
             }
 
             shield.draw(batch);
         }
     }
 
-    public Polygon getBounds(){
+    public Polygon getBounds() {
         return bounds;
     }
 
-    public void dispose(){
+    public void dispose() {
         fire.dispose();
         fire2.dispose();
         explosion.dispose();
@@ -220,19 +200,19 @@ abstract class ShipObject {
         damage_fire3.dispose();
     }
 
-    public static void set_color(float red1, float green1, float blue1, boolean shield){
-        if(!shield) {
+    public static void set_color(float red1, float green1, float blue1, boolean shield) {
+        if (!shield) {
             red = red1;
             green = green1;
             blue = blue1;
-        }else{
+        } else {
             red2 = red1;
             green2 = green1;
             blue2 = blue1;
         }
     }
 
-    public static void takeDamage(float damage){
+    public static void takeDamage(float damage) {
         if (Shield >= damage) {
             Shield -= damage;
             set_color(1, 0, 1, true);
@@ -243,14 +223,14 @@ abstract class ShipObject {
         }
     }
 
-    public void explode(){
+    public void explode() {
         exploded = true;
-        if(soundVolume>0){
-            explosion.play(soundVolume/100);
+        if (soundVolume > 0) {
+            explosion.play(soundVolume / 100);
         }
     }
 
-    public boolean isExploded(){
+    public boolean isExploded() {
         return exploded;
     }
 

@@ -75,4 +75,10 @@ public class Enemies {
         }
     }
 
+    public void dispose(){
+        for(int i = 0; i<enemyEntities.size; i++){
+            enemyEntities.get(i).dispose();
+        }
+    }
+
 }

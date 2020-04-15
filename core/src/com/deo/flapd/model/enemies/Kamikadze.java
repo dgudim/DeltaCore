@@ -23,12 +23,12 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class Kamikadze {
 
-    public static Array <Rectangle> enemies;
-    public static Array <Integer> healths;
-    private Array <ParticleEffect> fires;
-    private Array <ParticleEffect> explosions;
-    private Array <Float> timers;
-    private Array <Float> timers2;
+    public static Array<Rectangle> enemies;
+    public static Array<Integer> healths;
+    private Array<ParticleEffect> fires;
+    private Array<ParticleEffect> explosions;
+    private Array<Float> timers;
+    private Array<Float> timers2;
     private Sprite enemy;
     private float millis;
     private Random random;
@@ -52,10 +52,10 @@ public class Kamikadze {
         timers = new Array<>();
         timers2 = new Array<>();
 
-        if(easterEgg){
+        if (easterEgg) {
             enemy = new Sprite((Texture) assetManager.get("cat_bomb.png"));
             explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/hitcat.ogg"));
-        }else {
+        } else {
             enemy = new Sprite((Texture) assetManager.get("atomic_bomb.png"));
             explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
         }
@@ -67,19 +67,19 @@ public class Kamikadze {
 
         soundVolume = getFloat("soundVolume");
 
-        enemy.setSize(0,0);
+        enemy.setSize(0, 0);
         enemy.setPosition(1000, 1000);
     }
 
     public void Spawn(int health, float scale, float explosionTimer) {
-        if(millis > 10) {
+        if (millis > 10) {
 
             Rectangle enemy = new Rectangle();
 
             enemy.x = 800;
-            enemy.y = random.nextInt(400)+40;
+            enemy.y = random.nextInt(400) + 40;
 
-            enemy.setSize(width*scale, height*scale);
+            enemy.setSize(width * scale, height * scale);
 
             enemies.add(enemy);
             healths.add(health);
@@ -99,59 +99,47 @@ public class Kamikadze {
         }
     }
 
-    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
-        for (int i = 0; i < enemies.size; i ++) {
+    public void drawEffects(SpriteBatch batch, float delta) {
+        for (int i = 0; i < enemies.size; i++) {
 
             Rectangle enemy = enemies.get(i);
             ParticleEffect fire = fires.get(i);
             float timer = timers.get(i);
 
-            if(!is_paused) {
-                timer = timer - 1*delta;
-                timers.set(i, timer);
-            }
+            timer = timer - delta;
+            timers.set(i, timer);
 
             if (timer < 1) {
                 removeEnemy(i, true);
             }
 
-            fire.setPosition(enemy.x + enemy.width/2, enemy.y + enemy.height/2);
+            fire.setPosition(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
             fire.draw(batch);
-            if(!is_paused) {
-                fire.update(delta);
-            }else{
-                fire.update(0);
-            }
+            fire.update(delta);
         }
 
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(delta);
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
+            explosions.get(i3).update(delta);
+            if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
             }
         }
     }
 
-    public void drawBase(SpriteBatch batch, float delta, boolean is_paused) {
+    public void drawBase(SpriteBatch batch, float delta) {
 
         millis = millis + 50 * delta;
 
-        for (int i = 0; i < enemies.size; i ++) {
+        for (int i = 0; i < enemies.size; i++) {
 
             Rectangle enemy = enemies.get(i);
             float timer = timers.get(i);
             float ideal_timer = timers2.get(i);
 
-            if(!is_paused) {
-                timer = timer - 1*delta;
-                timers.set(i, timer);
-            }
+            timer = timer - delta;
+            timers.set(i, timer);
 
             if (timer < 1) {
                 removeEnemy(i, true);
@@ -161,34 +149,32 @@ public class Kamikadze {
             pos1.set(enemy.x, enemy.y);
             Vector2 pos2 = new Vector2();
             pos2.set(bounds.getX(), bounds.getY());
-            pos1.lerp(pos2, 0.01f);
+            pos1.lerp(pos2, delta);
 
-            this.enemy.setColor(1, timer/ideal_timer,timer/ideal_timer, 1);
+            this.enemy.setColor(1, timer / ideal_timer, timer / ideal_timer, 1);
             this.enemy.setPosition(pos1.x, pos1.y);
             this.enemy.setSize(enemy.width, enemy.height);
             this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
-            this.enemy.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(enemy.y-bounds.getY(), enemy.x-bounds.getX()));
+            this.enemy.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(enemy.y - bounds.getY(), enemy.x - bounds.getX()));
 
             this.enemy.draw(batch);
 
-            if (!is_paused) {
-                enemy.x = pos1.x;
-                enemy.y = pos1.y;
-            }
+            enemy.x = pos1.x;
+            enemy.y = pos1.y;
 
         }
 
-        for(int i4 = 0; i4 < enemies.size; i4++){
-            if(explosionQueue.get(i4)) {
+        for (int i4 = 0; i4 < enemies.size; i4++) {
+            if (explosionQueue.get(i4)) {
                 ParticleEffect explosionEffect = new ParticleEffect();
                 explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
                 explosionEffect.setPosition(enemies.get(i4).x + enemies.get(i4).width / 2, enemies.get(i4).y + enemies.get(i4).height / 2);
                 explosionEffect.start();
                 if (random.nextBoolean()) {
-                    Bonus.Spawn(random.nextInt(4)+1, 1, enemies.get(i4));
+                    Bonus.Spawn(random.nextInt(4) + 1, 1, enemies.get(i4));
                 }
                 Drops.drop(enemies.get(i4), 1, 2, 3);
-                UraniumCell.Spawn(enemies.get(i4), random.nextInt(5)+1, 1, 2);
+                UraniumCell.Spawn(enemies.get(i4), random.nextInt(5) + 1, 1, 2);
                 explosions.add(explosionEffect);
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);
@@ -198,10 +184,10 @@ public class Kamikadze {
                 fires.get(i4).dispose();
                 fires.removeIndex(i4);
                 remove_Enemy.removeIndex(i4);
-                if(soundVolume>0) {
-                    explosion.play(soundVolume/100);
+                if (soundVolume > 0) {
+                    explosion.play(soundVolume / 100);
                 }
-            }else if (remove_Enemy.get(i4)){
+            } else if (remove_Enemy.get(i4)) {
                 explosionQueue.removeIndex(i4);
                 enemies.removeIndex(i4);
                 healths.removeIndex(i4);
@@ -215,13 +201,13 @@ public class Kamikadze {
 
     }
 
-    public void dispose(){
+    public void dispose() {
         explosion.dispose();
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
-        for(int i3 = 0; i3 < fires.size; i3 ++){
+        for (int i3 = 0; i3 < fires.size; i3++) {
             fires.get(i3).dispose();
             fires.removeIndex(i3);
         }
@@ -233,11 +219,11 @@ public class Kamikadze {
         remove_Enemy.clear();
     }
 
-    public static void removeEnemy(int i, boolean explode){
-        if(explode){
+    public static void removeEnemy(int i, boolean explode) {
+        if (explode) {
             explosionQueue.set(i, true);
             remove_Enemy.set(i, true);
-        }else{
+        } else {
             explosionQueue.set(i, false);
             remove_Enemy.set(i, true);
         }

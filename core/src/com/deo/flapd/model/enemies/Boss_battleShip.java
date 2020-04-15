@@ -41,19 +41,19 @@ public class Boss_battleShip {
     private Sprite cannon_homing_part2;
     private Sprite bullet, bullet2, bullet3, bullet4;
 
-    private Array <Rectangle> bullets_blue;
-    private Array <Rectangle> bullets_red;
-    private Array <Rectangle> bullets_red_big;
-    private Array <Rectangle> bullets_red_long;
-    private Array <Float> healths;
-    private Array <Float> degrees_blue;
-    private Array <Float> degrees_red;
-    private Array <Float> bullets_red_big_timers;
-    private Array <Float> bullets_red_big_timers_ideal;
-    private Array <Float> degrees_red_long;
-    private Array <Boolean> explodedCannons;
-    private Array <ParticleEffect> fires;
-    private Array <ParticleEffect> explosions;
+    private Array<Rectangle> bullets_blue;
+    private Array<Rectangle> bullets_red;
+    private Array<Rectangle> bullets_red_big;
+    private Array<Rectangle> bullets_red_long;
+    private Array<Float> healths;
+    private Array<Float> degrees_blue;
+    private Array<Float> degrees_red;
+    private Array<Float> bullets_red_big_timers;
+    private Array<Float> bullets_red_big_timers_ideal;
+    private Array<Float> degrees_red_long;
+    private Array<Boolean> explodedCannons;
+    private Array<ParticleEffect> fires;
+    private Array<ParticleEffect> explosions;
     private float millis;
     private float laserOffset, bodyOffset;
     private float dX, dY;
@@ -90,7 +90,7 @@ public class Boss_battleShip {
 
     private float soundVolume;
 
-    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds){
+    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds) {
 
         this.shipBounds = shipBounds;
 
@@ -106,7 +106,7 @@ public class Boss_battleShip {
         cannon_homing_part1 = new Sprite(bossAtlas.findRegion("upperCannon_part1"));
         cannon_homing_part2 = new Sprite(bossAtlas.findRegion("upperCannon_part2"));
         bullet = new Sprite(bossAtlas.findRegion("bullet_blue"));
-        bullet2 = new Sprite((Texture)assetManager.get("pew2.png"));
+        bullet2 = new Sprite((Texture) assetManager.get("pew2.png"));
         bullet3 = new Sprite(bossAtlas.findRegion("bullet_red_thick"));
         bullet4 = new Sprite(bossAtlas.findRegion("bullet_red"));
         main.set(main_not_wrecked);
@@ -137,9 +137,9 @@ public class Boss_battleShip {
         bounds_homing2 = new Polygon(new float[]{0f, 0f, 36, 0f, 36, 8, 0f, 8});
         bounds_cannon_front_big = new Polygon(new float[]{0f, 0f, 120, 0f, 120, 32, 0f, 32});
 
-        cannon_homing_part2.setOrigin(36,4);
+        cannon_homing_part2.setOrigin(36, 4);
         cannon_homing_part1.setOrigin(50, 14);
-        cannon_small.setOrigin(18,14);
+        cannon_small.setOrigin(18, 14);
         cannon_small2.setOrigin(28, 16);
         cannon_stage2.setOrigin(120, 16);
         main.setOrigin(278, 86);
@@ -299,7 +299,7 @@ public class Boss_battleShip {
         explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
     }
 
-    public void Spawn(){
+    public void Spawn() {
         is_spawned = true;
         animation2 = false;
         animation3 = false;
@@ -352,34 +352,34 @@ public class Boss_battleShip {
         posY = posY_original;
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused, float delta) {
+    public void draw(SpriteBatch batch, float delta) {
 
         if (is_spawned || deathAnimation) {
 
-            bounds_cannon.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon.getY()-shipBounds.getY()-30, bounds_cannon.getX()-shipBounds.getX()-30));
-            bounds_cannon2.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon2.getY()-shipBounds.getY()-30, bounds_cannon2.getX()-shipBounds.getX()-30));
-            bounds_cannon3.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon3.getY()-shipBounds.getY()-30, bounds_cannon3.getX()-shipBounds.getX()-30));
-            bounds_cannon4.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon4.getY()-shipBounds.getY()-30, bounds_cannon4.getX()-shipBounds.getX()-30));
-            bounds_cannon5.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon5.getY()-shipBounds.getY()-30, bounds_cannon5.getX()-shipBounds.getX()-30));
-            bounds_cannon6.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon6.getY()-shipBounds.getY()-30, bounds_cannon6.getX()-shipBounds.getX()-30));
-            bounds_cannon_front.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon_front.getY()-shipBounds.getY()-30, bounds_cannon_front.getX()-shipBounds.getX()-30));
-            bounds_cannon_front_big.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_cannon_front_big.getY()-shipBounds.getY()-30, bounds_cannon_front_big.getX()-shipBounds.getX()-30), -20, 20));
-            bounds_homing2.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees*MathUtils.atan2(bounds_homing2.getY()-shipBounds.getY()-30, bounds_homing2.getX()-shipBounds.getX()-30), -30, 30));
+            bounds_cannon.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon.getY() - shipBounds.getY() - 30, bounds_cannon.getX() - shipBounds.getX() - 30));
+            bounds_cannon2.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon2.getY() - shipBounds.getY() - 30, bounds_cannon2.getX() - shipBounds.getX() - 30));
+            bounds_cannon3.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon3.getY() - shipBounds.getY() - 30, bounds_cannon3.getX() - shipBounds.getX() - 30));
+            bounds_cannon4.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon4.getY() - shipBounds.getY() - 30, bounds_cannon4.getX() - shipBounds.getX() - 30));
+            bounds_cannon5.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon5.getY() - shipBounds.getY() - 30, bounds_cannon5.getX() - shipBounds.getX() - 30));
+            bounds_cannon6.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon6.getY() - shipBounds.getY() - 30, bounds_cannon6.getX() - shipBounds.getX() - 30));
+            bounds_cannon_front.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon_front.getY() - shipBounds.getY() - 30, bounds_cannon_front.getX() - shipBounds.getX() - 30));
+            bounds_cannon_front_big.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon_front_big.getY() - shipBounds.getY() - 30, bounds_cannon_front_big.getX() - shipBounds.getX() - 30), -20, 20));
+            bounds_homing2.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_homing2.getY() - shipBounds.getY() - 30, bounds_homing2.getX() - shipBounds.getX() - 30), -30, 30));
 
-            health_cannon1.setPosition(bounds_cannon.getX()+3, bounds_cannon.getY()-5);
-            health_cannon2.setPosition(bounds_cannon2.getX()+3, bounds_cannon2.getY()-5);
-            health_cannon3.setPosition(bounds_cannon3.getX()+3, bounds_cannon3.getY()-5);
-            health_cannon4.setPosition(bounds_cannon4.getX()+3, bounds_cannon4.getY()-5);
-            health_cannon5.setPosition(bounds_cannon5.getX()+3, bounds_cannon5.getY()-5);
-            health_cannon6.setPosition(bounds_cannon6.getX()+3, bounds_cannon6.getY()-5);
+            health_cannon1.setPosition(bounds_cannon.getX() + 3, bounds_cannon.getY() - 5);
+            health_cannon2.setPosition(bounds_cannon2.getX() + 3, bounds_cannon2.getY() - 5);
+            health_cannon3.setPosition(bounds_cannon3.getX() + 3, bounds_cannon3.getY() - 5);
+            health_cannon4.setPosition(bounds_cannon4.getX() + 3, bounds_cannon4.getY() - 5);
+            health_cannon5.setPosition(bounds_cannon5.getX() + 3, bounds_cannon5.getY() - 5);
+            health_cannon6.setPosition(bounds_cannon6.getX() + 3, bounds_cannon6.getY() - 5);
 
-            health_body.setPosition(bounds_body.getX()+ 250, bounds_body.getY() + 12);
+            health_body.setPosition(bounds_body.getX() + 250, bounds_body.getY() + 12);
 
-            health_cannon_homing.setPosition(bounds_homing1.getX()-2, bounds_homing1.getY() - 7);
+            health_cannon_homing.setPosition(bounds_homing1.getX() - 2, bounds_homing1.getY() - 7);
 
             health_cannon_front.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY() - 9);
 
-            health_cannon_stage2.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY()-7);
+            health_cannon_stage2.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY() - 7);
 
             health_cannon1.setValue(healths.get(1));
             health_cannon2.setValue(healths.get(2));
@@ -396,7 +396,7 @@ public class Boss_battleShip {
 
             health_cannon_stage2.setValue(healths.get(9));
 
-            if(healths.get(9)>0 && healths.get(7)>0) {
+            if (healths.get(9) > 0 && healths.get(7) > 0) {
                 bounds_cannon_front_big.setPosition(posX + 40 - laserOffset + bodyOffset, posY + 48);
 
                 health_cannon_stage2.draw(batch, 1);
@@ -405,29 +405,29 @@ public class Boss_battleShip {
                 cannon_stage2.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY());
                 cannon_stage2.setRotation(bounds_cannon_front_big.getRotation());
                 cannon_stage2.draw(batch);
-            }else{
-                if(!explodedCannons.get(8)){
+            } else {
+                if (!explodedCannons.get(8)) {
                     explodedCannons.set(8, true);
-                    play_shot_Sound(1,true, 9);
+                    play_shot_Sound(1, true, 9);
                     GameLogic.Score += 2000;
                 }
                 bounds_cannon_front_big.setPosition(-100, -100);
             }
 
-            if(healths.get(7)>0) {
-                bounds_body.setPosition(posX+bodyOffset, posY);
+            if (healths.get(7) > 0) {
+                bounds_body.setPosition(posX + bodyOffset, posY);
 
                 main.setPosition(bounds_body.getX(), bounds_body.getY());
                 main.setRotation(bounds_body.getRotation());
                 main.draw(batch);
 
-                if(stage2) {
+                if (stage2) {
                     health_body.draw(batch, 1);
                     health_body.act(delta);
                 }
 
-            }else{
-                if(!animation3){
+            } else {
+                if (!animation3) {
                     dX = posX;
                     dY = posY;
                     main.set(main_wrecked);
@@ -438,25 +438,23 @@ public class Boss_battleShip {
                     is_spawned = false;
                     stage2 = false;
                     deathAnimation = true;
-                    for (int i = 0; i<5; i++) {
-                        Bonus.Spawn(4, 1, posX + 278+i*5, posY + 86+i*5);
+                    for (int i = 0; i < 5; i++) {
+                        Bonus.Spawn(4, 1, posX + 278 + i * 5, posY + 86 + i * 5);
                     }
                     Drops.drop(bounds_body.getBoundingRectangle(), 5, 2, 5);
                     GameLogic.Score += 3000;
-                    UraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25)+10, 1, 1);
+                    UraniumCell.Spawn(posX + 278, posY + 86, random.nextInt(25) + 10, 1, 1);
                 }
                 main.setPosition(bounds_body.getX(), bounds_body.getY());
                 main.setRotation(bounds_body.getRotation());
-                bounds_body.setPosition(dX+bodyOffset, dY);
-                if(!is_paused) {
-                    bounds_body.rotate(0.2f);
-                    dX -= 0.5f;
-                    dY -= 0.5f;
-                }
+                bounds_body.setPosition(dX + bodyOffset, dY);
+                bounds_body.rotate(0.2f);
+                dX -= 50 * delta;
+                dY -= 50 * delta;
                 main.draw(batch);
             }
 
-            if(healths.get(1)>0) {
+            if (healths.get(1) > 0) {
                 bounds_cannon.setPosition(posX + 224, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon.getX(), bounds_cannon.getY());
@@ -465,8 +463,8 @@ public class Boss_battleShip {
 
                 health_cannon1.draw(batch, 1);
                 health_cannon1.act(delta);
-            }else{
-                if(!explodedCannons.get(1)){
+            } else {
+                if (!explodedCannons.get(1)) {
                     explodedCannons.set(1, true);
                     play_shot_Sound(1, true, 1);
                     GameLogic.Score += 1000;
@@ -474,7 +472,7 @@ public class Boss_battleShip {
                 bounds_cannon.setPosition(-100, -100);
             }
 
-            if(healths.get(2)>0) {
+            if (healths.get(2) > 0) {
                 bounds_cannon2.setPosition(posX + 256, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon2.getX(), bounds_cannon2.getY());
@@ -483,8 +481,8 @@ public class Boss_battleShip {
 
                 health_cannon2.draw(batch, 1);
                 health_cannon2.act(delta);
-            }else{
-                if(!explodedCannons.get(2)){
+            } else {
+                if (!explodedCannons.get(2)) {
                     explodedCannons.set(2, true);
                     play_shot_Sound(1, true, 2);
                     GameLogic.Score += 1000;
@@ -492,7 +490,7 @@ public class Boss_battleShip {
                 bounds_cannon2.setPosition(-100, -100);
             }
 
-            if(healths.get(3)>0) {
+            if (healths.get(3) > 0) {
                 bounds_cannon3.setPosition(posX + 288, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon3.getX(), bounds_cannon3.getY());
@@ -501,8 +499,8 @@ public class Boss_battleShip {
 
                 health_cannon3.draw(batch, 1);
                 health_cannon3.act(delta);
-            }else{
-                if(!explodedCannons.get(3)){
+            } else {
+                if (!explodedCannons.get(3)) {
                     explodedCannons.set(3, true);
                     play_shot_Sound(1, true, 3);
                     GameLogic.Score += 1000;
@@ -510,7 +508,7 @@ public class Boss_battleShip {
                 bounds_cannon3.setPosition(-100, -100);
             }
 
-            if(healths.get(4)>0) {
+            if (healths.get(4) > 0) {
                 bounds_cannon4.setPosition(posX + 376, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon4.getX(), bounds_cannon4.getY());
@@ -519,8 +517,8 @@ public class Boss_battleShip {
 
                 health_cannon4.draw(batch, 1);
                 health_cannon4.act(delta);
-            }else{
-                if(!explodedCannons.get(4)){
+            } else {
+                if (!explodedCannons.get(4)) {
                     explodedCannons.set(4, true);
                     play_shot_Sound(1, true, 4);
                     GameLogic.Score += 1000;
@@ -528,7 +526,7 @@ public class Boss_battleShip {
                 bounds_cannon4.setPosition(-100, -100);
             }
 
-            if(healths.get(5)>0) {
+            if (healths.get(5) > 0) {
                 bounds_cannon5.setPosition(posX + 408, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
@@ -537,8 +535,8 @@ public class Boss_battleShip {
 
                 health_cannon5.draw(batch, 1);
                 health_cannon5.act(delta);
-            }else{
-                if(!explodedCannons.get(5)){
+            } else {
+                if (!explodedCannons.get(5)) {
                     explodedCannons.set(5, true);
                     play_shot_Sound(1, true, 5);
                     GameLogic.Score += 1000;
@@ -546,7 +544,7 @@ public class Boss_battleShip {
                 bounds_cannon5.setPosition(-100, -100);
             }
 
-            if(healths.get(6)>0) {
+            if (healths.get(6) > 0) {
                 bounds_cannon6.setPosition(posX + 440, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
@@ -555,8 +553,8 @@ public class Boss_battleShip {
 
                 health_cannon6.draw(batch, 1);
                 health_cannon6.act(delta);
-            }else{
-                if(!explodedCannons.get(6)){
+            } else {
+                if (!explodedCannons.get(6)) {
                     explodedCannons.set(6, true);
                     play_shot_Sound(1, true, 6);
                     GameLogic.Score += 1000;
@@ -564,7 +562,7 @@ public class Boss_battleShip {
                 bounds_cannon6.setPosition(-100, -100);
             }
 
-            if(healths.get(8)>0) {
+            if (healths.get(8) > 0) {
                 bounds_cannon_front.setPosition(posX + 60, posY + 58);
 
                 cannon_small2.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY());
@@ -573,8 +571,8 @@ public class Boss_battleShip {
 
                 health_cannon_front.draw(batch, 1);
                 health_cannon_front.act(delta);
-            }else{
-                if(!explodedCannons.get(7)){
+            } else {
+                if (!explodedCannons.get(7)) {
                     explodedCannons.set(7, true);
                     play_shot_Sound(1, true, 7);
                     GameLogic.Score += 1500;
@@ -582,7 +580,7 @@ public class Boss_battleShip {
                 bounds_cannon_front.setPosition(-100, -100);
             }
 
-            if(healths.get(10)>0) {
+            if (healths.get(10) > 0) {
                 bounds_homing1.setPosition(posX + 94, posY + 116);
                 bounds_homing2.setPosition(posX + 67, posY + 126);
 
@@ -596,8 +594,8 @@ public class Boss_battleShip {
 
                 health_cannon_homing.draw(batch, 1);
                 health_cannon_homing.act(delta);
-            }else{
-                if(!explodedCannons.get(9)){
+            } else {
+                if (!explodedCannons.get(9)) {
                     explodedCannons.set(9, true);
                     play_shot_Sound(1, true, 8);
                     GameLogic.Score += 1500;
@@ -606,55 +604,52 @@ public class Boss_battleShip {
                 bounds_homing2.setPosition(-100, -100);
             }
 
-            if(!is_paused){
+            if (posX > 245) {
+                posX = posX - 80 * delta;
+            }
 
-                if(posX>245){
-                    posX = posX - 80*delta;
-                }
+            if (animation2) {
+                offset = offset + 2 * delta;
+            } else {
+                offset = offset - 2 * delta;
+            }
 
-                if(animation2){
-                    offset = offset + 2*delta;
-                }else{
-                    offset = offset - 2*delta;
-                }
+            if (offset > 1.3) {
+                animation2 = false;
+            }
+            if (offset < -1.3) {
+                animation2 = true;
+            }
 
-                if(offset>1.3){
-                    animation2 = false;
-                }
-                if(offset<-1.3){
-                    animation2 = true;
-                }
+            if (!explodedCannons.get(0)) {
+                posY = posY + offset;
+            }
 
-                if(!explodedCannons.get(0)){
-                    posY = posY + offset;
-                }
+            if (!stage2 && explodedCannons.get(1) && explodedCannons.get(2) && explodedCannons.get(3) && explodedCannons.get(4) && explodedCannons.get(5) && explodedCannons.get(6) && explodedCannons.get(7) && explodedCannons.get(9)) {
+                stage2 = true;
+            }
 
-                if(!stage2 && explodedCannons.get(1) && explodedCannons.get(2) && explodedCannons.get(3) && explodedCannons.get(4) && explodedCannons.get(5) && explodedCannons.get(6) && explodedCannons.get(7) && explodedCannons.get(9)){
-                    stage2 = true;
-                }
+            if (laserOffset < 140 && stage2) {
+                laserOffset++;
+            }
 
-                if(laserOffset<140 && stage2){
-                    laserOffset++;
-                }
+            if (bodyOffset < 170 && stage2) {
+                bodyOffset++;
+            }
 
-                if(bodyOffset<170 && stage2){
-                    bodyOffset++;
+            if (bounds_body.getBoundingRectangle().overlaps(shipBounds.getBoundingRectangle()) && !explodedCannons.get(0)) {
+                if (shipBounds.getX() + 76.8f > bounds_body.getX() && shipBounds.getX() + 76.8f < bounds_body.getX() + 30) {
+                    shipBounds.setPosition(bounds_body.getX() - 76.8f, shipBounds.getY());
                 }
-
-                if(bounds_body.getBoundingRectangle().overlaps(shipBounds.getBoundingRectangle()) && !explodedCannons.get(0)){
-                    if(shipBounds.getX()+76.8f>bounds_body.getX() && shipBounds.getX()+76.8f<bounds_body.getX()+30){
-                        shipBounds.setPosition(bounds_body.getX()-76.8f, shipBounds.getY());
-                    }
-                    if(shipBounds.getY()+57.6f>bounds_body.getY() && shipBounds.getY()+57.6f<bounds_body.getY()+30){
-                        shipBounds.setPosition(shipBounds.getX(), bounds_body.getY()-57.6f);
-                    }
-                    if(shipBounds.getY()<bounds_body.getY()+152 && shipBounds.getY()>bounds_body.getY()+122){
-                        shipBounds.setPosition(shipBounds.getX(), bounds_body.getY()+152);
-                    }
+                if (shipBounds.getY() + 57.6f > bounds_body.getY() && shipBounds.getY() + 57.6f < bounds_body.getY() + 30) {
+                    shipBounds.setPosition(shipBounds.getX(), bounds_body.getY() - 57.6f);
+                }
+                if (shipBounds.getY() < bounds_body.getY() + 152 && shipBounds.getY() > bounds_body.getY() + 122) {
+                    shipBounds.setPosition(shipBounds.getX(), bounds_body.getY() + 152);
                 }
             }
 
-            for (int i = 0; i<bullets_blue.size; i++){
+            for (int i = 0; i < bullets_blue.size; i++) {
 
                 Rectangle bullet = bullets_blue.get(i);
                 float degree = degrees_blue.get(i);
@@ -663,23 +658,21 @@ public class Boss_battleShip {
                 this.bullet.setSize(bullet.width, bullet.height);
                 this.bullet.draw(batch);
 
-                if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
+                bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        SpaceShip.takeDamage(5);
-                        removeBullet(i, 1);
-                    }
-
-                    if(bullet.y<-bullet.height || bullet.y>480 || bullet.x<-bullet.width || bullet.x>800){
-                        removeBullet(i, 1);
-                    }
-
+                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
+                    SpaceShip.takeDamage(5);
+                    removeBullet(i, 1);
                 }
+
+                if (bullet.y < -bullet.height || bullet.y > 480 || bullet.x < -bullet.width || bullet.x > 800) {
+                    removeBullet(i, 1);
+                }
+
             }
 
-            for (int i = 0; i<bullets_red.size; i++){
+            for (int i = 0; i < bullets_red.size; i++) {
 
                 Rectangle bullet = bullets_red.get(i);
                 float degree = degrees_red.get(i);
@@ -688,22 +681,20 @@ public class Boss_battleShip {
                 this.bullet2.setSize(bullet.width, bullet.height);
                 this.bullet2.draw(batch);
 
-                if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
+                bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        SpaceShip.takeDamage(10);
-                        removeBullet(i, 2);
-                    }
+                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
+                    SpaceShip.takeDamage(10);
+                    removeBullet(i, 2);
+                }
 
-                    if(bullet.y<-bullet.height || bullet.y>480 || bullet.x<-bullet.width || bullet.x>800){
-                        removeBullet(i, 2);
-                    }
+                if (bullet.y < -bullet.height || bullet.y > 480 || bullet.x < -bullet.width || bullet.x > 800) {
+                    removeBullet(i, 2);
                 }
             }
 
-            for (int i = 0; i<bullets_red_big.size; i++){
+            for (int i = 0; i < bullets_red_big.size; i++) {
 
                 Rectangle bullet = bullets_red_big.get(i);
                 ParticleEffect fire = fires.get(i);
@@ -719,41 +710,35 @@ public class Boss_battleShip {
                 pos1.set(bullet.x, bullet.y);
                 Vector2 pos2 = new Vector2();
                 pos2.set(shipBounds.getX(), shipBounds.getY());
-                pos1.lerp(pos2, 0.02f);
+                pos1.lerp(pos2, 2*delta);
 
                 fire.setPosition(bullet.getX() + bullet.width / 2, bullet.getY() + bullet.height / 2);
                 fire.draw(batch);
 
-                if(!is_paused) {
-                    fire.update(delta);
-                }else{
-                    fire.update(0);
+                fire.update(delta);
+
+                bullet.x = pos1.x;
+                bullet.y = pos1.y;
+
+                timer = timer - delta;
+                bullets_red_big_timers.set(i, timer);
+
+                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
+                    SpaceShip.takeDamage(15);
+                    removeBullet(i, 3);
                 }
 
-                if(!is_paused){
-                    bullet.x = pos1.x;
-                    bullet.y = pos1.y;
-
-                    timer = timer - 1*delta;
-                    bullets_red_big_timers.set(i, timer);
-
-                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        SpaceShip.takeDamage(15);
-                        removeBullet(i, 3);
-                    }
-
-                    if(bullet.y<-bullet.height || bullet.y>480 || bullet.x<-bullet.width || bullet.x>800){
-                        removeBullet(i, 3);
-                    }
+                if (bullet.y < -bullet.height || bullet.y > 480 || bullet.x < -bullet.width || bullet.x > 800) {
+                    removeBullet(i, 3);
                 }
 
-                if (timer < ideal_timer/10) {
+                if (timer < ideal_timer / 10) {
                     removeBullet(i, 3);
                 }
 
             }
 
-            for (int i = 0; i<bullets_red_long.size; i++){
+            for (int i = 0; i < bullets_red_long.size; i++) {
 
                 Rectangle bullet = bullets_red_long.get(i);
                 float degree = degrees_red_long.get(i);
@@ -763,24 +748,22 @@ public class Boss_battleShip {
                 this.bullet4.draw(batch);
                 this.bullet4.rotate(1);
 
-                if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
+                bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        SpaceShip.takeDamage(7);
-                        removeBullet(i, 4);
-                    }
+                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
+                    SpaceShip.takeDamage(7);
+                    removeBullet(i, 4);
+                }
 
-                    if(bullet.y<-bullet.height || bullet.y>480 || bullet.x<-bullet.width || bullet.x>800){
-                        removeBullet(i, 4);
-                    }
+                if (bullet.y < -bullet.height || bullet.y > 480 || bullet.x < -bullet.width || bullet.x > 800) {
+                    removeBullet(i, 4);
                 }
             }
 
-            if(posX<246) {
+            if (posX < 246) {
 
-            for(int i = 0; i< Bullet.bullets.size; i++){
+                for (int i = 0; i < Bullet.bullets.size; i++) {
 
                     if (Bullet.bullets.get(i).overlaps(bounds_cannon.getBoundingRectangle())) {
                         healths.set(1, healths.get(1) - Bullet.damages.get(i));
@@ -815,17 +798,13 @@ public class Boss_battleShip {
                     }
 
                 }
-                shoot(is_paused, delta);
+                shoot(delta);
             }
 
-            for(int i3 = 0; i3 < explosions.size; i3 ++){
+            for (int i3 = 0; i3 < explosions.size; i3++) {
                 explosions.get(i3).draw(batch);
-                if(!is_paused) {
-                    explosions.get(i3).update(delta);
-                }else{
-                    explosions.get(i3).update(0);
-                }
-                if(explosions.get(i3).isComplete()){
+                explosions.get(i3).update(delta);
+                if (explosions.get(i3).isComplete()) {
                     explosions.get(i3).dispose();
                     explosions.removeIndex(i3);
                 }
@@ -833,23 +812,23 @@ public class Boss_battleShip {
 
         }
 
-        if(deathAnimation){
-            millis2 += 3*delta;
-            if(millis2>50){
+        if (deathAnimation) {
+            millis2 += 3 * delta;
+            if (millis2 > 50) {
                 deathAnimation = false;
             }
         }
     }
 
-    private void shoot(boolean is_paused, float delta){
-        if (millis > 10 && !is_paused){
-            int cannon = random.nextInt(9)+1;
+    private void shoot(float delta) {
+        if (millis > 10) {
+            int cannon = random.nextInt(9) + 1;
 
             Rectangle bullet = new Rectangle();
 
-            switch (cannon){
-                case(1):
-                    if(healths.get(1)>0) {
+            switch (cannon) {
+                case (1):
+                    if (healths.get(1) > 0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon.getX() + bounds_cannon.getBoundingRectangle().width / 2 - 7;
                         bullet.x -= MathUtils.cosDeg(bounds_cannon.getRotation()) * 19;
@@ -861,8 +840,8 @@ public class Boss_battleShip {
                         play_shot_Sound(2, false, 0);
                     }
                     break;
-                case(2):
-                    if(healths.get(2)>0) {
+                case (2):
+                    if (healths.get(2) > 0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon2.getX() + bounds_cannon2.getBoundingRectangle().width / 2 - 7;
                         bullet.x -= MathUtils.cosDeg(bounds_cannon2.getRotation()) * 19;
@@ -874,8 +853,8 @@ public class Boss_battleShip {
                         play_shot_Sound(2, false, 0);
                     }
                     break;
-                case(3):
-                    if(healths.get(3)>0) {
+                case (3):
+                    if (healths.get(3) > 0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon3.getX() + bounds_cannon3.getBoundingRectangle().width / 2 - 7;
                         bullet.x -= MathUtils.cosDeg(bounds_cannon3.getRotation()) * 19;
@@ -887,11 +866,11 @@ public class Boss_battleShip {
                         play_shot_Sound(2, false, 0);
                     }
                     break;
-                case(4):
-                    if(healths.get(4)>0) {
+                case (4):
+                    if (healths.get(4) > 0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon4.getX() + bounds_cannon4.getBoundingRectangle().width / 2 - 7;
-                        bullet.x -= MathUtils.cosDeg(bounds_cannon4.getRotation()) * 19 ;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon4.getRotation()) * 19;
                         bullet.y = bounds_cannon4.getY() + bounds_cannon4.getBoundingRectangle().height / 2 - 7;
                         bullet.y -= MathUtils.sinDeg(bounds_cannon4.getRotation()) * 19;
                         bullets_blue.add(bullet);
@@ -900,8 +879,8 @@ public class Boss_battleShip {
                         play_shot_Sound(2, false, 0);
                     }
                     break;
-                case(5):
-                    if(healths.get(5)>0) {
+                case (5):
+                    if (healths.get(5) > 0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon5.getX() + bounds_cannon5.getBoundingRectangle().width / 2 - 7;
                         bullet.x -= MathUtils.cosDeg(bounds_cannon5.getRotation()) * 19;
@@ -913,8 +892,8 @@ public class Boss_battleShip {
                         play_shot_Sound(2, false, 0);
                     }
                     break;
-                case(6):
-                    if(healths.get(6)>0) {
+                case (6):
+                    if (healths.get(6) > 0) {
                         bullet.setSize(14, 14);
                         bullet.x = bounds_cannon6.getX() + bounds_cannon6.getBoundingRectangle().width / 2 - 7;
                         bullet.x -= MathUtils.cosDeg(bounds_cannon6.getRotation()) * 19;
@@ -926,80 +905,83 @@ public class Boss_battleShip {
                         play_shot_Sound(2, false, 0);
                     }
                     break;
-                case(7): if(healths.get(8)>0) {
-                    bullet.setSize(12, 12);
-                    bullet.x = bounds_cannon_front.getX() + bounds_cannon_front.getBoundingRectangle().width / 2 - 3;
-                    bullet.x -= MathUtils.cosDeg(bounds_cannon_front.getRotation()) * 22;
-                    bullet.y = bounds_cannon_front.getY() + bounds_cannon_front.getBoundingRectangle().height / 2 - 6;
-                    bullet.y -= MathUtils.sinDeg(bounds_cannon_front.getRotation()) * 22;
-                    bullets_red.add(bullet);
-                    degrees_red.add(bounds_cannon_front.getRotation());
+                case (7):
+                    if (healths.get(8) > 0) {
+                        bullet.setSize(12, 12);
+                        bullet.x = bounds_cannon_front.getX() + bounds_cannon_front.getBoundingRectangle().width / 2 - 3;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon_front.getRotation()) * 22;
+                        bullet.y = bounds_cannon_front.getY() + bounds_cannon_front.getBoundingRectangle().height / 2 - 6;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon_front.getRotation()) * 22;
+                        bullets_red.add(bullet);
+                        degrees_red.add(bounds_cannon_front.getRotation());
 
-                    play_shot_Sound(1, false, 0);
-                }
+                        play_shot_Sound(1, false, 0);
+                    }
                     break;
-                case(8): if(healths.get(9)>0 && stage2) {
-                    bullet.setSize(28, 28);
-                    bullet.x = bounds_cannon_front_big.getX() + bounds_cannon_front_big.getBoundingRectangle().width / 2 - 14;
-                    bullet.x -= MathUtils.cosDeg(bounds_cannon_front_big.getRotation()) * 52.7f;
-                    bullet.y = bounds_cannon_front_big.getY() + bounds_cannon_front_big.getBoundingRectangle().height / 2 - 14;
-                    bullet.y -= MathUtils.sinDeg(bounds_cannon_front_big.getRotation()) * 52.7f;
-                    bullets_red_big.add(bullet);
-                    bullets_red_big_timers.add(3.5f);
-                    bullets_red_big_timers_ideal.add(3.5f);
+                case (8):
+                    if (healths.get(9) > 0 && stage2) {
+                        bullet.setSize(28, 28);
+                        bullet.x = bounds_cannon_front_big.getX() + bounds_cannon_front_big.getBoundingRectangle().width / 2 - 14;
+                        bullet.x -= MathUtils.cosDeg(bounds_cannon_front_big.getRotation()) * 52.7f;
+                        bullet.y = bounds_cannon_front_big.getY() + bounds_cannon_front_big.getBoundingRectangle().height / 2 - 14;
+                        bullet.y -= MathUtils.sinDeg(bounds_cannon_front_big.getRotation()) * 52.7f;
+                        bullets_red_big.add(bullet);
+                        bullets_red_big_timers.add(3.5f);
+                        bullets_red_big_timers_ideal.add(3.5f);
 
-                    ParticleEffect fire = new ParticleEffect();
-                    fire.load(Gdx.files.internal("particles/bullet_trail_left.p"), Gdx.files.internal("particles"));
-                    fire.start();
+                        ParticleEffect fire = new ParticleEffect();
+                        fire.load(Gdx.files.internal("particles/bullet_trail_left.p"), Gdx.files.internal("particles"));
+                        fire.start();
 
-                    fires.add(fire);
+                        fires.add(fire);
 
-                    play_shot_Sound(4, false, 0);
-                }
+                        play_shot_Sound(4, false, 0);
+                    }
                     break;
-                case(9): if(healths.get(10)>0) {
-                    bullet.setSize(54, 12);
-                    bullet.x = bounds_homing2.getX() + bounds_homing2.getBoundingRectangle().width / 2 - 7;
-                    bullet.x -= MathUtils.cosDeg(bounds_homing2.getRotation()) * 35.7f;
-                    bullet.y = bounds_homing2.getY() + bounds_homing2.getBoundingRectangle().height / 2 - 7;
-                    bullet.y -= MathUtils.sinDeg(bounds_homing2.getRotation()) * 35.7f;
-                    bullets_red_long.add(bullet);
-                    degrees_red_long.add(bounds_homing2.getRotation());
+                case (9):
+                    if (healths.get(10) > 0) {
+                        bullet.setSize(54, 12);
+                        bullet.x = bounds_homing2.getX() + bounds_homing2.getBoundingRectangle().width / 2 - 7;
+                        bullet.x -= MathUtils.cosDeg(bounds_homing2.getRotation()) * 35.7f;
+                        bullet.y = bounds_homing2.getY() + bounds_homing2.getBoundingRectangle().height / 2 - 7;
+                        bullet.y -= MathUtils.sinDeg(bounds_homing2.getRotation()) * 35.7f;
+                        bullets_red_long.add(bullet);
+                        degrees_red_long.add(bounds_homing2.getRotation());
 
-                    play_shot_Sound(3, false, 0);
-                }
+                        play_shot_Sound(3, false, 0);
+                    }
                     break;
             }
             millis = 0;
         }
-        millis=millis+60*delta;
+        millis += 60 * delta;
     }
 
-    private void removeBullet(int i, int type){
-        switch (type){
-            case(1):
+    private void removeBullet(int i, int type) {
+        switch (type) {
+            case (1):
                 bullets_blue.removeIndex(i);
                 degrees_blue.removeIndex(i);
                 break;
-            case(2):
+            case (2):
                 bullets_red.removeIndex(i);
                 degrees_red.removeIndex(i);
                 break;
-            case(3):
+            case (3):
                 bullets_red_big.removeIndex(i);
                 bullets_red_big_timers.removeIndex(i);
                 bullets_red_big_timers_ideal.removeIndex(i);
                 fires.get(i).dispose();
                 fires.removeIndex(i);
                 break;
-            case(4):
+            case (4):
                 bullets_red_long.removeIndex(i);
                 degrees_red_long.removeIndex(i);
                 break;
         }
     }
 
-    public void dispose(){
+    public void dispose() {
         bullets_blue.clear();
         bullets_red.clear();
         bullets_red_big.clear();
@@ -1018,12 +1000,12 @@ public class Boss_battleShip {
         shot4.dispose();
         explosion.dispose();
 
-        for(int i3 = 0; i3 < fires.size; i3 ++){
+        for (int i3 = 0; i3 < fires.size; i3++) {
             fires.get(i3).dispose();
             fires.removeIndex(i3);
         }
 
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
@@ -1031,73 +1013,73 @@ public class Boss_battleShip {
     }
 
     private void play_shot_Sound(int shotType, boolean explosion, int cannon) {
-            if (!explosion) {
-                if (soundVolume>0) {
-                    switch (shotType) {
-                        case (1):
-                            shot.play(soundVolume/100);
-                            break;
-                        case (2):
-                            shot2.play(soundVolume/100);
-                            break;
-                        case (3):
-                            shot3.play(soundVolume/100);
-                            break;
-                        case (4):
-                            shot4.play(soundVolume/100);
-                            break;
-                    }
-                }
-            } else {
-                if (soundVolume>0) {
-                    this.explosion.play(soundVolume/100);
-                }
+        if (!explosion) {
+            if (soundVolume > 0) {
                 switch (shotType) {
                     case (1):
-                        ParticleEffect explosionEffect = new ParticleEffect();
-                        explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                        switch (cannon) {
-                            case (1):
-                                explosionEffect.setPosition(bounds_cannon.getX(), bounds_cannon.getY());
-                                break;
-                            case (2):
-                                explosionEffect.setPosition(bounds_cannon2.getX(), bounds_cannon2.getY());
-                                break;
-                            case (3):
-                                explosionEffect.setPosition(bounds_cannon3.getX(), bounds_cannon3.getY());
-                                break;
-                            case (4):
-                                explosionEffect.setPosition(bounds_cannon4.getX(), bounds_cannon4.getY());
-                                break;
-                            case (5):
-                                explosionEffect.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
-                                break;
-                            case (6):
-                                explosionEffect.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
-                                break;
-                            case (7):
-                                explosionEffect.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY());
-                                break;
-                            case (8):
-                                explosionEffect.setPosition(bounds_homing1.getX(), bounds_homing1.getY());
-                                break;
-                            case (9):
-                                explosionEffect.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY());
-                                break;
-                        }
-                        explosionEffect.start();
-                        explosions.add(explosionEffect);
+                        shot.play(soundVolume / 100);
                         break;
                     case (2):
-                        for (int i = 0; i < 5; i++) {
-                            ParticleEffect explosionEffect2 = new ParticleEffect();
-                            explosionEffect2.load(Gdx.files.internal("particles/explosion2.p"), Gdx.files.internal("particles"));
-                            explosionEffect2.setPosition(posX + i * 100 + 100, posY + i * 10);
-                            explosionEffect2.start();
-                            explosions.add(explosionEffect2);
-                        }
+                        shot2.play(soundVolume / 100);
+                        break;
+                    case (3):
+                        shot3.play(soundVolume / 100);
+                        break;
+                    case (4):
+                        shot4.play(soundVolume / 100);
                         break;
                 }
             }
+        } else {
+            if (soundVolume > 0) {
+                this.explosion.play(soundVolume / 100);
+            }
+            switch (shotType) {
+                case (1):
+                    ParticleEffect explosionEffect = new ParticleEffect();
+                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
+                    switch (cannon) {
+                        case (1):
+                            explosionEffect.setPosition(bounds_cannon.getX(), bounds_cannon.getY());
+                            break;
+                        case (2):
+                            explosionEffect.setPosition(bounds_cannon2.getX(), bounds_cannon2.getY());
+                            break;
+                        case (3):
+                            explosionEffect.setPosition(bounds_cannon3.getX(), bounds_cannon3.getY());
+                            break;
+                        case (4):
+                            explosionEffect.setPosition(bounds_cannon4.getX(), bounds_cannon4.getY());
+                            break;
+                        case (5):
+                            explosionEffect.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
+                            break;
+                        case (6):
+                            explosionEffect.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
+                            break;
+                        case (7):
+                            explosionEffect.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY());
+                            break;
+                        case (8):
+                            explosionEffect.setPosition(bounds_homing1.getX(), bounds_homing1.getY());
+                            break;
+                        case (9):
+                            explosionEffect.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY());
+                            break;
+                    }
+                    explosionEffect.start();
+                    explosions.add(explosionEffect);
+                    break;
+                case (2):
+                    for (int i = 0; i < 5; i++) {
+                        ParticleEffect explosionEffect2 = new ParticleEffect();
+                        explosionEffect2.load(Gdx.files.internal("particles/explosion2.p"), Gdx.files.internal("particles"));
+                        explosionEffect2.setPosition(posX + i * 100 + 100, posY + i * 10);
+                        explosionEffect2.start();
+                        explosions.add(explosionEffect2);
+                    }
+                    break;
+            }
+        }
     }
 }

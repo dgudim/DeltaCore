@@ -39,9 +39,10 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.updateCamera;
+import static com.deo.flapd.view.GameScreen.is_paused;
 
 
-public class GameUi{
+public class GameUi {
 
     private Viewport viewport;
     private Stage stage, PauseStage;
@@ -88,8 +89,6 @@ public class GameUi{
 
     private boolean showFps;
 
-    private float lastFps;
-
     private Game game;
 
     private AssetManager assetManager;
@@ -107,7 +106,7 @@ public class GameUi{
 
     private PostProcessor blurProcessor;
 
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, SpaceShip Ship){
+    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, SpaceShip Ship) {
 
         this.game = game;
 
@@ -141,17 +140,17 @@ public class GameUi{
         pauseButton_o = new Texture("buttonPauseBlank_over.png");
         pauseButton_d = new Texture("buttonPauseBlank_disabled.png");
 
-        fireButton = new Image((Texture)assetManager.get("firebutton.png"));
-        weaponChangeButton = new Image((Texture)assetManager.get("weaponbutton.png"));
-        pause = new Image((Texture)assetManager.get("pause.png"));
-        levelScore = new Image((Texture)assetManager.get("level score indicator.png"));
-        money_display = new Image((Texture)assetManager.get("money_display.png"));
-        pause2 = new Image((Texture)assetManager.get("health indicator.png"));
+        fireButton = new Image((Texture) assetManager.get("firebutton.png"));
+        weaponChangeButton = new Image((Texture) assetManager.get("weaponbutton.png"));
+        pause = new Image((Texture) assetManager.get("pause.png"));
+        levelScore = new Image((Texture) assetManager.get("level score indicator.png"));
+        money_display = new Image((Texture) assetManager.get("money_display.png"));
+        pause2 = new Image((Texture) assetManager.get("health indicator.png"));
 
-        pause2.setBounds(658-142*(uiScale-1), 398-82*(uiScale-1), 142*uiScale, 82*uiScale);
-        pause.setBounds(770-32*(uiScale-1), 450-32*(uiScale-1),29*uiScale,29*uiScale);
-        levelScore.setBounds(516-284*(uiScale-1), 398-82*(uiScale-1), 142*uiScale,82*uiScale);
-        money_display.setBounds(374-426*(uiScale-1), 428-52*(uiScale-1), 142 *uiScale,52*uiScale);
+        pause2.setBounds(658 - 142 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
+        pause.setBounds(770 - 32 * (uiScale - 1), 450 - 32 * (uiScale - 1), 29 * uiScale, 29 * uiScale);
+        levelScore.setBounds(516 - 284 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
+        money_display.setBounds(374 - 426 * (uiScale - 1), 428 - 52 * (uiScale - 1), 142 * uiScale, 52 * uiScale);
 
         font_numbers = assetManager.get("fonts/font.fnt");
         font_white = assetManager.get("fonts/font_white.fnt");
@@ -176,7 +175,7 @@ public class GameUi{
         table.add(weaponChangeButton).padRight(5);
         table.add(fireButton);
         table.row();
-        table.setBounds(511-283*(uiScale-1.1f),5, 283.5f*(uiScale-0.1f), 69.75f*(uiScale-0.1f));
+        table.setBounds(511 - 283 * (uiScale - 1.1f), 5, 283.5f * (uiScale - 0.1f), 69.75f * (uiScale - 0.1f));
 
         pauseButtonStyle = new TextButton.TextButtonStyle();
         pauseButtonStyle.font = font_buttons;
@@ -201,62 +200,62 @@ public class GameUi{
         exit_button.getLabel().setFontScale(0.5f);
 
         Pause = new Table();
-        Pause.setBounds(400-600*uiScale/2, 240-360*uiScale/2, 600*uiScale, 360*uiScale);
-        Pause.add(continue_button).padRight(340.5f*(uiScale-1)).padTop(50*(uiScale-1));
+        Pause.setBounds(400 - 600 * uiScale / 2, 240 - 360 * uiScale / 2, 600 * uiScale, 360 * uiScale);
+        Pause.add(continue_button).padRight(340.5f * (uiScale - 1)).padTop(50 * (uiScale - 1));
         Pause.row();
-        Pause.add(restart_button).padTop(15*uiScale+43*(uiScale-1)).padBottom(15*uiScale+43*(uiScale-1)).padRight(340.5f*(uiScale-1));
+        Pause.add(restart_button).padTop(15 * uiScale + 43 * (uiScale - 1)).padBottom(15 * uiScale + 43 * (uiScale - 1)).padRight(340.5f * (uiScale - 1));
         Pause.row();
-        Pause.add(exit_button).padRight(341*(uiScale-1));
+        Pause.add(exit_button).padRight(341 * (uiScale - 1));
 
         Pause.setBackground(pause_skin.getDrawable("pauseBg"));
 
         touchpad_skin = new Skin();
-        touchpad_skin.add("touchBg",touch_bg);
-        touchpad_skin.add("touchKnob",knob);
+        touchpad_skin.add("touchBg", touch_bg);
+        touchpad_skin.add("touchKnob", knob);
 
         touchpadStyle = new Touchpad.TouchpadStyle();
         touchpadStyle.background = touchpad_skin.getDrawable("touchBg");
         touchpadStyle.knob = touchpad_skin.getDrawable("touchKnob");
-        touchpadStyle.knob.setMinWidth(22*uiScale);
-        touchpadStyle.knob.setMinHeight(22*uiScale);
+        touchpadStyle.knob.setMinWidth(22 * uiScale);
+        touchpadStyle.knob.setMinHeight(22 * uiScale);
 
         touchpad = new Touchpad(0, touchpadStyle);
         touchpad.setResetOnTouchUp(true);
 
-        if(transparency) {
+        if (transparency) {
             touchpad.setColor(1, 1, 1, 0.7f);
         }
 
-        touchpad.setBounds(10, 10, 110*uiScale, 110*uiScale);
+        touchpad.setBounds(10, 10, 110 * uiScale, 110 * uiScale);
 
         healthBarStyle = new ProgressBar.ProgressBarStyle();
         shieldBarStyle = new ProgressBar.ProgressBarStyle();
 
-        Pixmap pixmap = new Pixmap(100, (int)(12*uiScale), Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
         TextureRegionDrawable BarBackground = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
         pixmap.dispose();
 
-        Pixmap pixmap2 = new Pixmap(0, (int)(12*uiScale), Pixmap.Format.RGBA8888);
+        Pixmap pixmap2 = new Pixmap(0, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap2.setColor(Color.GREEN);
         pixmap2.fill();
         TextureRegionDrawable BarForeground1 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap2)));
         pixmap2.dispose();
 
-        Pixmap pixmap3 = new Pixmap(100, (int)(12*uiScale), Pixmap.Format.RGBA8888);
+        Pixmap pixmap3 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap3.setColor(Color.GREEN);
         pixmap3.fill();
         TextureRegionDrawable BarForeground2 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap3)));
         pixmap3.dispose();
 
-        Pixmap pixmap4 = new Pixmap(0, (int)(12*uiScale), Pixmap.Format.RGBA8888);
+        Pixmap pixmap4 = new Pixmap(0, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap4.setColor(Color.CYAN);
         pixmap4.fill();
         TextureRegionDrawable BarForeground3 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap4)));
         pixmap4.dispose();
 
-        Pixmap pixmap5 = new Pixmap(100, (int)(12*uiScale), Pixmap.Format.RGBA8888);
+        Pixmap pixmap5 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap5.setColor(Color.CYAN);
         pixmap5.fill();
         TextureRegionDrawable BarForeground4 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap5)));
@@ -273,23 +272,22 @@ public class GameUi{
         health = new ProgressBar(0, 100, 0.01f, false, healthBarStyle);
         shield = new ProgressBar(0, 100, 0.01f, false, shieldBarStyle);
 
-        health.setBounds(666-134*(uiScale-1),413-62*(uiScale-1),124*uiScale,10);
-        shield.setBounds(666-134*(uiScale-1),435-40*(uiScale-1),72*uiScale,10);
+        health.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
+        shield.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);
 
         health.setAnimateDuration(0.25f);
         shield.setAnimateDuration(0.25f);
 
-        if(transparency){
-            health.setColor(1,1,1, 0.5f);
-            shield.setColor(1,1,1, 0.5f);
-            pause.setColor(1,1,1, 0.5f);
-            pause2.setColor(1,1,1, 0.5f);
-            levelScore.setColor(1,1,1, 0.5f);
-            money_display.setColor(1,1,1,0.5f);
-            font_numbers.setColor(0,1,1,0.5f);
-        }
-        else{
-            font_numbers.setColor(0,1,1,1);
+        if (transparency) {
+            health.setColor(1, 1, 1, 0.5f);
+            shield.setColor(1, 1, 1, 0.5f);
+            pause.setColor(1, 1, 1, 0.5f);
+            pause2.setColor(1, 1, 1, 0.5f);
+            levelScore.setColor(1, 1, 1, 0.5f);
+            money_display.setColor(1, 1, 1, 0.5f);
+            font_numbers.setColor(0, 1, 1, 0.5f);
+        } else {
+            font_numbers.setColor(0, 1, 1, 1);
         }
 
         stage.addActor(pause2);
@@ -304,7 +302,7 @@ public class GameUi{
         PauseStage.addActor(Pause);
 
         explosion = new ParticleEffect();
-        explosion.load(Gdx.files.internal("particles/"+new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
+        explosion.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
 
         touchpad.addListener(new ChangeListener() {
 
@@ -343,51 +341,53 @@ public class GameUi{
             }
         });
 
-        pause.addListener(new InputListener(){
+        pause.addListener(new InputListener() {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                GameScreen.is_paused = true;
+                is_paused = true;
                 return true;
             }
         });
 
-        continue_button.addListener(new ClickListener(){
+        continue_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(GameScreen.is_paused) {
-                    GameScreen.is_paused = false;
+                if (is_paused) {
+                    is_paused = false;
                 }
             }
         });
 
-        exit_button.addListener(new ClickListener(){
+        exit_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(GameScreen.is_paused) {
+                if (is_paused) {
                     game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
-                    GameScreen.is_paused = false;
+                    is_paused = false;
                 }
             }
         });
 
-        restart_button.addListener(new ClickListener(){
+        restart_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(GameScreen.is_paused) {
+                if (is_paused) {
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
-                    GameScreen.is_paused = false;
+                    is_paused = false;
                 }
             }
         });
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
 
-        }
+    }
 
-    public void draw(boolean is_paused, float delta) {
+    public void draw() {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
+        float delta = Gdx.graphics.getDeltaTime();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             game.pause();
         }
 
@@ -395,28 +395,25 @@ public class GameUi{
         stage.draw();
         stage.act(delta);
         batch.begin();
-        font_numbers.getData().setScale(0.3f*uiScale);
-        font_numbers.draw(batch, ""+ GameLogic.Score, 537-263*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
-        font_numbers.draw(batch, ""+GameLogic.money, (537-122)-(263+122)*(uiScale-1), 467-12*(uiScale-1), 100*uiScale,1, false);
-        font_main.getData().setScale(0.27f*uiScale);
-        font_main.draw(batch, "Difficulty: "+difficulty+"X", 544-263*(uiScale-1), 433-45*(uiScale-1), 100*uiScale,1, false);
+        font_numbers.getData().setScale(0.3f * uiScale);
+        font_numbers.draw(batch, "" + GameLogic.Score, 537 - 263 * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
+        font_numbers.draw(batch, "" + GameLogic.money, (537 - 122) - (263 + 122) * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
+        font_main.getData().setScale(0.27f * uiScale);
+        font_main.draw(batch, "Difficulty: " + difficulty + "X", 544 - 263 * (uiScale - 1), 433 - 45 * (uiScale - 1), 100 * uiScale, 1, false);
 
-        if(showFps) {
+        if (showFps) {
             font_main.setColor(Color.WHITE);
-            if(Math.abs(lastFps - 1/delta+1)>5) {
-                lastFps = 1 / delta;
-            }
-            font_main.getData().setScale(0.45f + 0.225f *(uiScale-1));
-            font_main.draw(batch, "Fps: " + String.format ("%.0f",lastFps), 3, 475);
+            font_main.getData().setScale(0.45f + 0.225f * (uiScale - 1));
+            font_main.draw(batch, "Fps: " + String.format("%.0f", 1 / delta), 3, 475);
         }
 
-        if(is_paused) {
-            batch.draw(PauseBg, 0 ,0 , 800, 480);
+        if (is_paused) {
+            batch.draw(PauseBg, 0, 0, 800, 480);
         }
 
         batch.end();
 
-        if (is_paused){
+        if (is_paused) {
             PauseStage.draw();
             PauseStage.act(delta);
         }
@@ -425,7 +422,7 @@ public class GameUi{
         health.setValue(SpaceShip.Health);
         shield.setValue(SpaceShip.Shield);
 
-        if(SpaceShip.Health <= 0 && !exploded){
+        if (SpaceShip.Health <= 0 && !exploded) {
             explosion.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
             explosion.start();
             exploded = true;
@@ -434,31 +431,31 @@ public class GameUi{
             ship.explode();
         }
 
-        if(transparency){
-            font_main.setColor(0,0,0,0.7f);
-        }else{
-            font_main.setColor(0,0,0,1);
+        if (transparency) {
+            font_main.setColor(0, 0, 0, 0.7f);
+        } else {
+            font_main.setColor(0, 0, 0, 1);
         }
 
-        if(SpaceShip.Shield<100 && !is_paused){
-            SpaceShip.Shield += 2*delta;
+        if (SpaceShip.Shield < 100 && !is_paused) {
+            SpaceShip.Shield += 3 * delta;
         }
     }
 
-    void drawExplosion(float delta){
-        if(exploded){
+    void drawExplosion(float delta) {
+        if (exploded) {
             explosion.draw(batch, delta);
-            if(explosion.isComplete()){
+            if (explosion.isComplete()) {
                 game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor));
             }
         }
     }
 
-    void resize(int width, int height){
+    void resize(int width, int height) {
         updateCamera(cam, viewport, width, height);
     }
 
-    public void dispose(){
+    public void dispose() {
 
         stage.dispose();
         PauseStage.dispose();
@@ -481,11 +478,11 @@ public class GameUi{
         putInteger("money", GameLogic.money);
     }
 
-    float getDeltaX(){
+    float getDeltaX() {
         return deltaX;
     }
 
-    float getDeltaY(){
+    float getDeltaY() {
         return deltaY;
     }
 }

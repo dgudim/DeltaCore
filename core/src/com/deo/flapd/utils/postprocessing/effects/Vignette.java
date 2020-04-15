@@ -140,5 +140,5 @@ public final class Vignette extends PostProcessorEffect {
 	public void render (FrameBuffer src, FrameBuffer dest) {
 		restoreViewport(dest);
 		vignetting.setInput(src).setOutput(dest).render();
-	};
+	}
 }

@@ -11,15 +11,15 @@ public class SpaceShip extends ShipObject {
         super((Texture)assetManager.get("ship.png"),(Texture)assetManager.get("ColdShield.png"), x, y, width, height, newGame);
     }
 
-    public void drawBase(SpriteBatch batch, boolean is_paused){
-        super.draw(batch, is_paused);
+    public void drawBase(SpriteBatch batch, float delta){
+        super.draw(batch, delta);
     }
 
-    public void DrawShield(SpriteBatch batch, boolean is_paused){
-        super.drawShield(batch ,is_paused, MathUtils.clamp(SpaceShip.Shield/100, 0, 1));
+    public void DrawShield(SpriteBatch batch, float delta){
+        super.drawShield(batch, MathUtils.clamp(SpaceShip.Shield/100, 0, 1), delta);
     }
 
-    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
-        super.drawEffects(batch, delta, is_paused);
+    public void drawEffects(SpriteBatch batch, float delta){
+        super.drawEffects(batch, delta);
     }
 }

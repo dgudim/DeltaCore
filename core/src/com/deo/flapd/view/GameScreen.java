@@ -36,7 +36,7 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
-public class GameScreen implements Screen{
+public class GameScreen implements Screen {
 
     private Texture bg1;
     private Texture bg2;
@@ -83,7 +83,7 @@ public class GameScreen implements Screen{
 
     private Enemies enemies;
 
-    GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame){
+    GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame) {
 
         this.game = game;
 
@@ -107,7 +107,7 @@ public class GameScreen implements Screen{
 
         uraniumCell = new UraniumCell(assetManager);
 
-        boss_battleShip =  new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
+        boss_battleShip = new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
 
         boss_evilEye = new Boss_evilEye(assetManager, ship.getBounds());
 
@@ -119,7 +119,7 @@ public class GameScreen implements Screen{
 
         bullet = new Bullet(assetManager, ship.getBounds(), newGame);
 
-        kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), getBoolean("easterEgg"));
+        kamikadze = new Kamikadze(assetManager, 348, 192, ship.getBounds(), getBoolean("easterEgg"));
 
         enemies = new Enemies(assetManager);
         enemies.loadEnemies();
@@ -132,11 +132,11 @@ public class GameScreen implements Screen{
 
         musicVolume = getFloat("musicVolume");
 
-        if(musicVolume > 0) {
+        if (musicVolume > 0) {
             Music = true;
         }
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+getRandomInRange(1, 5)+".ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/main" + getRandomInRange(1, 5) + ".ogg"));
 
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
@@ -151,21 +151,25 @@ public class GameScreen implements Screen{
     @Override
     public void render(float delta) {
 
-        Gdx.gl.glClearColor(0,0,0,1);
+        if (is_paused) {
+            delta = 0;
+        }
+
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(!is_paused && !ship.isExploded()) {
+        if (!is_paused && !ship.isExploded()) {
             gameLogic.handleInput(delta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
-            executor.execute(new Runnable(){
+            executor.execute(new Runnable() {
                 @Override
-                public void run(){
+                public void run() {
                     try {
                         gameLogic.detectCollisions(is_paused);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
                         String fullStackTrace = sw.toString();
-                        log("\n"+fullStackTrace + "\n");
+                        log("\n" + fullStackTrace + "\n");
                     }
                 }
             });
@@ -174,26 +178,26 @@ public class GameScreen implements Screen{
         if (enableShader) {
             postProcessor.capture();
         }
-            batch.begin();
+        batch.begin();
 
-            batch.draw(bg1, 0, 0, (int)(movement / 4), -240, 800, 720);
-            batch.draw(bg2, 0, 0, (int)(movement / 2), -240, 800, 720);
-            batch.draw(bg3, 0, 0, (int)movement, -240, 800, 720);
+        batch.draw(bg1, 0, 0, (int) (movement / 4), -240, 800, 720);
+        batch.draw(bg2, 0, 0, (int) (movement / 2), -240, 800, 720);
+        batch.draw(bg3, 0, 0, (int) movement, -240, 800, 720);
 
-            bonus.draw(batch, delta, is_paused);
-            drops.draw(batch, delta, is_paused);
-            uraniumCell.draw(batch, delta, is_paused);
+        bonus.draw(batch, delta);
+        drops.draw(batch, delta);
+        uraniumCell.draw(batch, delta);
 
-            ship.drawEffects(batch, delta, is_paused);
-            enemies.drawEffects(batch);
-            kamikadze.drawEffects(batch, delta, is_paused);
-            boss_battleShip.draw(batch, is_paused, delta);
-            boss_evilEye.draw(batch, is_paused, delta);
-            meteorite.drawEffects(batch, delta, is_paused);
-            checkpoint.drawEffects(batch, delta, is_paused);
-            bullet.draw(batch, delta, is_paused);
+        ship.drawEffects(batch, delta);
+        enemies.drawEffects(batch);
+        kamikadze.drawEffects(batch, delta);
+        boss_battleShip.draw(batch, delta);
+        boss_evilEye.draw(batch, delta);
+        meteorite.drawEffects(batch, delta);
+        checkpoint.drawEffects(batch, delta);
+        bullet.draw(batch, delta);
 
-            gameUi.drawExplosion(delta);
+        gameUi.drawExplosion(delta);
 
         if (enableShader) {
             batch.end();
@@ -201,41 +205,39 @@ public class GameScreen implements Screen{
             batch.begin();
         }
 
-            ship.drawBase(batch, is_paused);
-            enemies.draw(batch);
-            enemies.update(delta);
-            kamikadze.drawBase(batch, delta, is_paused);
-            meteorite.drawBase(batch, delta, is_paused);
-            checkpoint.drawBase(batch, is_paused);
+        ship.drawBase(batch, delta);
+        enemies.draw(batch);
+        enemies.update(delta);
+        kamikadze.drawBase(batch, delta);
+        meteorite.drawBase(batch, delta);
+        checkpoint.drawBase(batch);
 
-            ship.DrawShield(batch, is_paused);
+        ship.DrawShield(batch, delta);
 
-            gameUi.draw(is_paused, delta);
+        gameUi.draw();
 
-            if(!is_paused){
-                movement += (200 * delta);
-                if(movement> 2880){
-                    movement = 0;
-                }
+        movement += (200 * delta);
+        if (movement > 2880) {
+            movement = 0;
+        }
+
+        for (int i = 0; i < fillingThreshold; i++) {
+            batch.draw(FillTexture, 0, -72 * (i + 1), 456, 72);
+            batch.draw(FillTexture, 456, -72 * (i + 1), 456, 72);
+            batch.draw(FillTexture, 0, 408 + 72 * (i + 1), 456, 72);
+            batch.draw(FillTexture, 456, 408 + 72 * (i + 1), 456, 72);
+        }
+
+        for (int i = 0; i < (fillingThreshold / 6) + 1; i++) {
+            for (int i2 = 0; i2 < 7; i2++) {
+                batch.draw(FillTexture, -456 - 456 * i, 408 - i2 * 72, 456, 72);
+                batch.draw(FillTexture, 800 + 456 * i, 408 - i2 * 72, 456, 72);
             }
+        }
 
-            for(int i = 0; i< fillingThreshold; i++){
-                batch.draw(FillTexture, 0, -72*(i+1), 456, 72);
-                batch.draw(FillTexture, 456, -72*(i+1), 456, 72);
-                batch.draw(FillTexture, 0, 408+72*(i+1), 456, 72);
-                batch.draw(FillTexture, 456, 408+72*(i+1), 456, 72);
-            }
+        batch.end();
 
-            for(int i = 0; i<(fillingThreshold /6)+1; i++) {
-                for(int i2=0; i2<7; i2++) {
-                    batch.draw(FillTexture, -456 - 456 * i, 408-i2*72, 456, 72);
-                    batch.draw(FillTexture, 800 + 456 * i, 408-i2*72, 456, 72);
-                }
-            }
-
-            batch.end();
-
-        if(Music) {
+        if (Music) {
 
             if (millis > 10) {
                 if (music.getPosition() > 65 && music.getPosition() < 69 && music.getVolume() > 0) {
@@ -250,9 +252,9 @@ public class GameScreen implements Screen{
             millis = millis + 50 * delta;
             millis2 = millis2 + 0.5f * delta;
 
-            if(millis2 > 100){
+            if (millis2 > 100) {
                 music.dispose();
-                music = Gdx.audio.newMusic(Gdx.files.internal("music/main"+ getRandomInRange(1, 5)+".ogg"));
+                music = Gdx.audio.newMusic(Gdx.files.internal("music/main" + getRandomInRange(1, 5) + ".ogg"));
                 music.setPosition(1);
                 music.setVolume(0);
                 music.play();
@@ -263,7 +265,7 @@ public class GameScreen implements Screen{
     }
 
     @Override
-    public void resize(int width, int height){
+    public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
         gameUi.resize(width, height);
     }
@@ -287,19 +289,21 @@ public class GameScreen implements Screen{
     @Override
     public void dispose() {
 
-    gameUi.dispose();
-    meteorite.dispose();
-    bullet.dispose();
+        gameUi.dispose();
+        meteorite.dispose();
+        bullet.dispose();
 
-    ship.dispose();
+        ship.dispose();
 
-    boss_battleShip.dispose();
-    boss_evilEye.dispose();
+        boss_battleShip.dispose();
+        boss_evilEye.dispose();
 
-    music.dispose();
+        music.dispose();
 
-    bonus.dispose();
-    drops.dispose();
-    uraniumCell.dispose();
+        bonus.dispose();
+        drops.dispose();
+        uraniumCell.dispose();
+
+        enemies.dispose();
     }
 }

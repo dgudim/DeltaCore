@@ -27,9 +27,9 @@ public class Checkpoint {
     private float destination_posY;
     private Random random;
 
-    public Checkpoint(AssetManager assetManager, Polygon shipBounds){
-        checkpoint_blue = new Sprite((Texture)assetManager.get("checkpoint.png"));
-        checkpoint_green = new Sprite((Texture)assetManager.get("checkpoint_green.png"));
+    public Checkpoint(AssetManager assetManager, Polygon shipBounds) {
+        checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
+        checkpoint_green = new Sprite((Texture) assetManager.get("checkpoint_green.png"));
 
         bounds = new Polygon(new float[]{0f, 0f, 102, 0f, 102, 102, 0f, 102});
 
@@ -39,18 +39,18 @@ public class Checkpoint {
 
         bounds.setPosition(-200, -200);
 
-        checkpoint_blue.setSize(0,0);
-        checkpoint_green.setSize(0,0);
+        checkpoint_blue.setSize(0, 0);
+        checkpoint_green.setSize(0, 0);
         checkpoint_blue.setPosition(1000, 1000);
         checkpoint_green.setPosition(1000, 1000);
     }
 
-    public void Spawn(float destination_posX, float destination_posY, float speed){
+    public void Spawn(float destination_posX, float destination_posY, float speed) {
         this.destination_posX = destination_posX;
         this.destination_posY = destination_posY;
         this.speed = speed;
 
-        bounds.setPosition(950, random.nextInt(201)+100);
+        bounds.setPosition(950, random.nextInt(201) + 100);
 
         fire = new ParticleEffect();
         fire.load(Gdx.files.internal("particles/fire_down.p"), Gdx.files.internal("particles"));
@@ -66,58 +66,51 @@ public class Checkpoint {
         checkpointState = false;
     }
 
-    public void drawEffects(SpriteBatch batch, float delta, boolean is_paused){
-        if(effects) {
+    public void drawEffects(SpriteBatch batch, float delta) {
+        if (effects) {
             fire.setPosition(bounds.getX() + 18, bounds.getY() + 14);
             fire2.setPosition(bounds.getX() + 84, bounds.getY() + 14);
 
-            if (!is_paused) {
-                fire.draw(batch, delta);
-                fire2.draw(batch, delta);
-            } else {
-                fire.draw(batch, 0);
-                fire2.draw(batch, 0);
-            }
+            fire.draw(batch, delta);
+            fire2.draw(batch, delta);
         }
     }
 
-    public void drawBase(SpriteBatch batch, boolean is_paused){
+    public void drawBase(SpriteBatch batch) {
 
-        if(!is_paused) {
-            if (destination_posX < bounds.getX()) {
-                bounds.setPosition(bounds.getX() - speed, bounds.getY());
-            }
-
-            if (destination_posY < bounds.getY()) {
-                bounds.setPosition(bounds.getX(), bounds.getY() - speed);
-            }
-
-            if (destination_posY > bounds.getY()) {
-                bounds.setPosition(bounds.getX(), bounds.getY() + speed);
-            }
+        if (destination_posX < bounds.getX()) {
+            bounds.setPosition(bounds.getX() - speed, bounds.getY());
         }
 
-        if(checkpointState){
+        if (destination_posY < bounds.getY()) {
+            bounds.setPosition(bounds.getX(), bounds.getY() - speed);
+        }
+
+        if (destination_posY > bounds.getY()) {
+            bounds.setPosition(bounds.getX(), bounds.getY() + speed);
+        }
+
+        if (checkpointState) {
             checkpoint_green.setPosition(bounds.getX(), bounds.getY());
-            checkpoint_green.setOrigin(bounds.getBoundingRectangle().getWidth()/2, bounds.getBoundingRectangle().getHeight()/2);
+            checkpoint_green.setOrigin(bounds.getBoundingRectangle().getWidth() / 2, bounds.getBoundingRectangle().getHeight() / 2);
             checkpoint_green.setSize(bounds.getBoundingRectangle().getWidth(), bounds.getBoundingRectangle().getHeight());
             checkpoint_green.draw(batch);
-        }else{
+        } else {
             checkpoint_blue.setPosition(bounds.getX(), bounds.getY());
-            checkpoint_blue.setOrigin(bounds.getBoundingRectangle().getWidth()/2, bounds.getBoundingRectangle().getHeight()/2);
+            checkpoint_blue.setOrigin(bounds.getBoundingRectangle().getWidth() / 2, bounds.getBoundingRectangle().getHeight() / 2);
             checkpoint_blue.setSize(bounds.getBoundingRectangle().getWidth(), bounds.getBoundingRectangle().getHeight());
             checkpoint_blue.draw(batch);
         }
 
-        if(shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && SpaceShip.Health>0 && !checkpointState){
+        if (shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && SpaceShip.Health > 0 && !checkpointState) {
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();
             speed = 5;
-            putInteger("enemiesKilled",GameLogic.enemiesKilled);
-            putInteger("moneyEarned",GameLogic.moneyEarned);
-            putInteger("enemiesSpawned",GameLogic.enemiesSpawned);
-            putInteger("Score",GameLogic.Score);
+            putInteger("enemiesKilled", GameLogic.enemiesKilled);
+            putInteger("moneyEarned", GameLogic.moneyEarned);
+            putInteger("enemiesSpawned", GameLogic.enemiesSpawned);
+            putInteger("Score", GameLogic.Score);
             putFloat("Health", SpaceShip.Health);
             putFloat("Shield", SpaceShip.Shield);
             putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
@@ -131,7 +124,7 @@ public class Checkpoint {
             putInteger("money", GameLogic.money);
         }
 
-        if (bounds.getY() > 850 && checkpointState){
+        if (bounds.getY() > 850 && checkpointState) {
             fire.dispose();
             fire2.dispose();
             checkpointState = false;

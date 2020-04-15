@@ -208,23 +208,23 @@
         "fire": {
           "count": 2,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [270, 114],
-          "scale0": 1,
+          "offset0": [80, 14],
+          "scale0": 0.5,
           "effect1": "particles/fire_engine_left_blue.p",
-          "offset1": [270, 74],
-          "scale1": 1
+          "offset1": [80, 34],
+          "scale1": 0.5
         },
         "speed": 80,
         "health": 400,
-        "shootingDelay": 0.07,
+        "shootingDelay": 0.5,
         "hitColor": "#FF0000",
-        "height": 94,
-        "width": 168
+        "height": 47,
+        "width": 84
       },
       "bullet": {
         "texture": "pew.png",
         "shootSound": "sfx/gun2.ogg",
-        "speed": 250,
+        "speed": 450,
         "spread": 0,
         "bulletsPerShot": 1,
         "damage": 30,
@@ -233,9 +233,9 @@
         "trailScale": 0.3,
         "explosionEffect": "particles/explosion3.p",
         "explosionScale": 1,
-        "height": 12,
-        "width": 100,
-        "offset": [3, 17]
+        "height": 6,
+        "width": 50,
+        "offset": [3, 11]
       }
     },
 
@@ -248,20 +248,20 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [275, 74],
+          "offset0": [77, 16],
           "scale0": 1
         },
         "speed": 80,
         "health": 400,
-        "shootingDelay": 0.07,
+        "shootingDelay": 0.5,
         "hitColor": "#FF0000",
-        "height": 94,
-        "width": 183
+        "height": 47,
+        "width": 91.5
       },
       "bullet": {
         "texture": "whiskas.png",
         "shootSound": "sfx/mewcat.ogg",
-        "speed": 250,
+        "speed": 450,
         "spread": 0,
         "bulletsPerShot": 1,
         "damage": 30,
@@ -270,18 +270,18 @@
         "trailScale": 0.3,
         "explosionEffect": "particles/explosion3.p",
         "explosionScale": 1,
-        "height": 12,
-        "width": 100,
-        "offset": [3, 17]
+        "height": 6,
+        "width": 50,
+        "offset": [3, 11]
       }
     },
 
-    "spawnDelay": 0.08,
+    "spawnDelay": 0.6,
     "spawnHeight": [20, 420],
 
     "spawnConditions": {
       "score": [-1, 300000],
-      "enemiesKilled":[50, 5000],
+      "enemiesKilled":[0, 5000],
       "bossWave": false
     },
 

@@ -69,7 +69,7 @@ public class Boss_evilEye {
 
     private float soundVolume;
 
-    public Boss_evilEye(AssetManager assetManager, Polygon shipBounds){
+    public Boss_evilEye(AssetManager assetManager, Polygon shipBounds) {
 
         soundVolume = getFloat("soundVolume");
 
@@ -84,12 +84,12 @@ public class Boss_evilEye {
         up = new Image(bossAtlas.createSprite("evil_up"));
         down = new Image(bossAtlas.createSprite("evil_down"));
         center = new Image(bossAtlas.createSprite("evil_center"));
-        laser = new Sprite((Texture)assetManager.get("laser.png"));
+        laser = new Sprite((Texture) assetManager.get("laser.png"));
 
         cannon = new Sprite(bossAtlas.findRegion("evil_cannon"));
         body = new Sprite(bossAtlas.findRegion("evil_base"));
-        bullet = new Sprite((Texture)assetManager.get("pew2.png"));
-        shield = new Sprite((Texture)assetManager.get("HotShield.png"));
+        bullet = new Sprite((Texture) assetManager.get("pew2.png"));
+        shield = new Sprite((Texture) assetManager.get("HotShield.png"));
 
         this.shipBounds = shipBounds;
 
@@ -161,7 +161,7 @@ public class Boss_evilEye {
         healthBarStyle2.knobBefore = BarForeground4;
         healthBarStyle2.background = BarBackground2;
 
-        for(int i = 0; i < 10; i++){
+        for (int i = 0; i < 10; i++) {
             ProgressBar healthBar = new ProgressBar(0, 500, 0.01f, false, healthBarStyle);
             healthBar.setValue(500);
             healthBar.setSize(30, 14);
@@ -180,7 +180,7 @@ public class Boss_evilEye {
         fire.load(Gdx.files.internal("particles/fire2.p"), Gdx.files.internal("particles"));
     }
 
-    public void Spawn(){
+    public void Spawn() {
         float rotation = 0;
         bodyBounds.setPosition(1000, 176);
         posX = 320;
@@ -194,10 +194,10 @@ public class Boss_evilEye {
         health.setSize(12);
         cannonBounds.setSize(10);
         degrees.setSize(10);
-        for(int i = 0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             Rectangle cannon = new Rectangle().setSize(60);
             rotation += 36;
-            cannon.setPosition(bodyBounds.getX()+34-MathUtils.cosDeg(rotation) * 130, bodyBounds.getY()+34-MathUtils.sinDeg(rotation) * 130);
+            cannon.setPosition(bodyBounds.getX() + 34 - MathUtils.cosDeg(rotation) * 130, bodyBounds.getY() + 34 - MathUtils.sinDeg(rotation) * 130);
             cannonBounds.set(i, cannon);
             degrees.set(i, rotation);
             health.set(i, 500f);
@@ -206,11 +206,11 @@ public class Boss_evilEye {
         health.set(11, 1000f);
     }
 
-    public void draw(SpriteBatch batch, boolean is_paused, float delta){
-        if(is_spawned) {
+    public void draw(SpriteBatch batch, float delta) {
+        if (is_spawned) {
             body.setPosition(bodyBounds.getX(), bodyBounds.getY());
             body.draw(batch);
-            if(!stage2) {
+            if (!stage2) {
                 rotation = MathUtils.atan2(bodyBounds.getY() - shipBounds.getY() + 25, bodyBounds.getX() - shipBounds.getX()) * MathUtils.radiansToDegrees;
                 if (rotation >= -22.5 && rotation <= 22.5) {
                     left.setPosition(bodyBounds.getX(), bodyBounds.getY());
@@ -237,29 +237,27 @@ public class Boss_evilEye {
                     up_left.setPosition(bodyBounds.getX(), bodyBounds.getY());
                     up_left.draw(batch, 1);
                 }
-            }else{
+            } else {
                 center.setPosition(bodyBounds.getX(), bodyBounds.getY());
                 center.draw(batch, 1);
             }
 
             for (int i = 0; i < 10; i++) {
-                if(health.get(i)>0) {
+                if (health.get(i) > 0) {
                     cannon.setPosition(bodyBounds.getX() + 34 - MathUtils.cosDeg(degrees.get(i)) * 130, bodyBounds.getY() + 34 - MathUtils.sinDeg(degrees.get(i)) * 130);
                     cannonBounds.get(i).setPosition(bodyBounds.getX() + 34 - MathUtils.cosDeg(degrees.get(i)) * 130, bodyBounds.getY() + 34 - MathUtils.sinDeg(degrees.get(i)) * 130);
                     cannon.setSize(cannonBounds.get(i).getWidth(), cannonBounds.get(i).getHeight());
                     cannon.draw(batch);
                 }
-                if(!is_paused) {
-                    degrees.set(i, degrees.get(i) - 30*delta);
-                }
-                if(health.get(i) > 0) {
+                degrees.set(i, degrees.get(i) - 30 * delta);
+                if (health.get(i) > 0) {
                     healthBars.get(i).setPosition(bodyBounds.getX() + 34 - MathUtils.cosDeg(degrees.get(i)) * 130 + 14, bodyBounds.getY() + 34 - MathUtils.sinDeg(degrees.get(i)) * 130 - 10);
                     healthBars.get(i).setValue(health.get(i));
                     healthBars.get(i).draw(batch, 1);
                     healthBars.get(i).act(delta);
-                }else if(health.get(i) > -100){
+                } else if (health.get(i) > -100) {
                     explode(i, false);
-                    if(random.nextBoolean()) {
+                    if (random.nextBoolean()) {
                         Bonus.Spawn(random.nextInt(5), 1, cannonBounds.get(i));
                     }
                     Drops.drop(cannonBounds.get(i), 1, 2, 3);
@@ -269,71 +267,63 @@ public class Boss_evilEye {
                 }
             }
 
-            if(stage2) {
-                if(!is_laserFire){
+            if (stage2) {
+                if (!is_laserFire) {
                     is_laserFire = true;
                     fire.start();
                 }
-                if(animation && !is_paused){
-                    shieldSize += 240 * delta;
-                    laserSaw.setVolume(soundId, MathUtils.clamp(shieldSize/192, 0, 1));
-                    if(shieldSize>=192){
-                        animation = false;
-                    }
+                shieldSize += 240 * delta;
+                laserSaw.setVolume(soundId, MathUtils.clamp(shieldSize / 192, 0, 1));
+                if (shieldSize >= 192) {
+                    animation = false;
                 }
-                rotation = MathUtils.atan2( bodyBounds.getY() - shipBounds.getY() + 35.2f,  bodyBounds.getX() - shipBounds.getX() + 25.6f) * MathUtils.radiansToDegrees;
-                for(int i = 0; i < 300; i++){
-                    laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth()/2 - MathUtils.cosDeg(rotation) * 2 * i, bodyBounds.getY() + 64 - laser.getHeight()/2 - MathUtils.sinDeg(rotation) * 2*i);
-                    laser.setColor(new Color().fromHsv(i/9f, 1, 1).add(0,0,0,1));
-                    laser.setSize(2, 9*health.get(10)/2000);
-                    laserTip.setSize(2, 9*health.get(10)/2000).setPosition(laser.getX(), laser.getY());
+                rotation = MathUtils.atan2(bodyBounds.getY() - shipBounds.getY() + 35.2f, bodyBounds.getX() - shipBounds.getX() + 25.6f) * MathUtils.radiansToDegrees;
+                for (int i = 0; i < 300; i++) {
+                    laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth() / 2 - MathUtils.cosDeg(rotation) * 2 * i, bodyBounds.getY() + 64 - laser.getHeight() / 2 - MathUtils.sinDeg(rotation) * 2 * i);
+                    laser.setColor(new Color().fromHsv(i / 9f, 1, 1).add(0, 0, 0, 1));
+                    laser.setSize(2, 9 * health.get(10) / 2000);
+                    laserTip.setSize(2, 9 * health.get(10) / 2000).setPosition(laser.getX(), laser.getY());
                     laser.setRotation(rotation);
-                    laser.setOrigin(laser.getWidth()/2, laser.getHeight()/2);
+                    laser.setOrigin(laser.getWidth() / 2, laser.getHeight() / 2);
                     laser.draw(batch);
-                    if(laserTip.overlaps(shipBounds.getBoundingRectangle())){
-                        for(int i2 = i+1; i2 < i + 10; i2++){
-                            laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth()/2 - MathUtils.cosDeg(rotation) * 2 * i2, bodyBounds.getY() + 64 - laser.getHeight()/2 - MathUtils.sinDeg(rotation) * 2 * i2);
-                            laser.setColor(new Color().fromHsv(i2/9f, 1, 1).add(0,0,0,1));
-                            laser.setSize(2, 9*health.get(10)/2000);
-                            laserTip.setSize(2, 9*health.get(10)/2000).setPosition(laser.getX(), laser.getY());
-                            fire.setPosition(laser.getX(), laser.getY()+4.5f);
+                    if (laserTip.overlaps(shipBounds.getBoundingRectangle())) {
+                        for (int i2 = i + 1; i2 < i + 10; i2++) {
+                            laser.setPosition(bodyBounds.getX() + 64 - laser.getWidth() / 2 - MathUtils.cosDeg(rotation) * 2 * i2, bodyBounds.getY() + 64 - laser.getHeight() / 2 - MathUtils.sinDeg(rotation) * 2 * i2);
+                            laser.setColor(new Color().fromHsv(i2 / 9f, 1, 1).add(0, 0, 0, 1));
+                            laser.setSize(2, 9 * health.get(10) / 2000);
+                            laserTip.setSize(2, 9 * health.get(10) / 2000).setPosition(laser.getX(), laser.getY());
+                            fire.setPosition(laser.getX(), laser.getY() + 4.5f);
                             fire.draw(batch);
-                            if(is_paused){
-                                fire.update(0);
-                            }else{
-                                fire.update(delta);
-                            }
+                            fire.update(0);
                             laser.setRotation(rotation);
-                            laser.setOrigin(laser.getWidth()/2, laser.getHeight()/2);
+                            laser.setOrigin(laser.getWidth() / 2, laser.getHeight() / 2);
                             laser.draw(batch);
                         }
-                        if(!is_paused) {
-                            float multiplier = laser.getWidth()/4;
-                            SpaceShip.takeDamage(0.2f*multiplier);
-                        }
+                        float multiplier = laser.getWidth() / 4;
+                        SpaceShip.takeDamage(multiplier * 20 * delta);
                         break;
                     }
                 }
-                shield.setPosition(bodyBounds.getX()+64-shieldSize/2, bodyBounds.getY()+64-shieldSize/2);
+                shield.setPosition(bodyBounds.getX() + 64 - shieldSize / 2, bodyBounds.getY() + 64 - shieldSize / 2);
                 shield.setSize(shieldSize, shieldSize);
-                shield.setAlpha(MathUtils.clamp(health.get(11)/1000, 0,1));
+                shield.setAlpha(MathUtils.clamp(health.get(11) / 1000, 0, 1));
                 shield.draw(batch);
                 healthBars.get(10).setPosition(bodyBounds.getX() + 24, bodyBounds.getY() - 15);
                 healthBars.get(10).setValue(health.get(10));
                 healthBars.get(10).draw(batch, 1);
                 healthBars.get(10).act(delta);
 
-                if(health.get(11) < 1000 && !is_paused){
-                    health.set(11, health.get(11)+90*delta);
+                if (health.get(11) < 1000) {
+                    health.set(11, health.get(11) + 90 * delta);
                 }
             }
 
-            if(health.get(0) < 0 && health.get(1) < 0 && health.get(2) < 0 && health.get(3) < 0 && health.get(4) < 0 && health.get(5) < 0 && health.get(6) < 0 && health.get(7) < 0 && health.get(8) < 0 && health.get(9) < 0 && !stage2){
+            if (health.get(0) < 0 && health.get(1) < 0 && health.get(2) < 0 && health.get(3) < 0 && health.get(4) < 0 && health.get(5) < 0 && health.get(6) < 0 && health.get(7) < 0 && health.get(8) < 0 && health.get(9) < 0 && !stage2) {
                 stage2 = true;
                 soundId = laserSaw.loop(0);
             }
 
-            if(is_in_position) {
+            if (is_in_position) {
                 for (int i = 0; i < Bullet.bullets.size; i++) {
                     for (int i2 = 0; i2 < 10; i2++) {
                         if (Bullet.bullets.get(i).overlaps(cannonBounds.get(i2))) {
@@ -341,25 +331,25 @@ public class Boss_evilEye {
                             health.set(i2, health.get(i2) - Bullet.damages.get(i));
                         }
                     }
-                    if(stage2){
-                        if(health.get(11) > 0) {
+                    if (stage2) {
+                        if (health.get(11) > 0) {
                             if (Bullet.bullets.get(i).overlaps(bodyBounds)) {
                                 Bullet.removeBullet(i, true);
                                 health.set(11, health.get(11) - Bullet.damages.get(i));
                             }
-                        }else{
+                        } else {
                             if (Bullet.bullets.get(i).overlaps(bodyBounds)) {
                                 Bullet.removeBullet(i, true);
                                 health.set(10, health.get(10) - Bullet.damages.get(i));
                             }
                         }
-                        if(health.get(10) > -100f && health.get(10) < 0){
+                        if (health.get(10) > -100f && health.get(10) < 0) {
                             health.set(10, -100f);
                             explode(0, true);
                             GameLogic.Score += 3000;
-                            UraniumCell.Spawn(bodyBounds, random.nextInt(20)+5, 1, 1);
-                            for (int i3 = 0; i3<5; i3++) {
-                                Bonus.Spawn(4, 1, bodyBounds.getX() + i*5, bodyBounds.getY() + i*5);
+                            UraniumCell.Spawn(bodyBounds, random.nextInt(20) + 5, 1, 1);
+                            for (int i3 = 0; i3 < 5; i3++) {
+                                Bonus.Spawn(4, 1, bodyBounds.getX() + i * 5, bodyBounds.getY() + i * 5);
                             }
                             Drops.drop(bodyBounds, 5, 2, 4);
                             laserSaw.stop();
@@ -369,17 +359,15 @@ public class Boss_evilEye {
                 }
             }
 
-            if( bodyBounds.getX() > posX && !is_paused){
-                bodyBounds.setX(bodyBounds.getX()-80*delta);
-            }else if(!is_in_position && !is_paused){
+            if (bodyBounds.getX() > posX) {
+                bodyBounds.setX(bodyBounds.getX() - 80 * delta);
+            } else if (!is_in_position) {
                 is_in_position = true;
             }
 
-            if(!is_paused) {
-                shoot(delta);
-            }
+            shoot(delta);
 
-            for(int i = 0; i<bullets.size; i++){
+            for (int i = 0; i < bullets.size; i++) {
                 Rectangle bullet = bullets.get(i);
                 float degree = degrees2.get(i);
 
@@ -387,98 +375,92 @@ public class Boss_evilEye {
                 this.bullet.setSize(10, 10);
                 this.bullet.draw(batch);
 
-                if(!is_paused){
-                    bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
-                    bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
+                bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
+                bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                    if(bullet.overlaps(shipBounds.getBoundingRectangle())){
-                        SpaceShip.takeDamage(1);
-                        removeBullet(i);
-                    }
-
-                    if(bullet.y<-bullet.height || bullet.y>480 || bullet.x<-bullet.width || bullet.x>800){
-                        removeBullet(i);
-                    }
-
+                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
+                    SpaceShip.takeDamage(1);
+                    removeBullet(i);
                 }
+
+                if (bullet.y < -bullet.height || bullet.y > 480 || bullet.x < -bullet.width || bullet.x > 800) {
+                    removeBullet(i);
+                }
+
             }
-            if(bodyBounds.overlaps(shipBounds.getBoundingRectangle())){
-                if(shipBounds.getX()+76.8f>bodyBounds.getX() && shipBounds.getX()+76.8f<bodyBounds.getX()+30){
-                    shipBounds.setPosition(bodyBounds.getX()-76.8f, shipBounds.getY());
+            if (bodyBounds.overlaps(shipBounds.getBoundingRectangle())) {
+                if (shipBounds.getX() + 76.8f > bodyBounds.getX() && shipBounds.getX() + 76.8f < bodyBounds.getX() + 30) {
+                    shipBounds.setPosition(bodyBounds.getX() - 76.8f, shipBounds.getY());
                 }
-                if(shipBounds.getY()+57.6f>bodyBounds.getY() && shipBounds.getY()+57.6f<bodyBounds.getY()+30){
-                    shipBounds.setPosition(shipBounds.getX(), bodyBounds.getY()-57.6f);
+                if (shipBounds.getY() + 57.6f > bodyBounds.getY() && shipBounds.getY() + 57.6f < bodyBounds.getY() + 30) {
+                    shipBounds.setPosition(shipBounds.getX(), bodyBounds.getY() - 57.6f);
                 }
-                if(shipBounds.getY()<bodyBounds.getY()+128 && shipBounds.getY()>bodyBounds.getY()+98){
-                    shipBounds.setPosition(shipBounds.getX(), bodyBounds.getY()+128);
+                if (shipBounds.getY() < bodyBounds.getY() + 128 && shipBounds.getY() > bodyBounds.getY() + 98) {
+                    shipBounds.setPosition(shipBounds.getX(), bodyBounds.getY() + 128);
                 }
-                if(shipBounds.getX()<bodyBounds.getX()+128 && shipBounds.getX()>bodyBounds.getX()+98){
-                    shipBounds.setPosition(bodyBounds.getX()+128, shipBounds.getY());
+                if (shipBounds.getX() < bodyBounds.getX() + 128 && shipBounds.getX() > bodyBounds.getX() + 98) {
+                    shipBounds.setPosition(bodyBounds.getX() + 128, shipBounds.getY());
                 }
             }
         }
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(delta);
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
+            explosions.get(i3).update(delta);
+            if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
             }
         }
     }
 
-    private void shoot(float delta){
-        if(millis > 7 && is_in_position) {
+    private void shoot(float delta) {
+        if (millis > 7 && is_in_position) {
             Rectangle bullet = new Rectangle();
             int num = random.nextInt(10);
-            if(health.get(num) > 0) {
+            if (health.get(num) > 0) {
                 bullet.setPosition(cannonBounds.get(num).getX() + 25, cannonBounds.get(num).getY() + 25);
                 bullet.setSize(10);
                 degrees2.add(MathUtils.radiansToDegrees * MathUtils.atan2(bullet.getY() - shipBounds.getY() - 30, bullet.getX() - shipBounds.getX() - 30));
                 bullets.add(bullet);
-                if (soundVolume>0) {
+                if (soundVolume > 0) {
                     shot.play(soundVolume / 100);
                 }
             }
             millis = 0;
         }
-        millis=millis+60*delta;
+        millis += 60 * delta;
     }
 
-    private void removeBullet(int i){
+    private void removeBullet(int i) {
         bullets.removeIndex(i);
         degrees2.removeIndex(i);
     }
 
-    private void explode(int i, boolean explodeBody){
+    private void explode(int i, boolean explodeBody) {
         ParticleEffect explosionEffect = new ParticleEffect();
-        if(!explodeBody) {
+        if (!explodeBody) {
             explosionEffect.load(Gdx.files.internal("particles/explosion_evil_small.p"), Gdx.files.internal("particles"));
             explosionEffect.setPosition(cannonBounds.get(i).getX() + 30, cannonBounds.get(i).getY() + 30);
             explosionEffect.start();
-        }else{
+        } else {
             explosionEffect.load(Gdx.files.internal("particles/explosion_evil.p"), Gdx.files.internal("particles"));
             explosionEffect.setPosition(bodyBounds.getX() + 64, bodyBounds.getY() + 64);
             explosionEffect.start();
         }
         explosions.add(explosionEffect);
-        if (soundVolume>0) {
+        if (soundVolume > 0) {
             explosion.play(soundVolume / 100);
         }
     }
 
-    private void reset(){
+    private void reset() {
         Spawn();
         is_spawned = false;
         GameLogic.bossWave = false;
         fire.reset();
     }
 
-    public void dispose(){
+    public void dispose() {
         bullets.clear();
         degrees.clear();
         degrees2.clear();
@@ -488,7 +470,7 @@ public class Boss_evilEye {
         laserSaw.stop();
         laserSaw.dispose();
         explosion.dispose();
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }

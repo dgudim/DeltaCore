@@ -13,6 +13,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
+import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
@@ -124,9 +125,25 @@ public class Enemy {
             }
         }
 
+        for(int i = 0; i < Meteorite.meteorites.size; i++){
+            if(Meteorite.meteorites.get(i).overlaps(enemy.getBoundingRectangle())){
+                data.currentColor = Color.valueOf(data.hitColor);
+                if(data.health>Meteorite.healths.get(i)){
+                    data.health -= Meteorite.healths.get(i);
+                    Meteorite.removeMeteorite(i, true);
+                }else if(data.health==Meteorite.healths.get(i)){
+                    data.health = 0;
+                    Meteorite.removeMeteorite(i, true);
+                }else if(data.health>Meteorite.healths.get(i)){
+                    Meteorite.healths.set(i, Meteorite.healths.get(i)-data.health);
+                    data.health = 0;
+                }
+            }
+        }
+
         if(SpaceShip.bounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
             kill();
-            SpaceShip.Health -= data.health/3f;
+            SpaceShip.takeDamage(data.health/3f);
         }
 
         if(data.health<=0 && !isDead){
@@ -147,6 +164,9 @@ public class Enemy {
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.dispose();
+        for(int i = 0; i<bullets.size; i++){
+            bullets.get(i).dispose();
+        }
     }
 
     private void kill(){

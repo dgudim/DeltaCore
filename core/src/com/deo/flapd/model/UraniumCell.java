@@ -57,7 +57,7 @@ public class UraniumCell {
         }
     }
 
-    public void draw(SpriteBatch batch, float delta, boolean is_paused) {
+    public void draw(SpriteBatch batch, float delta) {
         for (int i = 0; i < cells.size; i++) {
             Rectangle cell = cells.get(i);
             float degree = degrees.get(i);
@@ -70,23 +70,21 @@ public class UraniumCell {
             this.cell.setColor(1 - (pack_level - 1) / 4, 1 - (pack_level - 1) / 4, 1, 1);
             this.cell.draw(batch);
 
-            if (!is_paused) {
-                if (timer > 0) {
-                    cell.x -= MathUtils.cosDeg(degree) * timer * 30 * delta;
-                    cell.y -= MathUtils.sinDeg(degree) * timer * 30 * delta;
-                } else {
-                    Vector2 pos1 = new Vector2();
-                    pos1.set(cell.x, cell.y);
-                    Vector2 pos2 = new Vector2();
-                    pos2.set(376 - 400 * (uiScaling - 1), 435 - 20 * (uiScaling - 1));
-                    pos1.lerp(pos2, 0.05f);
+            if (timer > 0) {
+                cell.x -= MathUtils.cosDeg(degree) * timer * 30 * delta;
+                cell.y -= MathUtils.sinDeg(degree) * timer * 30 * delta;
+            } else {
+                Vector2 pos1 = new Vector2();
+                pos1.set(cell.x, cell.y);
+                Vector2 pos2 = new Vector2();
+                pos2.set(376 - 400 * (uiScaling - 1), 435 - 20 * (uiScaling - 1));
+                pos1.lerp(pos2, 0.05f);
 
-                    cell.x = pos1.x;
-                    cell.y = pos1.y;
-                }
-                timer = timer - 1 * delta;
-                timers.set(i, timer);
+                cell.x = pos1.x;
+                cell.y = pos1.y;
             }
+            timer = timer - delta;
+            timers.set(i, timer);
 
             if (cell.y > 435 - 20 * (uiScaling - 1) - 2 * uiScaling && cell.x > 376 - 400 * (uiScaling - 1) - 10 * uiScaling && cell.x < 376 - 400 * (uiScaling - 1) + 10 * uiScaling) {
                 removeCell(i);

@@ -30,8 +30,8 @@ public class Bullet {
     public static Array<Rectangle> bullets;
     public static Array<Integer> damages;
     private Array<Float> degrees;
-    private Array <ParticleEffect> explosions;
-    private Array <Boolean> types;
+    private Array<ParticleEffect> explosions;
+    private Array<Boolean> types;
     private Sprite bullet;
 
     private Sound shot;
@@ -63,19 +63,19 @@ public class Bullet {
 
         TextureAtlas bullets = assetManager.get("bullets.atlas");
 
-        bullet = new Sprite (bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
+        bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
         effect = treeJson.get(getString("currentCannon")).get("usesEffect").asString();
         String[] params = treeJson.get(getString("currentCannon")).get("parameters").asStringArray();
         float[] paramValues = treeJson.get(getString("currentCannon")).get("parameterValues").asFloatArray();
-        for (int i = 0; i<params.length; i++){
-            if(params[i].endsWith("damage")){
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].endsWith("damage")) {
                 damage = (int) paramValues[i];
             }
-            if(params[i].endsWith("shooting speed")){
+            if (params[i].endsWith("shooting speed")) {
                 shootingSpeedMultiplier = paramValues[i];
             }
-            if(params[i].endsWith("spread")){
+            if (params[i].endsWith("spread")) {
                 spread = paramValues[i];
             }
         }
@@ -89,13 +89,13 @@ public class Bullet {
         remove_Bullet = new Array<>();
         types = new Array<>();
 
-        if(!newGame){
+        if (!newGame) {
             bulletsShot = getInteger("bulletsShot");
-        }else {
+        } else {
             bulletsShot = 0;
         }
 
-        this.laser = new Sprite((Texture)assetManager.get("laser.png"));
+        this.laser = new Sprite((Texture) assetManager.get("laser.png"));
 
         soundVolume = getFloat("soundVolume");
         shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun4.ogg"));
@@ -105,8 +105,8 @@ public class Bullet {
         width = bullet.getWidth();
         height = bullet.getHeight();
 
-        float scale = 20/height;
-        width = width*scale;
+        float scale = 20 / height;
+        width = width * scale;
         height = 20;
 
         bullet.setOrigin(0, 10);
@@ -114,38 +114,38 @@ public class Bullet {
 
     public void Spawn(float damageMultiplier, boolean is_uranium) {
 
-            Rectangle bullet = new Rectangle();
+        Rectangle bullet = new Rectangle();
 
-            bullet.setSize(width, height);
+        bullet.setSize(width, height);
 
-            bullet.x = bounds.getX() + 68;
-            bullet.y = bounds.getY() + 10;
+        bullet.x = bounds.getX() + 68;
+        bullet.y = bounds.getY() + 10;
 
-            bullets.add(bullet);
-            explosionQueue.add(false);
-            remove_Bullet.add(false);
-            if(GameLogic.money > 0 && is_uranium) {
-                types.add(true);
-                damages.add((int) (damage*damageMultiplier));
-                GameLogic.money--;
-            }else{
-                types.add(false);
-                damages.add(damage);
-            }
+        bullets.add(bullet);
+        explosionQueue.add(false);
+        remove_Bullet.add(false);
+        if (GameLogic.money > 0 && is_uranium) {
+            types.add(true);
+            damages.add((int) (damage * damageMultiplier));
+            GameLogic.money--;
+        } else {
+            types.add(false);
+            damages.add(damage);
+        }
 
-            degrees.add((random.nextFloat()-0.5f)*spread+bounds.getRotation()/20);
+        degrees.add((random.nextFloat() - 0.5f) * spread + bounds.getRotation() / 20);
 
-            bullet.x+=MathUtils.cosDeg(bounds.getRotation())*6;
-            bullet.y+=MathUtils.cosDeg(bounds.getRotation());
+        bullet.x += MathUtils.cosDeg(bounds.getRotation()) * 6;
+        bullet.y += MathUtils.cosDeg(bounds.getRotation());
 
-            bulletsShot++;
+        bulletsShot++;
 
-            if(soundVolume>0) {
-                shot.play(soundVolume/100);
-            }
+        if (soundVolume > 0) {
+            shot.play(soundVolume / 100);
+        }
     }
 
-    public void draw(SpriteBatch batch, float delta, boolean is_paused) {
+    public void draw(SpriteBatch batch, float delta) {
 
         /*
         int gradient = 0;
@@ -160,49 +160,43 @@ public class Bullet {
         offset+=10;
          */
 
-        for (int i = 0; i < bullets.size; i ++) {
+        for (int i = 0; i < bullets.size; i++) {
 
             Rectangle bullet = bullets.get(i);
             float angle = degrees.get(i);
 
             this.bullet.setPosition(bullet.x, bullet.y);
             this.bullet.setSize(bullet.width, bullet.height);
-            this.bullet.setRotation(MathUtils.radiansToDegrees*MathUtils.atan2(300*angle, 1500));
-            if(types.get(i)){
+            this.bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(300 * angle, 1500));
+            if (types.get(i)) {
                 this.bullet.setColor(Color.GREEN);
-            }else{
+            } else {
                 this.bullet.setColor(Color.WHITE);
             }
             this.bullet.draw(batch);
 
-            if (!is_paused){
-                bullet.x += 1500 * delta;
-                bullet.y += 300 * angle * delta;
+            bullet.x += 1500 * delta;
+            bullet.y += 300 * angle * delta;
 
-                if (bullet.x > 800) {
-                    Bullet.removeBullet(i, false);
-                }
+            if (bullet.x > 800) {
+                Bullet.removeBullet(i, false);
             }
         }
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).draw(batch);
-            if(!is_paused) {
-                explosions.get(i3).update(delta);
-            }else{
-                explosions.get(i3).update(0);
-            }
-            if(explosions.get(i3).isComplete()){
+            explosions.get(i3).update(delta);
+            if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
             }
         }
-        for(int i4 = 0; i4 < bullets.size; i4++){
-            if(explosionQueue.get(i4)) {
+        for (int i4 = 0; i4 < bullets.size; i4++) {
+            if (explosionQueue.get(i4)) {
                 ParticleEffect explosionEffect = new ParticleEffect();
-                if(types.get(i4)){
+                if (types.get(i4)) {
                     explosionEffect.load(Gdx.files.internal("particles/explosion3_4.p"), Gdx.files.internal("particles"));
-                }else{
-                    explosionEffect.load(Gdx.files.internal("particles/"+effect+".p"), Gdx.files.internal("particles"));
+                } else {
+                    explosionEffect.load(Gdx.files.internal("particles/" + effect + ".p"), Gdx.files.internal("particles"));
                 }
                 explosionEffect.setPosition(bullets.get(i4).x + bullets.get(i4).width / 2, bullets.get(i4).y + bullets.get(i4).height / 2);
                 explosionEffect.start();
@@ -213,7 +207,7 @@ public class Bullet {
                 damages.removeIndex(i4);
                 remove_Bullet.removeIndex(i4);
                 types.removeIndex(i4);
-            }else if (remove_Bullet.get(i4)){
+            } else if (remove_Bullet.get(i4)) {
                 explosionQueue.removeIndex(i4);
                 bullets.removeIndex(i4);
                 degrees.removeIndex(i4);
@@ -224,12 +218,12 @@ public class Bullet {
         }
     }
 
-    public void dispose(){
+    public void dispose() {
         shot.dispose();
         bullets.clear();
         damages.clear();
         degrees.clear();
-        for(int i3 = 0; i3 < explosions.size; i3 ++){
+        for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
@@ -238,17 +232,17 @@ public class Bullet {
         types.clear();
     }
 
-    public static void removeBullet(int i, boolean explode){
-        if(explode){
+    public static void removeBullet(int i, boolean explode) {
+        if (explode) {
             explosionQueue.set(i, true);
             remove_Bullet.set(i, true);
-        }else{
+        } else {
             explosionQueue.set(i, false);
             remove_Bullet.set(i, true);
         }
     }
 
-    public float getShootingSpeed(){
+    public float getShootingSpeed() {
         return shootingSpeedMultiplier;
     }
 

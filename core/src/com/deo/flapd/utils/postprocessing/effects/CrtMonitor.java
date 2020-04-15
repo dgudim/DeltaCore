@@ -201,5 +201,5 @@ public final class CrtMonitor extends PostProcessorEffect {
 
 		// do combine pass
 		combine.setOutput(dest).setInput(in, out).render();
-	};
+	}
 }
