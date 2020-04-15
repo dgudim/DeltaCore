@@ -33,7 +33,7 @@ public class BulletData {
     float trailScale;
     public float explosionScale;
 
-    String shootSound;
+    public String shootSound;
 
     public int bulletsPerShot;
 
@@ -43,7 +43,7 @@ public class BulletData {
 
     String type;
 
-    public BulletData(JsonValue enemyInfo, String type){
+    public BulletData(JsonValue enemyInfo, String type) {
         JsonValue bulletInfo = enemyInfo.get(type).get("bullet");
         texture = bulletInfo.get("texture").asString();
         width = bulletInfo.get("width").asFloat();
@@ -66,13 +66,11 @@ public class BulletData {
         homing = bulletInfo.get("homing").asBoolean();
     }
 
-    public BulletData clone(EnemyData enemyData){
+    public BulletData clone(EnemyData enemyData) {
         BulletData copy = new BulletData(enemyInfo, type);
         copy.x = enemyData.x + copy.offset[0];
         copy.y = enemyData.y + copy.offset[1];
-        copy.angle = getRandomInRange(-10, 10)*copy.spread;
+        copy.angle = getRandomInRange(-10, 10) * copy.spread;
         return copy;
     }
-
-
-    }
+}

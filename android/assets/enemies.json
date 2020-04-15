@@ -223,7 +223,7 @@
       },
       "bullet": {
         "texture": "pew.png",
-        "shootSound": "sfx/gun2.ogg",
+        "shootSound": "sfx/gun1.ogg",
         "speed": 450,
         "spread": 0,
         "bulletsPerShot": 1,
@@ -281,7 +281,7 @@
 
     "spawnConditions": {
       "score": [-1, 300000],
-      "enemiesKilled":[0, 5000],
+      "enemiesKilled":[50, 5000],
       "bossWave": false
     },
 

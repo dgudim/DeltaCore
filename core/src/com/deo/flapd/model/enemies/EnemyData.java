@@ -70,6 +70,7 @@ public class EnemyData {
     JsonValue enemyInfo;
 
     EnemyData(JsonValue enemyInfo, String type){
+
         JsonValue enemyBodyInfo = enemyInfo.get(type).get("body");
         fireParticleEffects = new Array<>();
         this.type = type;

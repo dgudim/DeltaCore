@@ -2,6 +2,7 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -19,23 +20,32 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemy {
 
-    EnemyData data;
+    private EnemyData data;
     private BulletData bulletData;
     private Sprite enemy;
     private Array<EnemyBullet> bullets;
     private AssetManager assetManager;
-    boolean isDead = false;
+    private boolean isDead = false;
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
+    private Sound explosionSound;
+    private Sound shootingSound;
+    private float volume;
 
     Enemy(AssetManager assetManager, EnemyData enemyData){
         this.assetManager = assetManager;
         data = enemyData.clone();
         bulletData = new BulletData(data.enemyInfo, data.type);
+
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal(data.explosionSound));
+        shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
+        volume = getFloat("soundVolume");
+
         bullets = new Array<>();
         enemy = new Sprite((Texture)assetManager.get(enemyData.texture));
         enemy.setSize(data.width, data.height);
@@ -93,9 +103,7 @@ public class Enemy {
             }
 
             if (data.millis > data.shootingDelay * 100) {
-                for(int i = 0; i<bulletData.bulletsPerShot; i++) {
-                    shoot();
-                }
+                shoot();
             }
             data.millis += delta * 20;
 
@@ -154,7 +162,10 @@ public class Enemy {
     }
 
     private void shoot(){
-        bullets.add(new EnemyBullet(assetManager, bulletData.clone(data)));
+        for(int i = 0; i<bulletData.bulletsPerShot; i++) {
+            bullets.add(new EnemyBullet(assetManager, bulletData.clone(data)));
+        }
+        shootingSound.play(volume);
         data.millis = 0;
     }
 
@@ -167,6 +178,8 @@ public class Enemy {
         for(int i = 0; i<bullets.size; i++){
             bullets.get(i).dispose();
         }
+        explosionSound.dispose();
+        shootingSound.dispose();
     }
 
     private void kill(){
@@ -188,6 +201,8 @@ public class Enemy {
         Drops.drop(enemy.getBoundingRectangle(), getRandomInRange(data.dropCount[0], data.dropCount[1]), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
 
         enemy.setPosition(-100, -100);
+
+        explosionSound.play(volume);
     }
 
 }

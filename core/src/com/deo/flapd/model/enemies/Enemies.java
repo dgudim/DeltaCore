@@ -34,10 +34,14 @@ public class Enemies {
 
     public void loadEnemies(){
         int enemyTypeCount = enemiesJson.size;
+        Array<String> shootingSounds = new Array<>();
+        Array<String> explosionSounds = new Array<>();
+
         for(int i = 0; i<enemyTypeCount; i++){
             EnemyData enemyData = new EnemyData(enemiesJson.get(i), type);
             enemies.add(enemyData);
             enemyNames.add(enemyData.name);
+            explosionSounds.add(enemyData.explosionSound);
         }
     }
 
@@ -78,6 +82,7 @@ public class Enemies {
     public void dispose(){
         for(int i = 0; i<enemyEntities.size; i++){
             enemyEntities.get(i).dispose();
+            enemyEntities.removeIndex(i);
         }
     }
 
