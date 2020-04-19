@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.deo.flapd.control.GameLogic;
 
 import java.util.Random;
 
@@ -48,6 +47,8 @@ public class Bullet {
 
     private float shootingSpeedMultiplier;
 
+    private float powerConsumption;
+
     private Sprite laser;
 
     private static Rectangle laserTip;
@@ -78,6 +79,16 @@ public class Bullet {
             if (params[i].endsWith("spread")) {
                 spread = paramValues[i];
             }
+            if (params[i].endsWith("power consumption")) {
+                powerConsumption = paramValues[i];
+            }
+        }
+        params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
+        paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].endsWith("damage multiplier")) {
+                damage *= paramValues[i];
+            }
         }
         random = new Random();
 
@@ -105,43 +116,46 @@ public class Bullet {
         width = bullet.getWidth();
         height = bullet.getHeight();
 
-        float scale = 20 / height;
+        float scale = 10 / height;
         width = width * scale;
-        height = 20;
+        height = 10;
 
-        bullet.setOrigin(0, 10);
+        bullet.setOrigin(0, 5);
     }
 
-    public void Spawn(float damageMultiplier, boolean is_uranium) {
+    public void Spawn(float damageMultiplier, boolean is_charged) {
 
-        Rectangle bullet = new Rectangle();
+        if (SpaceShip.Charge >= powerConsumption) {
+            Rectangle bullet = new Rectangle();
 
-        bullet.setSize(width, height);
+            bullet.setSize(width, height);
 
-        bullet.x = bounds.getX() + 68;
-        bullet.y = bounds.getY() + 10;
+            bullet.x = bounds.getX() + 68;
+            bullet.y = bounds.getY() + 12.5f;
 
-        bullets.add(bullet);
-        explosionQueue.add(false);
-        remove_Bullet.add(false);
-        if (GameLogic.money > 0 && is_uranium) {
-            types.add(true);
-            damages.add((int) (damage * damageMultiplier));
-            GameLogic.money--;
-        } else {
-            types.add(false);
-            damages.add(damage);
-        }
+            bullets.add(bullet);
+            explosionQueue.add(false);
+            remove_Bullet.add(false);
+            if (SpaceShip.Charge >= powerConsumption * damageMultiplier + 0.5f && is_charged) {
+                types.add(true);
+                damages.add((int) (damage * damageMultiplier));
+                SpaceShip.Charge -= powerConsumption * damageMultiplier + 0.5f;
+            } else {
+                types.add(false);
+                damages.add(damage);
+                SpaceShip.Charge -= powerConsumption;
+            }
 
-        degrees.add((random.nextFloat() - 0.5f) * spread + bounds.getRotation() / 20);
+            degrees.add((random.nextFloat() - 0.5f) * spread + bounds.getRotation() / 20);
 
-        bullet.x += MathUtils.cosDeg(bounds.getRotation()) * 6;
-        bullet.y += MathUtils.cosDeg(bounds.getRotation());
+            bullet.x += MathUtils.cosDeg(bounds.getRotation()) * 6;
+            bullet.y += MathUtils.cosDeg(bounds.getRotation());
 
-        bulletsShot++;
+            bulletsShot++;
 
-        if (soundVolume > 0) {
-            shot.play(soundVolume / 100);
+            if (soundVolume > 0) {
+                shot.play(soundVolume / 100);
+            }
         }
     }
 

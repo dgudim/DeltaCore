@@ -37,7 +37,7 @@ public class Enemy {
     private Sound shootingSound;
     private float volume;
 
-    Enemy(AssetManager assetManager, EnemyData enemyData){
+    Enemy(AssetManager assetManager, EnemyData enemyData) {
         this.assetManager = assetManager;
         data = enemyData.clone();
         bulletData = new BulletData(data.enemyInfo, data.type);
@@ -47,11 +47,11 @@ public class Enemy {
         volume = getFloat("soundVolume");
 
         bullets = new Array<>();
-        enemy = new Sprite((Texture)assetManager.get(enemyData.texture));
+        enemy = new Sprite((Texture) assetManager.get(enemyData.texture));
         enemy.setSize(data.width, data.height);
         enemy.setPosition(data.x, data.y);
-        enemy.setOrigin(data.width/2, data.height/2);
-        for(int i = 0; i<data.fireEffects.length; i++){
+        enemy.setOrigin(data.width / 2, data.height / 2);
+        for (int i = 0; i < data.fireEffects.length; i++) {
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal(data.fireEffects[i]), Gdx.files.internal("particles"));
             fire.scaleEffect(data.fireScales[i]);
@@ -63,27 +63,27 @@ public class Enemy {
         data.explosionParticleEffect.scaleEffect(data.explosionScale);
     }
 
-    void draw(SpriteBatch batch){
-        if(!isDead) {
+    void draw(SpriteBatch batch) {
+        if (!isDead) {
             enemy.draw(batch);
         }
     }
 
-    void drawEffects(SpriteBatch batch){
-        if(!isDead) {
+    void drawEffects(SpriteBatch batch) {
+        if (!isDead) {
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
                 data.fireParticleEffects.get(i).draw(batch);
             }
-        }else{
+        } else {
             data.explosionParticleEffect.draw(batch);
         }
-        for(int i = 0; i<bullets.size; i++){
+        for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).draw(batch);
         }
     }
 
-    void update(float delta){
-        if(!isDead) {
+    void update(float delta) {
+        if (!isDead) {
             enemy.setPosition(data.x, data.y);
             enemy.setColor(data.currentColor);
             data.x -= data.speed * delta;
@@ -93,13 +93,13 @@ public class Enemy {
             }
 
             if (data.currentColor.r < 1) {
-                data.currentColor.r = MathUtils.clamp(data.currentColor.r + delta*2.5f, 0, 1);
+                data.currentColor.r = MathUtils.clamp(data.currentColor.r + delta * 2.5f, 0, 1);
             }
             if (data.currentColor.g < 1) {
-                data.currentColor.g = MathUtils.clamp(data.currentColor.g + delta*2.5f, 0, 1);
+                data.currentColor.g = MathUtils.clamp(data.currentColor.g + delta * 2.5f, 0, 1);
             }
             if (data.currentColor.b < 1) {
-                data.currentColor.b = MathUtils.clamp(data.currentColor.b + delta*2.5f, 0, 1);
+                data.currentColor.b = MathUtils.clamp(data.currentColor.b + delta * 2.5f, 0, 1);
             }
 
             if (data.millis > data.shootingDelay * 100) {
@@ -112,20 +112,20 @@ public class Enemy {
                 explosionFinished = true;
             }
 
-        }else{
+        } else {
             data.explosionParticleEffect.update(delta);
         }
 
-        for(int i = 0; i<bullets.size; i++){
+        for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update(delta);
-            if(bullets.get(i).queuedForDeletion){
+            if (bullets.get(i).queuedForDeletion) {
                 bullets.get(i).dispose();
                 bullets.removeIndex(i);
             }
         }
 
-        for(int i = 0; i < Bullet.bullets.size; i++){
-            if(Bullet.bullets.get(i).overlaps(enemy.getBoundingRectangle())){
+        for (int i = 0; i < Bullet.bullets.size; i++) {
+            if (Bullet.bullets.get(i).overlaps(enemy.getBoundingRectangle())) {
                 data.currentColor = Color.valueOf(data.hitColor);
                 data.health -= Bullet.damages.get(i);
                 GameLogic.Score += 30 + 10 * (Bullet.damages.get(i) / 50 - 1);
@@ -133,69 +133,69 @@ public class Enemy {
             }
         }
 
-        for(int i = 0; i < Meteorite.meteorites.size; i++){
-            if(Meteorite.meteorites.get(i).overlaps(enemy.getBoundingRectangle())){
+        for (int i = 0; i < Meteorite.meteorites.size; i++) {
+            if (Meteorite.meteorites.get(i).overlaps(enemy.getBoundingRectangle())) {
                 data.currentColor = Color.valueOf(data.hitColor);
-                if(data.health>Meteorite.healths.get(i)){
+                if (data.health > Meteorite.healths.get(i)) {
                     data.health -= Meteorite.healths.get(i);
                     Meteorite.removeMeteorite(i, true);
-                }else if(data.health==Meteorite.healths.get(i)){
+                } else if (data.health == Meteorite.healths.get(i)) {
                     data.health = 0;
                     Meteorite.removeMeteorite(i, true);
-                }else if(data.health>Meteorite.healths.get(i)){
-                    Meteorite.healths.set(i, Meteorite.healths.get(i)-data.health);
+                } else if (data.health < Meteorite.healths.get(i)) {
+                    Meteorite.healths.set(i, Meteorite.healths.get(i) - data.health);
                     data.health = 0;
                 }
             }
         }
 
-        if(SpaceShip.bounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
+        if (SpaceShip.bounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
             kill();
-            SpaceShip.takeDamage(data.health/3f);
+            SpaceShip.takeDamage(data.health / 3f);
         }
 
-        if(data.health<=0 && !isDead){
+        if (data.health <= 0 && !isDead) {
             kill();
         }
 
         queuedForDeletion = isDead && !(bullets.size > 0) && (data.explosionParticleEffect.isComplete() || explosionFinished);
     }
 
-    private void shoot(){
-        for(int i = 0; i<bulletData.bulletsPerShot; i++) {
+    private void shoot() {
+        for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             bullets.add(new EnemyBullet(assetManager, bulletData.clone(data)));
         }
         shootingSound.play(volume);
         data.millis = 0;
     }
 
-    void dispose(){
-        for(int i = 0; i<data.fireParticleEffects.size; i++){
+    void dispose() {
+        for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.dispose();
-        for(int i = 0; i<bullets.size; i++){
+        for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
         explosionSound.dispose();
         shootingSound.dispose();
     }
 
-    private void kill(){
-        for(int i = 0; i<data.fireParticleEffects.size; i++){
+    private void kill() {
+        for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
         }
         data.fireParticleEffects.clear();
-        data.explosionParticleEffect.setPosition(data.x + data.width/2, data.y + data.height/2);
+        data.explosionParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
         data.explosionParticleEffect.start();
         isDead = true;
 
-        GameLogic.enemiesKilled ++;
+        GameLogic.enemiesKilled++;
 
         UraniumCell.Spawn(enemy.getBoundingRectangle(), getRandomInRange(data.moneyCount[0], data.moneyCount[1]), 1, data.moneyTimer);
-        if(getRandomInRange(0, 99) < data.bonusChance) {
-            Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), 1, enemy.getBoundingRectangle());
+        if (getRandomInRange(0, 99) < data.bonusChance) {
+            Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), enemy.getBoundingRectangle());
         }
 
         Drops.drop(enemy.getBoundingRectangle(), getRandomInRange(data.dropCount[0], data.dropCount[1]), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));

@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -73,7 +74,7 @@ class Tree {
             }
         }
 
-        addItems(categories, items, "root", nodes.get(0).get(0), nodes.get(0).get(0).node.getY());
+        addItems(categories, items, "root", nodes.get(0).get(0), nodes.get(0).get(0).node.getY()+10);
 
         int targetWidth = 0;
 
@@ -139,13 +140,7 @@ class Tree {
             Array<Node> currentCategoryNodes = new Array<>();
 
             for (int i = 0; i < currentCategories.size; i++) {
-                float nodeHeight;
-                if(category.equals("root")) {
-                    nodeHeight = maxHeight - 55;
-                }else{
-                    nodeHeight = maxHeight - 5;
-                }
-                Node nextNode = new Node(assetManager, currentCategories.get(i), root.node.getX() + 70, nodeHeight - 55 * i, 50, 50, treeTable, treeJson);
+                Node nextNode = new Node(assetManager, currentCategories.get(i), root.node.getX() + 85, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
                 addItems(categories, items, nextNode.name, nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -210,7 +205,7 @@ class Node {
     private JsonValue treeJson;
     private float resultCount = 1;
 
-    Node (final AssetManager assetManager, String item, float x, float y, float width, float height, final Table holder, JsonValue treeJson){
+    Node (final AssetManager assetManager, final String item, float x, float y, float width, float height, final Table holder, JsonValue treeJson){
         this.holder = holder;
         this.assetManager = assetManager;
         this.treeJson = treeJson;
@@ -218,7 +213,7 @@ class Node {
         bounds = new Vector2(x+width/2f, y+height/2f);
         branches = new Array<>();
         children = new Array<>();
-        TextureAtlas items = assetManager.get("items/items.atlas");
+        final TextureAtlas items = assetManager.get("items/items.atlas");
         Skin nodeSkin = new Skin();
         nodeSkin.addRegions((TextureAtlas)assetManager.get("shop/slots.atlas"));
         ImageButton.ImageButtonStyle nodeStyle = new ImageButton.ImageButtonStyle();
@@ -230,7 +225,16 @@ class Node {
         nodeStyle.down = nodeSkin.getDrawable("enabled_slot");
         nodeStyle.over = nodeSkin.getDrawable("over_slot");
         nodeStyle.disabled= nodeSkin.getDrawable("disabled_slot");
-        node = new ImageButton(nodeStyle);
+        node = new ImageButton(nodeStyle){
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                try {
+                    super.draw(batch, parentAlpha);
+                } catch (Exception e) {
+                    throw new NullPointerException("error drawing "+getItemCodeNameByName(item) + "\n" +items.findRegion(getItemCodeNameByName(item))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(item)));
+                }
+            }
+        };
         switch (item){
             case("ship"):
                 nodeStyle.imageUp = new Image((Texture) assetManager.get("ship.png")).getDrawable();
@@ -396,10 +400,13 @@ class Node {
     private Color getCategoryTint(){
         Color color = Color.WHITE;
             switch (getType()) {
-                case ("baseCategory"):
+                case ("basePart"):
                     if(getString(treeJson.get(name).get("saveTo").asString()).equals(name)){
                         color = Color.GREEN;
                     }
+                    break;
+                case ("baseCategory"):
+                    color = Color.GREEN;
                     break;
                 case ("part"):
                     color = Color.SKY;

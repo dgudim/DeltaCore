@@ -225,7 +225,7 @@ public class Drops {
                 pos1.set(drop.x, drop.y);
                 Vector2 pos2 = new Vector2();
                 pos2.set(344 + drop.width / 2 - 400 * (uiScaling - 1), 403 + drop.height / 2 - 20 * (uiScaling - 1));
-                pos1.lerp(pos2, 0.05f);
+                pos1.lerp(pos2, 5*delta);
 
                 drop.x = pos1.x;
                 drop.y = pos1.y;

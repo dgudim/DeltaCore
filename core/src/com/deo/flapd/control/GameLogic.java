@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Meteorite;
@@ -71,9 +72,18 @@ public class GameLogic {
 
         difficulty = getFloat("difficulty");
 
-        speedMultiplier = new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentEngine")).get("parameterValues").asIntArray()[0];
+        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        speedMultiplier = treeJson.get(getString("currentEngine")).get("parameterValues").asFloatArray()[0];
 
-        if(!newGame){
+        String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
+        float[] paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].endsWith("speed multiplier")) {
+                speedMultiplier *= paramValues[i];
+            }
+        }
+
+        if (!newGame) {
             bonuses_collected = getInteger("bonuses_collected");
             lastCheckpoint = getInteger("lastCheckpoint");
             has1stBossSpawned = getBoolean("has1stBossSpawned");
@@ -84,7 +94,7 @@ public class GameLogic {
 
             enemiesKilled = getInteger("enemiesKilled");
             enemiesSpawned = getInteger("enemiesSpawned");
-        }else {
+        } else {
             bonuses_collected = 0;
             lastCheckpoint = 0;
             has1stBossSpawned = false;
@@ -103,35 +113,36 @@ public class GameLogic {
     }
 
     public void handleInput(float delta, float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary) {
-        deltaX*=speedMultiplier;
-        deltaY*=speedMultiplier;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W))
+        deltaX *= speedMultiplier;
+        deltaY *= speedMultiplier;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
             deltaY = speedMultiplier;
-        if(Gdx.input.isKeyPressed(Input.Keys.A))
+        if (Gdx.input.isKeyPressed(Input.Keys.A))
             deltaX = -speedMultiplier;
-        if(Gdx.input.isKeyPressed(Input.Keys.S))
+        if (Gdx.input.isKeyPressed(Input.Keys.S))
             deltaY = -speedMultiplier;
-        if(Gdx.input.isKeyPressed(Input.Keys.D))
+        if (Gdx.input.isKeyPressed(Input.Keys.D))
             deltaX = speedMultiplier;
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
             is_firing = true;
-        if(Gdx.input.isKeyPressed(Input.Keys.M))
+        if (Gdx.input.isKeyPressed(Input.Keys.M))
             is_firing_secondary = true;
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             game.pause();
 
 
         bounds.setPosition(bounds.getX() + 250 * deltaX * delta, bounds.getY() + 250 * deltaY * delta);
         bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
 
-        if (is_firing && millis > 10/ShootingSpeed) {
+        if (is_firing && millis > 10 / ShootingSpeed) {
             bullet.Spawn(1, false);
             millis = 0;
         }
 
-        if (is_firing_secondary && millis > 10/ShootingSpeed) {
-            bullet.Spawn(2.25f, true);
+        if (is_firing_secondary && millis > 10 / ShootingSpeed) {
+            bullet.Spawn(1.5f, true);
             millis = 0;
         }
 
@@ -146,12 +157,12 @@ public class GameLogic {
             }
 
             if (random.nextInt(6000) == 5770) {
-                meteorite.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30*difficulty);
+                meteorite.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30 * difficulty);
             }
 
-            if(Score > lastCheckpoint+9000 && !bossWave){
+            if (Score > lastCheckpoint + 9000 && !bossWave) {
                 lastCheckpoint = Score;
-                checkpoint.Spawn(random.nextInt(300)+150, random.nextInt(201)+100, 1);
+                checkpoint.Spawn(random.nextInt(300) + 150, random.nextInt(201) + 100, 1);
             }
         }
 
@@ -226,7 +237,7 @@ public class GameLogic {
                             Kamikadze.removeEnemy(i, true);
 
                         } else if (Meteorite.healths.get(i3) < Kamikadze.healths.get(i)) {
-                            Kamikadze.healths.set(i, (int) (Kamikadze.healths.get(i)  - Meteorite.healths.get(i3)));
+                            Kamikadze.healths.set(i, (int) (Kamikadze.healths.get(i) - Meteorite.healths.get(i3)));
                             Meteorite.removeMeteorite(i3, true);
 
                             Meteorite.meteoritesDestroyed++;

@@ -72,9 +72,9 @@ public class Main extends Game {
             putFloat("difficulty", 1);
             putBoolean("transparency", true);
             putBoolean("bloom", true);
-            JsonValue tree = new JsonReader().parse(Gdx.files.internal("items/tree.json"));
+            JsonValue tree = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
             for(int i = 0; i<tree.size; i++){
-                if(tree.get(i).get("type").asString().equals("baseCategory")){
+                if(tree.get(i).get("type").asString().equals("basePart")){
                     putBoolean("unlocked_"+getItemCodeNameByName(tree.get(i).name), true);
                     putString(tree.get(i).get("saveTo").asString(), tree.get(i).name);
                 }
@@ -94,7 +94,7 @@ public class Main extends Game {
             e.printStackTrace(new PrintWriter(sw));
             String fullStackTrace = sw.toString();
             log("\n"+fullStackTrace + "\n");
-            log("dump pf preferences "+getPrefs()+"\n");
+            log("dump pf preferences\n"+getPrefs()+"\n");
             log("force exiting");
             System.exit(1);
         }

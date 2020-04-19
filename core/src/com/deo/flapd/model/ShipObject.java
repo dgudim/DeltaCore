@@ -1,11 +1,13 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -13,7 +15,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
 
-abstract class ShipObject {
+public abstract class ShipObject {
 
     public static Polygon bounds;
     private Sprite ship;
@@ -36,20 +38,63 @@ abstract class ShipObject {
 
     private boolean isFireStarted1, isFireStarted2, isFireStarted3;
 
-    public static float Health, Shield;
+    public static float Health, Shield, Charge;
 
-    ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height, boolean newGame) {
-        ship = new Sprite(shipTexture);
-        shield = new Sprite(ShieldTexture);
+    private float powerGeneration;
+
+    private float shieldRegenerationSpeed;
+
+    public static float shieldStrength;
+
+    private float shieldPowerConsumption;
+
+    public static float chargeCapacity;
+
+    public static float healthMultiplier = 1;
+
+    ShipObject(AssetManager assetManager, float x, float y, float width, float height, boolean newGame) {
+
+        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
+        float[] paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].endsWith("power generation")) {
+                powerGeneration = paramValues[i];
+            }
+            if (params[i].endsWith("health multiplier")) {
+                Health *= paramValues[i];
+            }
+        }
+
+        params = treeJson.get(getString("currentShield")).get("parameters").asStringArray();
+        paramValues = treeJson.get(getString("currentShield")).get("parameterValues").asFloatArray();
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].endsWith("power consumption")) {
+                shieldPowerConsumption = paramValues[i];
+            }
+            if (params[i].endsWith("shield regeneration speed")) {
+                shieldRegenerationSpeed = paramValues[i];
+            }
+            if (params[i].endsWith("shield strength")) {
+                shieldStrength = paramValues[i];
+            }
+        }
+
+        chargeCapacity = treeJson.get(getString("currentBattery")).get("parameterValues").asFloatArray()[0];
+
+        ship = new Sprite((Texture)assetManager.get("ship.png"));
+        shield = new Sprite(assetManager.get("shields.atlas", TextureAtlas.class).findRegion(treeJson.get(getString("currentShield")).get("usesEffect").asString()));
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
         if (!newGame) {
             Shield = getFloat("Shield");
             Health = getFloat("Health");
+            Charge = getFloat("Charge");
             bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
         } else {
-            Shield = 100;
-            Health = 100;
+            Shield = shieldStrength;
+            Health = 100*healthMultiplier;
+            Charge = chargeCapacity;
             bounds.setPosition(x, y);
         }
 
@@ -63,8 +108,6 @@ abstract class ShipObject {
 
         fire = new ParticleEffect();
         fire2 = new ParticleEffect();
-
-        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
         fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
         fire2.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
@@ -162,6 +205,16 @@ abstract class ShipObject {
             }
 
             ship.draw(batch);
+
+            if (Charge + powerGeneration * delta < chargeCapacity) {
+                Charge += powerGeneration * delta;
+            } else {
+                Charge = chargeCapacity;
+            }
+            if (Shield < shieldStrength && Charge>=shieldPowerConsumption*delta) {
+                Shield += shieldRegenerationSpeed * delta;
+                Charge -= shieldPowerConsumption * delta;
+            }
         } else {
             bounds.setScale(0, 0);
         }
@@ -200,7 +253,7 @@ abstract class ShipObject {
         damage_fire3.dispose();
     }
 
-    public static void set_color(float red1, float green1, float blue1, boolean shield) {
+    private static void set_color(float red1, float green1, float blue1, boolean shield) {
         if (!shield) {
             red = red1;
             green = green1;
@@ -219,7 +272,7 @@ abstract class ShipObject {
         } else {
             Health = Health - (damage - Shield) / 5;
             Shield = 0;
-            SpaceShip.set_color(1, 0, 1, false);
+            set_color(1, 0, 1, false);
         }
     }
 
@@ -229,9 +282,4 @@ abstract class ShipObject {
             explosion.play(soundVolume / 100);
         }
     }
-
-    public boolean isExploded() {
-        return exploded;
-    }
-
 }

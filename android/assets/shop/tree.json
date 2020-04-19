@@ -2,7 +2,7 @@
   "grasshopper engine": {
     "description": "a base engine",
     "category": "root",
-    "type": "baseCategory",
+    "type": "basePart",
     "isCraftable": false,
     "parameters": ["[#22DDDD]speed"],
     "parameterValues": [1],
@@ -12,35 +12,34 @@
   "small machine gun": {
     "description": "a base cannon",
     "category": "root",
-    "type": "baseCategory",
+    "type": "basePart",
     "isCraftable": false,
-    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
-    "parameterValues": [50, 1.4, 0.7],
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "[#FEDE15]power consumption"],
+    "parameterValues": [50, 1.4, 0.7, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2"
   },
   "star core": {
     "description": "a base core",
     "category": "root",
-    "type": "baseCategory",
+    "type": "basePart",
     "isCraftable": false,
-    "parameters": ["[#3bff38]health multiplier"],
-    "parameterValues": [1],
+    "parameters": ["[#3bff38]health multiplier", "[#FEDE15]power generation"],
+    "parameterValues": [1, 2],
     "saveTo": "currentCore",
     "usesEffect": "explosion2"
   },
   "warp core": {
-    "items": ["core shard", "green crystal", "prism", "glass shard", "motherboard"],
+    "items": ["core shard", "green crystal", "prism", "glass shard", "motherboard mk1"],
     "itemCounts": [1, 5, 3, 10, 1],
     "resultCount": 1,
     "description": "a slightly better core",
     "isCraftable": true,
     "category": "star core",
     "requires": ["star core"],
-    "price": "auto",
     "type": "part",
-    "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier"],
-    "parameterValues": [1.5, 1.3],
+    "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier", "[#FEDE15]power generation"],
+    "parameterValues": [1.5, 1.3, 3],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_green"
   },
@@ -52,10 +51,9 @@
     "isCraftable": true,
     "category": "star core",
     "requires": ["warp core"],
-    "price": "auto",
     "type": "part",
-    "parameters": ["[#3bff38]health multiplier", "speed multiplier", "damage multiplier"],
-    "parameterValues": [1.8, 1.5, 1.3],
+    "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier", "[#DD2222]damage multiplier", "[#FEDE15]power generation"],
+    "parameterValues": [1.8, 1.5, 1.3, 5],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_cyan"
   },
@@ -67,14 +65,13 @@
     "isCraftable": true,
     "category": "grasshopper engine",
     "requires": ["grasshopper engine"],
-    "price": "auto",
     "type": "part",
     "parameters": ["[#526af7]speed"],
     "parameterValues": [1.3],
     "saveTo": "currentEngine",
     "usesEffect": "fire_engine_left_red_purple"
   },
-    "plasma engine": {
+  "plasma engine": {
     "items": ["cyan fuel cell", "cable", "plastic", "reinforced iron plate", "purple crystal", "green coil"],
     "itemCounts": [2, 23, 6, 6, 2, 2],
     "resultCount": 1,
@@ -82,7 +79,6 @@
     "isCraftable": true,
     "category": "grasshopper engine",
     "requires": ["nuclear engine"],
-    "price": "auto",
     "type": "part",
     "parameters": ["[#9454cc]speed"],
     "parameterValues": [1.6],
@@ -97,10 +93,9 @@
     "isCraftable": true,
     "category": "small machine gun",
     "requires": ["small machine gun"],
-    "price": "auto",
     "type": "part",
-    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
-    "parameterValues": [70, 0.6, 0.9],
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "[#FEDE15]power consumption"],
+    "parameterValues": [70, 0.6, 0.9, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2"
   },
@@ -112,10 +107,9 @@
     "isCraftable": true,
     "category": "small machine gun",
     "requires": ["machine gun"],
-    "price": "auto",
     "type": "part",
-    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
-    "parameterValues": [85, 0.3, 1],
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "[#FEDE15]power consumption"],
+    "parameterValues": [85, 0.3, 1, 1],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3"
   },
@@ -127,10 +121,9 @@
     "isCraftable": true,
     "category": "small machine gun",
     "requires": ["laser gun", "warp core"],
-    "price": "auto",
     "type": "part",
-    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
-    "parameterValues": [80, 0.15, 1.1],
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "[#FEDE15]power consumption"],
+    "parameterValues": [80, 0.15, 1.1, 1.25],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_3"
   },
@@ -142,18 +135,175 @@
     "isCraftable": true,
     "category": "small machine gun",
     "requires": ["machine gun", "energy core"],
-    "price": "auto",
     "type": "part",
-    "parameters": ["[#DD2222]damage", "spread", "shooting speed"],
-    "parameterValues": [90, 0, 1],
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "[#FEDE15]power consumption"],
+    "parameterValues": [90, 0, 1, 1.5],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_3"
   },
+  "upgrades": {
+    "items": [""],
+    "itemCounts": [0],
+    "resultCount": 0,
+    "description": "just a category for small upgrades",
+    "isCraftable": false,
+    "category": "root",
+    "requires": [""],
+    "price": "auto",
+    "type": "baseCategory",
+    "saveTo": "bonus1C"
+  },
+  "armour": {
+    "items": [""],
+    "itemCounts": [0],
+    "resultCount": 0,
+    "description": "just a category for armour upgrades",
+    "isCraftable": false,
+    "category": "root",
+    "requires": [""],
+    "price": "auto",
+    "type": "baseCategory",
+    "saveTo": "armour1C"
+  },
+  "shield generator mk1": {
+    "description": "a basic shield generator",
+    "isCraftable": false,
+    "category": "root",
+    "type": "basePart",
+    "parameters": ["[#22DDDD]shield strength", "[#FEDE15]power consumption", "[#3bff38]shield regeneration speed"],
+    "parameterValues": [100, 1, 1],
+    "saveTo": "currentShield",
+    "usesEffect": "ColdShield"
+  },
+  "shield generator mk2": {
+    "items": ["cyan coil", "reinforced iron plate", "energy cell", "cooling unit", "advanced chip", "projection card", "fiber cable"],
+    "itemCounts": [2, 4, 1, 1, 1, 1, 3],
+    "resultCount": 1,
+    "description": "a more advanced shield generator, less power consumption, more strength",
+    "isCraftable": true,
+    "category": "shield generator mk1",
+    "requires": ["shield generator mk1"],
+    "type": "part",
+    "parameters": ["[#22DDDD]shield strength", "[#FEDE15]power consumption", "[#3bff38]shield regeneration speed"],
+    "parameterValues": [130, 0.8, 1],
+    "saveTo": "currentShield",
+    "usesEffect": "ColdShieldMk2"
+  },
+  "shield generator mk3": {
+    "items": ["green coil", "reinforced iron plate", "energy cell", "cooling unit", "purple crystal", "circuit board", "fiber cable"],
+    "itemCounts": [4, 6, 2, 1, 1, 1, 4],
+    "resultCount": 1,
+    "description": "an even more advanced shield generator, more strength, faster regeneration speed then previous model, more power consumption",
+    "isCraftable": true,
+    "category": "shield generator mk1",
+    "requires": ["shield generator mk2" ,"warp core"],
+    "type": "part",
+    "parameters": ["[#22DDDD]shield strength", "[#FEDE15]power consumption", "[#3bff38]shield regeneration speed"],
+    "parameterValues": [150, 1.5, 1.5],
+    "saveTo": "currentShield",
+    "usesEffect": "ColdShieldMk3"
+  },
+  "battery mk1": {
+    "description": "a basic battery",
+    "isCraftable": false,
+    "category": "root",
+    "type": "basePart",
+    "parameters": ["[#FEDE15]capacity"],
+    "parameterValues": [100],
+    "saveTo": "currentBattery"
+  },
+  "battery mk2": {
+    "items": ["energy cell", "iron plate", "bolt", "orange crystal", "circuit board", "cable", "glass rod"],
+    "itemCounts": [3, 8, 20, 4, 1, 15, 4],
+    "resultCount": 1,
+    "description": "slightly more advanced battery, has more capacity",
+    "isCraftable": true,
+    "category": "battery mk1",
+    "requires": ["battery mk1"],
+    "type": "part",
+    "parameters": ["[#FEDE15]capacity"],
+    "parameterValues": [130],
+    "saveTo": "currentBattery"
+  },
+  "battery mk3": {
+    "items": ["energy cell", "composite plate", "bolt", "cyan crystal", "circuit board", "fiber cable", "cooling unit"],
+    "itemCounts": [4, 4, 20, 5, 1, 5, 1],
+    "resultCount": 1,
+    "description": "an even more advanced battery, has even more capacity",
+    "isCraftable": true,
+    "category": "battery mk1",
+    "requires": ["battery mk2"],
+    "type": "part",
+    "parameters": ["[#FEDE15]capacity"],
+    "parameterValues": [150],
+    "saveTo": "currentBattery"
+  },
+  "battery mk4": {
+    "items": ["energy cell", "composite plate", "purple crystal", "circuit board", "fiber cable", "reinforced glass pane", "cooling unit"],
+    "itemCounts": [6, 6, 2, 2, 5, 5, 2],
+    "resultCount": 1,
+    "description": "cutting-edge technology battery, has double the capacity of mk1 battery",
+    "isCraftable": true,
+    "category": "battery mk1",
+    "requires": ["battery mk3", "warp core"],
+    "type": "part",
+    "parameters": ["[#FEDE15]capacity"],
+    "parameterValues": [200],
+    "saveTo": "currentBattery"
+  },
+  "magnet": {
+    "items": ["energy cell", "iron plate", "green coil", "cyan coil", "bolt", "cable"],
+    "itemCounts": [1, 4, 2, 2, 5, 5],
+    "resultCount": 1,
+    "description": "special tool, attracts bonuses",
+    "isCraftable": true,
+    "category": "upgrades",
+    "requires": ["star core"],
+    "type": "part",
+    "parameters": ["[#FEDE15]power consumption", "[#3bff38]attraction radius"],
+    "parameterValues": [1, 90],
+    "saveTo": "currentMagnet"
+  },
+  "repellent field": {
+    "items": ["energy cell", "reinforced iron plate", "cyan crystal", "circuit board", "bolt", "cable"],
+    "itemCounts": [1, 3, 4, 1, 7, 10],
+    "resultCount": 1,
+    "description": "special tool, attracts bonuses",
+    "isCraftable": true,
+    "category": "upgrades",
+    "requires": ["warp core"],
+    "type": "part",
+    "parameters": ["[#FEDE15]power consumption", "[#3bff38]repellent radius"],
+    "parameterValues": [0.7, 110],
+    "saveTo": "currentRepeller"
+  },
+  "reinforced glass pane": {
+    "items": ["iron plate", "bolt", "glass rod", "glass shard", "green crystal"],
+    "itemCounts": [1, 4, 4, 6, 1],
+    "resultCount": 2,
+    "description": "a very strong bullet and explosionproof glass pane",
+    "isCraftable": true,
+    "category": "recepies",
+    "requires": [""],
+    "price": "auto",
+    "type": "item"
+  },
   "energy cell": {
-    "items": ["iron plate", "bolt", "energy crystal", "glass shard"],
-    "itemCounts": [2, 4, 1, 2],
+    "items": ["iron plate", "bolt", "energy crystal", "glass shard", "cable"],
+    "itemCounts": [2, 4, 1, 2, 5],
     "resultCount": 1,
     "description": "a basic energy cell, mainly used in cannons engine",
+    "isCraftable": true,
+    "category": "recepies",
+    "requires": [""],
+    "price": "auto",
+    "type": "item"
+  },
+  "projection card": {
+    "items": ["glass shard", "wire", "plastic", "green crystal", "orange blank card"],
+    "itemCounts": [4, 4, 3, 1, 1],
+    "resultCount": 1,
+    "description": "",
     "isCraftable": true,
     "category": "recepies",
     "requires": [""],
@@ -270,7 +420,7 @@
     "price": "auto",
     "type": "item"
   },
-  "motherboard": {
+  "motherboard mk1": {
     "items": ["advanced chip", "transistor", "resistor", "wire", "plastic", "memory card"],
     "itemCounts": [1, 10, 10, 7, 5, 1],
     "resultCount": 1,
@@ -304,7 +454,7 @@
     "type": "item"
   },
   "memory card": {
-    "items": ["memory cell", "wire", "plastic", "orange blank card"],
+    "items": ["memory cell mk1", "wire", "plastic", "orange blank card"],
     "itemCounts": [1, 1, 5, 1],
     "resultCount": 1,
     "description": "",
@@ -315,7 +465,7 @@
     "type": "item"
   },
   "memory cell mk2": {
-    "items": ["memory cell", "iron plate", "purple crystal"],
+    "items": ["memory cell mk1", "iron plate", "purple crystal"],
     "itemCounts": [1, 1, 1],
     "resultCount": 1,
     "description": "",
@@ -325,7 +475,7 @@
     "price": "auto",
     "type": "item"
   },
-  "memory cell": {
+  "memory cell mk1": {
     "items": ["cyan crystal", "iron plate", "wire"],
     "itemCounts": [1, 2, 5],
     "resultCount": 1,
@@ -392,7 +542,7 @@
     "type": "item"
   },
   "processor mk2": {
-    "items": ["processor", "wire", "transistor"],
+    "items": ["processor mk1", "wire", "transistor"],
     "itemCounts": [1, 10, 10],
     "resultCount": 1,
     "description": "",
@@ -402,7 +552,7 @@
     "price": "auto",
     "type": "item"
   },
-  "processor": {
+  "processor mk1": {
     "items": ["cyan crystal", "wire", "transistor", "iron plate", "glass shard"],
     "itemCounts": [1, 10, 20, 1, 3],
     "resultCount": 1,
@@ -469,7 +619,7 @@
     "type": "item"
   },
   "circuit board": {
-    "items": ["advanced chip", "cyan crystal", "transistor", "resistor", "processor"],
+    "items": ["advanced chip", "cyan crystal", "transistor", "resistor", "processor mk1"],
     "itemCounts": [1, 1, 1, 1, 1],
     "resultCount": 1,
     "description": "",

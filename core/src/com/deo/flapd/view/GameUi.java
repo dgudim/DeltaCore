@@ -57,8 +57,10 @@ public class GameUi {
 
     private ProgressBar health;
     private ProgressBar shield;
+    private ProgressBar charge;
     private ProgressBar.ProgressBarStyle healthBarStyle;
     private ProgressBar.ProgressBarStyle shieldBarStyle;
+    private ProgressBar.ProgressBarStyle chargeBarStyle;
 
     private Table table;
 
@@ -230,57 +232,57 @@ public class GameUi {
 
         healthBarStyle = new ProgressBar.ProgressBarStyle();
         shieldBarStyle = new ProgressBar.ProgressBarStyle();
+        chargeBarStyle = new ProgressBar.ProgressBarStyle();
 
-        Pixmap pixmap = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(0, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
-        TextureRegionDrawable BarBackground = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        TextureRegionDrawable BarBackgroundBlank = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
         pixmap.dispose();
-
-        Pixmap pixmap2 = new Pixmap(0, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
-        pixmap2.setColor(Color.GREEN);
-        pixmap2.fill();
-        TextureRegionDrawable BarForeground1 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap2)));
-        pixmap2.dispose();
 
         Pixmap pixmap3 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap3.setColor(Color.GREEN);
         pixmap3.fill();
-        TextureRegionDrawable BarForeground2 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap3)));
+        TextureRegionDrawable BarForegroundGreen = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap3)));
         pixmap3.dispose();
-
-        Pixmap pixmap4 = new Pixmap(0, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
-        pixmap4.setColor(Color.CYAN);
-        pixmap4.fill();
-        TextureRegionDrawable BarForeground3 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap4)));
-        pixmap4.dispose();
 
         Pixmap pixmap5 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
         pixmap5.setColor(Color.CYAN);
         pixmap5.fill();
-        TextureRegionDrawable BarForeground4 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap5)));
+        TextureRegionDrawable BarForegroundCyan = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap5)));
         pixmap5.dispose();
 
-        healthBarStyle.knob = BarForeground1;
-        healthBarStyle.knobBefore = BarForeground2;
-        //healthBarStyle.background = BarBackground;
+        Pixmap pixmap6 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
+        pixmap6.setColor(Color.YELLOW);
+        pixmap6.fill();
+        TextureRegionDrawable BarForegroundYellow = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap6)));
+        pixmap6.dispose();
 
-        shieldBarStyle.knob = BarForeground3;
-        shieldBarStyle.knobBefore = BarForeground4;
-        //shieldBarStyle.background = BarBackground;
+        healthBarStyle.knob = BarBackgroundBlank;
+        healthBarStyle.knobBefore = BarForegroundGreen;
 
-        health = new ProgressBar(0, 100, 0.01f, false, healthBarStyle);
-        shield = new ProgressBar(0, 100, 0.01f, false, shieldBarStyle);
+        shieldBarStyle.knob = BarBackgroundBlank;
+        shieldBarStyle.knobBefore = BarForegroundCyan;
+
+        chargeBarStyle.knob = BarBackgroundBlank;
+        chargeBarStyle.knobBefore = BarForegroundYellow;
+
+        health = new ProgressBar(0, 100*SpaceShip.healthMultiplier, 0.01f, false, healthBarStyle);
+        shield = new ProgressBar(0, SpaceShip.shieldStrength, 0.01f, false, shieldBarStyle);
+        charge = new ProgressBar(0, SpaceShip.chargeCapacity, 0.01f, false, chargeBarStyle);
 
         health.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
         shield.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);
+        charge.setBounds(666 - 134 * (uiScale - 1), 457 - 18 * (uiScale - 1), 56 * uiScale, 10);
 
         health.setAnimateDuration(0.25f);
         shield.setAnimateDuration(0.25f);
+        charge.setAnimateDuration(0.25f);
 
         if (transparency) {
             health.setColor(1, 1, 1, 0.5f);
             shield.setColor(1, 1, 1, 0.5f);
+            charge.setColor(1, 1, 1, 0.5f);
             pause.setColor(1, 1, 1, 0.5f);
             pause2.setColor(1, 1, 1, 0.5f);
             levelScore.setColor(1, 1, 1, 0.5f);
@@ -297,6 +299,7 @@ public class GameUi {
         stage.addActor(touchpad);
         stage.addActor(shield);
         stage.addActor(health);
+        stage.addActor(charge);
         stage.addActor(table);
 
         PauseStage.addActor(Pause);
@@ -421,6 +424,7 @@ public class GameUi {
         batch.begin();
         health.setValue(SpaceShip.Health);
         shield.setValue(SpaceShip.Shield);
+        charge.setValue(SpaceShip.Charge);
 
         if (SpaceShip.Health <= 0 && !exploded) {
             explosion.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
@@ -428,6 +432,7 @@ public class GameUi {
             exploded = true;
             SpaceShip.Health = -1000;
             SpaceShip.Shield = -1000;
+            SpaceShip.Charge = -1000;
             ship.explode();
         }
 
@@ -435,10 +440,6 @@ public class GameUi {
             font_main.setColor(0, 0, 0, 0.7f);
         } else {
             font_main.setColor(0, 0, 0, 1);
-        }
-
-        if (SpaceShip.Shield < 100 && !is_paused) {
-            SpaceShip.Shield += 3 * delta;
         }
     }
 

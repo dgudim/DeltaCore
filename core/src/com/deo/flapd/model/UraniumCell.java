@@ -78,7 +78,7 @@ public class UraniumCell {
                 pos1.set(cell.x, cell.y);
                 Vector2 pos2 = new Vector2();
                 pos2.set(376 - 400 * (uiScaling - 1), 435 - 20 * (uiScaling - 1));
-                pos1.lerp(pos2, 0.05f);
+                pos1.lerp(pos2, 5*delta);
 
                 cell.x = pos1.x;
                 cell.y = pos1.y;

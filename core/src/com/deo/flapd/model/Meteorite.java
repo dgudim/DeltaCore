@@ -136,9 +136,9 @@ public class Meteorite {
                 explosionEffect.setPosition(meteorites.get(i4).x + meteorites.get(i4).width / 2, meteorites.get(i4).y + meteorites.get(i4).height / 2);
                 explosionEffect.start();
                 if (random.nextBoolean()) {
-                    Bonus.Spawn(random.nextInt(5), 1, meteorites.get(i4));
+                    Bonus.Spawn(random.nextInt(5), meteorites.get(i4));
                     if (random.nextBoolean() && random.nextDouble() > 0.95 && random.nextDouble() < 0.96) {
-                        Bonus.Spawn(5, 1, meteorites.get(i4));
+                        Bonus.Spawn(5, meteorites.get(i4));
                     }
                 }
                 Drops.drop(meteorites.get(i4), 2, 2, 3);

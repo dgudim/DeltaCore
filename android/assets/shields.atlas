@@ -1,0 +1,26 @@
+
+shields.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ColdShield
+  rotate: false
+  xy: 1, 1
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1
+ColdShieldMk2
+  rotate: false
+  xy: 131, 1
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1
+ColdShieldMk3
+  rotate: false
+  xy: 261, 1
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1

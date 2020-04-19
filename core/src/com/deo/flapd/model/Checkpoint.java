@@ -113,6 +113,7 @@ public class Checkpoint {
             putInteger("Score", GameLogic.Score);
             putFloat("Health", SpaceShip.Health);
             putFloat("Shield", SpaceShip.Shield);
+            putFloat("Charge", SpaceShip.Charge);
             putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
             putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
             putInteger("bonuses_collected", GameLogic.bonuses_collected);

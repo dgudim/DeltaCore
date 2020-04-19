@@ -263,6 +263,8 @@ public abstract class DUtils {
             case("rubber"):
             case("wire"):
             case("resistor"):
+            case("magnet"):
+            case("upgrades"):
                 item = name;
                 break;
             case("metal shard"):
@@ -319,7 +321,7 @@ public abstract class DUtils {
             case("cyan fuel cell"):
                 item = "fuelCell2";
                 break;
-            case("motherboard"):
+            case("motherboard mk1"):
                 item = "chipset";
                 break;
             case("motherboard mk2"):
@@ -334,7 +336,7 @@ public abstract class DUtils {
             case("crafting card"):
                 item = "craftingCard";
                 break;
-            case("memory cell"):
+            case("memory cell mk1"):
                 item = "cell1";
                 break;
             case("memory cell mk2"):
@@ -352,7 +354,7 @@ public abstract class DUtils {
             case("ai processor"):
                 item = "aiChip";
                 break;
-            case("processor"):
+            case("processor mk1"):
                 item = "processor1";
                 break;
             case("processor mk2"):
@@ -367,7 +369,7 @@ public abstract class DUtils {
             case("memory card"):
                 item = "memoryCard";
                 break;
-            case("screen card"):
+            case("projection card"):
                 item = "screenCard";
                 break;
             case("green core"):
@@ -444,6 +446,33 @@ public abstract class DUtils {
                 break;
             case("ai chip"):
                 item = "aiChip";
+                break;
+            case("armour"):
+                item = "grid";
+                break;
+            case("shield generator mk1"):
+                item = "shieldGeneratorMk1";
+                break;
+            case("shield generator mk2"):
+                item = "shieldGeneratorMk2";
+                break;
+            case("shield generator mk3"):
+                item = "shieldGeneratorMk3";
+                break;
+            case("battery mk1"):
+                item = "batteryMk1";
+                break;
+            case("battery mk2"):
+                item = "batteryMk2";
+                break;
+            case("battery mk3"):
+                item = "batteryMk3";
+                break;
+            case("battery mk4"):
+                item = "batteryMk4";
+                break;
+            case("repellent field"):
+                item = "repeller";
                 break;
             default:
                 log("\n no texture for item "+name);

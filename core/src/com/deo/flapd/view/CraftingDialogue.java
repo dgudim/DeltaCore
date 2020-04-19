@@ -46,8 +46,9 @@ class CraftingDialogue {
     private int requestedQuantity;
     private boolean updateTree;
     private Array<ImageButton> requirementButtons;
-    private Array<String> requirementNames;
-    private Slider quantityGlobal;
+    private Array<Label> tableLabels;
+    private String[] items;
+    private int[] itemCounts;
     private String result;
     private int resultCount;
     private UIComposer uiComposer;
@@ -72,7 +73,9 @@ class CraftingDialogue {
         this.updateTree = updateTree;
 
         requirementButtons = new Array<>();
-        requirementNames = new Array<>();
+        tableLabels = new Array<>();
+        items = getRequiredItems();
+        itemCounts = getRequiredItemCounts();
 
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         font.setUseIntegerPositions(false);
@@ -113,7 +116,7 @@ class CraftingDialogue {
         dialogStyle.background = buttonSkin.getDrawable("craftingTerminal");
         dialog = new Dialog("", dialogStyle);
 
-        dialog.addActor(getProductImage(result));
+        dialog.addActor(getProductImage());
 
         quantity = uiComposer.addSlider("sliderDefaultSmall", 1, 50, 1);
 
@@ -125,6 +128,7 @@ class CraftingDialogue {
         if(!showDescription && !getPartLockState()) {
             switch (getType()) {
                 case ("baseCategory"):
+                case("basePart"):
 
                     if(saveTo().equals("currentEngine")){
                         customize.addListener(new ClickListener() {
@@ -142,19 +146,23 @@ class CraftingDialogue {
                         addCloseListener(yes, yes2);
                     }
 
-                    addEquipButton(equip);
+                    if(getType().equals("basePart")){
+                        addEquipButton(equip);
+                    }else{
+                        addButtons(yes3);
+                        addCloseListener(yes3);
+                        text.setText("this is a base category");
+                    }
 
                     addProductName();
-                    addDescription(true);
+                    addDescription(getType().equals("basePart"));
                     dialog.addActor(text);
                     break;
                 case ("part"):
                 case ("item"):
                     if((!getBoolean("unlocked_" + getItemCodeNameByName(result)) && getType().equals("part")) || getType().equals("item")) {
-                        final String[] items = getRequiredItems(result);
-                        final int[] itemCounts = getRequiredItemCounts(result);
-                        resultCount = getResultCount(result);
-                        requirementNames.addAll(items);
+
+                        resultCount = getResultCount();
 
                         addQuestion();
                         addCloseListener(no);
@@ -179,9 +187,6 @@ class CraftingDialogue {
                                         addInteger("item_" + getItemCodeNameByName(result), (int) (resultCount * quantity.getValue()));
                                     }
                                     dialog.hide();
-                                    if (previousDialogue != null) {
-                                        previousDialogue.updateRequirements();
-                                    }
                                     if(updateTree) {
                                         LoadingScreen.craftingTree.update();
                                     }
@@ -193,14 +198,23 @@ class CraftingDialogue {
                         dialog.addActor(yes);
 
                         if (getType().equals("part")) {
-                            addRequirementsTable(items, itemCounts);
                             addProductName();
                             equip.setTouchable(Touchable.disabled);
                             equip.setColor(Color.LIGHT_GRAY);
                             addButtons(equip);
+                            addRequirementsTable();
                         } else {
-                            addQuantitySelector(addRequirementsTable(items, itemCounts), itemCounts, items);
+                            addQuantitySelector();
                         }
+
+                        yes.addListener(new ClickListener(){
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                if (previousDialogue != null) {
+                                    previousDialogue.updateRequirements();
+                                }
+                            }
+                        });
                     }else{
                         text.setText("Part already crafted");
 
@@ -266,7 +280,7 @@ class CraftingDialogue {
 
             addCloseListener(yes, yes2);
 
-            addRequirements();
+            addDependencies();
 
             addProductName();
 
@@ -282,8 +296,12 @@ class CraftingDialogue {
 
     }
 
-    private String[] getRequiredItems(String result){
-        return treeJson.get(result).get("items").asStringArray();
+    private String[] getRequiredItems(){
+        if(treeJson.get(result).get("items") == null){
+            return new String[]{};
+        } else {
+            return treeJson.get(result).get("items").asStringArray();
+        }
     }
 
     private String getDescription(String result){
@@ -300,22 +318,30 @@ class CraftingDialogue {
         return stats.toString();
     }
 
-    private int[] getRequiredItemCounts(String result){
-        return treeJson.get(result).get("itemCounts").asIntArray();
+    private int[] getRequiredItemCounts(){
+        if(treeJson.get(result).get("itemCounts") == null){
+            return new int[]{};
+        } else {
+            return treeJson.get(result).get("itemCounts").asIntArray();
+        }
     }
 
-    private int getResultCount(String result){
+    private int getResultCount(){
         return treeJson.get(result).getInt("resultCount");
     }
 
     private void updateRequirements(){
-        if(!getType().equals("part")) {
-            quantityGlobal.setValue(quantityGlobal.getValue() + 1);
-            quantityGlobal.setValue(quantityGlobal.getValue() - 1);
+        for (int i = 0; i < itemCounts.length; i++) {
+            tableLabels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + (int)(itemCounts[i] * quantity.getValue()));
+            if (itemCounts[i] * quantity.getValue() > getInteger("item_" + getItemCodeNameByName(items[i]))) {
+                tableLabels.get(i).setColor(Color.valueOf("#DD0000"));
+            }else{
+                tableLabels.get(i).setColor(Color.YELLOW);
+            }
         }
     }
 
-    private Image getProductImage(String result){
+    private Image getProductImage(){
         Image product = new Image(itemAtlas.findRegion(getItemCodeNameByName(result)));
         product.setBounds(88, 40, 35, 25);
         product.setScaling(Scaling.fit);
@@ -346,7 +372,7 @@ class CraftingDialogue {
         }
     }
 
-    private Array<Label> addRequirementsTable(final String[] items, final int[] itemCounts){
+    private void addRequirementsTable(){
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
 
@@ -370,7 +396,7 @@ class CraftingDialogue {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(stage, assetManager, items[finalI],
-                            (int)Math.ceil((itemCounts[finalI]-getInteger("item_"+getItemCodeNameByName(items[finalI])))/treeJson.get(items[finalI]).get("resultCount").asFloat()),
+                            (int)Math.ceil((itemCounts[finalI]*quantity.getValue()-getInteger("item_"+getItemCodeNameByName(items[finalI])))/treeJson.get(items[finalI]).get("resultCount").asFloat()),
                             false, CraftingDialogue.this, updateTree);
                 }
             });
@@ -390,17 +416,18 @@ class CraftingDialogue {
 
         ingredients.setBounds(3, 28, 80, 39);
         dialog.addActor(ingredients);
-        return labels;
+        tableLabels = labels;
     }
 
-    private void addQuantitySelector(final Array<Label> labels, final int[] itemCounts, final String[] items){
+    private void addQuantitySelector(){
+
+        addRequirementsTable();
 
         final Label quantityText = new Label("quantity:"+requestedQuantity, yellowLabelStyle);
         quantityText.setFontScale(0.1f);
         quantityText.setAlignment(Align.center);
 
         quantity.setValue(requestedQuantity);
-        quantityGlobal = quantity;
 
         final Label productQuantity = addProductQuantity(true);
 
@@ -408,14 +435,7 @@ class CraftingDialogue {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 quantityText.setText("quantity:" + (int) quantity.getValue());
-                for (int i = 0; i < itemCounts.length; i++) {
-                    labels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + (int)(itemCounts[i] * quantity.getValue()));
-                    if (itemCounts[i] * quantity.getValue() > getInteger("item_" + getItemCodeNameByName(items[i]))) {
-                        labels.get(i).setColor(Color.valueOf("#DD0000"));
-                    }else{
-                        labels.get(i).setColor(Color.YELLOW);
-                    }
-                }
+                updateRequirements();
                 productQuantity.setText(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
             }
         });
@@ -437,6 +457,7 @@ class CraftingDialogue {
                 new CraftingDialogue(stage, assetManager, result, 1,true, null, updateTree);
             }
         });
+
         dialog.addActor(question);
     }
 
@@ -452,7 +473,7 @@ class CraftingDialogue {
 
     private Label addProductName(){
         Label productName = new Label(result, yellowLabelStyle);
-        productName.setFontScale(0.09f);
+        productName.setFontScale(0.08f);
         productName.setBounds(86, 29, 39, 10);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
@@ -487,7 +508,7 @@ class CraftingDialogue {
         return locked;
     }
 
-    private void addRequirements(){
+    private void addDependencies(){
         final String[] requiredItems = treeJson.get(result).get("requires").asStringArray();
         Table ingredientsTable = new Table();
 

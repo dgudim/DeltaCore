@@ -1,14 +1,13 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 public class SpaceShip extends ShipObject {
 
     public SpaceShip(AssetManager assetManager, float x, float y, float width, float height, boolean newGame) {
-        super((Texture)assetManager.get("ship.png"),(Texture)assetManager.get("ColdShield.png"), x, y, width, height, newGame);
+        super(assetManager, x, y, width, height, newGame);
     }
 
     public void drawBase(SpriteBatch batch, float delta){

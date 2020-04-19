@@ -127,16 +127,14 @@ public class LoadingScreen implements Screen {
         assetManager.load("shop/shopButtons.atlas", TextureAtlas.class);
         assetManager.load("shop/ui.atlas", TextureAtlas.class);
         assetManager.load("bullets.atlas", TextureAtlas.class);
+        assetManager.load("shields.atlas", TextureAtlas.class);
+        assetManager.load("bonuses.atlas", TextureAtlas.class);
         assetManager.load("9bg.png", Texture.class);
 
         assetManager.load("bg_layer1.png", Texture.class);
         assetManager.load("bg_layer2.png", Texture.class);
         assetManager.load("bg_layer3.png", Texture.class);
         assetManager.load("ship.png", Texture.class);
-        assetManager.load("ColdShield.png", Texture.class);
-        assetManager.load("enabled_ColdShield.png", Texture.class);
-        assetManager.load("over_ColdShield.png", Texture.class);
-        assetManager.load("disabledColdShield.png", Texture.class);
         assetManager.load("HotShield.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
@@ -146,12 +144,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("pew2.png", Texture.class);
         assetManager.load("Meteo.png", Texture.class);
         assetManager.load("atomic_bomb.png", Texture.class);
-
-        assetManager.load("bonus_bullets.png", Texture.class);
-        assetManager.load("bonus_health.png", Texture.class);
-        assetManager.load("bonus_part.png", Texture.class);
-        assetManager.load("bonus_shield.png", Texture.class);
-        assetManager.load("bonus_boss.png", Texture.class);
 
         assetManager.load("uraniumCell.png", Texture.class);
 

@@ -258,7 +258,7 @@ public class Boss_evilEye {
                 } else if (health.get(i) > -100) {
                     explode(i, false);
                     if (random.nextBoolean()) {
-                        Bonus.Spawn(random.nextInt(5), 1, cannonBounds.get(i));
+                        Bonus.Spawn(random.nextInt(5), cannonBounds.get(i));
                     }
                     Drops.drop(cannonBounds.get(i), 1, 2, 3);
                     health.set(i, -100f);
@@ -272,8 +272,10 @@ public class Boss_evilEye {
                     is_laserFire = true;
                     fire.start();
                 }
-                shieldSize += 240 * delta;
-                laserSaw.setVolume(soundId, MathUtils.clamp(shieldSize / 192, 0, 1));
+                if(animation) {
+                    shieldSize += 240 * delta;
+                    laserSaw.setVolume(soundId, MathUtils.clamp(shieldSize / 192, 0, 1));
+                }
                 if (shieldSize >= 192) {
                     animation = false;
                 }
@@ -349,7 +351,7 @@ public class Boss_evilEye {
                             GameLogic.Score += 3000;
                             UraniumCell.Spawn(bodyBounds, random.nextInt(20) + 5, 1, 1);
                             for (int i3 = 0; i3 < 5; i3++) {
-                                Bonus.Spawn(4, 1, bodyBounds.getX() + i * 5, bodyBounds.getY() + i * 5);
+                                Bonus.Spawn(4, bodyBounds.getX() + i * 5, bodyBounds.getY() + i * 5);
                             }
                             Drops.drop(bodyBounds, 5, 2, 4);
                             laserSaw.stop();

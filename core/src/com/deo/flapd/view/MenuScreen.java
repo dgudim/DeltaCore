@@ -311,6 +311,7 @@ public class MenuScreen implements Screen{
                 putInteger("Score",0);
                 putFloat("Health",100);
                 putFloat("Shield",100);
+                putFloat("Charge",100);
                 putBoolean("has1stBossSpawned", false);
                 putBoolean("has2ndBossSpawned", false);
                 putInteger("bonuses_collected", 0);
@@ -470,7 +471,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.5 b5", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.6", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);

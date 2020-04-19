@@ -145,7 +145,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [190, 40],
+          "offset0": [180, 25],
           "scale0": 1
         },
         "speed": 70,

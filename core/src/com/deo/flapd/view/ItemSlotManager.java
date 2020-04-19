@@ -154,7 +154,16 @@ public class ItemSlotManager {
         labelStyle.font = font;
         labelStyle.fontColor = Color.WHITE;
 
-        ImageButton slot = new ImageButton(slotStyle);
+        ImageButton slot = new ImageButton(slotStyle){
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                try {
+                    super.draw(batch, parentAlpha);
+                } catch (Exception e) {
+                    throw new NullPointerException("error drawing "+getItemCodeNameByName(result) + "\n" +items.findRegion(getItemCodeNameByName(result))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(result)));
+                }
+            }
+        };
 
         Label text = new Label(result, labelStyle);
         text.setFontScale(0.28f, 0.3f);
@@ -202,7 +211,7 @@ public class ItemSlotManager {
         holder.add(uraniumCells_text).padLeft(5);
 
         Table holder2 = new Table();
-        holder2.add(new Image((Texture)assetManager.get("bonus_part.png"))).size(30, 30);
+        holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(30, 30);
         holder2.add(cogs_text).padLeft(5);
         inventory.align(Align.left);
         final long[] nextUpdateTime = {getLong("lastGenTime") + 18000000};

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -27,7 +28,7 @@ public class Bonus {
     private static Array<Integer> types;
     private static Array<Float> anglesY;
     private Array<ParticleEffect> explosions;
-    private Sprite bonus_health, bonus_shield, bonus_part, bonus_bullets, boss;
+    private Sprite bonus_health, bonus_charge, bonus_shield, bonus_part, bonus_bullets, boss;
 
     private static float width, height;
 
@@ -46,13 +47,29 @@ public class Bonus {
 
         random = new Random();
 
-        bonus_health = new Sprite((Texture) assetManager.get("bonus_health.png"));
-        bonus_shield = new Sprite((Texture) assetManager.get("bonus_shield.png"));
-        bonus_part = new Sprite((Texture) assetManager.get("bonus_part.png"));
-        bonus_bullets = new Sprite((Texture) assetManager.get("bonus_bullets.png"));
-        boss = new Sprite((Texture) assetManager.get("bonus_boss.png"));
+        TextureAtlas bonusesAtlas = assetManager.get("bonuses.atlas");
+        bonus_health = new Sprite(bonusesAtlas.findRegion("bonus_health"));
+        bonus_shield = new Sprite(bonusesAtlas.findRegion("bonus_shield"));
+        bonus_charge = new Sprite(bonusesAtlas.findRegion("bonus_energy"));
+        bonus_part = new Sprite(bonusesAtlas.findRegion("bonus_part"));
+        bonus_bullets = new Sprite(bonusesAtlas.findRegion("bonus_bullets"));
+        boss = new Sprite(bonusesAtlas.findRegion("bonus_boss"));
 
-        bonus_bullets_t = assetManager.get("bonus_bullets.png");
+        bonus_health.setSize(width, height);
+        bonus_shield.setSize(width, height);
+        bonus_charge.setSize(width, height);
+        bonus_part.setSize(width, height);
+        bonus_bullets.setSize(width, height);
+        boss.setSize(width, height);
+
+        bonus_health.setOrigin(bonus_health.getWidth() / 2f, bonus_health.getHeight() / 2f);
+        bonus_shield.setOrigin(bonus_shield.getWidth() / 2f, bonus_shield.getHeight() / 2f);
+        bonus_charge.setOrigin(bonus_charge.getWidth() / 2f, bonus_charge.getHeight() / 2f);
+        bonus_part.setOrigin(bonus_part.getWidth() / 2f, bonus_part.getHeight() / 2f);
+        bonus_bullets.setOrigin(bonus_bullets.getWidth() / 2f, bonus_bullets.getHeight() / 2f);
+        boss.setOrigin(boss.getWidth() / 2f, boss.getHeight() / 2f);
+
+        bonus_bullets_t = bonusesAtlas.findRegion("bonus_bullets").getTexture();
 
         Bonus.width = width;
         Bonus.height = height;
@@ -70,18 +87,18 @@ public class Bonus {
         this.boss_evilEye = boss_evilEye;
     }
 
-    public static void Spawn(int type, float scale, Rectangle enemy) {
-        Spawn(type, scale, enemy.getX() + enemy.width / 2 - width / 2, enemy.getY() + enemy.height / 2 - height / 2);
+    public static void Spawn(int type, Rectangle enemy) {
+        Spawn(type, enemy.getX() + enemy.width / 2 - width / 2, enemy.getY() + enemy.height / 2 - height / 2);
     }
 
-    public static void Spawn(int type, float scale, float x, float y) {
+    public static void Spawn(int type, float x, float y) {
 
         Rectangle bonus = new Rectangle();
 
         bonus.x = x;
         bonus.y = y;
 
-        bonus.setSize(width * scale, height * scale);
+        bonus.setSize(width, height);
 
         bonuses.add(bonus);
         types.add(type);
@@ -98,34 +115,28 @@ public class Bonus {
             float angleY = anglesY.get(i);
 
             switch (type) {
+                case (0):
+                    this.bonus_charge.setPosition(bonus.x, bonus.y);
+                    this.bonus_charge.draw(batch);
+                    break;
                 case (1):
                     this.bonus_shield.setPosition(bonus.x, bonus.y);
-                    this.bonus_shield.setSize(bonus.width, bonus.height);
-                    this.bonus_shield.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.bonus_shield.draw(batch);
                     break;
                 case (2):
                     this.bonus_health.setPosition(bonus.x, bonus.y);
-                    this.bonus_health.setSize(bonus.width, bonus.height);
-                    this.bonus_health.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.bonus_health.draw(batch);
                     break;
                 case (3):
                     this.bonus_bullets.setPosition(bonus.x, bonus.y);
-                    this.bonus_bullets.setSize(bonus.width, bonus.height);
-                    this.bonus_bullets.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.bonus_bullets.draw(batch);
                     break;
                 case (4):
                     this.bonus_part.setPosition(bonus.x, bonus.y);
-                    this.bonus_part.setSize(bonus.width, bonus.height);
-                    this.bonus_part.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.bonus_part.draw(batch);
                     break;
                 case (5):
                     this.boss.setPosition(bonus.x, bonus.y);
-                    this.boss.setSize(bonus.width, bonus.height);
-                    this.boss.setOrigin(bonus.width / 2f, bonus.height / 2f);
                     this.boss.draw(batch);
                     break;
             }
@@ -138,20 +149,28 @@ public class Bonus {
             }
 
             if (bonus.overlaps(bounds.getBoundingRectangle())) {
+                if (type == 0) {
+                    removeBonus(i, true);
+                    if (SpaceShip.Charge <= SpaceShip.chargeCapacity - 10) {
+                        SpaceShip.Charge += 10;
+                    } else {
+                        SpaceShip.Charge = SpaceShip.chargeCapacity;
+                    }
+                }
                 if (type == 1) {
                     removeBonus(i, true);
-                    if (SpaceShip.Shield <= 90) {
+                    if (SpaceShip.Shield <= SpaceShip.shieldStrength - 10) {
                         SpaceShip.Shield += 10;
                     } else {
-                        SpaceShip.Shield = 100;
+                        SpaceShip.Shield = SpaceShip.shieldStrength;
                     }
                 }
                 if (type == 2) {
                     removeBonus(i, true);
-                    if (SpaceShip.Health <= 90) {
+                    if (SpaceShip.Health <= SpaceShip.Health * SpaceShip.healthMultiplier - 10) {
                         SpaceShip.Health += 10;
                     } else {
-                        SpaceShip.Health = 100;
+                        SpaceShip.Health = SpaceShip.Health * SpaceShip.healthMultiplier;
                     }
                 }
                 if (type == 3) {
@@ -216,6 +235,7 @@ public class Bonus {
                 case (5):
                     explosionEffect.load(Gdx.files.internal("particles/explosion4_1.p"), Gdx.files.internal("particles"));
                     break;
+                case (0):
                 case (3):
                     explosionEffect.load(Gdx.files.internal("particles/explosion4_2.p"), Gdx.files.internal("particles"));
                     break;

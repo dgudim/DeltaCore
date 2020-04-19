@@ -171,7 +171,7 @@ public class Kamikadze {
                 explosionEffect.setPosition(enemies.get(i4).x + enemies.get(i4).width / 2, enemies.get(i4).y + enemies.get(i4).height / 2);
                 explosionEffect.start();
                 if (random.nextBoolean()) {
-                    Bonus.Spawn(random.nextInt(4) + 1, 1, enemies.get(i4));
+                    Bonus.Spawn(random.nextInt(4) + 1, enemies.get(i4));
                 }
                 Drops.drop(enemies.get(i4), 1, 2, 3);
                 UraniumCell.Spawn(enemies.get(i4), random.nextInt(5) + 1, 1, 2);

@@ -27,8 +27,6 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -75,8 +73,6 @@ public class GameScreen implements Screen {
 
     private Drops drops;
 
-    private Executor executor;
-
     private PostProcessor postProcessor;
 
     private boolean enableShader;
@@ -88,8 +84,6 @@ public class GameScreen implements Screen {
         this.game = game;
 
         this.batch = batch;
-
-        executor = Executors.newSingleThreadExecutor();
 
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
@@ -158,21 +152,15 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (!is_paused && !ship.isExploded()) {
-            gameLogic.handleInput(delta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        gameLogic.detectCollisions(is_paused);
-                    } catch (Exception e) {
-                        StringWriter sw = new StringWriter();
-                        e.printStackTrace(new PrintWriter(sw));
-                        String fullStackTrace = sw.toString();
-                        log("\n" + fullStackTrace + "\n");
-                    }
-                }
-            });
+        gameLogic.handleInput(delta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
+
+        try {
+            gameLogic.detectCollisions(is_paused);
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String fullStackTrace = sw.toString();
+            log("\n" + fullStackTrace + "\n");
         }
 
         if (enableShader) {

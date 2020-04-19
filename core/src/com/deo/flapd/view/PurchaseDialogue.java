@@ -117,7 +117,7 @@ public class PurchaseDialogue{
         requirements.add(holder).align(Align.left).padLeft(1).row();
 
         Table holder2 = new Table();
-        holder2.add(new Image((Texture)assetManager.get("bonus_part.png"))).size(10, 10);
+        holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(10, 10);
         holder2.add(cogs_text).padLeft(1);
         if(price[1]>0){
             requirements.add(holder2).align(Align.left).padLeft(1).padTop(1).row();
