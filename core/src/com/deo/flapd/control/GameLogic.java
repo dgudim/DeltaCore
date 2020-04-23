@@ -41,7 +41,6 @@ public class GameLogic {
 
     public static int Score;
     public static int enemiesKilled;
-    public static int enemiesSpawned;
     public static int money, moneyEarned;
 
     private float speedMultiplier;
@@ -93,7 +92,6 @@ public class GameLogic {
             moneyEarned = getInteger("moneyEarned");
 
             enemiesKilled = getInteger("enemiesKilled");
-            enemiesSpawned = getInteger("enemiesSpawned");
         } else {
             bonuses_collected = 0;
             lastCheckpoint = 0;
@@ -104,7 +102,6 @@ public class GameLogic {
             moneyEarned = 0;
 
             enemiesKilled = 0;
-            enemiesSpawned = 0;
         }
         money = getInteger("money");
         bossWave = false;
@@ -151,8 +148,8 @@ public class GameLogic {
         if (!bossWave) {
 
             if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && enemiesKilled >= 50) {
-                if ((random.nextInt(40) == 5 || random.nextInt(400) > 370) && enemiesKilled >= 50) {
-                    kamikadze.Spawn((int) (800 * difficulty), 0.3f, 7);
+                if ((random.nextInt(60) == 5 || random.nextInt(400) > 370) && enemiesKilled >= 50) {
+                    kamikadze.Spawn((int) (200 * difficulty), 0.3f, 7);
                 }
             }
 

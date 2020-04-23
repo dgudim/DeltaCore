@@ -154,7 +154,7 @@ public class PurchaseDialogue{
                     subtractInteger("cogs", (int)(price[1]*quantity.getValue()));
                     addInteger("item_"+getItemCodeNameByName(result), (int)quantity.getValue());
 
-                    JsonValue slotsJson = new JsonReader().parse(getString("savedSlots"));
+                    JsonValue slotsJson = new JsonReader().parse("{\"slots\":" + getString("savedSlots") + ","+ "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
                     Array<String> items = new Array<>();
                     items.addAll(slotsJson.get("slots").asStringArray());
                     Array<Integer> quantities = new Array<>();
@@ -172,9 +172,9 @@ public class PurchaseDialogue{
                         quantities.removeIndex(index);
                     }
 
-                    putString("savedSlots", "{\"slots\":" + items.toString() + ","+ "\"productQuantities\":" + quantities.toString() + "}");
+                    putString("savedSlots", items.toString());
+                    putString("savedSlotQuantities", quantities.toString());
 
-                    LoadingScreen.craftingTree.update();
                     itemSlotManager.update();
                     dialog.hide();
                 }
@@ -219,7 +219,7 @@ public class PurchaseDialogue{
         }else{
             return new int[]{price.asInt(), 0};
         }
-        priceArray[1] = MathUtils.clamp((int)(Math.ceil(priceArray[1]/2f)-1)*4, 0, 15);
+        priceArray[1] = (int)MathUtils.clamp((Math.ceil(priceArray[1]/2f)-1)*1.5f, 0, 100);
         return priceArray;
     }
 

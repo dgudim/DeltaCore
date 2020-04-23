@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
@@ -39,10 +41,13 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
+import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 
@@ -101,10 +106,19 @@ public class MenuScreen implements Screen{
 
     private String lastFireEffect;
 
+    private AssetManager assetManager;
+
+    private boolean isConfirmationDialogActive = false;
+
     public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
+        long genTime = TimeUtils.millis();
+        log("\n time to generate menu");
+
         this.game = game;
 
         this.blurProcessor = blurProcessor;
+
+        this.assetManager = assetManager;
 
         treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
@@ -178,6 +192,33 @@ public class MenuScreen implements Screen{
         moreTable.setBounds(15, 62, 531, 410);
         moreTable.add(uiComposer.addLinkButton("gitHub", "[#32ff32]Game source code", "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]Official trello list of planned features", "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
+        final TextButton exportGameData = uiComposer.addTextButton("defaultLight", "export game data", 0.4f);
+        TextButton importGameData = uiComposer.addTextButton("defaultLight", "import game data", 0.4f);
+
+        final Label exportMessage = uiComposer.addText("", (BitmapFont)assetManager.get("fonts/font2(old).fnt"), 0.4f);
+
+        exportGameData.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                exportMessage.setText("[#FFFF00]saved to "+savePrefsToFile());
+            }
+        });
+
+        importGameData.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try {
+                    loadPrefsFromFile();
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
+                }catch (Exception e){
+                    exportMessage.setText("[#FF0000]no save data found");
+                }
+            }
+        });
+
+        moreTable.add(exportGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(importGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(exportMessage).padTop(5).padBottom(5).align(Align.left).row();
 
         musicVolumeS = (Slider)musicVolumeT.getCells().get(0).getActor();
         final CheckBox bloomS = (CheckBox)bloomT.getCells().get(0).getActor();
@@ -204,12 +245,29 @@ public class MenuScreen implements Screen{
         craftingTree = LoadingScreen.craftingTree;
         craftingTree.hide();
         craftingTree.update();
+
         final ItemSlotManager blackMarket = new ItemSlotManager(assetManager);
+        blackMarket.addShopSlots();
         blackMarket.setBounds(105, 70, 425, 400);
 
+        final ItemSlotManager inventory = new ItemSlotManager(assetManager);
+        inventory.addInventorySlots();
+        inventory.setBounds(105, 70, 425, 400);
+
         workshopCategoryManager = new CategoryManager(assetManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
-        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting");
+        workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting").addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                LoadingScreen.craftingTree.update();
+            }
+        });
         workshopCategoryManager.addCategory(blackMarket.holderGroup, "market");
+        workshopCategoryManager.addCategory(inventory.holderGroup, "inventory", 0.23f).addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                inventory.update();
+            }
+        });
         workshopCategoryManager.addCloseButton().addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -249,6 +307,7 @@ public class MenuScreen implements Screen{
 
         craftingTree.attach(Menu);
         blackMarket.attach(Menu);
+        inventory.attach(Menu);
 
         ShopStage = new Stage(viewport, batch);
 
@@ -305,22 +364,26 @@ public class MenuScreen implements Screen{
         newGame.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                putInteger("enemiesKilled",0);
-                putInteger("moneyEarned",0);
-                putInteger("enemiesSpawned",0);
-                putInteger("Score",0);
-                putFloat("Health",100);
-                putFloat("Shield",100);
-                putFloat("Charge",100);
-                putBoolean("has1stBossSpawned", false);
-                putBoolean("has2ndBossSpawned", false);
-                putInteger("bonuses_collected", 0);
-                putInteger("lastCheckpoint", 0);
-                putInteger("bulletsShot", 0);
-                putInteger("meteoritesDestroyed", 0);
-                putFloat("ShipX", 0);
-                putFloat("ShipY", 220);
-                game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
+                new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        putInteger("enemiesKilled",0);
+                        putInteger("moneyEarned",0);
+                        putInteger("Score",0);
+                        putFloat("Health",100);
+                        putFloat("Shield",100);
+                        putFloat("Charge",100);
+                        putBoolean("has1stBossSpawned", false);
+                        putBoolean("has2ndBossSpawned", false);
+                        putInteger("bonuses_collected", 0);
+                        putInteger("lastCheckpoint", 0);
+                        putInteger("bulletsShot", 0);
+                        putInteger("meteoritesDestroyed", 0);
+                        putFloat("ShipX", 0);
+                        putFloat("ShipY", 220);
+                        game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
+                    }
+                });
             }
         });
 
@@ -370,9 +433,11 @@ public class MenuScreen implements Screen{
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music/ambient"+ getRandomInRange(1, 5)+".ogg"));
 
-        Gdx.input.setCatchKey(Input.Keys.BACK, false);
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
 
         enableShader = getBoolean("bloom");
+
+        log("\n done, elapsed time "+ TimeUtils.timeSinceMillis(genTime)+"ms");
     }
 
     @Override
@@ -384,6 +449,24 @@ public class MenuScreen implements Screen{
 
     @Override
     public void render(float delta) {
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            if(!isConfirmationDialogActive) {
+                new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to quit?", new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        System.exit(1);
+                    }
+                }, new ClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        isConfirmationDialogActive = false;
+                    }
+                });
+            }
+            isConfirmationDialogActive = true;
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -471,7 +554,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.6", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.6b3", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);
@@ -553,17 +636,16 @@ public class MenuScreen implements Screen{
             float[] colors = fire.getEmitters().get(0).getTint().getColors();
 
             StringBuilder buffer = new StringBuilder();
-            buffer.append("{\"colors\":");
             buffer.append('[');
             buffer.append(colors[0]);
             for (int i = 1; i < colors.length; i++) {
                 buffer.append(", ");
                 buffer.append(colors[i]);
             }
-            buffer.append("]}");
+            buffer.append("]");
             putString(key, buffer.toString());
         }else{
-            float[] colors = new JsonReader().parse(getString(key)).get("colors").asFloatArray();
+            float[] colors = new JsonReader().parse("{\"colors\":" + getString(key) + "}").get("colors").asFloatArray();
             fire.getEmitters().get(0).getTint().setColors(colors);
             fire2.getEmitters().get(0).getTint().setColors(colors);
         }

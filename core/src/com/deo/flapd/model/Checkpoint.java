@@ -109,7 +109,6 @@ public class Checkpoint {
             speed = 5;
             putInteger("enemiesKilled", GameLogic.enemiesKilled);
             putInteger("moneyEarned", GameLogic.moneyEarned);
-            putInteger("enemiesSpawned", GameLogic.enemiesSpawned);
             putInteger("Score", GameLogic.Score);
             putFloat("Health", SpaceShip.Health);
             putFloat("Shield", SpaceShip.Shield);

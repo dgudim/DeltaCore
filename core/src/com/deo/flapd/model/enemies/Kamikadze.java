@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.UraniumCell;
@@ -95,7 +94,6 @@ public class Kamikadze {
             remove_Enemy.add(false);
 
             millis = 0;
-            GameLogic.enemiesSpawned++;
         }
     }
 
@@ -149,7 +147,7 @@ public class Kamikadze {
             pos1.set(enemy.x, enemy.y);
             Vector2 pos2 = new Vector2();
             pos2.set(bounds.getX(), bounds.getY());
-            pos1.lerp(pos2, delta);
+            pos1.lerp(pos2, 0.5f*delta);
 
             this.enemy.setColor(1, timer / ideal_timer, timer / ideal_timer, 1);
             this.enemy.setPosition(pos1.x, pos1.y);

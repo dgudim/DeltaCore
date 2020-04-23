@@ -45,6 +45,8 @@ public class Boss_evilEye {
 
     private Array<Float> degrees, degrees2, health;
 
+    private Array<Boolean> is_Dead;
+
     private Array<ParticleEffect> explosions;
 
     private float rotation, posX, millis, shieldSize;
@@ -100,6 +102,7 @@ public class Boss_evilEye {
         health = new Array<>();
         healthBars = new Array<>();
         explosions = new Array<>();
+        is_Dead = new Array<>();
         random = new Random();
 
         bodyBounds = new Rectangle().setSize(128).setPosition(1000, 176);
@@ -192,6 +195,7 @@ public class Boss_evilEye {
         shieldSize = 0;
         soundId = 0;
         health.setSize(12);
+        is_Dead.setSize(12);
         cannonBounds.setSize(10);
         degrees.setSize(10);
         for (int i = 0; i < 10; i++) {
@@ -201,7 +205,10 @@ public class Boss_evilEye {
             cannonBounds.set(i, cannon);
             degrees.set(i, rotation);
             health.set(i, 500f);
+            is_Dead.set(i, false);
         }
+        is_Dead.set(10, false);
+        is_Dead.set(11, false);
         health.set(10, 2000f);
         health.set(11, 1000f);
     }
@@ -255,13 +262,14 @@ public class Boss_evilEye {
                     healthBars.get(i).setValue(health.get(i));
                     healthBars.get(i).draw(batch, 1);
                     healthBars.get(i).act(delta);
-                } else if (health.get(i) > -100) {
+                } else if (!is_Dead.get(i)) {
                     explode(i, false);
                     if (random.nextBoolean()) {
                         Bonus.Spawn(random.nextInt(5), cannonBounds.get(i));
                     }
                     Drops.drop(cannonBounds.get(i), 1, 2, 3);
                     health.set(i, -100f);
+                    is_Dead.set(i, true);
                     cannonBounds.get(i).setSize(0).setPosition(-100, -100);
                     GameLogic.Score += 100;
                 }
@@ -296,13 +304,13 @@ public class Boss_evilEye {
                             laserTip.setSize(2, 9 * health.get(10) / 2000).setPosition(laser.getX(), laser.getY());
                             fire.setPosition(laser.getX(), laser.getY() + 4.5f);
                             fire.draw(batch);
-                            fire.update(0);
+                            fire.update(delta);
                             laser.setRotation(rotation);
                             laser.setOrigin(laser.getWidth() / 2, laser.getHeight() / 2);
                             laser.draw(batch);
                         }
                         float multiplier = laser.getWidth() / 4;
-                        SpaceShip.takeDamage(multiplier * 20 * delta);
+                        SpaceShip.takeDamage(multiplier * 30 * delta);
                         break;
                     }
                 }
@@ -345,15 +353,16 @@ public class Boss_evilEye {
                                 health.set(10, health.get(10) - Bullet.damages.get(i));
                             }
                         }
-                        if (health.get(10) > -100f && health.get(10) < 0) {
+                        if (health.get(10)<0 && !is_Dead.get(10)){
                             health.set(10, -100f);
+                            is_Dead.set(10, true);
                             explode(0, true);
                             GameLogic.Score += 3000;
                             UraniumCell.Spawn(bodyBounds, random.nextInt(20) + 5, 1, 1);
                             for (int i3 = 0; i3 < 5; i3++) {
                                 Bonus.Spawn(4, bodyBounds.getX() + i * 5, bodyBounds.getY() + i * 5);
                             }
-                            Drops.drop(bodyBounds, 5, 2, 4);
+                            Drops.drop(bodyBounds, 5, 2, 5);
                             laserSaw.stop();
                             reset();
                         }

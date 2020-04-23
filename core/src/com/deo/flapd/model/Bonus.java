@@ -3,7 +3,6 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Boss_battleShip;
@@ -36,7 +36,7 @@ public class Bonus {
 
     private float uiScale;
 
-    private Texture bonus_bullets_t;
+    private Image bonus_bullets_t;
     private static Random random;
 
     private Boss_battleShip boss_battleShip;
@@ -44,6 +44,7 @@ public class Bonus {
 
     public Bonus(AssetManager assetManager, float width, float height, Polygon shipBounds, Boss_battleShip boss_battleShip, Boss_evilEye boss_evilEye) {
         bounds = shipBounds;
+        uiScale = getFloat("ui");
 
         random = new Random();
 
@@ -69,7 +70,8 @@ public class Bonus {
         bonus_bullets.setOrigin(bonus_bullets.getWidth() / 2f, bonus_bullets.getHeight() / 2f);
         boss.setOrigin(boss.getWidth() / 2f, boss.getHeight() / 2f);
 
-        bonus_bullets_t = bonusesAtlas.findRegion("bonus_bullets").getTexture();
+        bonus_bullets_t = new Image(bonusesAtlas.findRegion("bonus_bullets"));
+        bonus_bullets_t.setBounds(319 - 475 * (uiScale - 1), 475 - 50 * uiScale, 50 * uiScale, 50 * uiScale);
 
         Bonus.width = width;
         Bonus.height = height;
@@ -80,8 +82,6 @@ public class Bonus {
         anglesY = new Array<>();
 
         font_text = assetManager.get("fonts/font2(old).fnt");
-
-        uiScale = getFloat("ui");
 
         this.boss_battleShip = boss_battleShip;
         this.boss_evilEye = boss_evilEye;
@@ -151,26 +151,26 @@ public class Bonus {
             if (bonus.overlaps(bounds.getBoundingRectangle())) {
                 if (type == 0) {
                     removeBonus(i, true);
-                    if (SpaceShip.Charge <= SpaceShip.chargeCapacity - 10) {
-                        SpaceShip.Charge += 10;
+                    if (SpaceShip.Charge <= SpaceShip.chargeCapacity - 5) {
+                        SpaceShip.Charge += 5;
                     } else {
                         SpaceShip.Charge = SpaceShip.chargeCapacity;
                     }
                 }
                 if (type == 1) {
                     removeBonus(i, true);
-                    if (SpaceShip.Shield <= SpaceShip.shieldStrength - 10) {
-                        SpaceShip.Shield += 10;
+                    if (SpaceShip.Shield <= SpaceShip.shieldStrength - 15) {
+                        SpaceShip.Shield += 15;
                     } else {
                         SpaceShip.Shield = SpaceShip.shieldStrength;
                     }
                 }
                 if (type == 2) {
                     removeBonus(i, true);
-                    if (SpaceShip.Health <= SpaceShip.Health * SpaceShip.healthMultiplier - 10) {
-                        SpaceShip.Health += 10;
+                    if (100 * SpaceShip.healthMultiplier >= SpaceShip.Health * SpaceShip.healthMultiplier + 15) {
+                        SpaceShip.Health += 15;
                     } else {
-                        SpaceShip.Health = SpaceShip.Health * SpaceShip.healthMultiplier;
+                        SpaceShip.Health = 100 * SpaceShip.healthMultiplier;
                     }
                 }
                 if (type == 3) {
@@ -200,7 +200,7 @@ public class Bonus {
             font_text.setColor(Color.WHITE);
             font_text.getData().setScale(0.3f * uiScale);
             font_text.draw(batch, "X" + GameLogic.bonuses_collected, 333 - 463 * (uiScale - 1), 425 - 55 * (uiScale - 1), 24 * uiScale, 1, false);
-            batch.draw(bonus_bullets_t, 319 - 475 * (uiScale - 1), 475 - 50 * uiScale, 50 * uiScale, 50 * uiScale);
+            bonus_bullets_t.draw(batch, 1);
             font_text.setColor(Color.BLACK);
         }
         for (int i3 = 0; i3 < explosions.size; i3++) {

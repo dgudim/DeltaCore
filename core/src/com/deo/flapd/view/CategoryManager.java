@@ -71,6 +71,10 @@ public class CategoryManager extends Actor{
     }
 
     Button addCategory(Actor whatToOpen, String name){
+        return addCategory(whatToOpen, name, this.fontScale);
+    }
+
+    Button addCategory(Actor whatToOpen, String name, float fontScale){
         TextButton category = uiComposer.addTextButton(style, name, fontScale);
         targets.add(whatToOpen);
 

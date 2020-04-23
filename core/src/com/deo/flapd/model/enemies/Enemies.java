@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemies {
@@ -19,6 +20,7 @@ public class Enemies {
     private Array<String> enemyNames;
     private Array<Enemy> enemyEntities;
     private String type;
+    private float difficulty;
 
     public Enemies(AssetManager assetManager){
         this.assetManager = assetManager;
@@ -30,22 +32,23 @@ public class Enemies {
         }else{
             type = "normal";
         }
+        difficulty = getFloat("difficulty");
     }
 
     public void loadEnemies(){
         int enemyTypeCount = enemiesJson.size;
-        Array<String> shootingSounds = new Array<>();
-        Array<String> explosionSounds = new Array<>();
 
         for(int i = 0; i<enemyTypeCount; i++){
             EnemyData enemyData = new EnemyData(enemiesJson.get(i), type);
             enemies.add(enemyData);
             enemyNames.add(enemyData.name);
-            explosionSounds.add(enemyData.explosionSound);
         }
     }
 
     private void SpawnEnemy(EnemyData data){
+        data = data.clone();
+        data.health *= difficulty;
+        System.out.println(data.health);
         enemyEntities.add(new Enemy(assetManager, data));
     }
 

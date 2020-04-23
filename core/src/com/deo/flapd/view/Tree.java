@@ -159,9 +159,7 @@ class Tree {
             Array<Node> currentCategoryNodes = new Array<>();
 
             for (int i = 0; i < items.length; i++) {
-                float nodeHeight;
-                nodeHeight = maxHeight + 15;
-                Node nextNode = new Node(assetManager, items[i], root.node.getX() + 80, nodeHeight - 55 * i, 50, 50, treeTable, treeJson);
+                Node nextNode = new Node(assetManager, items[i], root.node.getX() + 80, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
                 loadCraftingRecipe(items[i], nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -185,7 +183,12 @@ class Tree {
     }
 
     void update(){
-        nodes.get(0).get(0).updateRoot();
+        new Thread(){
+            @Override
+            public void run() {
+                nodes.get(0).get(0).updateRoot();
+            }
+        }.start();
     }
 
 }
@@ -231,7 +234,7 @@ class Node {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    throw new NullPointerException("error drawing "+getItemCodeNameByName(item) + "\n" +items.findRegion(getItemCodeNameByName(item))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(item)));
+                    log("error drawing "+getItemCodeNameByName(item) + "\n" +items.findRegion(getItemCodeNameByName(item))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(item)));
                 }
             }
         };
@@ -261,7 +264,7 @@ class Node {
         node.addListener(new ActorGestureListener(20, 0.4f, 0.6f, 0.15f){
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                new CraftingDialogue(holder.getStage(), assetManager, name, (int)Math.ceil((requestedQuantity-getInteger("item_"+getItemCodeNameByName(name)))/resultCount), false, null, true);
+                new CraftingDialogue(holder.getStage(), assetManager, name, (int)Math.ceil((requestedQuantity-getInteger("item_"+getItemCodeNameByName(name)))/resultCount), false, null);
                 return true;
             }
             @Override

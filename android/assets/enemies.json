@@ -84,12 +84,12 @@
     },
 
     "drops": {
-      "timer": 2,
+      "timer": 1.3,
       "rarity": [0, 1],
       "count": [0, 1]
     },
     "money": {
-      "timer": 2,
+      "timer": 1.3,
       "count": [0, 3]
     },
     "bonuses": {
@@ -183,12 +183,12 @@
     },
 
     "drops": {
-      "timer": 2,
+      "timer": 1.3,
       "rarity": [0, 2],
       "count": [0, 2]
     },
     "money": {
-      "timer": 2,
+      "timer": 1.3,
       "count": [0, 5]
     },
     "bonuses": {
@@ -286,12 +286,12 @@
     },
 
     "drops": {
-      "timer": 2,
-      "rarity": [0, 3],
+      "timer": 1.3,
+      "rarity": [1, 3],
       "count": [0, 2]
     },
     "money": {
-      "timer": 2,
+      "timer": 1.3,
       "count": [0, 7]
     },
     "bonuses": {

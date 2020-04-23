@@ -130,10 +130,10 @@ public class Drops {
                 item = redCrystal;
                 break;
             case (12):
-                item = warpShard;
+                item = warpShardMK2;
                 break;
             case (13):
-                item = warpShardMK2;
+                item = warpShard;
                 break;
             case (14):
                 item = warpShardMK3;
@@ -185,10 +185,10 @@ public class Drops {
                 item = "redCrystal";
                 break;
             case (12):
-                item = "bonus_warp";
+                item = "bonus_warp2";
                 break;
             case (13):
-                item = "bonus_warp2";
+                item = "bonus_warp";
                 break;
             case (14):
                 item = "bonus_warp3";
@@ -225,7 +225,7 @@ public class Drops {
                 pos1.set(drop.x, drop.y);
                 Vector2 pos2 = new Vector2();
                 pos2.set(344 + drop.width / 2 - 400 * (uiScaling - 1), 403 + drop.height / 2 - 20 * (uiScaling - 1));
-                pos1.lerp(pos2, 5*delta);
+                pos1.lerp(pos2, 4.5f*delta);
 
                 drop.x = pos1.x;
                 drop.y = pos1.y;

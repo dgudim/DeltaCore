@@ -59,6 +59,8 @@ public class Bullet {
 
     private int damage;
 
+    private int bulletSpeed;
+
     public Bullet(AssetManager assetManager, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
 
@@ -81,6 +83,9 @@ public class Bullet {
             }
             if (params[i].endsWith("power consumption")) {
                 powerConsumption = paramValues[i];
+            }
+            if (params[i].endsWith("bullet speed")) {
+                bulletSpeed = (int) paramValues[i];
             }
         }
         params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
@@ -189,8 +194,8 @@ public class Bullet {
             }
             this.bullet.draw(batch);
 
-            bullet.x += 1500 * delta;
-            bullet.y += 300 * angle * delta;
+            bullet.x += bulletSpeed * delta;
+            bullet.y += 300 * bulletSpeed/1500.0f * angle * delta;
 
             if (bullet.x > 800) {
                 Bullet.removeBullet(i, false);

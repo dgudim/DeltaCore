@@ -44,7 +44,6 @@ class CraftingDialogue {
     private Stage stage;
     private AssetManager assetManager;
     private int requestedQuantity;
-    private boolean updateTree;
     private Array<ImageButton> requirementButtons;
     private Array<Label> tableLabels;
     private String[] items;
@@ -58,19 +57,18 @@ class CraftingDialogue {
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
-        this(stage, assetManager, result, 1, false, null, false);
+        this(stage, assetManager, result, 1, false, null);
     }
 
     CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, boolean showDescription) {
-        this(stage, assetManager, result, 1, showDescription, null, false);
+        this(stage, assetManager, result, 1, showDescription, null);
     }
 
-    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final CraftingDialogue previousDialogue, final boolean updateTree){
+    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final CraftingDialogue previousDialogue){
         this.stage = stage;
         this.assetManager = assetManager;
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
-        this.updateTree = updateTree;
 
         requirementButtons = new Array<>();
         tableLabels = new Array<>();
@@ -187,9 +185,10 @@ class CraftingDialogue {
                                         addInteger("item_" + getItemCodeNameByName(result), (int) (resultCount * quantity.getValue()));
                                     }
                                     dialog.hide();
-                                    if(updateTree) {
-                                        LoadingScreen.craftingTree.update();
+                                    if (previousDialogue != null) {
+                                        previousDialogue.updateRequirements();
                                     }
+                                    LoadingScreen.craftingTree.update();
                                 }
                             }
                         });
@@ -206,15 +205,6 @@ class CraftingDialogue {
                         } else {
                             addQuantitySelector();
                         }
-
-                        yes.addListener(new ClickListener(){
-                            @Override
-                            public void clicked(InputEvent event, float x, float y) {
-                                if (previousDialogue != null) {
-                                    previousDialogue.updateRequirements();
-                                }
-                            }
-                        });
                     }else{
                         text.setText("Part already crafted");
 
@@ -392,12 +382,12 @@ class CraftingDialogue {
             ImageButton item = new ImageButton(itemButtonStyle);
             final int finalI = i;
 
-            item.addListener(new ClickListener(){
+            requirement.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(stage, assetManager, items[finalI],
                             (int)Math.ceil((itemCounts[finalI]*quantity.getValue()-getInteger("item_"+getItemCodeNameByName(items[finalI])))/treeJson.get(items[finalI]).get("resultCount").asFloat()),
-                            false, CraftingDialogue.this, updateTree);
+                            false, CraftingDialogue.this);
                 }
             });
 
@@ -454,7 +444,7 @@ class CraftingDialogue {
         question.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, 1,true, null, updateTree);
+                new CraftingDialogue(stage, assetManager, result, 1,true, null);
             }
         });
 
@@ -530,7 +520,7 @@ class CraftingDialogue {
             item.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, requiredItems[finalI], 1, false, CraftingDialogue.this, updateTree);
+                    new CraftingDialogue(stage, assetManager, requiredItems[finalI], 1, false, CraftingDialogue.this);
                     dialog.hide();
                 }
             });

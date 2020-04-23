@@ -32,7 +32,7 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameOverScreen implements Screen {
 
-    private int Score, enemiesKilled, bulletsShot, meteoritesDestroyed, highScore, enemiesSpawned, moneyEarned;
+    private int Score, enemiesKilled, bulletsShot, meteoritesDestroyed, highScore, moneyEarned;
 
     private float difficulty;
 
@@ -92,8 +92,6 @@ public class GameOverScreen implements Screen {
         bulletsShot = Bullet.bulletsShot;
 
         meteoritesDestroyed = Meteorite.meteoritesDestroyed;
-
-        enemiesSpawned = GameLogic.enemiesSpawned;
 
         moneyEarned = GameLogic.moneyEarned;
 
@@ -178,32 +176,30 @@ public class GameOverScreen implements Screen {
         stage.draw();
         stage.act(delta);
         batch.begin();
-        font_main.getData().setScale(0.7f);
 
+        font_main.getData().setScale(0.7f);
         font_main.setColor(Color.valueOf("#ff1100"));
         font_main.draw(batch, "Score: " + Score, 305, 405, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff2200"));
         font_main.draw(batch, "High Score: " + highScore, 305, 355, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff3300"));
         font_main.draw(batch, "Bullets Shot: " + bulletsShot, 305, 305, 200, 1, false);
-        font_main.getData().setScale(0.5f);
         font_main.setColor(Color.valueOf("#ff5500"));
-        font_main.draw(batch, "Enemies Killed: " + enemiesKilled + " out of " + enemiesSpawned + " Enemies Spawned",  305, 205, 200, 1, false);
-        font_main.getData().setScale(0.7f);
+        font_main.draw(batch, "Enemies Killed: " + enemiesKilled,  305, 210, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff4400"));
         font_main.draw(batch, "Meteorites Destroyed: " + meteoritesDestroyed, 305, 255, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff6600"));
         font_main.draw(batch, "Cells Collected: "+moneyEarned,  305, 165, 200, 1, false);
         font_main.setColor(new Color().fromHsv(Math.abs(120-difficulty*20), 1.5f, 1).add(0,0,0,1));
         font_main.getData().setScale(0.6f);
-        font_main.draw(batch, "Difficulty: " + difficulty+"X", 51, 445, 200, 1, false);
+        font_main.draw(batch, "Difficulty: " + difficulty+"X", 51, 455, 200, 1, false);
         font_main.getData().setScale(0.7f);
 
 
         if(isNewHighScore) {
             font_main.getData().setScale(0.65f);
             font_main.setColor(Color.valueOf("#33ffaa"));
-            font_main.draw(batch, "New High Score !", 555, 457, 200, 1, false);
+            font_main.draw(batch, "New High Score !", 555, 455, 200, 1, false);
         }
 
         batch.end();

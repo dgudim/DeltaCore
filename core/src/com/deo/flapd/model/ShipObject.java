@@ -112,7 +112,7 @@ public abstract class ShipObject {
         fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
         fire2.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
 
-        float[] colors = new JsonReader().parse(getString(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color")).get("colors").asFloatArray();
+        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color") + "}").get("colors").asFloatArray();
         fire.getEmitters().get(0).getTint().setColors(colors);
         fire2.getEmitters().get(0).getTint().setColors(colors);
 

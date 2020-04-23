@@ -6,6 +6,8 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public abstract class DUtils {
@@ -153,6 +155,64 @@ public abstract class DUtils {
             log("\n dumped preferences \n");
         }
         return prefsString.toString();
+    }
+
+    public static String savePrefsToFile(){
+        StringBuilder prefsString = new StringBuilder();
+
+        int size = prefs.get().size();
+
+        Object[] keys = prefs.get().keySet().toArray();
+        Object[] values = prefs.get().values().toArray();
+
+        prefsString.append("{");
+        for(int i = 0; i<size-1; i++){
+            prefsString.append('"');
+            prefsString.append(keys[i]);
+            prefsString.append('"');
+            prefsString.append(":{");
+            prefsString.append("\"value\":");
+            prefsString.append('"');
+            prefsString.append(values[i]);
+            prefsString.append('"');
+            prefsString.append("},\n");
+        }
+
+        prefsString.append('"');
+        prefsString.append(keys[size-1]);
+        prefsString.append('"');
+        prefsString.append(":{");
+        prefsString.append("\"value\":");
+        prefsString.append('"');
+        prefsString.append(values[size-1]);
+        prefsString.append('"');
+        prefsString.append("}}");
+
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            FileHandle file = Gdx.files.external("Android/data/!DeltaCore/saveGame.save");
+            file.writeString(prefsString.toString(), false);
+            return file.path();
+        }else {
+            FileHandle file = Gdx.files.external("!DeltaCore/saveGame.save");
+            file.writeString(prefsString.toString(), false);
+            return file.path();
+        }
+    }
+
+    public static void loadPrefsFromFile(){
+        String savedPrefs;
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            FileHandle file = Gdx.files.external("Android/data/!DeltaCore/saveGame.save");
+            savedPrefs = file.readString();
+        }else {
+            FileHandle file = Gdx.files.external("!DeltaCore/saveGame.save");
+            savedPrefs = file.readString();
+        }
+        JsonValue prefsJson = new JsonReader().parse(savedPrefs);
+
+        for(int i = 0; i<prefsJson.size-1; i++){
+            putString(prefsJson.get(i).name, prefsJson.get(i).get("value").asString());
+        }
     }
 
     public static int getInteger(String key){
@@ -369,7 +429,7 @@ public abstract class DUtils {
             case("memory card"):
                 item = "memoryCard";
                 break;
-            case("projection card"):
+            case("screen card"):
                 item = "screenCard";
                 break;
             case("green core"):

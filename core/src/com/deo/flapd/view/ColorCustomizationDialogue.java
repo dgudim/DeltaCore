@@ -67,9 +67,9 @@ public class ColorCustomizationDialogue {
         TextButton ok = uiComposer.addTextButton("workshopGreen", "apply", 0.13f);
         TextButton reset = uiComposer.addTextButton("workshopGreen", "reset", 0.08f);
 
-        close.setBounds(6, 6, 38, 20);
-        ok.setBounds(50, 6, 38, 20);
-        reset.setBounds(6, 72, 20, 7);
+        close.setBounds(3, 3, 42, 25);
+        ok.setBounds(49, 3, 42, 25);
+        reset.setBounds(3, 71, 20, 7);
 
         close.addListener(new ClickListener(){
             @Override
@@ -139,7 +139,7 @@ public class ColorCustomizationDialogue {
             writeFireColor(fire.getEmitters().get(0).getTint().getColors(), particleEffect);
             notEditedColors = originalColors;
         }else{
-            float[] colors = new JsonReader().parse(getString(particleEffect+"_color")).get("colors").asFloatArray();
+            float[] colors = new JsonReader().parse("{\"colors\":" + getString(particleEffect+"_color")+"}").get("colors").asFloatArray();
             notEditedColors = colors.clone();
             fire.getEmitters().get(0).getTint().setColors(colors);
             fire2.getEmitters().get(0).getTint().setColors(colors);
@@ -163,11 +163,10 @@ public class ColorCustomizationDialogue {
         ok.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(getInteger("item_crystal")>=1) {
+                if(getInteger("item_crystal")>=5) {
                     writeFireColor(colors, particleEffect);
                     if(!Arrays.equals(colors, notEditedColors)) {
-                        subtractInteger("item_crystal", 1);
-                        LoadingScreen.craftingTree.update();
+                        subtractInteger("item_crystal", 5);
                     }
                     fire.dispose();
                     fire2.dispose();
@@ -253,7 +252,7 @@ public class ColorCustomizationDialogue {
         }
 
         final ScrollPane colorCustomisationScrollPane = new ScrollPane(colorCustomisationTable);
-        colorCustomisationScrollPane.setBounds(6, 32, 82, 35);
+        colorCustomisationScrollPane.setBounds(3, 30, 88, 39);
         colorCustomisationScrollPane.setCancelTouchFocus(false);
 
         for (int i = 0; i<sliders.size; i++){
@@ -270,7 +269,7 @@ public class ColorCustomizationDialogue {
         dialog.addActor(close);
         dialog.addActor(colorCustomisationScrollPane);
         dialog.addActor(reset);
-        dialog.add(crystal).padRight(6).padBottom(73);
+        dialog.add(crystal).padRight(5).padBottom(73);
         dialog.scaleBy(2);
         dialog.setSize(94, 128);
         dialog.setPosition(130, 78);
@@ -279,14 +278,13 @@ public class ColorCustomizationDialogue {
 
     private void writeFireColor(float[] colors, String particleEffect){
         StringBuilder buffer = new StringBuilder();
-        buffer.append("{\"colors\":");
         buffer.append('[');
         buffer.append(colors[0]);
         for (int i = 1; i < colors.length; i++) {
             buffer.append(", ");
             buffer.append(colors[i]);
         }
-        buffer.append("]}");
+        buffer.append("]");
         putString(particleEffect+"_color", buffer.toString());
     }
 
