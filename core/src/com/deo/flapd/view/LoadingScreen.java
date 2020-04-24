@@ -22,12 +22,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
@@ -314,18 +312,12 @@ public class LoadingScreen implements Screen {
                 stateName = "Loading tree";
             }
         }catch (ClassCastException | NumberFormatException e){
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String fullStackTrace = sw.toString();
-            log("\n"+fullStackTrace + "\n");
+            logException(e);
             log("\n wiping data :) \n");
             clearPrefs();
             log("...done...restarting");
         } catch (Exception e2) {
-            StringWriter sw = new StringWriter();
-            e2.printStackTrace(new PrintWriter(sw));
-            String fullStackTrace = sw.toString();
-            log("\n" + fullStackTrace + "\n");
+            logException(e2);
             log("force exiting");
             System.exit(1);
         }

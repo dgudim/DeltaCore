@@ -25,13 +25,10 @@ import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
@@ -157,10 +154,7 @@ public class GameScreen implements Screen {
         try {
             gameLogic.detectCollisions(is_paused);
         } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String fullStackTrace = sw.toString();
-            log("\n" + fullStackTrace + "\n");
+            logException(e);
         }
 
         if (enableShader) {

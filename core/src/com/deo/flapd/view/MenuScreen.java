@@ -37,12 +37,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
+import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
@@ -194,6 +196,7 @@ public class MenuScreen implements Screen{
         moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]Official trello list of planned features", "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
         final TextButton exportGameData = uiComposer.addTextButton("defaultLight", "export game data", 0.4f);
         TextButton importGameData = uiComposer.addTextButton("defaultLight", "import game data", 0.4f);
+        TextButton clearGameData = uiComposer.addTextButton("defaultLight", "clear game data", 0.4f);
 
         final Label exportMessage = uiComposer.addText("", (BitmapFont)assetManager.get("fonts/font2(old).fnt"), 0.4f);
 
@@ -209,15 +212,25 @@ public class MenuScreen implements Screen{
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     loadPrefsFromFile();
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
+                    exportMessage.setText("[#FFFF00]data imported, restart your game");
                 }catch (Exception e){
                     exportMessage.setText("[#FF0000]no save data found");
+                    logException(e);
                 }
+            }
+        });
+
+        clearGameData.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                clearPrefs();
+                exportMessage.setText("[#FF0000]data cleared, restart your game");
             }
         });
 
         moreTable.add(exportGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(importGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(clearGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(exportMessage).padTop(5).padBottom(5).align(Align.left).row();
 
         musicVolumeS = (Slider)musicVolumeT.getCells().get(0).getActor();
@@ -623,31 +636,41 @@ public class MenuScreen implements Screen{
     }
 
     private void updateFire(){
-        if(lastFireEffect.equals(" ")){
-            loadFire();
-        }
-        if(!lastFireEffect.equals(treeJson.get(getString("currentEngine")).get("usesEffect").asString())) {
-            fire.reset();
-            fire2.reset();
-            loadFire();
-        }
-        String key = treeJson.get(getString("currentEngine")).get("usesEffect").asString()+"_color";
-        if(getString(key).equals("")){
-            float[] colors = fire.getEmitters().get(0).getTint().getColors();
-
-            StringBuilder buffer = new StringBuilder();
-            buffer.append('[');
-            buffer.append(colors[0]);
-            for (int i = 1; i < colors.length; i++) {
-                buffer.append(", ");
-                buffer.append(colors[i]);
+        try{
+            if (lastFireEffect.equals(" ")) {
+                loadFire();
             }
-            buffer.append("]");
-            putString(key, buffer.toString());
-        }else{
-            float[] colors = new JsonReader().parse("{\"colors\":" + getString(key) + "}").get("colors").asFloatArray();
-            fire.getEmitters().get(0).getTint().setColors(colors);
-            fire2.getEmitters().get(0).getTint().setColors(colors);
+            if (!lastFireEffect.equals(treeJson.get(getString("currentEngine")).get("usesEffect").asString())) {
+                fire.reset();
+                fire2.reset();
+                loadFire();
+            }
+            String key = treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color";
+            if (getString(key).equals("")) {
+                setFireToDefault(key);
+            } else {
+                float[] colors = new JsonReader().parse("{\"colors\":" + getString(key) + "}").get("colors").asFloatArray();
+                fire.getEmitters().get(0).getTint().setColors(colors);
+                fire2.getEmitters().get(0).getTint().setColors(colors);
+            }
+        }catch (Exception e){
+            logException(e);
+            setFireToDefault(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color");
         }
     }
+
+    private void setFireToDefault(String key){
+        float[] colors = fire.getEmitters().get(0).getTint().getColors();
+
+        StringBuilder buffer = new StringBuilder();
+        buffer.append('[');
+        buffer.append(colors[0]);
+        for (int i = 1; i < colors.length; i++) {
+            buffer.append(", ");
+            buffer.append(colors[i]);
+        }
+        buffer.append("]");
+        putString(key, buffer.toString());
+    }
+
 }

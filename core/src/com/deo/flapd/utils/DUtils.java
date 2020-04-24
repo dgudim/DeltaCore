@@ -10,6 +10,9 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public abstract class DUtils {
 
     private static Preferences prefs = Gdx.app.getPreferences("Preferences");
@@ -210,8 +213,10 @@ public abstract class DUtils {
         }
         JsonValue prefsJson = new JsonReader().parse(savedPrefs);
 
+        clearPrefs();
+
         for(int i = 0; i<prefsJson.size-1; i++){
-            putString(prefsJson.get(i).name, prefsJson.get(i).get("value").asString());
+            putString(prefsJson.get(i).get("value").toString(), prefsJson.get(i).name);
         }
     }
 
@@ -550,5 +555,12 @@ public abstract class DUtils {
         float zoom = Math.min(tempScaleH, tempScaleW);
         camera.zoom = 1/zoom;
         camera.update();
+    }
+
+    public static void logException(Exception e){
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String fullStackTrace = sw.toString();
+        log("\n" + fullStackTrace + "\n");
     }
 }
