@@ -199,6 +199,7 @@ public class MenuScreen implements Screen{
         TextButton clearGameData = uiComposer.addTextButton("defaultLight", "clear game data", 0.4f);
 
         final Label exportMessage = uiComposer.addText("", (BitmapFont)assetManager.get("fonts/font2(old).fnt"), 0.4f);
+        exportMessage.setWrap(true);
 
         exportGameData.addListener(new ClickListener(){
             @Override
@@ -212,7 +213,7 @@ public class MenuScreen implements Screen{
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     loadPrefsFromFile();
-                    exportMessage.setText("[#FFFF00]data imported, restart your game");
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
                 }catch (Exception e){
                     exportMessage.setText("[#FF0000]no save data found");
                     logException(e);
@@ -224,14 +225,14 @@ public class MenuScreen implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clearPrefs();
-                exportMessage.setText("[#FF0000]data cleared, restart your game");
+                game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
             }
         });
 
         moreTable.add(exportGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(importGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(clearGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
-        moreTable.add(exportMessage).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(exportMessage).padTop(5).padBottom(5).height(50).row();
 
         musicVolumeS = (Slider)musicVolumeT.getCells().get(0).getActor();
         final CheckBox bloomS = (CheckBox)bloomT.getCells().get(0).getActor();
@@ -243,7 +244,8 @@ public class MenuScreen implements Screen{
 
         ScrollPane infoText = (ScrollPane) uiComposer.addScrollText(
                 "[#00ff55]Made by Deoxys\n" +
-                "Textures by DefenceX, VKLowe, Deoxys\n" +
+                "Textures by DefenceX, VKLowe, Deoxys,\n" +
+                        " Max2007\n" +
                 "Music by EvanKing\n" +
                 "[#5DBCD2]Inspired by DefenseX, PetruCHIOrus\n" +
                 "[#cccc22]Testers: Misterowl, Nikita.Beloglazov\n" +
@@ -567,7 +569,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.6b3", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.7", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);
@@ -654,6 +656,7 @@ public class MenuScreen implements Screen{
                 fire2.getEmitters().get(0).getTint().setColors(colors);
             }
         }catch (Exception e){
+            log("corrupted fire color array");
             logException(e);
             setFireToDefault(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color");
         }

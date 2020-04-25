@@ -61,6 +61,8 @@ public class Bullet {
 
     private int bulletSpeed;
 
+    private int bulletsPerShot;
+
     public Bullet(AssetManager assetManager, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
 
@@ -86,6 +88,9 @@ public class Bullet {
             }
             if (params[i].endsWith("bullet speed")) {
                 bulletSpeed = (int) paramValues[i];
+            }
+            if (params[i].endsWith("bullets per shot")) {
+                bulletsPerShot = (int) paramValues[i];
             }
         }
         params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
@@ -131,32 +136,33 @@ public class Bullet {
     public void Spawn(float damageMultiplier, boolean is_charged) {
 
         if (SpaceShip.Charge >= powerConsumption) {
-            Rectangle bullet = new Rectangle();
+            for (int i = 0; i<bulletsPerShot; i++) {
+                Rectangle bullet = new Rectangle();
 
-            bullet.setSize(width, height);
+                bullet.setSize(width, height);
 
-            bullet.x = bounds.getX() + 68;
-            bullet.y = bounds.getY() + 12.5f;
+                bullet.x = bounds.getX() + 68;
+                bullet.y = bounds.getY() + 12.5f;
+                bullets.add(bullet);
+                explosionQueue.add(false);
+                remove_Bullet.add(false);
+                if (SpaceShip.Charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
+                    types.add(true);
+                    damages.add((int) (damage * damageMultiplier));
+                    SpaceShip.Charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
+                } else {
+                    types.add(false);
+                    damages.add(damage);
+                    SpaceShip.Charge -= powerConsumption / bulletsPerShot;
+                }
 
-            bullets.add(bullet);
-            explosionQueue.add(false);
-            remove_Bullet.add(false);
-            if (SpaceShip.Charge >= powerConsumption * damageMultiplier + 0.5f && is_charged) {
-                types.add(true);
-                damages.add((int) (damage * damageMultiplier));
-                SpaceShip.Charge -= powerConsumption * damageMultiplier + 0.5f;
-            } else {
-                types.add(false);
-                damages.add(damage);
-                SpaceShip.Charge -= powerConsumption;
+                degrees.add((random.nextFloat() - 0.5f) * spread + bounds.getRotation() / 20);
+
+                bullet.x += MathUtils.cosDeg(bounds.getRotation()) * 6;
+                bullet.y += MathUtils.cosDeg(bounds.getRotation());
+
+                bulletsShot++;
             }
-
-            degrees.add((random.nextFloat() - 0.5f) * spread + bounds.getRotation() / 20);
-
-            bullet.x += MathUtils.cosDeg(bounds.getRotation()) * 6;
-            bullet.y += MathUtils.cosDeg(bounds.getRotation());
-
-            bulletsShot++;
 
             if (soundVolume > 0) {
                 shot.play(soundVolume / 100);

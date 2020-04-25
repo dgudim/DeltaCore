@@ -3,2270 +3,2606 @@ items.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+disabled_shieldMk4
+  rotate: false
+  xy: 1, 904
+  size: 104, 118
+  orig: 104, 118
+  offset: 0, 0
+  index: -1
+enabled_shieldMk4
+  rotate: false
+  xy: 1, 784
+  size: 104, 118
+  orig: 104, 118
+  offset: 0, 0
+  index: -1
+over_shieldMk4
+  rotate: false
+  xy: 107, 904
+  size: 104, 118
+  orig: 104, 118
+  offset: 0, 0
+  index: -1
+shieldMk4
+  rotate: false
+  xy: 1, 664
+  size: 104, 118
+  orig: 104, 118
+  offset: 0, 0
+  index: -1
 disabled_redCrystal
   rotate: false
-  xy: 1, 915
+  xy: 213, 914
   size: 108, 108
   orig: 108, 108
   offset: 0, 0
   index: -1
 enabled_redCrystal
   rotate: false
-  xy: 1, 805
+  xy: 323, 914
   size: 108, 108
   orig: 108, 108
   offset: 0, 0
   index: -1
 over_redCrystal
   rotate: false
-  xy: 111, 915
+  xy: 433, 914
   size: 108, 108
   orig: 108, 108
   offset: 0, 0
   index: -1
 redCrystal
   rotate: false
-  xy: 1, 695
+  xy: 543, 914
   size: 108, 108
   orig: 108, 108
   offset: 0, 0
   index: -1
 disabled_shieldGeneratorMk2
   rotate: false
-  xy: 111, 807
+  xy: 107, 796
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 disabled_shieldGeneratorMk3
   rotate: false
-  xy: 221, 917
+  xy: 1, 556
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 enabled_shieldGeneratorMk2
   rotate: false
-  xy: 1, 587
+  xy: 213, 806
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 enabled_shieldGeneratorMk3
   rotate: false
-  xy: 111, 699
+  xy: 653, 916
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 over_shieldGenaratorMk3
   rotate: false
-  xy: 327, 917
+  xy: 107, 688
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 over_shieldGeneratorMk2
   rotate: false
-  xy: 1, 479
+  xy: 1, 448
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 shieldGeneratorMk2
   rotate: false
-  xy: 433, 917
+  xy: 213, 698
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
 shieldGeneratorMk3
   rotate: false
-  xy: 1, 371
+  xy: 319, 806
   size: 104, 106
   orig: 104, 106
   offset: 0, 0
   index: -1
+disabled_engineArmour1
+  rotate: false
+  xy: 759, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+disabled_engineArmour2
+  rotate: false
+  xy: 425, 824
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+disabled_engineArmour3
+  rotate: false
+  xy: 877, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+enabled_engineArmour1
+  rotate: false
+  xy: 995, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+enabled_engineArmour2
+  rotate: false
+  xy: 1113, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+enabled_engineArmour3
+  rotate: false
+  xy: 1231, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+engineArmour1
+  rotate: false
+  xy: 1349, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+engineArmour2
+  rotate: false
+  xy: 1467, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+engineArmour3
+  rotate: false
+  xy: 1585, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+over_engineArmour1
+  rotate: false
+  xy: 1703, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+over_engineArmour2
+  rotate: false
+  xy: 1821, 934
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
+disabled_thermoNuclearCore
+  rotate: false
+  xy: 107, 587
+  size: 99, 99
+  orig: 99, 99
+  offset: 0, 0
+  index: -1
+enabled_thermoNuclearCore
+  rotate: false
+  xy: 1, 347
+  size: 99, 99
+  orig: 99, 99
+  offset: 0, 0
+  index: -1
+over_thermoNuclearCore
+  rotate: false
+  xy: 319, 705
+  size: 99, 99
+  orig: 99, 99
+  offset: 0, 0
+  index: -1
+thermoNuclearCore
+  rotate: false
+  xy: 107, 486
+  size: 99, 99
+  orig: 99, 99
+  offset: 0, 0
+  index: -1
+over_engineArmour3
+  rotate: false
+  xy: 543, 824
+  size: 116, 88
+  orig: 116, 88
+  offset: 0, 0
+  index: -1
 disabled_prism
   rotate: false
-  xy: 539, 927
+  xy: 1, 249
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 enabled_prism
   rotate: false
-  xy: 1, 273
+  xy: 1, 151
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 over_prism
   rotate: false
-  xy: 637, 927
+  xy: 1, 53
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 prism
   rotate: false
-  xy: 1, 175
+  xy: 1939, 926
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 batteryMk3
   rotate: false
-  xy: 1, 73
+  xy: 661, 814
   size: 80, 100
   orig: 80, 100
-  offset: 0, 0
-  index: -1
-batteryMk4
-  rotate: false
-  xy: 735, 923
-  size: 80, 100
-  orig: 80, 100
-  offset: 0, 0
-  index: -1
-disabled_batteryMk3
-  rotate: false
-  xy: 817, 923
-  size: 80, 100
-  orig: 80, 100
-  offset: 0, 0
-  index: -1
-disabled_batteryMk4
-  rotate: false
-  xy: 899, 923
-  size: 80, 100
-  orig: 80, 100
-  offset: 0, 0
-  index: -1
-aiCard
-  rotate: false
-  xy: 1, 7
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-crystal
-  rotate: false
-  xy: 981, 981
-  size: 42, 42
-  orig: 42, 42
-  offset: 0, 0
-  index: -1
-disabled_crystal
-  rotate: false
-  xy: 981, 937
-  size: 42, 42
-  orig: 42, 42
   offset: 0, 0
   index: -1
 disabled_engine3
   rotate: false
-  xy: 539, 877
-  size: 118, 48
-  orig: 118, 48
-  offset: 0, 0
-  index: -1
-enabled_engine3
-  rotate: false
-  xy: 221, 867
-  size: 118, 48
-  orig: 118, 48
-  offset: 0, 0
-  index: -1
-enabled_batteryMk3
-  rotate: false
-  xy: 217, 765
-  size: 80, 100
-  orig: 80, 100
-  offset: 0, 0
-  index: -1
-engine3
-  rotate: false
-  xy: 341, 867
-  size: 118, 48
-  orig: 118, 48
-  offset: 0, 0
-  index: -1
-enabled_batteryMk4
-  rotate: false
-  xy: 299, 765
-  size: 80, 100
-  orig: 80, 100
-  offset: 0, 0
-  index: -1
-over_batteryMk3
-  rotate: false
-  xy: 381, 765
-  size: 80, 100
-  orig: 80, 100
-  offset: 0, 0
-  index: -1
-over_engine3
-  rotate: false
-  xy: 217, 715
+  xy: 1, 3
   size: 118, 48
   orig: 118, 48
   offset: 0, 0
   index: -1
 disabled_engine2
   rotate: false
-  xy: 337, 720
+  xy: 107, 441
   size: 107, 43
   orig: 107, 43
   offset: 0, 0
   index: -1
-enabled_engine2
+batteryMk4
   rotate: false
-  xy: 217, 670
-  size: 107, 43
-  orig: 107, 43
-  offset: 0, 0
-  index: -1
-over_batteryMk4
-  rotate: false
-  xy: 83, 73
+  xy: 102, 339
   size: 80, 100
   orig: 80, 100
   offset: 0, 0
   index: -1
-engine2
+disabled_batteryMk3
   rotate: false
-  xy: 67, 28
-  size: 107, 43
-  orig: 107, 43
+  xy: 99, 237
+  size: 80, 100
+  orig: 80, 100
   offset: 0, 0
   index: -1
-bolt
+disabled_batteryMk4
   rotate: false
-  xy: 659, 861
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-disabled_bolt
-  rotate: false
-  xy: 659, 861
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-enabled_bolt
-  rotate: false
-  xy: 659, 861
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_bolt
-  rotate: false
-  xy: 659, 861
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_engine2
-  rotate: false
-  xy: 725, 878
-  size: 107, 43
-  orig: 107, 43
-  offset: 0, 0
-  index: -1
-chipset_big
-  rotate: false
-  xy: 834, 877
-  size: 86, 44
-  orig: 86, 44
-  offset: 0, 0
-  index: -1
-chipset
-  rotate: false
-  xy: 461, 871
-  size: 68, 44
-  orig: 68, 44
+  xy: 99, 135
+  size: 80, 100
+  orig: 80, 100
   offset: 0, 0
   index: -1
 batteryMk2
   rotate: false
-  xy: 463, 789
+  xy: 99, 53
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-disabled_batteryMk2
+enabled_engine3
   rotate: false
-  xy: 545, 795
-  size: 80, 80
-  orig: 80, 80
+  xy: 759, 884
+  size: 118, 48
+  orig: 118, 48
+  offset: 0, 0
+  index: -1
+engine3
+  rotate: false
+  xy: 879, 884
+  size: 118, 48
+  orig: 118, 48
+  offset: 0, 0
+  index: -1
+over_engine3
+  rotate: false
+  xy: 999, 884
+  size: 118, 48
+  orig: 118, 48
+  offset: 0, 0
+  index: -1
+enabled_engine2
+  rotate: false
+  xy: 1119, 889
+  size: 107, 43
+  orig: 107, 43
+  offset: 0, 0
+  index: -1
+engine2
+  rotate: false
+  xy: 1228, 889
+  size: 107, 43
+  orig: 107, 43
+  offset: 0, 0
+  index: -1
+over_engine2
+  rotate: false
+  xy: 1337, 889
+  size: 107, 43
+  orig: 107, 43
   offset: 0, 0
   index: -1
 disabled_shieldGeneratorMk1
   rotate: false
-  xy: 627, 787
+  xy: 743, 810
   size: 84, 72
   orig: 84, 72
-  offset: 0, 0
-  index: -1
-disabled_engine1
-  rotate: false
-  xy: 725, 840
-  size: 90, 36
-  orig: 90, 36
   offset: 0, 0
   index: -1
 enabled_shieldGeneratorMk1
   rotate: false
-  xy: 713, 766
+  xy: 829, 810
   size: 84, 72
   orig: 84, 72
-  offset: 0, 0
-  index: -1
-enabled_engine1
-  rotate: false
-  xy: 817, 839
-  size: 90, 36
-  orig: 90, 36
   offset: 0, 0
   index: -1
 over_shieldGeneratorMk1
   rotate: false
-  xy: 799, 765
+  xy: 915, 810
   size: 84, 72
   orig: 84, 72
-  offset: 0, 0
-  index: -1
-disabled_chipset_big
-  rotate: false
-  xy: 463, 743
-  size: 86, 44
-  orig: 86, 44
-  offset: 0, 0
-  index: -1
-card1
-  rotate: false
-  xy: 551, 729
-  size: 64, 64
-  orig: 64, 64
   offset: 0, 0
   index: -1
 shieldGeneratorMk1
   rotate: false
-  xy: 617, 713
+  xy: 1001, 810
   size: 84, 72
   orig: 84, 72
   offset: 0, 0
   index: -1
-enabled_batteryMk2
+enabled_batteryMk3
   rotate: false
-  xy: 703, 684
+  xy: 184, 339
+  size: 80, 100
+  orig: 80, 100
+  offset: 0, 0
+  index: -1
+enabled_batteryMk4
+  rotate: false
+  xy: 181, 237
+  size: 80, 100
+  orig: 80, 100
+  offset: 0, 0
+  index: -1
+over_batteryMk3
+  rotate: false
+  xy: 181, 135
+  size: 80, 100
+  orig: 80, 100
+  offset: 0, 0
+  index: -1
+disabled_batteryMk2
+  rotate: false
+  xy: 181, 53
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-over_batteryMk2
+chipset_big
   rotate: false
-  xy: 785, 683
-  size: 80, 80
-  orig: 80, 80
+  xy: 121, 7
+  size: 86, 44
+  orig: 86, 44
   offset: 0, 0
   index: -1
-advancedChip
+disabled_chipset_big
   rotate: false
-  xy: 922, 859
-  size: 62, 62
-  orig: 62, 62
-  offset: 0, 0
-  index: -1
-batteryMk1
-  rotate: false
-  xy: 867, 683
-  size: 60, 80
-  orig: 60, 80
-  offset: 0, 0
-  index: -1
-engine1
-  rotate: false
-  xy: 446, 705
-  size: 90, 36
-  orig: 90, 36
-  offset: 0, 0
-  index: -1
-over_engine1
-  rotate: false
-  xy: 337, 682
-  size: 90, 36
-  orig: 90, 36
+  xy: 1446, 888
+  size: 86, 44
+  orig: 86, 44
   offset: 0, 0
   index: -1
 enabled_chipset_big
   rotate: false
-  xy: 429, 659
+  xy: 1534, 888
   size: 86, 44
   orig: 86, 44
   offset: 0, 0
   index: -1
 over_chipset_big
   rotate: false
-  xy: 111, 653
+  xy: 1622, 888
   size: 86, 44
   orig: 86, 44
   offset: 0, 0
   index: -1
+disabled_engine1
+  rotate: false
+  xy: 1710, 896
+  size: 90, 36
+  orig: 90, 36
+  offset: 0, 0
+  index: -1
+enabled_engine1
+  rotate: false
+  xy: 1802, 896
+  size: 90, 36
+  orig: 90, 36
+  offset: 0, 0
+  index: -1
+engine1
+  rotate: false
+  xy: 425, 786
+  size: 90, 36
+  orig: 90, 36
+  offset: 0, 0
+  index: -1
+enabled_batteryMk2
+  rotate: false
+  xy: 420, 704
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+over_engine1
+  rotate: false
+  xy: 517, 786
+  size: 90, 36
+  orig: 90, 36
+  offset: 0, 0
+  index: -1
+over_batteryMk2
+  rotate: false
+  xy: 502, 704
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+batteryMk1
+  rotate: false
+  xy: 584, 704
+  size: 60, 80
+  orig: 60, 80
+  offset: 0, 0
+  index: -1
+over_batteryMk4
+  rotate: false
+  xy: 646, 712
+  size: 80, 100
+  orig: 80, 100
+  offset: 0, 0
+  index: -1
 disabled_ironShard
   rotate: false
-  xy: 107, 576
+  xy: 728, 733
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 enabled_ironShard
   rotate: false
-  xy: 107, 576
+  xy: 728, 733
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 ironShard
   rotate: false
-  xy: 107, 576
+  xy: 728, 733
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 over_ironShard
   rotate: false
-  xy: 107, 576
+  xy: 728, 733
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 disabled_batteryMk1
   rotate: false
-  xy: 107, 494
+  xy: 805, 728
   size: 60, 80
   orig: 60, 80
   offset: 0, 0
   index: -1
 enabled_batteryMk1
   rotate: false
-  xy: 107, 412
+  xy: 867, 728
   size: 60, 80
   orig: 60, 80
-  offset: 0, 0
-  index: -1
-card2
-  rotate: false
-  xy: 107, 346
-  size: 64, 64
-  orig: 64, 64
   offset: 0, 0
   index: -1
 over_batteryMk1
   rotate: false
-  xy: 99, 264
+  xy: 929, 728
   size: 60, 80
   orig: 60, 80
   offset: 0, 0
   index: -1
-cell1
+aiCard
   rotate: false
-  xy: 99, 198
+  xy: 991, 744
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-Cannon2
+chipset
   rotate: false
-  xy: 99, 175
-  size: 65, 21
-  orig: 65, 21
+  xy: 209, 7
+  size: 68, 44
+  orig: 68, 44
   offset: 0, 0
   index: -1
-Cannon3
+bolt
   rotate: false
-  xy: 67, 2
-  size: 68, 24
-  orig: 68, 24
+  xy: 1087, 818
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+disabled_bolt
+  rotate: false
+  xy: 1087, 818
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+enabled_bolt
+  rotate: false
+  xy: 1087, 818
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_bolt
+  rotate: false
+  xy: 1087, 818
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+card1
+  rotate: false
+  xy: 1153, 823
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+card2
+  rotate: false
+  xy: 1219, 823
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cell1
+  rotate: false
+  xy: 1285, 823
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
 cell2
   rotate: false
-  xy: 885, 773
+  xy: 1351, 823
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coolingUnit
   rotate: false
-  xy: 184, 587
+  xy: 1417, 822
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 craftingCard
   rotate: false
-  xy: 250, 604
+  xy: 1483, 822
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_aiCard
   rotate: false
-  xy: 250, 538
+  xy: 1549, 822
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_card1
   rotate: false
-  xy: 184, 521
+  xy: 1615, 822
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_card2
   rotate: false
-  xy: 169, 455
+  xy: 1057, 744
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabled_Cannon3
-  rotate: false
-  xy: 169, 429
-  size: 68, 24
-  orig: 68, 24
-  offset: 0, 0
-  index: -1
 disabled_cell1
   rotate: false
-  xy: 173, 363
+  xy: 1681, 822
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_cell2
   rotate: false
-  xy: 235, 455
+  xy: 1747, 830
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_coolingUnit
   rotate: false
-  xy: 239, 389
+  xy: 1813, 830
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabled_chipset
+Cannon3
   rotate: false
-  xy: 239, 343
-  size: 68, 44
-  orig: 68, 44
+  xy: 728, 707
+  size: 68, 24
+  orig: 68, 24
   offset: 0, 0
   index: -1
 disabled_craftingCard
   rotate: false
-  xy: 173, 297
+  xy: 1123, 752
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-enabled_chipset
-  rotate: false
-  xy: 239, 297
-  size: 68, 44
-  orig: 68, 44
-  offset: 0, 0
-  index: -1
 disabled_ironPlate
   rotate: false
-  xy: 165, 231
+  xy: 1189, 757
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_ironPlate
   rotate: false
-  xy: 165, 231
+  xy: 1189, 757
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 ironPlate
   rotate: false
-  xy: 165, 231
+  xy: 1189, 757
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 over_ironPlate
   rotate: false
-  xy: 165, 231
+  xy: 1189, 757
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_memoryCard
   rotate: false
-  xy: 231, 231
+  xy: 1255, 757
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-enabled_Cannon3
-  rotate: false
-  xy: 165, 205
-  size: 68, 24
-  orig: 68, 24
-  offset: 0, 0
-  index: -1
-over_chipset
-  rotate: false
-  xy: 166, 159
-  size: 68, 44
-  orig: 68, 44
-  offset: 0, 0
-  index: -1
 disabled_ohno
   rotate: false
-  xy: 165, 93
+  xy: 1321, 757
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_processor1
   rotate: false
-  xy: 236, 165
+  xy: 1387, 756
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_screenCard
   rotate: false
-  xy: 176, 27
+  xy: 1453, 756
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-over_Cannon3
-  rotate: false
-  xy: 137, 1
-  size: 68, 24
-  orig: 68, 24
-  offset: 0, 0
-  index: -1
-disabled_laserBeamGun
-  rotate: false
-  xy: 207, 1
-  size: 61, 24
-  orig: 61, 24
-  offset: 0, 0
-  index: -1
 disabled_transistor
   rotate: false
-  xy: 297, 231
+  xy: 1519, 756
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_aiCard
   rotate: false
-  xy: 302, 165
+  xy: 1585, 756
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_card1
   rotate: false
-  xy: 363, 616
+  xy: 1651, 756
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_card2
   rotate: false
-  xy: 429, 593
+  xy: 1717, 756
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_cell1
   rotate: false
-  xy: 363, 550
+  xy: 1783, 764
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_cell2
   rotate: false
-  xy: 429, 527
+  xy: 1849, 764
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_coolingUnit
   rotate: false
-  xy: 363, 484
+  xy: 1879, 830
   size: 64, 64
   orig: 64, 64
-  offset: 0, 0
-  index: -1
-disabled_energyCrystal
-  rotate: false
-  xy: 301, 476
-  size: 60, 60
-  orig: 60, 60
   offset: 0, 0
   index: -1
 enabled_craftingCard
   rotate: false
-  xy: 429, 461
+  xy: 1945, 860
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+disabled_chipset
+  rotate: false
+  xy: 1945, 814
+  size: 68, 44
+  orig: 68, 44
+  offset: 0, 0
+  index: -1
+disabled_Cannon3
+  rotate: false
+  xy: 991, 718
+  size: 68, 24
+  orig: 68, 24
+  offset: 0, 0
+  index: -1
+advancedChip
+  rotate: false
+  xy: 1061, 680
+  size: 62, 62
+  orig: 62, 62
   offset: 0, 0
   index: -1
 enabled_memoryCard
   rotate: false
-  xy: 305, 410
+  xy: 1125, 686
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-disabled_repeller
-  rotate: false
-  xy: 371, 426
-  size: 56, 56
-  orig: 56, 56
-  offset: 0, 0
-  index: -1
 enabled_ohno
   rotate: false
-  xy: 309, 344
+  xy: 1191, 691
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 enabled_processor1
   rotate: false
-  xy: 375, 360
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-disabled_Cannon2
-  rotate: false
-  xy: 309, 321
-  size: 65, 21
-  orig: 65, 21
-  offset: 0, 0
-  index: -1
-enabled_Cannon2
-  rotate: false
-  xy: 309, 298
-  size: 65, 21
-  orig: 65, 21
-  offset: 0, 0
-  index: -1
-enabled_screenCard
-  rotate: false
-  xy: 376, 294
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-enabled_energyCrystal
-  rotate: false
-  xy: 363, 232
-  size: 60, 60
-  orig: 60, 60
-  offset: 0, 0
-  index: -1
-enabled_transistor
-  rotate: false
-  xy: 368, 166
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-enabled_laserBeamGun
-  rotate: false
-  xy: 429, 435
-  size: 61, 24
-  orig: 61, 24
-  offset: 0, 0
-  index: -1
-memoryCard
-  rotate: false
-  xy: 441, 369
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-ohno
-  rotate: false
-  xy: 442, 303
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-energyCrystal
-  rotate: false
-  xy: 425, 232
-  size: 60, 60
-  orig: 60, 60
-  offset: 0, 0
-  index: -1
-over_aiCard
-  rotate: false
-  xy: 434, 166
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_card1
-  rotate: false
-  xy: 495, 593
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_card2
-  rotate: false
-  xy: 495, 527
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_cell1
-  rotate: false
-  xy: 495, 461
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-laserBeamGun
-  rotate: false
-  xy: 492, 435
-  size: 61, 24
-  orig: 61, 24
-  offset: 0, 0
-  index: -1
-over_cell2
-  rotate: false
-  xy: 507, 369
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_coolingUnit
-  rotate: false
-  xy: 508, 303
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_craftingCard
-  rotate: false
-  xy: 487, 237
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_memoryCard
-  rotate: false
-  xy: 500, 171
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_ohno
-  rotate: false
-  xy: 553, 237
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_processor1
-  rotate: false
-  xy: 566, 171
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_screenCard
-  rotate: false
-  xy: 231, 93
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_transistor
-  rotate: false
-  xy: 242, 27
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-over_laserBeamGun
-  rotate: false
-  xy: 270, 1
-  size: 61, 24
-  orig: 61, 24
-  offset: 0, 0
-  index: -1
-processor1
-  rotate: false
-  xy: 297, 99
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-screenCard
-  rotate: false
-  xy: 308, 33
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-transistor
-  rotate: false
-  xy: 363, 99
+  xy: 1257, 691
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_advancedChip
   rotate: false
-  xy: 429, 102
+  xy: 1323, 693
   size: 62, 62
   orig: 62, 62
   offset: 0, 0
   index: -1
-enabled_advancedChip
+enabled_screenCard
   rotate: false
-  xy: 374, 35
-  size: 62, 62
-  orig: 62, 62
+  xy: 1387, 690
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
-over_advancedChip
+enabled_transistor
   rotate: false
-  xy: 438, 38
-  size: 62, 62
-  orig: 62, 62
+  xy: 1453, 690
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+memoryCard
+  rotate: false
+  xy: 1519, 690
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+ohno
+  rotate: false
+  xy: 1585, 690
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_aiCard
+  rotate: false
+  xy: 1651, 690
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_card1
+  rotate: false
+  xy: 1717, 690
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_card2
+  rotate: false
+  xy: 1783, 698
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_cell1
+  rotate: false
+  xy: 1849, 698
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_cell2
+  rotate: false
+  xy: 1915, 748
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_coolingUnit
+  rotate: false
+  xy: 1915, 682
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_craftingCard
+  rotate: false
+  xy: 1981, 748
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_memoryCard
+  rotate: false
+  xy: 1981, 682
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_fuelCell
   rotate: false
-  xy: 986, 877
-  size: 29, 58
-  orig: 29, 58
-  offset: 0, 0
-  index: -1
-over_Cannon2
-  rotate: false
-  xy: 538, 706
-  size: 65, 21
-  orig: 65, 21
-  offset: 0, 0
-  index: -1
-over_energyCrystal
-  rotate: false
-  xy: 951, 797
-  size: 60, 60
-  orig: 60, 60
-  offset: 0, 0
-  index: -1
-enabled_repeller
-  rotate: false
-  xy: 951, 739
-  size: 56, 56
-  orig: 56, 56
-  offset: 0, 0
-  index: -1
-over_repeller
-  rotate: false
-  xy: 929, 681
-  size: 56, 56
-  orig: 56, 56
-  offset: 0, 0
-  index: -1
-disabled_fuelCell2
-  rotate: false
-  xy: 987, 679
+  xy: 2011, 866
   size: 29, 58
   orig: 29, 58
   offset: 0, 0
   index: -1
 cable
   rotate: false
-  xy: 374, 1
+  xy: 2015, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Circuit_Board
+enabled_Cannon3
   rotate: false
-  xy: 408, 1
-  size: 32, 32
-  orig: 32, 32
+  xy: 798, 702
+  size: 68, 24
+  orig: 68, 24
   offset: 0, 0
   index: -1
-Cannon1
+enabled_chipset
   rotate: false
-  xy: 442, 17
-  size: 58, 19
-  orig: 58, 19
+  xy: 868, 682
+  size: 68, 44
+  orig: 68, 44
   offset: 0, 0
   index: -1
-enabled_fuelCell
+cpuCrystal
   rotate: false
-  xy: 316, 610
-  size: 29, 58
-  orig: 29, 58
+  xy: 938, 678
+  size: 48, 48
+  orig: 48, 48
   offset: 0, 0
   index: -1
-enabled_fuelCell2
+over_chipset
   rotate: false
-  xy: 316, 550
-  size: 29, 58
-  orig: 29, 58
+  xy: 988, 672
+  size: 68, 44
+  orig: 68, 44
   offset: 0, 0
   index: -1
-Cannon4
+over_Cannon3
   rotate: false
-  xy: 500, 153
-  size: 61, 16
-  orig: 61, 16
+  xy: 213, 672
+  size: 68, 24
+  orig: 68, 24
   offset: 0, 0
   index: -1
-disabled_magnet
+over_ohno
   rotate: false
-  xy: 493, 105
-  size: 52, 46
-  orig: 52, 46
+  xy: 208, 606
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
-repeller
+over_processor1
   rotate: false
-  xy: 502, 47
-  size: 56, 56
-  orig: 56, 56
-  offset: 0, 0
-  index: -1
-disabled_Cannon4
-  rotate: false
-  xy: 563, 153
-  size: 61, 16
-  orig: 61, 16
-  offset: 0, 0
-  index: -1
-enabled_magnet
-  rotate: false
-  xy: 547, 105
-  size: 52, 46
-  orig: 52, 46
+  xy: 208, 540
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
 disabled_grid
   rotate: false
-  xy: 560, 51
+  xy: 208, 486
   size: 46, 52
   orig: 46, 52
   offset: 0, 0
   index: -1
 enabled_grid
   rotate: false
-  xy: 560, 51
+  xy: 208, 486
   size: 46, 52
   orig: 46, 52
   offset: 0, 0
   index: -1
 grid
   rotate: false
-  xy: 560, 51
+  xy: 208, 486
   size: 46, 52
   orig: 46, 52
   offset: 0, 0
   index: -1
 over_grid
   rotate: false
-  xy: 560, 51
+  xy: 208, 486
   size: 46, 52
   orig: 46, 52
   offset: 0, 0
   index: -1
+crystal
+  rotate: false
+  xy: 216, 442
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+disabled_shotgun
+  rotate: false
+  xy: 646, 688
+  size: 66, 22
+  orig: 66, 22
+  offset: 0, 0
+  index: -1
+enabled_shotgun
+  rotate: false
+  xy: 1783, 674
+  size: 66, 22
+  orig: 66, 22
+  offset: 0, 0
+  index: -1
+enabled_advancedChip
+  rotate: false
+  xy: 1851, 634
+  size: 62, 62
+  orig: 62, 62
+  offset: 0, 0
+  index: -1
+over_screenCard
+  rotate: false
+  xy: 1915, 616
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_transistor
+  rotate: false
+  xy: 1981, 616
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_shotgun
+  rotate: false
+  xy: 319, 681
+  size: 66, 22
+  orig: 66, 22
+  offset: 0, 0
+  index: -1
+processor1
+  rotate: false
+  xy: 274, 606
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+screenCard
+  rotate: false
+  xy: 274, 540
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+transistor
+  rotate: false
+  xy: 340, 615
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+over_advancedChip
+  rotate: false
+  xy: 340, 551
+  size: 62, 62
+  orig: 62, 62
+  offset: 0, 0
+  index: -1
+disabled_magnet
+  rotate: false
+  xy: 256, 492
+  size: 52, 46
+  orig: 52, 46
+  offset: 0, 0
+  index: -1
+disabled_cpuCrystal
+  rotate: false
+  xy: 260, 442
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+disabled_energyCrystal
+  rotate: false
+  xy: 266, 380
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+enabled_energyCrystal
+  rotate: false
+  xy: 266, 318
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+energyCrystal
+  rotate: false
+  xy: 263, 256
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+over_energyCrystal
+  rotate: false
+  xy: 263, 194
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+disabled_repeller
+  rotate: false
+  xy: 263, 136
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+enabled_repeller
+  rotate: false
+  xy: 263, 78
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+disabled_fuelCell2
+  rotate: false
+  xy: 310, 480
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+over_repeller
+  rotate: false
+  xy: 341, 493
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+disabled_minigun
+  rotate: false
+  xy: 263, 54
+  size: 64, 22
+  orig: 64, 22
+  offset: 0, 0
+  index: -1
+enabled_cpuCrystal
+  rotate: false
+  xy: 279, 4
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+repeller
+  rotate: false
+  xy: 406, 646
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+enabled_magnet
+  rotate: false
+  xy: 464, 656
+  size: 52, 46
+  orig: 52, 46
+  offset: 0, 0
+  index: -1
 magnet
   rotate: false
-  xy: 601, 105
+  xy: 518, 656
   size: 52, 46
   orig: 52, 46
   offset: 0, 0
   index: -1
 over_magnet
   rotate: false
-  xy: 608, 57
+  xy: 572, 656
   size: 52, 46
   orig: 52, 46
   offset: 0, 0
   index: -1
-Cannon5
+disabled_laserBeamGun
   rotate: false
-  xy: 502, 26
+  xy: 406, 620
+  size: 61, 24
+  orig: 61, 24
+  offset: 0, 0
+  index: -1
+shotgun
+  rotate: false
+  xy: 469, 632
+  size: 66, 22
+  orig: 66, 22
+  offset: 0, 0
+  index: -1
+Cannon2
+  rotate: false
+  xy: 537, 633
+  size: 65, 21
+  orig: 65, 21
+  offset: 0, 0
+  index: -1
+disabled_Cannon2
+  rotate: false
+  xy: 469, 609
+  size: 65, 21
+  orig: 65, 21
+  offset: 0, 0
+  index: -1
+Cannon4
+  rotate: false
+  xy: 406, 602
+  size: 61, 16
+  orig: 61, 16
+  offset: 0, 0
+  index: -1
+over_cpuCrystal
+  rotate: false
+  xy: 404, 552
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+enabled_Cannon2
+  rotate: false
+  xy: 469, 586
+  size: 65, 21
+  orig: 65, 21
+  offset: 0, 0
+  index: -1
+enabled_minigun
+  rotate: false
+  xy: 454, 562
+  size: 64, 22
+  orig: 64, 22
+  offset: 0, 0
+  index: -1
+minigun
+  rotate: false
+  xy: 454, 538
+  size: 64, 22
+  orig: 64, 22
+  offset: 0, 0
+  index: -1
+over_Cannon2
+  rotate: false
+  xy: 1191, 668
+  size: 65, 21
+  orig: 65, 21
+  offset: 0, 0
+  index: -1
+over_minigun
+  rotate: false
+  xy: 1125, 662
+  size: 64, 22
+  orig: 64, 22
+  offset: 0, 0
+  index: -1
+enabled_laserBeamGun
+  rotate: false
+  xy: 1258, 665
+  size: 61, 24
+  orig: 61, 24
+  offset: 0, 0
+  index: -1
+Cannon1
+  rotate: false
+  xy: 341, 472
   size: 58, 19
   orig: 58, 19
   offset: 0, 0
   index: -1
-disabled_Cannon1
+disabled_Cannon4
   rotate: false
-  xy: 502, 5
-  size: 58, 19
-  orig: 58, 19
-  offset: 0, 0
-  index: -1
-enabled_crystal
-  rotate: false
-  xy: 562, 7
-  size: 42, 42
-  orig: 42, 42
-  offset: 0, 0
-  index: -1
-over_crystal
-  rotate: false
-  xy: 517, 661
-  size: 42, 42
-  orig: 42, 42
-  offset: 0, 0
-  index: -1
-fuelCell
-  rotate: false
-  xy: 561, 646
-  size: 29, 58
-  orig: 29, 58
-  offset: 0, 0
-  index: -1
-fuelCell2
-  rotate: false
-  xy: 561, 586
-  size: 29, 58
-  orig: 29, 58
-  offset: 0, 0
-  index: -1
-over_fuelCell
-  rotate: false
-  xy: 561, 526
-  size: 29, 58
-  orig: 29, 58
-  offset: 0, 0
-  index: -1
-over_fuelCell2
-  rotate: false
-  xy: 561, 466
-  size: 29, 58
-  orig: 29, 58
+  xy: 1191, 650
+  size: 61, 16
+  orig: 61, 16
   offset: 0, 0
   index: -1
 enabled_Cannon4
   rotate: false
-  xy: 619, 695
+  xy: 1254, 647
   size: 61, 16
   orig: 61, 16
+  offset: 0, 0
+  index: -1
+laserBeamGun
+  rotate: false
+  xy: 626, 662
+  size: 61, 24
+  orig: 61, 24
   offset: 0, 0
   index: -1
 over_Cannon4
   rotate: false
-  xy: 619, 677
+  xy: 626, 644
   size: 61, 16
   orig: 61, 16
   offset: 0, 0
   index: -1
-aiChip
+category_basic
   rotate: false
-  xy: 682, 692
-  size: 19, 19
-  orig: 19, 19
+  xy: 689, 640
+  size: 46, 46
+  orig: 46, 46
   offset: 0, 0
   index: -1
-disabled_Cannon5
+category_laser
   rotate: false
-  xy: 608, 36
+  xy: 737, 659
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+category_rockets
+  rotate: false
+  xy: 785, 654
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+enabled_fuelCell
+  rotate: false
+  xy: 833, 642
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+over_laserBeamGun
+  rotate: false
+  xy: 864, 656
+  size: 61, 24
+  orig: 61, 24
+  offset: 0, 0
+  index: -1
+Cannon5
+  rotate: false
+  xy: 864, 635
   size: 58, 19
   orig: 58, 19
   offset: 0, 0
   index: -1
+disabled_category_basic
+  rotate: false
+  xy: 737, 611
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+disabled_category_laser
+  rotate: false
+  xy: 785, 606
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+enabled_fuelCell2
+  rotate: false
+  xy: 833, 582
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+disabled_category_rockets
+  rotate: false
+  xy: 864, 587
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+disabled_Cannon1
+  rotate: false
+  xy: 927, 657
+  size: 58, 19
+  orig: 58, 19
+  offset: 0, 0
+  index: -1
+disabled_Cannon5
+  rotate: false
+  xy: 987, 651
+  size: 58, 19
+  orig: 58, 19
+  offset: 0, 0
+  index: -1
+Circuit_Board
+  rotate: false
+  xy: 609, 790
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+disabled_cable
+  rotate: false
+  xy: 1894, 900
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 enabled_Cannon1
   rotate: false
-  xy: 606, 15
+  xy: 927, 636
   size: 58, 19
   orig: 58, 19
   offset: 0, 0
   index: -1
 enabled_Cannon5
   rotate: false
-  xy: 619, 656
+  xy: 987, 630
   size: 58, 19
   orig: 58, 19
   offset: 0, 0
   index: -1
 over_Cannon1
   rotate: false
-  xy: 619, 635
+  xy: 1058, 659
   size: 58, 19
   orig: 58, 19
   offset: 0, 0
   index: -1
 over_Cannon5
   rotate: false
-  xy: 619, 614
+  xy: 1047, 638
   size: 58, 19
   orig: 58, 19
   offset: 0, 0
   index: -1
-disabled_ore
+disabled_unstableCrystal
   rotate: false
-  xy: 929, 751
-  size: 20, 20
-  orig: 20, 20
+  xy: 520, 538
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+fuelCell
+  rotate: false
+  xy: 321, 134
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+enabled_category_basic
+  rotate: false
+  xy: 321, 86
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+fuelCell2
+  rotate: false
+  xy: 329, 26
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+over_fuelCell
+  rotate: false
+  xy: 360, 26
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+over_fuelCell2
+  rotate: false
+  xy: 325, 258
+  size: 29, 58
+  orig: 29, 58
+  offset: 0, 0
+  index: -1
+enabled_category_laser
+  rotate: false
+  xy: 325, 210
+  size: 46, 46
+  orig: 46, 46
   offset: 0, 0
   index: -1
 bonus_laser
   rotate: false
-  xy: 333, 3
+  xy: 310, 450
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+enabled_category_rockets
+  rotate: false
+  xy: 340, 424
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+enabled_unstableCrystal
+  rotate: false
+  xy: 328, 376
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+over_category_basic
+  rotate: false
+  xy: 328, 328
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+over_category_laser
+  rotate: false
+  xy: 388, 424
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+over_category_rockets
+  rotate: false
+  xy: 376, 376
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+over_unstableCrystal
+  rotate: false
+  xy: 376, 328
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+unstableCrystal
+  rotate: false
+  xy: 356, 280
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+disabled_warp_core
+  rotate: false
+  xy: 356, 258
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+disabled_crystal
+  rotate: false
+  xy: 404, 284
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+disabled_ore
+  rotate: false
+  xy: 604, 634
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+disabled_resistor
+  rotate: false
+  xy: 329, 7
+  size: 35, 17
+  orig: 35, 17
+  offset: 0, 0
+  index: -1
+enabled_crystal
+  rotate: false
+  xy: 912, 591
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+disabled_bonus_laser
+  rotate: false
+  xy: 956, 606
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+over_crystal
+  rotate: false
+  xy: 986, 586
+  size: 42, 42
+  orig: 42, 42
+  offset: 0, 0
+  index: -1
+enabled_bonus_laser
+  rotate: false
+  xy: 956, 576
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 cable_fiber
   rotate: false
-  xy: 199, 681
+  xy: 2015, 814
   size: 16, 16
   orig: 16, 16
-  offset: 0, 0
-  index: -1
-cog
-  rotate: false
-  xy: 986, 859
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-disabled_cog
-  rotate: false
-  xy: 986, 859
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-enabled_cog
-  rotate: false
-  xy: 986, 859
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-over_cog
-  rotate: false
-  xy: 986, 859
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-coil_copper
-  rotate: false
-  xy: 199, 663
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-cyanCrystal
-  rotate: false
-  xy: 429, 705
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-disabled_cyanCrystal
-  rotate: false
-  xy: 169, 561
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-disabled_drone_engine2
-  rotate: false
-  xy: 169, 546
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-disabled_greenCrystal
-  rotate: false
-  xy: 169, 531
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-disabled_aiChip
-  rotate: false
-  xy: 682, 671
-  size: 19, 19
-  orig: 19, 19
-  offset: 0, 0
-  index: -1
-disabled_cable
-  rotate: false
-  xy: 679, 637
-  size: 32, 32
-  orig: 32, 32
   offset: 0, 0
   index: -1
 disabled_Circuit_Board
   rotate: false
-  xy: 679, 603
+  xy: 1030, 596
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 disabled_energyCell
   rotate: false
-  xy: 713, 650
+  xy: 1064, 604
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+enabled_warp_core
+  rotate: false
+  xy: 283, 676
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+enabled_resistor
+  rotate: false
+  xy: 626, 625
+  size: 35, 17
+  orig: 35, 17
+  offset: 0, 0
+  index: -1
+over_warp_core
+  rotate: false
+  xy: 663, 622
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+over_resistor
+  rotate: false
+  xy: 689, 621
+  size: 35, 17
+  orig: 35, 17
+  offset: 0, 0
+  index: -1
+resistor
+  rotate: false
+  xy: 986, 567
+  size: 35, 17
+  orig: 35, 17
+  offset: 0, 0
+  index: -1
 disabled_glass_panel
   rotate: false
-  xy: 747, 650
+  xy: 424, 390
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 disabled_ironPlate2
   rotate: false
-  xy: 713, 616
+  xy: 424, 356
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+warp_core
+  rotate: false
+  xy: 424, 334
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+cyanCrystal
+  rotate: false
+  xy: 454, 587
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+bonus_warp
+  rotate: false
+  xy: 382, 257
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
 disabled_plastic
   rotate: false
-  xy: 747, 616
+  xy: 373, 223
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 disabled_processor2
   rotate: false
-  xy: 781, 649
+  xy: 373, 189
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+aiChip
+  rotate: false
+  xy: 352, 189
+  size: 19, 19
+  orig: 19, 19
   offset: 0, 0
   index: -1
 disabled_processor3
   rotate: false
-  xy: 815, 649
+  xy: 352, 155
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+disabled_aiChip
+  rotate: false
+  xy: 352, 134
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
 disabled_rubber
   rotate: false
-  xy: 849, 649
+  xy: 386, 155
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_rubber
   rotate: false
-  xy: 849, 649
+  xy: 386, 155
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 over_rubber
   rotate: false
-  xy: 849, 649
+  xy: 386, 155
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 rubber
   rotate: false
-  xy: 849, 649
+  xy: 386, 155
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 disabled_wire
   rotate: false
-  xy: 883, 649
+  xy: 373, 121
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_cable
   rotate: false
-  xy: 781, 615
+  xy: 369, 87
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_Circuit_Board
   rotate: false
-  xy: 815, 615
+  xy: 407, 121
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_energyCell
   rotate: false
-  xy: 849, 615
+  xy: 403, 87
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-enabled_glass_panel
+enabled_glass_panel2
   rotate: false
-  xy: 883, 615
+  xy: 391, 53
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_ironPlate2
   rotate: false
-  xy: 917, 647
+  xy: 391, 19
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_plastic
   rotate: false
-  xy: 951, 647
+  xy: 425, 53
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_processor2
   rotate: false
-  xy: 917, 613
+  xy: 425, 19
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enabled_processor3
   rotate: false
-  xy: 951, 613
+  xy: 437, 87
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-enabled_wire
+enabled_wire1
   rotate: false
-  xy: 985, 645
+  xy: 459, 53
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 energyCell
   rotate: false
-  xy: 985, 611
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-disabled_resistor
-  rotate: false
-  xy: 713, 597
-  size: 35, 17
-  orig: 35, 17
-  offset: 0, 0
-  index: -1
-disabled_bonus_laser
-  rotate: false
-  xy: 750, 586
-  size: 28, 28
-  orig: 28, 28
-  offset: 0, 0
-  index: -1
-glass_panel
-  rotate: false
-  xy: 780, 581
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-ironPlate2
-  rotate: false
-  xy: 814, 581
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-over_cable
-  rotate: false
-  xy: 848, 581
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-over_Circuit_Board
-  rotate: false
-  xy: 882, 581
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-over_energyCell
-  rotate: false
-  xy: 916, 579
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-over_glass_panel
-  rotate: false
-  xy: 950, 579
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-over_ironPlate2
-  rotate: false
-  xy: 984, 577
+  xy: 459, 19
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 disabled_energyCore
   rotate: false
-  xy: 627, 861
+  xy: 1915, 814
   size: 12, 14
   orig: 12, 14
   offset: 0, 0
   index: -1
 enabled_energyCore
   rotate: false
-  xy: 442, 1
+  xy: 626, 688
   size: 12, 14
   orig: 12, 14
   offset: 0, 0
   index: -1
 energyCore
   rotate: false
-  xy: 641, 861
+  xy: 325, 194
   size: 12, 14
   orig: 12, 14
+  offset: 0, 0
+  index: -1
+glass_panel
+  rotate: false
+  xy: 1030, 562
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ironPlate2
+  rotate: false
+  xy: 1064, 570
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 over_energyCore
   rotate: false
-  xy: 456, 1
+  xy: 1929, 814
   size: 12, 14
   orig: 12, 14
   offset: 0, 0
   index: -1
-enabled_resistor
+over_cable
   rotate: false
-  xy: 909, 840
-  size: 35, 17
-  orig: 35, 17
+  xy: 1098, 604
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
-disabled_cable_fiber
+over_Circuit_Board
   rotate: false
-  xy: 626, 153
-  size: 16, 16
-  orig: 16, 16
+  xy: 1098, 570
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enabled_aiChip
+  rotate: false
+  xy: 1107, 638
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+over_energyCell
+  rotate: false
+  xy: 1132, 628
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+over_glass_panel
+  rotate: false
+  xy: 1132, 594
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+over_ironPlate2
+  rotate: false
+  xy: 1132, 560
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+bonus_warp2
+  rotate: false
+  xy: 1166, 639
+  size: 21, 21
+  orig: 21, 21
   offset: 0, 0
   index: -1
 over_plastic
   rotate: false
-  xy: 592, 580
+  xy: 1166, 605
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 over_processor2
   rotate: false
-  xy: 626, 580
+  xy: 1166, 571
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 over_processor3
   rotate: false
-  xy: 592, 546
+  xy: 1200, 616
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 over_wire
   rotate: false
-  xy: 592, 512
+  xy: 1200, 582
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 plastic
   rotate: false
-  xy: 626, 546
+  xy: 1234, 613
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 processor2
   rotate: false
-  xy: 592, 478
+  xy: 1268, 613
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 processor3
   rotate: false
-  xy: 626, 512
+  xy: 1234, 579
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 wire
   rotate: false
-  xy: 626, 478
+  xy: 1268, 579
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-over_resistor
-  rotate: false
-  xy: 592, 459
-  size: 35, 17
-  orig: 35, 17
-  offset: 0, 0
-  index: -1
 core_yellow
   rotate: false
-  xy: 629, 445
+  xy: 1302, 614
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 disabled_core_yellow
   rotate: false
-  xy: 660, 570
+  xy: 1302, 581
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 enabled_core_yellow
   rotate: false
-  xy: 660, 537
+  xy: 1166, 538
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 over_core_yellow
   rotate: false
-  xy: 660, 504
+  xy: 1200, 549
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
-resistor
-  rotate: false
-  xy: 660, 485
-  size: 35, 17
-  orig: 35, 17
-  offset: 0, 0
-  index: -1
-enabled_bonus_laser
-  rotate: false
-  xy: 662, 455
-  size: 28, 28
-  orig: 28, 28
-  offset: 0, 0
-  index: -1
-disabled_coil_copper
-  rotate: false
-  xy: 1004, 859
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
 over_bonus_laser
   rotate: false
-  xy: 693, 567
+  xy: 1233, 549
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 disabled_upgrades
   rotate: false
-  xy: 693, 537
+  xy: 1263, 549
   size: 26, 28
   orig: 26, 28
-  offset: 0, 0
-  index: -1
-enabled_upgrades
-  rotate: false
-  xy: 693, 507
-  size: 26, 28
-  orig: 26, 28
-  offset: 0, 0
-  index: -1
-disabled_warp_core
-  rotate: false
-  xy: 723, 575
-  size: 24, 20
-  orig: 24, 20
-  offset: 0, 0
-  index: -1
-enabled_warp_core
-  rotate: false
-  xy: 697, 485
-  size: 24, 20
-  orig: 24, 20
-  offset: 0, 0
-  index: -1
-over_upgrades
-  rotate: false
-  xy: 692, 455
-  size: 26, 28
-  orig: 26, 28
-  offset: 0, 0
-  index: -1
-upgrades
-  rotate: false
-  xy: 662, 425
-  size: 26, 28
-  orig: 26, 28
-  offset: 0, 0
-  index: -1
-over_warp_core
-  rotate: false
-  xy: 690, 433
-  size: 24, 20
-  orig: 24, 20
-  offset: 0, 0
-  index: -1
-bonus_warp
-  rotate: false
-  xy: 592, 683
-  size: 21, 21
-  orig: 21, 21
-  offset: 0, 0
-  index: -1
-bonus_warp2
-  rotate: false
-  xy: 592, 660
-  size: 21, 21
-  orig: 21, 21
   offset: 0, 0
   index: -1
 bonus_warp3
   rotate: false
-  xy: 592, 637
+  xy: 405, 261
   size: 21, 21
   orig: 21, 21
+  offset: 0, 0
+  index: -1
+enabled_upgrades
+  rotate: false
+  xy: 407, 231
+  size: 26, 28
+  orig: 26, 28
+  offset: 0, 0
+  index: -1
+over_upgrades
+  rotate: false
+  xy: 407, 201
+  size: 26, 28
+  orig: 26, 28
   offset: 0, 0
   index: -1
 disabled_bonus_warp
   rotate: false
-  xy: 592, 614
+  xy: 428, 261
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-disabled_drone_engine
+upgrades
   rotate: false
-  xy: 644, 427
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-warp_core
-  rotate: false
-  xy: 749, 564
-  size: 24, 20
-  orig: 24, 20
+  xy: 435, 231
+  size: 26, 28
+  orig: 26, 28
   offset: 0, 0
   index: -1
 disabled_bonus_warp2
   rotate: false
-  xy: 775, 558
+  xy: 435, 208
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 disabled_bonus_warp3
   rotate: false
-  xy: 798, 558
+  xy: 366, 3
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
+disabled_gun
+  rotate: false
+  xy: 1189, 639
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+cog
+  rotate: false
+  xy: 1317, 647
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+disabled_cog
+  rotate: false
+  xy: 1317, 647
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+enabled_cog
+  rotate: false
+  xy: 1317, 647
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+over_cog
+  rotate: false
+  xy: 1317, 647
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+coil_copper
+  rotate: false
+  xy: 387, 687
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 enabled_bonus_warp
   rotate: false
-  xy: 821, 558
+  xy: 1291, 556
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 enabled_bonus_warp2
   rotate: false
-  xy: 844, 558
+  xy: 1314, 558
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-enabled_bonus_warp3
+enabled_bonus_warp35
   rotate: false
-  xy: 867, 558
+  xy: 1199, 526
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 over_bonus_warp
   rotate: false
-  xy: 890, 558
+  xy: 1222, 526
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 over_bonus_warp2
   rotate: false
-  xy: 913, 556
+  xy: 1245, 526
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 over_bonus_warp3
   rotate: false
-  xy: 936, 556
+  xy: 1268, 526
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 disabled_warp_ore
   rotate: false
-  xy: 959, 557
+  xy: 1291, 534
   size: 20, 20
   orig: 20, 20
-  offset: 0, 0
-  index: -1
-enabled_ore
-  rotate: false
-  xy: 981, 555
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-enabled_warp_ore
-  rotate: false
-  xy: 1003, 555
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-disabled_gun
-  rotate: false
-  xy: 165, 82
-  size: 9, 9
-  orig: 9, 9
   offset: 0, 0
   index: -1
 enabled_gun
   rotate: false
-  xy: 326, 704
+  xy: 1047, 661
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 gun
   rotate: false
-  xy: 363, 22
+  xy: 726, 629
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
-over_gun
+disabled_cable_fiber
   rotate: false
-  xy: 660, 603
-  size: 9, 9
-  orig: 9, 9
+  xy: 436, 534
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
-disabled_orangeCrystal
+disabled_coil_copper
   rotate: false
-  xy: 446, 750
-  size: 13, 13
-  orig: 13, 13
+  xy: 389, 1
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
-disabled_purpleCrystal
+disabled_drone_engine
   rotate: false
-  xy: 250, 523
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-drone_engine2
-  rotate: false
-  xy: 470, 2
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-enabled_cyanCrystal
-  rotate: false
-  xy: 265, 523
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-enabled_drone_engine2
-  rotate: false
-  xy: 485, 2
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-enabled_greenCrystal
-  rotate: false
-  xy: 280, 523
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-ore
-  rotate: false
-  xy: 690, 411
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-over_ore
-  rotate: false
-  xy: 668, 403
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-over_warp_ore
-  rotate: false
-  xy: 723, 553
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-warp_ore
-  rotate: false
-  xy: 721, 531
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-enabled_aiChip
-  rotate: false
-  xy: 721, 510
-  size: 19, 19
-  orig: 19, 19
-  offset: 0, 0
-  index: -1
-over_aiChip
-  rotate: false
-  xy: 723, 489
-  size: 19, 19
-  orig: 19, 19
+  xy: 407, 1
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
 disabled_fragment_core
   rotate: false
-  xy: 690, 393
+  xy: 425, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 disabled_glassShard
   rotate: false
-  xy: 574, 448
+  xy: 443, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_glassShard
   rotate: false
-  xy: 574, 448
+  xy: 443, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 glassShard
   rotate: false
-  xy: 574, 448
+  xy: 443, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_glassShard
   rotate: false
-  xy: 574, 448
+  xy: 443, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 disabled_green_coil
   rotate: false
-  xy: 592, 441
+  xy: 461, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 disabled_IrradiantGlassPane
   rotate: false
-  xy: 610, 441
+  xy: 479, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+enabled_ore
+  rotate: false
+  xy: 604, 612
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+enabled_warp_ore
+  rotate: false
+  xy: 626, 603
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+disabled_cyanCrystal
+  rotate: false
+  xy: 648, 610
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+ore
+  rotate: false
+  xy: 663, 600
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+over_ore
+  rotate: false
+  xy: 685, 599
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+over_warp_ore
+  rotate: false
+  xy: 707, 599
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+disabled_drone_engine2
+  rotate: false
+  xy: 648, 595
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+disabled_greenCrystal
+  rotate: false
+  xy: 743, 901
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+disabled_orangeCrystal
+  rotate: false
+  xy: 2033, 817
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+disabled_purpleCrystal
+  rotate: false
+  xy: 743, 886
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+over_gun
+  rotate: false
+  xy: 1928, 923
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+warp_ore
+  rotate: false
+  xy: 1064, 548
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+over_aiChip
+  rotate: false
+  xy: 1086, 549
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
 disabled_neon_coil
   rotate: false
-  xy: 745, 546
+  xy: 1107, 552
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 disabled_ReinforcedIridiumIronPlate
   rotate: false
-  xy: 743, 528
+  xy: 450, 338
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 drone_engine
   rotate: false
-  xy: 742, 510
+  xy: 1291, 516
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+drone_engine2
+  rotate: false
+  xy: 1928, 908
+  size: 13, 13
+  orig: 13, 13
   offset: 0, 0
   index: -1
 enabled_cable_fiber
   rotate: false
-  xy: 744, 492
+  xy: 435, 190
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+enabled_cyanCrystal
+  rotate: false
+  xy: 420, 186
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
 enabled_coil_copper
   rotate: false
-  xy: 574, 430
+  xy: 420, 168
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_drone_engine
   rotate: false
-  xy: 573, 412
+  xy: 438, 172
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_fragment_core
   rotate: false
-  xy: 573, 394
+  xy: 453, 190
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_green_coil
   rotate: false
-  xy: 573, 376
+  xy: 456, 172
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_IrradiantGlassPane
   rotate: false
-  xy: 592, 423
+  xy: 864, 569
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_neon_coil
   rotate: false
-  xy: 610, 423
+  xy: 882, 569
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 enabled_ReinforcedIridiumIronPlate
   rotate: false
-  xy: 591, 405
+  xy: 900, 569
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fragment_core
   rotate: false
-  xy: 591, 387
+  xy: 918, 573
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 green_coil
   rotate: false
-  xy: 609, 405
+  xy: 936, 573
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 IrradiantGlassPane
   rotate: false
-  xy: 609, 387
+  xy: 399, 533
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-enabled_orangeCrystal
-  rotate: false
-  xy: 628, 430
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
 neon_coil
   rotate: false
-  xy: 591, 369
+  xy: 399, 515
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_cable_fiber
   rotate: false
-  xy: 609, 369
+  xy: 399, 497
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_coil_copper
   rotate: false
-  xy: 555, 443
+  xy: 417, 534
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-enabled_purpleCrystal
-  rotate: false
-  xy: 574, 361
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
 over_drone_engine
   rotate: false
-  xy: 574, 343
+  xy: 417, 516
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_fragment_core
   rotate: false
-  xy: 574, 325
+  xy: 417, 498
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_green_coil
   rotate: false
-  xy: 574, 307
+  xy: 435, 516
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_IrradiantGlassPane
   rotate: false
-  xy: 592, 351
+  xy: 435, 498
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_neon_coil
   rotate: false
-  xy: 592, 333
+  xy: 401, 479
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 over_ReinforcedIridiumIronPlate
   rotate: false
-  xy: 592, 315
+  xy: 419, 480
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ReinforcedIridiumIronPlate
   rotate: false
-  xy: 610, 351
+  xy: 437, 480
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+enabled_drone_engine2
+  rotate: false
+  xy: 436, 465
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+enabled_greenCrystal
+  rotate: false
+  xy: 436, 450
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+enabled_orangeCrystal
+  rotate: false
+  xy: 436, 435
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+enabled_purpleCrystal
+  rotate: false
+  xy: 663, 585
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
 greenCrystal
   rotate: false
-  xy: 610, 336
+  xy: 678, 584
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 orangeCrystal
   rotate: false
-  xy: 610, 321
+  xy: 693, 584
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 over_cyanCrystal
   rotate: false
-  xy: 217, 655
+  xy: 708, 584
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 over_drone_engine2
   rotate: false
-  xy: 232, 655
+  xy: 723, 584
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 over_greenCrystal
   rotate: false
-  xy: 628, 415
+  xy: 458, 216
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 over_orangeCrystal
   rotate: false
-  xy: 627, 400
+  xy: 450, 323
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 over_purpleCrystal
   rotate: false
-  xy: 627, 385
+  xy: 448, 308
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 purpleCrystal
   rotate: false
-  xy: 627, 370
+  xy: 448, 293
   size: 13, 13
   orig: 13, 13
   offset: 0, 0

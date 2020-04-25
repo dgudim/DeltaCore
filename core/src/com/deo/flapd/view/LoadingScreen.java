@@ -17,6 +17,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -24,8 +26,13 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
@@ -49,6 +56,23 @@ public class LoadingScreen implements Screen {
     private String stateName;
 
     public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor){
+
+        if (getFloat("ui")<=0) {
+            putFloat("ui", 1);
+            putFloat("soundVolume", 100);
+            putFloat("musicVolume", 100);
+            putFloat("difficulty", 1);
+            putBoolean("transparency", true);
+            putBoolean("bloom", true);
+            JsonValue tree = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+            for(int i = 0; i<tree.size; i++){
+                if(tree.get(i).get("type").asString().equals("basePart")){
+                    putBoolean("unlocked_"+getItemCodeNameByName(tree.get(i).name), true);
+                    putString(tree.get(i).get("saveTo").asString(), tree.get(i).name);
+                }
+            }
+            log("\n------------first launch------------"+"\n");
+        }
 
         log("\n started loading");
         loadingTime = TimeUtils.millis();
