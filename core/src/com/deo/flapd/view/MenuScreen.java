@@ -215,8 +215,7 @@ public class MenuScreen implements Screen{
                     loadPrefsFromFile();
                     game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
                 }catch (Exception e){
-                    exportMessage.setText("[#FF0000]no save data found");
-                    logException(e);
+                    exportMessage.setText("[#FF3300]"+e.getMessage());
                 }
             }
         });
@@ -232,7 +231,7 @@ public class MenuScreen implements Screen{
         moreTable.add(exportGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(importGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
         moreTable.add(clearGameData).size(310, 50).padTop(5).padBottom(5).align(Align.left).row();
-        moreTable.add(exportMessage).padTop(5).padBottom(5).height(50).row();
+        moreTable.add(exportMessage).padTop(5).padBottom(5).width(510).row();
 
         musicVolumeS = (Slider)musicVolumeT.getCells().get(0).getActor();
         final CheckBox bloomS = (CheckBox)bloomT.getCells().get(0).getActor();

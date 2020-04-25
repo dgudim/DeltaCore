@@ -63,6 +63,8 @@ public class Bullet {
 
     private int bulletsPerShot;
 
+    private float warmupTime;
+
     public Bullet(AssetManager assetManager, Polygon shipBounds, boolean newGame) {
         bounds = shipBounds;
 
@@ -91,6 +93,9 @@ public class Bullet {
             }
             if (params[i].endsWith("bullets per shot")) {
                 bulletsPerShot = (int) paramValues[i];
+            }
+            if (params[i].endsWith("warm-up")) {
+                warmupTime = paramValues[i];
             }
         }
         params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
@@ -168,6 +173,11 @@ public class Bullet {
                 shot.play(soundVolume / 100);
             }
         }
+
+        if(warmupTime>=1) {
+            warmupTime--;
+        }
+
     }
 
     public void draw(SpriteBatch batch, float delta) {

@@ -48,7 +48,6 @@ public class Enemies {
     private void SpawnEnemy(EnemyData data){
         data = data.clone();
         data.health *= difficulty;
-        System.out.println(data.health);
         enemyEntities.add(new Enemy(assetManager, data));
     }
 

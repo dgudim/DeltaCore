@@ -180,7 +180,7 @@ public class ItemSlotManager {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    log("error drawing "+getItemCodeNameByName(result) + "\n" +items.findRegion(getItemCodeNameByName(result))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(result)));
+                    log("\n error drawing "+getItemCodeNameByName(result) + "\n" +items.findRegion(getItemCodeNameByName(result))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(result)));
                 }
             }
         };

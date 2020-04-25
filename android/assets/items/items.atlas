@@ -1788,7 +1788,7 @@ enabled_energyCell
   orig: 32, 32
   offset: 0, 0
   index: -1
-enabled_glass_panel2
+enabled_glass_panel
   rotate: false
   xy: 391, 53
   size: 32, 32
@@ -1823,7 +1823,7 @@ enabled_processor3
   orig: 32, 32
   offset: 0, 0
   index: -1
-enabled_wire1
+enabled_wire
   rotate: false
   xy: 459, 53
   size: 32, 32
@@ -2131,7 +2131,7 @@ enabled_bonus_warp2
   orig: 21, 21
   offset: 0, 0
   index: -1
-enabled_bonus_warp35
+enabled_bonus_warp3
   rotate: false
   xy: 1199, 526
   size: 21, 21

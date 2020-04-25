@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -188,7 +189,7 @@ public abstract class DUtils {
         return "error";
     }
 
-    public static void loadPrefsFromFile() {
+    public static void loadPrefsFromFile() throws FileNotFoundException {
 
         String path;
 
@@ -208,6 +209,7 @@ public abstract class DUtils {
             s.close();
         } catch (Exception e) {
             logException(e);
+            throw new FileNotFoundException("no save file found in "+file.file().getPath());
         }
 
     }
@@ -322,6 +324,8 @@ public abstract class DUtils {
             case ("resistor"):
             case ("magnet"):
             case ("upgrades"):
+            case ("shotgun"):
+            case ("minigun"):
                 item = name;
                 break;
             case ("metal shard"):

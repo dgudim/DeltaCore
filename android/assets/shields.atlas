@@ -24,3 +24,10 @@ ColdShieldMk3
   orig: 128, 82
   offset: 0, 0
   index: -1
+ColdShieldMk4
+  rotate: false
+  xy: 391, 1
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1

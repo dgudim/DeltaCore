@@ -36,10 +36,12 @@ public class Enemy {
     private Sound explosionSound;
     private Sound shootingSound;
     private float volume;
+    private float difficulty;
 
     Enemy(AssetManager assetManager, EnemyData data) {
         this.assetManager = assetManager;
         this.data = data;
+        difficulty = getFloat("difficulty");
         bulletData = new BulletData(data.enemyInfo, data.type);
 
         explosionSound = Gdx.audio.newSound(Gdx.files.internal(data.explosionSound));
@@ -193,12 +195,12 @@ public class Enemy {
 
         GameLogic.enemiesKilled++;
 
-        UraniumCell.Spawn(enemy.getBoundingRectangle(), getRandomInRange(data.moneyCount[0], data.moneyCount[1]), 1, data.moneyTimer);
+        UraniumCell.Spawn(enemy.getBoundingRectangle(), (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), 1, data.moneyTimer);
         if (getRandomInRange(0, 100) <= data.bonusChance) {
             Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), enemy.getBoundingRectangle());
         }
 
-        Drops.drop(enemy.getBoundingRectangle(), getRandomInRange(data.dropCount[0], data.dropCount[1]), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
+        Drops.drop(enemy.getBoundingRectangle(), (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
 
         enemy.setPosition(-100, -100);
 

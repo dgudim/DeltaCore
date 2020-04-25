@@ -234,7 +234,7 @@ class Node {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    log("error drawing "+getItemCodeNameByName(item) + "\n" +items.findRegion(getItemCodeNameByName(item))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(item)));
+                    log("\n error drawing "+getItemCodeNameByName(item) + "\n" +items.findRegion(getItemCodeNameByName(item))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(item))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(item)));
                 }
             }
         };
