@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
@@ -71,16 +72,16 @@ public class Enemy {
         }
     }
 
-    void drawEffects(SpriteBatch batch) {
+    void drawEffects(SpriteBatch batch, float delta) {
         if (!isDead) {
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
-                data.fireParticleEffects.get(i).draw(batch);
+                data.fireParticleEffects.get(i).draw(batch, delta);
             }
         } else {
-            data.explosionParticleEffect.draw(batch);
+            data.explosionParticleEffect.draw(batch, delta);
         }
         for (int i = 0; i < bullets.size; i++) {
-            bullets.get(i).draw(batch);
+            bullets.get(i).draw(batch, delta);
         }
     }
 
@@ -90,7 +91,6 @@ public class Enemy {
             enemy.setColor(data.currentColor);
             data.x -= data.speed * delta;
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
-                data.fireParticleEffects.get(i).update(delta);
                 data.fireParticleEffects.get(i).setPosition(data.x + data.fireOffsetsX[i], data.y + data.fireOffsetsY[i]);
             }
 
@@ -114,8 +114,6 @@ public class Enemy {
                 explosionFinished = true;
             }
 
-        } else {
-            data.explosionParticleEffect.update(delta);
         }
 
         for (int i = 0; i < bullets.size; i++) {
@@ -133,6 +131,14 @@ public class Enemy {
                 GameLogic.Score += 30 + 10 * (Bullet.damages.get(i) / 50 - 1);
                 Bullet.removeBullet(i, true);
             }
+        }
+
+        if (Bullet.laser.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
+            data.currentColor = Color.valueOf(data.hitColor);
+            if (data.health > 0) {
+                GameLogic.Score += 10;
+            }
+            data.health -= Bullet.damage / 10;
         }
 
         for (int i = 0; i < Meteorite.meteorites.size; i++) {
@@ -154,6 +160,35 @@ public class Enemy {
         if (SpaceShip.bounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
             kill();
             SpaceShip.takeDamage(data.health / 3f);
+        }
+
+        if (Intersector.overlaps(SpaceShip.repellentRadius, enemy.getBoundingRectangle()) && SpaceShip.Charge >= SpaceShip.repellentPowerConsumption * delta) {
+            float shipWidth = SpaceShip.bounds.getBoundingRectangle().getWidth();
+            float shipHeight = SpaceShip.bounds.getBoundingRectangle().getWidth();
+            float shipX = SpaceShip.bounds.getBoundingRectangle().getX();
+            float shipY = SpaceShip.bounds.getBoundingRectangle().getY();
+            if (data.x > shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
+                data.x += 1;
+                data.y += 1;
+            } else if (data.x > shipX + shipWidth / 2 && data.y + data.height < shipY + shipHeight / 2) {
+                data.x += 1;
+                data.y -= 1;
+            } else if (data.x + data.width < shipX + shipWidth / 2 && data.y + data.height < shipY + shipHeight / 2) {
+                data.x -= 1;
+                data.y -= 1;
+            } else if (data.x + data.width < shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
+                data.x -= 1;
+                data.y += 1;
+            } else if (data.x > shipX + shipWidth) {
+                data.x += 1;
+            } else if (data.x + data.width < shipX) {
+                data.x -= 1;
+            } else if (data.y > shipY + shipHeight) {
+                data.y += 1;
+            } else if (data.y + data.height < shipY) {
+                data.y -= 1;
+            }
+            SpaceShip.Charge -= SpaceShip.repellentPowerConsumption * delta;
         }
 
         if (data.health <= 0 && !isDead) {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -46,11 +47,21 @@ public abstract class ShipObject {
 
     public static float shieldStrength;
 
+    public static float shieldStrengthMultiplier = 1;
+
     private float shieldPowerConsumption;
 
     public static float chargeCapacity;
 
     public static float healthMultiplier = 1;
+
+    public static Circle magnetRadius;
+
+    public static Circle repellentRadius;
+
+    public static float magnetPowerConsumption;
+
+    public static float repellentPowerConsumption;
 
     ShipObject(AssetManager assetManager, float x, float y, float width, float height, boolean newGame) {
 
@@ -62,7 +73,10 @@ public abstract class ShipObject {
                 powerGeneration = paramValues[i];
             }
             if (params[i].endsWith("health multiplier")) {
-                Health *= paramValues[i];
+                healthMultiplier = paramValues[i];
+            }
+            if (params[i].endsWith("shield strength multiplier")) {
+                shieldStrengthMultiplier = paramValues[i];
             }
         }
 
@@ -80,9 +94,38 @@ public abstract class ShipObject {
             }
         }
 
+        repellentRadius = new Circle();
+        magnetRadius = new Circle();
+
+        if (!getString("currentMagnet").equals("")) {
+            params = treeJson.get(getString("currentMagnet")).get("parameters").asStringArray();
+            paramValues = treeJson.get(getString("currentMagnet")).get("parameterValues").asFloatArray();
+            for (int i = 0; i < params.length; i++) {
+                if (params[i].endsWith("power consumption")) {
+                    magnetPowerConsumption = paramValues[i];
+                }
+                if (params[i].endsWith("attraction radius")) {
+                    magnetRadius.setRadius(paramValues[i]);
+                }
+            }
+        }
+
+        if (!getString("currentRepellent").equals("")) {
+            params = treeJson.get(getString("currentRepellent")).get("parameters").asStringArray();
+            paramValues = treeJson.get(getString("currentRepellent")).get("parameterValues").asFloatArray();
+            for (int i = 0; i < params.length; i++) {
+                if (params[i].endsWith("power consumption")) {
+                    repellentPowerConsumption = paramValues[i];
+                }
+                if (params[i].endsWith("repellent radius")) {
+                    repellentRadius.setRadius(paramValues[i]);
+                }
+            }
+        }
+
         chargeCapacity = treeJson.get(getString("currentBattery")).get("parameterValues").asFloatArray()[0];
 
-        ship = new Sprite((Texture)assetManager.get("ship.png"));
+        ship = new Sprite((Texture) assetManager.get("ship.png"));
         shield = new Sprite(assetManager.get("shields.atlas", TextureAtlas.class).findRegion(treeJson.get(getString("currentShield")).get("usesEffect").asString()));
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
@@ -92,8 +135,8 @@ public abstract class ShipObject {
             Charge = getFloat("Charge");
             bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
         } else {
-            Shield = shieldStrength;
-            Health = 100*healthMultiplier;
+            Shield = shieldStrength * shieldStrengthMultiplier;
+            Health = 100 * healthMultiplier;
             Charge = chargeCapacity;
             bounds.setPosition(x, y);
         }
@@ -146,15 +189,12 @@ public abstract class ShipObject {
     public void drawEffects(SpriteBatch batch, float delta) {
         if (!exploded) {
             fire.setPosition(bounds.getX() + 10, bounds.getY() + 18);
-            fire.draw(batch);
+            fire.draw(batch, delta);
             fire2.setPosition(bounds.getX() + 4, bounds.getY() + 40);
-            fire2.draw(batch);
+            fire2.draw(batch, delta);
             damage_fire.setPosition(bounds.getX() + 10, bounds.getY() + 25);
             damage_fire2.setPosition(bounds.getX() + 10, bounds.getY() + 25);
             damage_fire3.setPosition(bounds.getX() + 10, bounds.getY() + 25);
-
-            fire.update(delta);
-            fire2.update(delta);
 
             if (Health < 70) {
                 if (!isFireStarted1) {
@@ -191,6 +231,9 @@ public abstract class ShipObject {
     public void draw(SpriteBatch batch, float delta) {
         if (!exploded) {
             ship.setPosition(bounds.getX(), bounds.getY());
+            repellentRadius.setPosition(bounds.getX() - repellentRadius.radius / 2 + bounds.getBoundingRectangle().getWidth() / 2, bounds.getY() - repellentRadius.radius / 2 + bounds.getBoundingRectangle().getHeight() / 2);
+            magnetRadius.setPosition(bounds.getX() - magnetRadius.radius / 2 + bounds.getBoundingRectangle().getWidth() / 2, bounds.getY() - magnetRadius.radius / 2 + bounds.getBoundingRectangle().getHeight() / 2);
+
             ship.setRotation(bounds.getRotation());
             ship.setColor(red, green, blue, 1);
 
@@ -211,7 +254,7 @@ public abstract class ShipObject {
             } else {
                 Charge = chargeCapacity;
             }
-            if (Shield < shieldStrength && Charge>=shieldPowerConsumption*delta) {
+            if (Shield < shieldStrength * shieldStrengthMultiplier && Charge >= shieldPowerConsumption * delta) {
                 Shield += shieldRegenerationSpeed * delta;
                 Charge -= shieldPowerConsumption * delta;
             }

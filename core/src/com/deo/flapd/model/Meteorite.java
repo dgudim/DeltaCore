@@ -96,12 +96,10 @@ public class Meteorite {
             ParticleEffect fire = fires.get(i);
 
             fire.setPosition(meteorite.x + meteorite.width / 2, meteorite.y + meteorite.width / 2);
-            fire.draw(batch);
-            fire.update(delta);
+            fire.draw(batch, delta);
         }
         for (int i3 = 0; i3 < explosions.size; i3++) {
-            explosions.get(i3).draw(batch);
-            explosions.get(i3).update(delta);
+            explosions.get(i3).draw(batch, delta);
             if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);

@@ -124,6 +124,7 @@ class Tree {
         scrollPaneStyle.hScrollKnob = scrollBar;
 
         treeScrollView = new ScrollPane(treeTable, scrollPaneStyle);
+        treeScrollView.setupOverscroll(10, 10, 30);
         treeScrollView.setBounds(x, y, width, height);
     }
 

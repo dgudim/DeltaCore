@@ -121,6 +121,84 @@
     "loadFrom": "shop/ui.atlas"
   },
 
+  "checkBoxSmall":{
+    "type": "checkBoxStyle",
+    "font": 0,
+    "off": {
+      "texture": "checkBox_disabled",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "offOver":{
+      "texture": "checkBox_disabled_over",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "on":{
+      "texture": "checkBox_enabled",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "onOver":{
+      "texture": "checkBox_enabled_over",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
+  "arrowRightSmall":{
+    "type": "checkBoxStyle",
+    "font": 0,
+    "off": {
+      "texture": "arrowRight_disabled",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "offOver":{
+      "texture": "arrowRight_disabled_over",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "on":{
+      "texture": "arrowRight",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "onOver":{
+      "texture": "arrowRight_over",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
+  "arrowLeftSmall":{
+    "type": "checkBoxStyle",
+    "font": 0,
+    "off": {
+      "texture": "arrowLeft_disabled",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "offOver":{
+      "texture": "arrowLeft_disabled_over",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "on":{
+      "texture": "arrowLeft",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "onOver":{
+      "texture": "arrowLeft_over",
+      "size": [10, 10],
+      "fontColor": "default"
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
   "sliderDefaultBig":{
     "type": "sliderStyle",
     "background": {

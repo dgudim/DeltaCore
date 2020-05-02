@@ -2,6 +2,7 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -51,8 +52,6 @@ public class Boss_evilEye {
 
     private float rotation, posX, millis, shieldSize;
 
-    private long soundId;
-
     private Polygon shipBounds;
 
     private Random random;
@@ -63,7 +62,9 @@ public class Boss_evilEye {
 
     private ProgressBar.ProgressBarStyle healthBarStyle, healthBarStyle2;
 
-    private Sound explosion, shot, laserSaw;
+    private Sound explosion, shot;
+
+    private Music laserSaw;
 
     private Rectangle laserTip;
 
@@ -108,7 +109,6 @@ public class Boss_evilEye {
         bodyBounds = new Rectangle().setSize(128).setPosition(1000, 176);
         posX = 320;
         shieldSize = 0;
-        soundId = 0;
         is_spawned = false;
         is_in_position = false;
         stage2 = false;
@@ -177,7 +177,9 @@ public class Boss_evilEye {
 
         shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun3.ogg"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
-        laserSaw = Gdx.audio.newSound(Gdx.files.internal("sfx/laserSaw.ogg"));
+        laserSaw = Gdx.audio.newMusic(Gdx.files.internal("sfx/laserSaw.ogg"));
+        laserSaw.setVolume(0);
+        laserSaw.setLooping(true);
 
         fire = new ParticleEffect();
         fire.load(Gdx.files.internal("particles/fire2.p"), Gdx.files.internal("particles"));
@@ -193,7 +195,6 @@ public class Boss_evilEye {
         is_laserFire = false;
         animation = true;
         shieldSize = 0;
-        soundId = 0;
         health.setSize(12);
         is_Dead.setSize(12);
         cannonBounds.setSize(10);
@@ -282,7 +283,7 @@ public class Boss_evilEye {
                 }
                 if(animation) {
                     shieldSize += 240 * delta;
-                    laserSaw.setVolume(soundId, MathUtils.clamp(shieldSize / 192, 0, 1));
+                    laserSaw.setVolume(MathUtils.clamp(shieldSize / 192, 0, 1));
                 }
                 if (shieldSize >= 192) {
                     animation = false;
@@ -303,8 +304,7 @@ public class Boss_evilEye {
                             laser.setSize(2, 9 * health.get(10) / 2000);
                             laserTip.setSize(2, 9 * health.get(10) / 2000).setPosition(laser.getX(), laser.getY());
                             fire.setPosition(laser.getX(), laser.getY() + 4.5f);
-                            fire.draw(batch);
-                            fire.update(delta);
+                            fire.draw(batch, delta);
                             laser.setRotation(rotation);
                             laser.setOrigin(laser.getWidth() / 2, laser.getHeight() / 2);
                             laser.draw(batch);
@@ -330,10 +330,26 @@ public class Boss_evilEye {
 
             if (health.get(0) < 0 && health.get(1) < 0 && health.get(2) < 0 && health.get(3) < 0 && health.get(4) < 0 && health.get(5) < 0 && health.get(6) < 0 && health.get(7) < 0 && health.get(8) < 0 && health.get(9) < 0 && !stage2) {
                 stage2 = true;
-                soundId = laserSaw.loop(0);
+                laserSaw.play();
             }
 
             if (is_in_position) {
+                for (int i2 = 0; i2 < 10; i2++) {
+                    if (Bullet.laser.getBoundingRectangle().overlaps(cannonBounds.get(i2))) {
+                        health.set(i2, health.get(i2) - Bullet.damage / 10);
+                    }
+                }
+                if (stage2) {
+                    if (health.get(11) > 0) {
+                        if (Bullet.laser.getBoundingRectangle().overlaps(bodyBounds)) {
+                            health.set(11, health.get(11) - Bullet.damage / 10);
+                        }
+                    } else {
+                        if (Bullet.laser.getBoundingRectangle().overlaps(bodyBounds)) {
+                            health.set(10, health.get(10) - Bullet.damage / 10);
+                        }
+                    }
+                }
                 for (int i = 0; i < Bullet.bullets.size; i++) {
                     for (int i2 = 0; i2 < 10; i2++) {
                         if (Bullet.bullets.get(i).overlaps(cannonBounds.get(i2))) {
@@ -353,20 +369,10 @@ public class Boss_evilEye {
                                 health.set(10, health.get(10) - Bullet.damages.get(i));
                             }
                         }
-                        if (health.get(10)<0 && !is_Dead.get(10)){
-                            health.set(10, -100f);
-                            is_Dead.set(10, true);
-                            explode(0, true);
-                            GameLogic.Score += 3000;
-                            UraniumCell.Spawn(bodyBounds, random.nextInt(20) + 5, 1, 1);
-                            for (int i3 = 0; i3 < 5; i3++) {
-                                Bonus.Spawn(4, bodyBounds.getX() + i * 5, bodyBounds.getY() + i * 5);
-                            }
-                            Drops.drop(bodyBounds, 5, 2, 5);
-                            laserSaw.stop();
-                            reset();
-                        }
                     }
+                }
+                if(stage2){
+                    checkDeath();
                 }
             }
 
@@ -415,8 +421,7 @@ public class Boss_evilEye {
             }
         }
         for (int i3 = 0; i3 < explosions.size; i3++) {
-            explosions.get(i3).draw(batch);
-            explosions.get(i3).update(delta);
+            explosions.get(i3).draw(batch, delta);
             if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
@@ -440,6 +445,22 @@ public class Boss_evilEye {
             millis = 0;
         }
         millis += 60 * delta;
+    }
+
+    private void checkDeath(){
+        if (health.get(10)<0 && !is_Dead.get(10)){
+            health.set(10, -100f);
+            is_Dead.set(10, true);
+            explode(0, true);
+            GameLogic.Score += 3000;
+            UraniumCell.Spawn(bodyBounds, random.nextInt(20) + 5, 1, 1);
+            for (int i3 = 0; i3 < 5; i3++) {
+                Bonus.Spawn(4, bodyBounds.getX() + i3 * 5, bodyBounds.getY() + i3 * 5);
+            }
+            Drops.drop(bodyBounds, 5, 2, 5);
+            laserSaw.stop();
+            reset();
+        }
     }
 
     private void removeBullet(int i) {

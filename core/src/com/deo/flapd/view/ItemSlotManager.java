@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -36,6 +37,7 @@ import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class ItemSlotManager {
 
@@ -50,13 +52,17 @@ public class ItemSlotManager {
     private int type;
     private final int INVENTORY = 1;
     private final int SHOP = 2;
+    private UIComposer uiComposer;
 
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-    ItemSlotManager(AssetManager assetManager){
+    ItemSlotManager(AssetManager assetManager) {
 
         slotSkin = new Skin();
-        slotSkin.addRegions((TextureAtlas)assetManager.get("shop/workshop.atlas"));
+        slotSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
+
+        uiComposer = new UIComposer(assetManager);
+        uiComposer.loadStyles("workshopGreen");
 
         this.assetManager = assetManager;
 
@@ -77,46 +83,66 @@ public class ItemSlotManager {
         holderGroup.addActor(inventory);
     }
 
-    void addShopSlots(){
+    void addShopSlots() {
         type = SHOP;
+        int slotCount;
         long lastGenerationTime = getLong("lastGenTime");
-        if(TimeUtils.timeSinceMillis(lastGenerationTime)>18000000){
+        if (TimeUtils.timeSinceMillis(lastGenerationTime) > 18000000) {
             putLong("lastGenTime", TimeUtils.millis());
-            generateSlots();
-        }else{
-            loadSlots();
+            slotCount = generateSlots();
+        } else {
+            slotCount = loadSlots();
+        }
+        if(slotCount == 0) {
+            final TextButton update = uiComposer.addTextButton("workshopGreen", "reset for 3500?", 0.48f);
+            update.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    new ConfirmationDialogue(assetManager, stage, "reset the shop for 3500?", new ClickListener(){
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            if(getInteger("money")>=3500){
+                                subtractInteger("money", 3500);
+                                putLong("lastGenTime", 0);
+                                ItemSlotManager.this.update();
+                            }
+                        }
+                    });
+                }
+            });
+            table.add(update).align(Align.center).size(300, 40);
         }
         addInfo();
     }
 
-    void addInventorySlots(){
+    void addInventorySlots() {
         type = INVENTORY;
         boolean nextRow = false;
-        for(int i = 0; i<treeJson.size; i++){
-            if(treeJson.get(i).get("category").asString().equals("recepies") && getInteger("item_"+getItemCodeNameByName(treeJson.get(i).name)) > 0){
-                addInventorySlot(treeJson.get(i).name, getInteger("item_"+getItemCodeNameByName(treeJson.get(i).name)), nextRow);
+        for (int i = 0; i < treeJson.size; i++) {
+            if (treeJson.get(i).get("category").asString().equals("recepies") && getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)) > 0) {
+                addInventorySlot(treeJson.get(i).name, getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)), nextRow);
                 nextRow = !nextRow;
             }
         }
         addInfo();
     }
 
-    private void generateSlots(){
+    private int generateSlots() {
         Array<String> itemsToAdd = new Array<>();
-        Array<Integer> quantities= new Array<>();
+        Array<Integer> quantities = new Array<>();
 
-        for(int i = 0; i<treeJson.size; i++){
-            if(treeJson.get(i).get("category").asString().equals("recepies")){
+        for (int i = 0; i < treeJson.size; i++) {
+            if (treeJson.get(i).get("category").asString().equals("recepies")) {
                 itemsToAdd.add(treeJson.get(i).name);
             }
         }
 
         boolean nextRow = false;
         Array<String> addedItems = new Array<>();
-        int slotQuantity = getRandomInRange(itemsToAdd.size/4, itemsToAdd.size/2);
-        for(int i = 0; i<slotQuantity; i++){
-            int index = getRandomInRange(0, itemsToAdd.size-1);
-            int quantity = MathUtils.clamp(getRandomInRange(5, 15)-getComplexity(itemsToAdd.get(index)), 1, 15);
+        int slotQuantity = getRandomInRange(itemsToAdd.size / 4, itemsToAdd.size / 2);
+        for (int i = 0; i < slotQuantity; i++) {
+            int index = getRandomInRange(0, itemsToAdd.size - 1);
+            int quantity = MathUtils.clamp(getRandomInRange(5, 15) - getComplexity(itemsToAdd.get(index)), 1, 15);
             addedItems.add(itemsToAdd.get(index));
             quantities.add(quantity);
             addShopSlot(itemsToAdd.get(index), quantity, nextRow);
@@ -126,20 +152,22 @@ public class ItemSlotManager {
 
         putString("savedSlots", addedItems.toString());
         putString("savedSlotQuantities", quantities.toString());
+        return slotQuantity;
     }
 
-    private void loadSlots(){
-        JsonValue slotsJson = new JsonReader().parse("{\"slots\":" + getString("savedSlots") + ","+ "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+    private int loadSlots() {
+        JsonValue slotsJson = new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
         int[] productQuantities = slotsJson.get("productQuantities").asIntArray();
         String[] slotNames = slotsJson.get("slots").asStringArray();
         boolean nextRow = false;
-        for(int i = 0; i<productQuantities.length; i++){
+        for (int i = 0; i < productQuantities.length; i++) {
             addShopSlot(slotNames[i], productQuantities[i], nextRow);
             nextRow = !nextRow;
         }
+        return productQuantities.length;
     }
 
-    private ImageButton addSlot(final String result, final int quantity, boolean nextRow){
+    private ImageButton addSlot(final String result, final int quantity, boolean nextRow) {
 
         ImageButton.ImageButtonStyle slotStyle;
         ImageButton.ImageButtonStyle lockedSlotStyle;
@@ -155,14 +183,14 @@ public class ItemSlotManager {
         slotStyle.down = slotSkin.getDrawable("slot_enabled");
 
         Image imageUp_scaled = new Image(this.items.findRegion(getItemCodeNameByName(result)));
-        Image imageOver_scaled = new Image(this.items.findRegion("over_"+getItemCodeNameByName(result)));
-        Image imageDisabled_scaled = new Image(this.items.findRegion("disabled_"+getItemCodeNameByName(result)));
-        Image imageDown_scaled = new Image(this.items.findRegion("enabled_"+getItemCodeNameByName(result)));
+        Image imageOver_scaled = new Image(this.items.findRegion("over_" + getItemCodeNameByName(result)));
+        Image imageDisabled_scaled = new Image(this.items.findRegion("disabled_" + getItemCodeNameByName(result)));
+        Image imageDown_scaled = new Image(this.items.findRegion("enabled_" + getItemCodeNameByName(result)));
 
         float heightBefore = imageUp_scaled.getHeight();
         float widthBefore = imageUp_scaled.getWidth();
         float height = 64;
-        float width = (height/heightBefore)*widthBefore;
+        float width = (height / heightBefore) * widthBefore;
 
         slotStyle.imageUp = imageUp_scaled.getDrawable();
         slotStyle.imageOver = imageOver_scaled.getDrawable();
@@ -174,13 +202,13 @@ public class ItemSlotManager {
         labelStyle.font = font;
         labelStyle.fontColor = Color.WHITE;
 
-        ImageButton slot = new ImageButton(slotStyle){
+        ImageButton slot = new ImageButton(slotStyle) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    log("\n error drawing "+getItemCodeNameByName(result) + "\n" +items.findRegion(getItemCodeNameByName(result))+ "\n" +items.findRegion("over_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("enabled_"+getItemCodeNameByName(result))+ "\n" +items.findRegion("disabled_"+getItemCodeNameByName(result)));
+                    log("\n error drawing " + getItemCodeNameByName(result) + "\n" + items.findRegion(getItemCodeNameByName(result)) + "\n" + items.findRegion("over_" + getItemCodeNameByName(result)) + "\n" + items.findRegion("enabled_" + getItemCodeNameByName(result)) + "\n" + items.findRegion("disabled_" + getItemCodeNameByName(result)));
                 }
             }
         };
@@ -189,7 +217,7 @@ public class ItemSlotManager {
         text.setFontScale(0.28f, 0.3f);
         text.setColor(Color.YELLOW);
 
-        Label quantityLabel = new Label(""+quantity, labelStyle);
+        Label quantityLabel = new Label("" + quantity, labelStyle);
         quantityLabel.setFontScale(0.4f);
         quantityLabel.setColor(Color.YELLOW);
         quantityLabel.setBounds(133, 88, 50, 20);
@@ -199,18 +227,18 @@ public class ItemSlotManager {
         slot.add(text).padRight(10).padLeft(10).padTop(10);
         slot.addActor(quantityLabel);
 
-        if(nextRow) {
+        if (nextRow) {
             table.add(slot).padBottom(5).padTop(5).padLeft(5).size(205, 120);
             table.row();
-        }else{
+        } else {
             table.add(slot).padBottom(5).padTop(5).padRight(5).size(205, 120);
         }
 
         return slot;
     }
 
-    private void addShopSlot(final String result, final int quantity, boolean nextRow){
-        addSlot(result, quantity, nextRow).addListener(new ClickListener(){
+    private void addShopSlot(final String result, final int quantity, boolean nextRow) {
+        addSlot(result, quantity, nextRow).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 new PurchaseDialogue(assetManager, stage, result, quantity, ItemSlotManager.this);
@@ -218,8 +246,8 @@ public class ItemSlotManager {
         });
     }
 
-    private void addInventorySlot(final String result, final int quantity, boolean nextRow){
-        addSlot(result, quantity, nextRow).addListener(new ClickListener(){
+    private void addInventorySlot(final String result, final int quantity, boolean nextRow) {
+        addSlot(result, quantity, nextRow).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 new SellUncraftDialogue(assetManager, stage, ItemSlotManager.this, quantity, result);
@@ -227,18 +255,18 @@ public class ItemSlotManager {
         });
     }
 
-    private void addInfo(){
+    private void addInfo() {
         Label.LabelStyle yellowLabelStyle = new Label.LabelStyle();
         yellowLabelStyle.font = font;
         yellowLabelStyle.fontColor = Color.YELLOW;
 
         Table holder = new Table();
-        Label uraniumCells_text = new Label(""+getInteger("money"), yellowLabelStyle);
-        Label cogs_text = new Label(""+getInteger("cogs"), yellowLabelStyle);
+        Label uraniumCells_text = new Label("" + getInteger("money"), yellowLabelStyle);
+        Label cogs_text = new Label("" + getInteger("cogs"), yellowLabelStyle);
         uraniumCells_text.setFontScale(0.5f);
         cogs_text.setFontScale(0.5f);
 
-        Image uraniumCell = new Image((Texture)assetManager.get("uraniumCell.png"));
+        Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(30, 30);
         holder.add(uraniumCells_text).padLeft(5);
@@ -249,19 +277,19 @@ public class ItemSlotManager {
         inventory.align(Align.left);
         final long[] nextUpdateTime = {getLong("lastGenTime") + 18000000};
         long lastReset = nextUpdateTime[0] - TimeUtils.millis();
-        int hours = (int)TimeUnit.MILLISECONDS.toHours(lastReset);
-        int minutes = (int)TimeUnit.MILLISECONDS.toMinutes(lastReset) - hours * 60;
-        int seconds = (int)TimeUnit.MILLISECONDS.toSeconds(lastReset) - hours * 3600 - minutes * 60;
-        Label resetTime = new Label("Reset in: "+hours+"h "+minutes+"m "+seconds+"s", yellowLabelStyle){
+        int hours = (int) TimeUnit.MILLISECONDS.toHours(lastReset);
+        int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(lastReset) - hours * 60;
+        int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(lastReset) - hours * 3600 - minutes * 60;
+        Label resetTime = new Label("Reset in: " + hours + "h " + minutes + "m " + seconds + "s", yellowLabelStyle) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 super.draw(batch, parentAlpha);
                 long nextReset = nextUpdateTime[0] - TimeUtils.millis();
-                int hours = (int)TimeUnit.MILLISECONDS.toHours(nextReset);
-                int minutes = (int)TimeUnit.MILLISECONDS.toMinutes(nextReset) - hours * 60;
-                int seconds = (int)TimeUnit.MILLISECONDS.toSeconds(nextReset) - hours * 3600 - minutes * 60;
-                this.setText("||Reset in: "+hours+"h "+minutes+"m "+seconds+"s||");
-                if(hours <= 0 && minutes <= 0 && seconds <= 0){
+                int hours = (int) TimeUnit.MILLISECONDS.toHours(nextReset);
+                int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(nextReset) - hours * 60;
+                int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(nextReset) - hours * 3600 - minutes * 60;
+                this.setText("||Reset in: " + hours + "h " + minutes + "m " + seconds + "s||");
+                if (hours <= 0 && minutes <= 0 && seconds <= 0) {
                     putLong("lastGenTime", TimeUtils.millis());
                     nextUpdateTime[0] = TimeUtils.millis() + 18000000;
                     table.clearChildren();
@@ -271,14 +299,16 @@ public class ItemSlotManager {
         };
         resetTime.setFontScale(0.5f);
         resetTime.setColor(Color.ORANGE);
+        resetTime.setWrap(true);
         Table moneyAndCogs = new Table();
         moneyAndCogs.add(holder).align(Align.left).padLeft(10).padBottom(5).row();
         moneyAndCogs.add(holder2).align(Align.left).padLeft(10);
 
         inventory.add(moneyAndCogs);
-        if(type == SHOP) {
-            inventory.add(resetTime).padLeft(10).align(Align.center);
-        }else{
+
+        if (type == SHOP) {
+            inventory.add(resetTime).padLeft(10).align(Align.center).width(160).expand();
+        } else {
             Label name = new Label("Inventory", yellowLabelStyle);
             name.setColor(Color.ORANGE);
             name.setFontScale(0.6f);
@@ -286,39 +316,40 @@ public class ItemSlotManager {
         }
     }
 
-    void attach(Stage stage){
+    void attach(Stage stage) {
         stage.addActor(holderGroup);
         this.stage = stage;
     }
 
     public void setBounds(float x, float y, float width, float height) {
-        height-=85;
-        inventory.setBounds(x, y+height, width, 85);
+        height -= 85;
+        inventory.setBounds(x, y + height, width, 85);
         scrollPane.setBounds(x, y, width, height);
     }
 
-    void update(){
+    void update() {
         inventory.clearChildren();
         table.clearChildren();
-        if(type == SHOP) {
+        if (type == SHOP) {
             addShopSlots();
-        }else{
+        } else {
             addInventorySlots();
         }
     }
 
-    private int getComplexity(String result){
+    private int getComplexity(String result) {
         int complexity = 0;
-        if(treeJson.get(result) == null) throw new IllegalArgumentException("no item declared with name "+result);
+        if (treeJson.get(result) == null)
+            throw new IllegalArgumentException("no item declared with name " + result);
         JsonValue price = treeJson.get(result).get("price");
-        if(price.asString().equals("auto")){
+        if (price.asString().equals("auto")) {
             String[] items = treeJson.get(result).get("items").asStringArray();
-            for(int i = 0; i<items.length; i++){
+            for (int i = 0; i < items.length; i++) {
                 int buffer = getComplexity(items[i]);
                 complexity += buffer + 1;
             }
         }
-        complexity = MathUtils.clamp((int)(Math.ceil(complexity/2f)-1)*4, 0, 15);
+        complexity = MathUtils.clamp((int) (Math.ceil(complexity / 2f) - 1) * 4, 0, 15);
         return complexity;
     }
 }

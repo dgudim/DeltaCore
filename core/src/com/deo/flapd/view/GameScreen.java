@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
         uraniumCell.draw(batch, delta);
 
         ship.drawEffects(batch, delta);
-        enemies.drawEffects(batch);
+        enemies.drawEffects(batch, delta);
         kamikadze.drawEffects(batch, delta);
         boss_battleShip.draw(batch, delta);
         boss_evilEye.draw(batch, delta);

@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Drops;
@@ -112,13 +111,11 @@ public class Kamikadze {
             }
 
             fire.setPosition(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
-            fire.draw(batch);
-            fire.update(delta);
+            fire.draw(batch, delta);
         }
 
         for (int i3 = 0; i3 < explosions.size; i3++) {
-            explosions.get(i3).draw(batch);
-            explosions.get(i3).update(delta);
+            explosions.get(i3).draw(batch, delta);
             if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
@@ -143,23 +140,16 @@ public class Kamikadze {
                 removeEnemy(i, true);
             }
 
-            Vector2 pos1 = new Vector2();
-            pos1.set(enemy.x, enemy.y);
-            Vector2 pos2 = new Vector2();
-            pos2.set(bounds.getX(), bounds.getY());
-            pos1.lerp(pos2, 0.5f*delta);
+            enemy.x = MathUtils.lerp(enemy.x, bounds.getX(), delta * 0.7f);
+            enemy.y = MathUtils.lerp(enemy.y, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2, delta * 0.7f);
 
             this.enemy.setColor(1, timer / ideal_timer, timer / ideal_timer, 1);
-            this.enemy.setPosition(pos1.x, pos1.y);
+            this.enemy.setPosition(enemy.x, enemy.y);
             this.enemy.setSize(enemy.width, enemy.height);
             this.enemy.setOrigin(enemy.width / 2f, enemy.height / 2f);
             this.enemy.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(enemy.y - bounds.getY(), enemy.x - bounds.getX()));
 
             this.enemy.draw(batch);
-
-            enemy.x = pos1.x;
-            enemy.y = pos1.y;
-
         }
 
         for (int i4 = 0; i4 < enemies.size; i4++) {

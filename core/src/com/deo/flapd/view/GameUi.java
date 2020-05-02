@@ -268,7 +268,7 @@ public class GameUi {
         chargeBarStyle.knobBefore = BarForegroundYellow;
 
         health = new ProgressBar(0, 100*SpaceShip.healthMultiplier, 0.01f, false, healthBarStyle);
-        shield = new ProgressBar(0, SpaceShip.shieldStrength, 0.01f, false, shieldBarStyle);
+        shield = new ProgressBar(0, SpaceShip.shieldStrength*SpaceShip.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
         charge = new ProgressBar(0, SpaceShip.chargeCapacity, 0.01f, false, chargeBarStyle);
 
         health.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);

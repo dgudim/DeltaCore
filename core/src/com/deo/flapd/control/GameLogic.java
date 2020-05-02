@@ -33,7 +33,6 @@ public class GameLogic {
     private float difficulty;
 
     public static int bonuses_collected;
-    private float millis;
 
     public static boolean bossWave, has1stBossSpawned, has2ndBossSpawned;
 
@@ -46,8 +45,6 @@ public class GameLogic {
     private float speedMultiplier;
 
     private Game game;
-
-    private float ShootingSpeed;
 
     private Bullet bullet;
     private Meteorite meteorite;
@@ -105,12 +102,9 @@ public class GameLogic {
         }
         money = getInteger("money");
         bossWave = false;
-
-        ShootingSpeed = bullet.getShootingSpeed();
     }
 
     public void handleInput(float delta, float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary) {
-
         deltaX *= speedMultiplier;
         deltaY *= speedMultiplier;
 
@@ -133,23 +127,23 @@ public class GameLogic {
         bounds.setPosition(bounds.getX() + 250 * deltaX * delta, bounds.getY() + 250 * deltaY * delta);
         bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
 
-        if (is_firing && millis > 10 / ShootingSpeed) {
+        if (is_firing) {
             bullet.Spawn(1, false);
-            millis = 0;
         }
 
-        if (is_firing_secondary && millis > 10 / ShootingSpeed) {
+        if (is_firing_secondary) {
             bullet.Spawn(1.5f, true);
-            millis = 0;
         }
 
-        millis = millis + 50 * (bonuses_collected / 50.0f + 1) * delta;
+        if(bullet.isLaser){
+            bullet.updateLaser(is_firing || is_firing_secondary);
+        }
 
         if (!bossWave) {
 
             if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && enemiesKilled >= 50) {
-                if ((random.nextInt(60) == 5 || random.nextInt(400) > 370) && enemiesKilled >= 50) {
-                    kamikadze.Spawn((int) (200 * difficulty), 0.3f, 7);
+                if ((random.nextInt(100) == 5 || random.nextInt(400) > 375) && enemiesKilled >= 50) {
+                    kamikadze.Spawn((int) (300 * difficulty), 0.3f, 10);
                 }
             }
 
@@ -226,6 +220,14 @@ public class GameLogic {
                     }
                 }
 
+                if(Bullet.laser.getBoundingRectangle().overlaps(Kamikadze.enemies.get(i))){
+                    Kamikadze.healths.set(i, Kamikadze.healths.get(i) - Bullet.damage/10);
+                    if (Kamikadze.healths.get(i) <= 0) {
+                        Kamikadze.removeEnemy(i, true);
+                        enemiesKilled++;
+                    }
+                }
+
                 for (int i3 = 0; i3 < Meteorite.meteorites.size; i3++) {
                     if (Meteorite.meteorites.get(i3).overlaps(enemy)) {
 
@@ -286,6 +288,13 @@ public class GameLogic {
                             Meteorite.meteoritesDestroyed++;
 
                         }
+                    }
+                }
+                if(Bullet.laser.getBoundingRectangle().overlaps(Meteorite.meteorites.get(i))){
+                    Meteorite.healths.set(i, Meteorite.healths.get(i) - Bullet.damage/10);
+                    if (Meteorite.healths.get(i) <= 0) {
+                        Meteorite.removeMeteorite(i, true);
+                        Meteorite.meteoritesDestroyed++;
                     }
                 }
             }

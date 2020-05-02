@@ -211,15 +211,16 @@ public class PurchaseDialogue{
         int[] priceArray = new int[]{0, 0};
         if(price.asString().equals("auto")){
             String[] items = treeJson.get(result).get("items").asStringArray();
+            int[] itemCounts = treeJson.get(result).get("itemCounts").asIntArray();
             for(int i = 0; i<items.length; i++){
                 int[] buffer = getPrice(items[i]);
-                priceArray[0] += Math.ceil(buffer[0]/treeJson.get(result).get("resultCount").asFloat());
+                priceArray[0] += Math.ceil(buffer[0]/treeJson.get(result).get("resultCount").asFloat()*itemCounts[i]);
                 priceArray[1] += buffer[1] + 1;
             }
         }else{
             return new int[]{price.asInt(), 0};
         }
-        priceArray[1] = (int)MathUtils.clamp((Math.ceil(priceArray[1]/2f)-1)*1.5f, 0, 100);
+        priceArray[1] = (int)MathUtils.clamp((Math.ceil(priceArray[1]/2f)-1)*1.7, 0, 100);
         return priceArray;
     }
 

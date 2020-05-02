@@ -286,21 +286,24 @@ class UIComposer {
         checkBoxStyleNames.add(assignmentName);
     }
 
-    Table addCheckBox(String style, String text, final String valueKey){
-        if (checkBoxStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
-        Table cell = new Table();
-        final CheckBox checkBox = new CheckBox(text, checkBoxStyles.get(checkBoxStyleNames.indexOf(style, false)));
-        checkBox.getLabel().setFontScale(0.48f);
+    CheckBox addCheckBox(String style, String text, final String valueKey){
+        final CheckBox checkBox = addCheckBox(style, text);
         checkBox.setChecked(getBoolean(valueKey));
-        checkBox.getImageCell().padRight(5);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 putBoolean(valueKey, checkBox.isChecked());
             }
         });
-        cell.add(checkBox);
-        return cell;
+        return checkBox;
+    }
+
+    CheckBox addCheckBox(String style, String text){
+        if (checkBoxStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
+        final CheckBox checkBox = new CheckBox(text, checkBoxStyles.get(checkBoxStyleNames.indexOf(style, false)));
+        checkBox.getLabel().setFontScale(0.48f);
+        checkBox.getImageCell().padRight(5);
+        return checkBox;
     }
 
     Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {

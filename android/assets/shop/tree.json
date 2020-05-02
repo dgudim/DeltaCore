@@ -17,7 +17,8 @@
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
     "parameterValues": [50, 1.4, 0.7, 1000, 1, 0],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "usesTrail": false
   },
   "star core": {
     "description": "a base core",
@@ -39,12 +40,12 @@
     "requires": ["star core"],
     "type": "part",
     "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier", "[#FEDE15]power generation"],
-    "parameterValues": [1.5, 1.3, 3],
+    "parameterValues": [1.5, 1.1, 3],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_green"
   },
   "energy core": {
-    "items": ["core shard", "energy cell", "composite plate", "cooling unit", "motherboard mk2", "fiber cable"],
+    "items": ["core shard", "energy cell", "composite plate", "cooling unit", "motherboard mk2", "cable"],
     "itemCounts": [1, 1, 2, 1, 1, 5],
     "resultCount": 1,
     "description": "",
@@ -53,9 +54,23 @@
     "requires": ["warp core"],
     "type": "part",
     "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier", "[#DD2222]damage multiplier", "[#FEDE15]power generation"],
-    "parameterValues": [1.8, 1.5, 1.3, 5],
+    "parameterValues": [1.8, 1.3, 1.3, 5],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_cyan"
+  },
+  "thermonuclear core": {
+    "items": ["core shard", "energy cell", "composite plate", "cooling unit", "motherboard mk2", "unstable crystal", "processor mk3"],
+    "itemCounts": [1, 2, 4, 2, 1, 1, 2],
+    "resultCount": 1,
+    "description": "",
+    "isCraftable": true,
+    "category": "star core",
+    "requires": ["energy core"],
+    "type": "part",
+    "parameters": ["[#3bff38]health multiplier", "[#22DDDD]shield strength multiplier" ,"speed multiplier", "[#DD2222]damage multiplier", "[#FEDE15]power generation"],
+    "parameterValues": [2, 1.3, 1.4, 1.5, 7.5],
+    "saveTo": "currentCore",
+    "usesEffect": "explosion2_purple"
   },
   "nuclear engine": {
     "items": ["red fuel cell", "cable", "plastic", "reinforced iron plate", "cyan crystal"],
@@ -97,7 +112,8 @@
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
     "parameterValues": [70, 0.6, 0.9, 1450, 1, 0],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "usesTrail": false
   },
   "minigun": {
     "items": ["bolt", "cable", "composite plate", "cooling unit", "green crystal"],
@@ -108,10 +124,11 @@
     "category": "small machine gun",
     "requires": ["machine gun"],
     "type": "part",
-    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "warm-up" ,"bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
-    "parameterValues": [20, 0.8, 2, 90, 1450, 1, 0],
+    "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
+    "parameterValues": [20, 0.8, 2, 1450, 1, 0],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "usesTrail": false
   },
   "shotgun": {
     "items": ["cog", "cable", "composite plate", "cooling unit", "cyan crystal"],
@@ -125,7 +142,8 @@
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
     "parameterValues": [7, 1.8, 0.3, 900, 10, 0],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "usesTrail": false
   },
   "laser gun": {
     "items": ["bolt", "cable", "reinforced iron plate", "cooling unit", "energy cell", "laser emitter"],
@@ -139,7 +157,8 @@
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
     "parameterValues": [85, 0.3, 1, 2000, 1, 1],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3"
+    "usesEffect": "explosion3",
+    "usesTrail": false
   },
   "coil gun": {
     "items": ["green coil", "cable", "composite plate", "cooling unit", "glass rod", "cyan crystal"],
@@ -153,7 +172,9 @@
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
     "parameterValues": [90, 0.15, 1.1, 3100, 1, 1.25],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3_3"
+    "usesEffect": "explosion3_3",
+    "usesTrail": true,
+    "trailEffect": "bullet_trail_highEmission"
   },
   "rail gun": {
     "items": ["cyan coil", "purple crystal", "composite plate", "cooling unit", "glass rod", "energy cell", "processor mk3"],
@@ -167,7 +188,23 @@
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
     "parameterValues": [110, 0, 1, 2100, 1, 1.5],
     "saveTo": "currentCannon",
-    "usesEffect": "explosion3_3"
+    "usesEffect": "explosion3_3",
+    "usesTrail": false
+  },
+  "laser beam gun": {
+    "items": ["composite plate", "purple crystal", "laser emitter", "cooling unit", "circuit board", "energy cell", "fiber cable"],
+    "itemCounts": [3, 2, 2, 3, 3, 2, 2],
+    "resultCount": 1,
+    "description": "",
+    "isCraftable": true,
+    "category": "small machine gun",
+    "requires": ["machine gun", "energy core"],
+    "type": "part",
+    "parameters": ["[#DD2222]damage", "spread", "laser beam thickness", "laser pulse duration", "[#FEDE15]power consumption"],
+    "parameterValues": [150, 0, 9, 3000, 2.1],
+    "saveTo": "currentCannon",
+    "usesEffect": "fire3",
+    "usesTrail": false
   },
   "upgrades": {
     "items": [""],
@@ -204,8 +241,8 @@
     "usesEffect": "ColdShield"
   },
   "shield generator mk2": {
-    "items": ["cyan coil", "reinforced iron plate", "energy cell", "cooling unit", "advanced chip", "fiber cable"],
-    "itemCounts": [2, 4, 1, 1, 1, 3],
+    "items": ["green coil", "reinforced iron plate", "energy cell", "cooling unit", "advanced chip", "cable", "orange crystal"],
+    "itemCounts": [2, 4, 1, 1, 1, 3, 2],
     "resultCount": 1,
     "description": "a more advanced shield generator, less power consumption, more strength",
     "isCraftable": true,
@@ -218,8 +255,8 @@
     "usesEffect": "ColdShieldMk2"
   },
   "shield generator mk3": {
-    "items": ["green coil", "reinforced iron plate", "energy cell", "cooling unit", "purple crystal", "circuit board", "fiber cable"],
-    "itemCounts": [4, 6, 2, 1, 1, 1, 4],
+    "items": ["cyan coil", "reinforced iron plate", "energy cell", "cooling unit", "cyan crystal", "circuit board", "green crystal"],
+    "itemCounts": [4, 6, 2, 1, 4, 1, 4],
     "resultCount": 1,
     "description": "an even more advanced shield generator, more strength, faster regeneration speed then previous model, more power consumption",
     "isCraftable": true,
@@ -230,6 +267,20 @@
     "parameterValues": [150, 1.5, 1.5],
     "saveTo": "currentShield",
     "usesEffect": "ColdShieldMk3"
+  },
+  "shield generator mk4": {
+    "items": ["fiber cable", "composite plate", "energy cell", "cooling unit", "purple crystal", "circuit board", "glass rod"],
+    "itemCounts": [6, 7, 3, 2, 1, 2, 4],
+    "resultCount": 1,
+    "description": "cutting edge technology shield generator",
+    "isCraftable": true,
+    "category": "shield generator mk1",
+    "requires": ["shield generator mk3" ,"energy core"],
+    "type": "part",
+    "parameters": ["[#22DDDD]shield strength", "[#FEDE15]power consumption", "[#3bff38]shield regeneration speed"],
+    "parameterValues": [190, 1.9, 2],
+    "saveTo": "currentShield",
+    "usesEffect": "ColdShieldMk4"
   },
   "battery mk1": {
     "description": "a basic battery",
@@ -289,7 +340,7 @@
     "requires": ["star core"],
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#3bff38]attraction radius"],
-    "parameterValues": [1, 90],
+    "parameterValues": [1, 250],
     "saveTo": "currentMagnet"
   },
   "repellent field": {
@@ -302,8 +353,8 @@
     "requires": ["warp core"],
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#3bff38]repellent radius"],
-    "parameterValues": [0.7, 110],
-    "saveTo": "currentRepeller"
+    "parameterValues": [1, 230],
+    "saveTo": "currentRepellent"
   },
   "reinforced glass pane": {
     "items": ["iron plate", "bolt", "glass rod", "glass shard", "green crystal"],
@@ -592,8 +643,30 @@
     "type": "item"
   },
   "processor mk1": {
-    "items": ["cyan crystal", "wire", "transistor", "iron plate", "glass shard"],
-    "itemCounts": [1, 10, 20, 1, 3],
+    "items": ["processor crystal" ,"cyan crystal", "wire", "transistor", "iron plate", "glass shard"],
+    "itemCounts": [1, 1, 10, 20, 1, 3],
+    "resultCount": 1,
+    "description": "",
+    "isCraftable":true,
+    "category": "recepies",
+    "requires": [""],
+    "price": "auto",
+    "type": "item"
+  },
+  "processor crystal": {
+    "items": ["purple crystal" , "wire", "transistor", "glass rod"],
+    "itemCounts": [1, 30, 100, 2],
+    "resultCount": 1,
+    "description": "",
+    "isCraftable":true,
+    "category": "recepies",
+    "requires": [""],
+    "price": "auto",
+    "type": "item"
+  },
+  "unstable crystal": {
+    "items": ["purple crystal" , "cyan crystal", "green crystal", "orange crystal", "red crystal", "reinforced iron plate"],
+    "itemCounts": [1, 1, 1, 1, 1, 2],
     "resultCount": 1,
     "description": "",
     "isCraftable":true,

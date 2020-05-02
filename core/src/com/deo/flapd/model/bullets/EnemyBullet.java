@@ -37,12 +37,12 @@ public class EnemyBullet {
         bulletData.trailParticleEffect.start();
     }
 
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, float delta) {
         if (!isDead) {
             bullet.draw(batch);
-            data.trailParticleEffect.draw(batch);
+            data.trailParticleEffect.draw(batch, delta);
         } else {
-            data.explosionParticleEffect.draw(batch);
+            data.explosionParticleEffect.draw(batch, delta);
         }
     }
 
@@ -64,7 +64,6 @@ public class EnemyBullet {
             }
         }
         if (!isDead) {
-            data.trailParticleEffect.update(delta);
             data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
             data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
             bullet.setPosition(data.x, data.y);
@@ -74,8 +73,6 @@ public class EnemyBullet {
                 isDead = true;
                 explosionFinished = true;
             }
-        } else {
-            data.explosionParticleEffect.update(delta);
         }
         queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished) && isDead;
     }

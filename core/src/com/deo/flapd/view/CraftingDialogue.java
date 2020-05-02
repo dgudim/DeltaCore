@@ -403,6 +403,7 @@ class CraftingDialogue {
         }
 
         ScrollPane ingredients = new ScrollPane(ingredientsTable);
+        ingredients.setupOverscroll(5, 10, 30);
 
         ingredients.setBounds(3, 28, 80, 39);
         dialog.addActor(ingredients);
@@ -480,6 +481,7 @@ class CraftingDialogue {
         description.setWrap(true);
         description.setFontScale(0.1f);
         ScrollPane descriptionPane = new ScrollPane(description);
+        descriptionPane.setupOverscroll(5, 10, 30);
         descriptionPane.setBounds(4, 28, 78, 30);
         dialog.addActor(descriptionPane);
     }
@@ -535,6 +537,7 @@ class CraftingDialogue {
             ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(1);
             ScrollPane ingredients = new ScrollPane(ingredientsTable);
+            ingredients.setupOverscroll(5, 10, 30);
 
             ingredients.setBounds(3, 28, 80, 32);
             dialog.addActor(ingredients);

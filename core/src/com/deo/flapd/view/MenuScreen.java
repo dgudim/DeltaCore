@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -37,6 +38,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
+import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -48,6 +50,7 @@ import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
@@ -173,7 +176,8 @@ public class MenuScreen implements Screen{
         settingsPane.setCancelTouchFocus(false);
         Table settingsGroup = (Table)settingsPane.getActor();
         settingsGroup.align(Align.left);
-        Table musicVolumeT, soundVolumeT, uiScaleT, bloomT, transparentUIT, prefsLoggingT, showFpsT;
+        final Table musicVolumeT, soundVolumeT, uiScaleT;
+        final CheckBox bloomT, showFpsT, transparentUIT, prefsLoggingT;
         musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Music volume ","%", "musicVolume", settingsPane);
         soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundVolume", settingsPane);
         uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "[#32ff32]Ui scale ", "X", "ui", settingsPane);
@@ -234,8 +238,6 @@ public class MenuScreen implements Screen{
         moreTable.add(exportMessage).padTop(5).padBottom(5).width(510).row();
 
         musicVolumeS = (Slider)musicVolumeT.getCells().get(0).getActor();
-        final CheckBox bloomS = (CheckBox)bloomT.getCells().get(0).getActor();
-        final CheckBox loggingS = (CheckBox)prefsLoggingT.getCells().get(0).getActor();
 
         Menu = new Stage(viewport, batch);
 
@@ -275,7 +277,12 @@ public class MenuScreen implements Screen{
                 LoadingScreen.craftingTree.update();
             }
         });
-        workshopCategoryManager.addCategory(blackMarket.holderGroup, "market");
+        workshopCategoryManager.addCategory(blackMarket.holderGroup, "market").addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                blackMarket.update();
+            }
+        });
         workshopCategoryManager.addCategory(inventory.holderGroup, "inventory", 0.23f).addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -417,31 +424,39 @@ public class MenuScreen implements Screen{
             }
         });
 
-        bloomS.addListener(new ChangeListener() {
+        bloomT.addListener(new ChangeListener() {
                @Override
                public void changed(ChangeEvent event, Actor actor) {
-               enableShader = bloomS.isChecked();
-               putBoolean("bloom", bloomS.isChecked());
+               enableShader = bloomT.isChecked();
+               putBoolean("bloom", bloomT.isChecked());
                }
         });
 
-        loggingS.addListener(new ChangeListener() {
+        prefsLoggingT.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                DUtils.logging = loggingS.isChecked();
-                putBoolean("logging", loggingS.isChecked());
+                DUtils.logging = prefsLoggingT.isChecked();
+                putBoolean("logging", prefsLoggingT.isChecked());
             }
         });
 
-        buildNumber.addListener(new ClickListener(){
+        buildNumber.addListener(new ActorGestureListener(20, 0.4f, 60, 0.15f){
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
                 easterEggCounter++;
                 if(easterEggCounter>10){
                     easterEgg = !easterEgg;
                     putBoolean("easterEgg", easterEgg);
                     easterEggCounter = 0;
                 }
+            }
+
+            @Override
+            public boolean longPress(Actor actor, float x, float y) {
+                addInteger("money", 100000);
+                addInteger("cogs", 100000);
+                putLong("lastGenTime", 0);
+                return true;
             }
         });
 
@@ -499,10 +514,8 @@ public class MenuScreen implements Screen{
 
         batch.draw(Bg, 0, 0, (int)movement, -240, 800, 720);
 
-        fire.draw(batch);
-        fire.update(delta);
-        fire2.draw(batch);
-        fire2.update(delta);
+        fire.draw(batch, delta);
+        fire2.draw(batch, delta);
 
         if (enableShader) {
             batch.end();
@@ -568,7 +581,7 @@ public class MenuScreen implements Screen{
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.0.7", 5, 35, 150, 1, false);
+        font_main.draw(batch, "V 0.0.8", 5, 35, 150, 1, false);
         if(easterEgg){
             font_main.getData().setScale(0.2f);
             font_main.setColor(Color.ORANGE);

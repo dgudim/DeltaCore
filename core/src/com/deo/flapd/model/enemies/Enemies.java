@@ -57,9 +57,9 @@ public class Enemies {
         }
     }
 
-    public void drawEffects(SpriteBatch batch){
+    public void drawEffects(SpriteBatch batch, float delta){
         for(int i = 0; i<enemyEntities.size; i++){
-            enemyEntities.get(i).drawEffects(batch);
+            enemyEntities.get(i).drawEffects(batch, delta);
         }
     }
 

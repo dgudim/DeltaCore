@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -706,19 +705,11 @@ public class Boss_battleShip {
                 this.bullet3.draw(batch);
                 this.bullet3.rotate(2);
 
-                Vector2 pos1 = new Vector2();
-                pos1.set(bullet.x, bullet.y);
-                Vector2 pos2 = new Vector2();
-                pos2.set(shipBounds.getX(), shipBounds.getY());
-                pos1.lerp(pos2, 1.5f*delta);
+                bullet.x = MathUtils.lerp(bullet.x, shipBounds.getX(), delta * 0.7f);
+                bullet.y = MathUtils.lerp(bullet.y, shipBounds.getY() + shipBounds.getBoundingRectangle().getHeight() / 2, delta * 0.7f);
 
-                fire.setPosition(bullet.getX() + bullet.width / 2, bullet.getY() + bullet.height / 2);
-                fire.draw(batch);
-
-                fire.update(delta);
-
-                bullet.x = pos1.x;
-                bullet.y = pos1.y;
+                fire.setPosition(bullet.x + bullet.width / 2, bullet.x + bullet.height / 2);
+                fire.draw(batch, delta);
 
                 timer = timer - delta;
                 bullets_red_big_timers.set(i, timer);
@@ -796,14 +787,44 @@ public class Boss_battleShip {
                         healths.set(9, healths.get(9) - Bullet.damages.get(i));
                         Bullet.removeBullet(i, true);
                     }
-
                 }
+
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon.getBoundingRectangle())) {
+                    healths.set(1, healths.get(1) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon2.getBoundingRectangle())) {
+                    healths.set(2, healths.get(2) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon3.getBoundingRectangle())) {
+                    healths.set(3, healths.get(3) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon4.getBoundingRectangle())) {
+                    healths.set(4, healths.get(4) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon5.getBoundingRectangle())) {
+                    healths.set(5, healths.get(5) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon6.getBoundingRectangle())) {
+                    healths.set(6, healths.get(6) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon_front.getBoundingRectangle())) {
+                    healths.set(8, healths.get(8) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_homing1.getBoundingRectangle()) || Bullet.laser.getBoundingRectangle().overlaps(bounds_homing2.getBoundingRectangle())) {
+                    healths.set(10, healths.get(10) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0) {
+                    healths.set(7, healths.get(7) - Bullet.damage / 10);
+                }
+                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2) {
+                    healths.set(9, healths.get(9) - Bullet.damage / 10);
+                }
+
                 shoot(delta);
             }
 
             for (int i3 = 0; i3 < explosions.size; i3++) {
-                explosions.get(i3).draw(batch);
-                explosions.get(i3).update(delta);
+                explosions.get(i3).draw(batch, delta);
                 if (explosions.get(i3).isComplete()) {
                     explosions.get(i3).dispose();
                     explosions.removeIndex(i3);

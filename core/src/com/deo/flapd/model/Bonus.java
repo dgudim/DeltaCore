@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -144,8 +146,14 @@ public class Bonus {
             bonus.y -= angleY * 15 * delta;
             bonus.x -= 50 * delta;
 
-            if (bonus.y < -height || bonus.y > 480 || bonus.x < -height || bonus.x > 800) {
+            if (bonus.y < -height || bonus.y > 480 || bonus.x < -width || bonus.x > 800) {
                 removeBonus(i, false);
+            }
+
+            if (Intersector.overlaps(SpaceShip.magnetRadius, bonus) && SpaceShip.Charge >= SpaceShip.magnetPowerConsumption * delta) {
+                bonus.x = MathUtils.lerp(bonus.x, bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2, delta / 2);
+                bonus.y = MathUtils.lerp(bonus.y, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2, delta / 2);
+                SpaceShip.Charge -= SpaceShip.magnetPowerConsumption * delta;
             }
 
             if (bonus.overlaps(bounds.getBoundingRectangle())) {
@@ -204,8 +212,7 @@ public class Bonus {
             font_text.setColor(Color.BLACK);
         }
         for (int i3 = 0; i3 < explosions.size; i3++) {
-            explosions.get(i3).draw(batch);
-            explosions.get(i3).update(delta);
+            explosions.get(i3).draw(batch, delta);
             if (explosions.get(i3).isComplete()) {
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);

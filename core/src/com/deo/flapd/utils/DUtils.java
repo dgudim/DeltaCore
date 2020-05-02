@@ -535,6 +535,21 @@ public abstract class DUtils {
             case ("repellent field"):
                 item = "repeller";
                 break;
+            case ("shield generator mk4"):
+                item = "shieldMk4";
+                break;
+            case ("thermonuclear core"):
+                item = "thermoNuclearCore";
+                break;
+            case ("processor crystal"):
+                item = "cpuCrystal";
+                break;
+            case ("unstable crystal"):
+                item = "unstableCrystal";
+                break;
+            case ("laser beam gun"):
+                item = "laserBeamGun";
+                break;
             default:
                 log("\n no texture for item " + name);
                 item = "ohno";
