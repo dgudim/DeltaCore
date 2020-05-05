@@ -14,7 +14,6 @@ import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
-import com.deo.flapd.model.enemies.Kamikadze;
 
 import java.util.Random;
 
@@ -48,12 +47,11 @@ public class GameLogic {
 
     private Bullet bullet;
     private Meteorite meteorite;
-    private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
     private Checkpoint checkpoint;
     private Boss_evilEye boss_evilEye;
 
-    public GameLogic(Polygon bounds, boolean newGame, Game game, Bullet bullet, Meteorite meteorite, Kamikadze kamikadze, Boss_battleShip boss_battleShip, Checkpoint checkpoint, Boss_evilEye boss_evilEye) {
+    public GameLogic(Polygon bounds, boolean newGame, Game game, Bullet bullet, Meteorite meteorite, Boss_battleShip boss_battleShip, Checkpoint checkpoint, Boss_evilEye boss_evilEye) {
         this.bounds = bounds;
         random = new Random();
 
@@ -61,7 +59,6 @@ public class GameLogic {
 
         this.bullet = bullet;
         this.meteorite = meteorite;
-        this.kamikadze = kamikadze;
         this.boss_battleShip = boss_battleShip;
         this.checkpoint = checkpoint;
         this.boss_evilEye = boss_evilEye;
@@ -141,12 +138,6 @@ public class GameLogic {
 
         if (!bossWave) {
 
-            if ((random.nextInt(40) == 5 || random.nextInt(40) > 37) && enemiesKilled >= 50) {
-                if ((random.nextInt(100) == 5 || random.nextInt(400) > 375) && enemiesKilled >= 50) {
-                    kamikadze.Spawn((int) (300 * difficulty), 0.3f, 10);
-                }
-            }
-
             if (random.nextInt(6000) == 5770) {
                 meteorite.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30 * difficulty);
             }
@@ -184,74 +175,6 @@ public class GameLogic {
     }
 
     public void detectCollisions(boolean is_paused) {
-
-        for (int i = 0; i < Kamikadze.enemies.size; i++) {
-            if (!is_paused) {
-
-                Rectangle enemy = Kamikadze.enemies.get(i);
-
-                if (enemy.overlaps(bounds.getBoundingRectangle())) {
-
-                    SpaceShip.takeDamage(Kamikadze.healths.get(i));
-
-                    Score = Score + Kamikadze.healths.get(i) / 2;
-
-                    enemiesKilled++;
-
-                    Kamikadze.removeEnemy(i, true);
-
-                }
-
-                for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
-                    if (enemy.overlaps(Bullet.bullets.get(i2))) {
-
-                        Score = (int) (Score + 30 + enemy.x / 20);
-
-                        Kamikadze.healths.set(i, Kamikadze.healths.get(i) - Bullet.damages.get(i2));
-
-                        Bullet.removeBullet(i2, true);
-
-                        if (Kamikadze.healths.get(i) <= 0) {
-
-                            Kamikadze.removeEnemy(i, true);
-
-                            enemiesKilled++;
-                        }
-                    }
-                }
-
-                if(Bullet.laser.getBoundingRectangle().overlaps(Kamikadze.enemies.get(i))){
-                    Kamikadze.healths.set(i, Kamikadze.healths.get(i) - Bullet.damage/10);
-                    if (Kamikadze.healths.get(i) <= 0) {
-                        Kamikadze.removeEnemy(i, true);
-                        enemiesKilled++;
-                    }
-                }
-
-                for (int i3 = 0; i3 < Meteorite.meteorites.size; i3++) {
-                    if (Meteorite.meteorites.get(i3).overlaps(enemy)) {
-
-                        if (Meteorite.healths.get(i3) > Kamikadze.healths.get(i)) {
-                            Meteorite.healths.set(i3, Meteorite.healths.get(i3) - Kamikadze.healths.get(i));
-                            Kamikadze.removeEnemy(i, true);
-
-                        } else if (Meteorite.healths.get(i3) < Kamikadze.healths.get(i)) {
-                            Kamikadze.healths.set(i, (int) (Kamikadze.healths.get(i) - Meteorite.healths.get(i3)));
-                            Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
-                        } else {
-                            Kamikadze.removeEnemy(i, true);
-                            Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
-                        }
-                    }
-                }
-            }
-        }
 
         for (int i = 0; i < Meteorite.meteorites.size; i++) {
 

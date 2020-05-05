@@ -64,14 +64,24 @@ public class EnemyBullet {
             }
         }
         if (!isDead) {
-            data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
-            data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
+            if(!data.isHoming) {
+                data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
+                data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
+            }else{
+                data.x = MathUtils.lerp(data.x, SpaceShip.bounds.getX(), delta * data.speed / 220.0f);
+                data.y = MathUtils.lerp(data.y, SpaceShip.bounds.getY() + SpaceShip.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
+                data.explosionTimer -= delta;
+            }
             bullet.setPosition(data.x, data.y);
             data.trailParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
 
             if (data.x < -data.width - data.trailParticleEffect.getBoundingBox().getWidth() - 20) {
                 isDead = true;
                 explosionFinished = true;
+            }
+
+            if(data.explosionTimer<=0){
+                explode();
             }
         }
         queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished) && isDead;

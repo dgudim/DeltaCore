@@ -3,17 +3,17 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 
 public abstract class ShipObject {
@@ -21,6 +21,8 @@ public abstract class ShipObject {
     public static Polygon bounds;
     private Sprite ship;
     private Sprite shield;
+    static Sprite magnetField;
+    public static Sprite repellentField;
 
     private ParticleEffect fire, fire2, damage_fire, damage_fire2, damage_fire3;
 
@@ -37,33 +39,27 @@ public abstract class ShipObject {
 
     private float soundVolume;
 
-    private boolean isFireStarted1, isFireStarted2, isFireStarted3;
-
     public static float Health, Shield, Charge;
 
-    private float powerGeneration;
-
     private float shieldRegenerationSpeed;
-
+    private float shieldPowerConsumption;
     public static float shieldStrength;
-
     public static float shieldStrengthMultiplier = 1;
 
-    private float shieldPowerConsumption;
-
+    private float powerGeneration;
     public static float chargeCapacity;
+    public static float chargeCapacityMultiplier = 1;
 
+    public static float healthCapacity;
     public static float healthMultiplier = 1;
 
-    public static Circle magnetRadius;
-
-    public static Circle repellentRadius;
-
-    public static float magnetPowerConsumption;
+    static float magnetPowerConsumption;
 
     public static float repellentPowerConsumption;
 
     ShipObject(AssetManager assetManager, float x, float y, float width, float height, boolean newGame) {
+
+        TextureAtlas fields = assetManager.get("shields.atlas", TextureAtlas.class);
 
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
         String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
@@ -77,6 +73,9 @@ public abstract class ShipObject {
             }
             if (params[i].endsWith("shield strength multiplier")) {
                 shieldStrengthMultiplier = paramValues[i];
+            }
+            if (params[i].endsWith("charge capacity multiplier")) {
+                chargeCapacityMultiplier = paramValues[i];
             }
         }
 
@@ -94,8 +93,8 @@ public abstract class ShipObject {
             }
         }
 
-        repellentRadius = new Circle();
-        magnetRadius = new Circle();
+        magnetField = new Sprite(fields.findRegion("field_attractor"));
+        repellentField = new Sprite(fields.findRegion("field_repellent"));
 
         if (!getString("currentMagnet").equals("")) {
             params = treeJson.get(getString("currentMagnet")).get("parameters").asStringArray();
@@ -105,7 +104,7 @@ public abstract class ShipObject {
                     magnetPowerConsumption = paramValues[i];
                 }
                 if (params[i].endsWith("attraction radius")) {
-                    magnetRadius.setRadius(paramValues[i]);
+                    magnetField.setSize(paramValues[i], paramValues[i]);
                 }
             }
         }
@@ -118,26 +117,28 @@ public abstract class ShipObject {
                     repellentPowerConsumption = paramValues[i];
                 }
                 if (params[i].endsWith("repellent radius")) {
-                    repellentRadius.setRadius(paramValues[i]);
+                    repellentField.setSize(paramValues[i], paramValues[i]);
                 }
             }
         }
 
         chargeCapacity = treeJson.get(getString("currentBattery")).get("parameterValues").asFloatArray()[0];
+        healthCapacity = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray()[0];
 
-        ship = new Sprite((Texture) assetManager.get("ship.png"));
-        shield = new Sprite(assetManager.get("shields.atlas", TextureAtlas.class).findRegion(treeJson.get(getString("currentShield")).get("usesEffect").asString()));
+        ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+        shield = new Sprite(fields.findRegion(treeJson.get(getString("currentShield")).get("usesEffect").asString()));
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
+
         if (!newGame) {
-            Shield = getFloat("Shield");
-            Health = getFloat("Health");
-            Charge = getFloat("Charge");
+            Shield = MathUtils.clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
+            Health = MathUtils.clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
+            Charge = MathUtils.clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
             bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
         } else {
             Shield = shieldStrength * shieldStrengthMultiplier;
-            Health = 100 * healthMultiplier;
-            Charge = chargeCapacity;
+            Health = healthCapacity * healthMultiplier;
+            Charge = chargeCapacity * chargeCapacityMultiplier;
             bounds.setPosition(x, y);
         }
 
@@ -171,6 +172,10 @@ public abstract class ShipObject {
         damage_fire3 = new ParticleEffect();
         damage_fire3.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
 
+        damage_fire.start();
+        damage_fire2.start();
+        damage_fire3.start();
+
         red = 1;
         green = 1;
         blue = 1;
@@ -178,9 +183,6 @@ public abstract class ShipObject {
         green2 = 1;
         blue2 = 1;
         exploded = false;
-        isFireStarted1 = false;
-        isFireStarted2 = false;
-        isFireStarted3 = false;
         soundVolume = getFloat("soundVolume");
 
         explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
@@ -197,33 +199,15 @@ public abstract class ShipObject {
             damage_fire3.setPosition(bounds.getX() + 10, bounds.getY() + 25);
 
             if (Health < 70) {
-                if (!isFireStarted1) {
-                    damage_fire.start();
-                }
                 damage_fire.draw(batch, delta);
-            } else if (isFireStarted1) {
-                damage_fire.reset();
-                isFireStarted1 = false;
             }
 
             if (Health < 50) {
-                if (!isFireStarted2) {
-                    damage_fire2.start();
-                }
                 damage_fire2.draw(batch, delta);
-            } else if (isFireStarted2) {
-                damage_fire2.reset();
-                isFireStarted2 = false;
             }
 
             if (Health < 30) {
-                if (!isFireStarted3) {
-                    damage_fire3.start();
-                }
                 damage_fire3.draw(batch, delta);
-            } else if (isFireStarted3) {
-                damage_fire3.reset();
-                isFireStarted3 = false;
             }
         }
     }
@@ -231,8 +215,9 @@ public abstract class ShipObject {
     public void draw(SpriteBatch batch, float delta) {
         if (!exploded) {
             ship.setPosition(bounds.getX(), bounds.getY());
-            repellentRadius.setPosition(bounds.getX() - repellentRadius.radius / 2 + bounds.getBoundingRectangle().getWidth() / 2, bounds.getY() - repellentRadius.radius / 2 + bounds.getBoundingRectangle().getHeight() / 2);
-            magnetRadius.setPosition(bounds.getX() - magnetRadius.radius / 2 + bounds.getBoundingRectangle().getWidth() / 2, bounds.getY() - magnetRadius.radius / 2 + bounds.getBoundingRectangle().getHeight() / 2);
+
+            magnetField.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - magnetField.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - magnetField.getHeight() / 2);
+            repellentField.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - repellentField.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - repellentField.getHeight() / 2);
 
             ship.setRotation(bounds.getRotation());
             ship.setColor(red, green, blue, 1);
@@ -247,12 +232,15 @@ public abstract class ShipObject {
                 blue = blue + 5 * delta;
             }
 
+            magnetField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
+            repellentField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
+
             ship.draw(batch);
 
-            if (Charge + powerGeneration * delta < chargeCapacity) {
+            if (Charge + powerGeneration * delta < chargeCapacity * chargeCapacityMultiplier) {
                 Charge += powerGeneration * delta;
             } else {
-                Charge = chargeCapacity;
+                Charge = chargeCapacity * chargeCapacityMultiplier;
             }
             if (Shield < shieldStrength * shieldStrengthMultiplier && Charge >= shieldPowerConsumption * delta) {
                 Shield += shieldRegenerationSpeed * delta;
@@ -268,6 +256,7 @@ public abstract class ShipObject {
             shield.setPosition(bounds.getX() - 20, bounds.getY() - 15);
             shield.setRotation(bounds.getRotation());
             shield.setColor(red2, green2, blue2, alpha);
+            shield.draw(batch);
 
             if (red2 < 1) {
                 red2 = red2 + 5 * delta;
@@ -279,7 +268,6 @@ public abstract class ShipObject {
                 blue2 = blue2 + 5 * delta;
             }
 
-            shield.draw(batch);
         }
     }
 

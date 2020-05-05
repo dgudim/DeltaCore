@@ -22,7 +22,6 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Enemies;
-import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -41,7 +40,6 @@ public class GameScreen implements Screen {
 
     private Bullet bullet;
     private Meteorite meteorite;
-    private Kamikadze kamikadze;
     private Boss_battleShip boss_battleShip;
     private Boss_evilEye boss_evilEye;
     private UraniumCell uraniumCell;
@@ -110,8 +108,6 @@ public class GameScreen implements Screen {
 
         bullet = new Bullet(assetManager, ship.getBounds(), newGame);
 
-        kamikadze = new Kamikadze(assetManager, 348, 192, ship.getBounds(), getBoolean("easterEgg"));
-
         enemies = new Enemies(assetManager);
         enemies.loadEnemies();
 
@@ -119,7 +115,7 @@ public class GameScreen implements Screen {
 
         checkpoint = new Checkpoint(assetManager, ship.getBounds());
 
-        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, meteorite, kamikadze, boss_battleShip, checkpoint, boss_evilEye);
+        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, meteorite, boss_battleShip, checkpoint, boss_evilEye);
 
         musicVolume = getFloat("musicVolume");
 
@@ -172,7 +168,6 @@ public class GameScreen implements Screen {
 
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
-        kamikadze.drawEffects(batch, delta);
         boss_battleShip.draw(batch, delta);
         boss_evilEye.draw(batch, delta);
         meteorite.drawEffects(batch, delta);
@@ -190,7 +185,6 @@ public class GameScreen implements Screen {
         ship.drawBase(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
-        kamikadze.drawBase(batch, delta);
         meteorite.drawBase(batch, delta);
         checkpoint.drawBase(batch);
 

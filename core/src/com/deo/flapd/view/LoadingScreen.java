@@ -156,7 +156,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("bg_layer1.png", Texture.class);
         assetManager.load("bg_layer2.png", Texture.class);
         assetManager.load("bg_layer3.png", Texture.class);
-        assetManager.load("ship.png", Texture.class);
         assetManager.load("HotShield.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
@@ -195,7 +194,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("infoBg2.png", Texture.class);
         assetManager.load("treeBg.png", Texture.class);
         assetManager.load("bg_old.png", Texture.class);
-        assetManager.load("ship.png", Texture.class);
     }
 
     @Override

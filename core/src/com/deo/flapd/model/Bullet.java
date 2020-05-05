@@ -30,7 +30,8 @@ public class Bullet {
     private Polygon bounds;
     public static Array<Rectangle> bullets;
     public static Array<Integer> damages;
-    private Array<ParticleEffect> trails;
+    private Array<ParticleEffect> trails, disposedTrails;
+    private Array<Float> trailCountDownTimers;
     private Array<Float> degrees;
     private Array<ParticleEffect> explosions;
     private Array<Boolean> types;
@@ -63,6 +64,7 @@ public class Bullet {
     private int baseDamage;
     private int bulletSpeed;
     private int bulletsPerShot;
+    private float bulletTrailTimer;
 
     private float millis;
 
@@ -81,6 +83,10 @@ public class Bullet {
 
         if (treeJson.get(getString("currentCannon")).get("usesTrail").asBoolean()) {
             bulletTrailEffect = treeJson.get(getString("currentCannon")).get("trailEffect").asString();
+            bulletTrailTimer = treeJson.get(getString("currentCannon")).get("trailFadeOutTimer").asFloat();
+        }else{
+            bulletTrailEffect = "";
+            bulletTrailTimer = 0;
         }
 
         String[] params = treeJson.get(getString("currentCannon")).get("parameters").asStringArray();
@@ -139,6 +145,8 @@ public class Bullet {
         remove_Bullet = new Array<>();
         types = new Array<>();
         trails = new Array<>();
+        disposedTrails = new Array<>();
+        trailCountDownTimers = new Array<>();
 
         if (!newGame) {
             bulletsShot = getInteger("bulletsShot");
@@ -234,7 +242,6 @@ public class Bullet {
 
                 if (!bulletTrailEffect.equals("")) {
                     trails.get(i).setPosition(bullet.x + bullet.width / 2, bullet.y + bullet.height / 2);
-                    trails.get(i).draw(batch, delta);
                 }
 
                 this.bullet.setPosition(bullet.x, bullet.y);
@@ -279,7 +286,8 @@ public class Bullet {
                     remove_Bullet.removeIndex(i4);
                     types.removeIndex(i4);
                     if (!bulletTrailEffect.equals("")) {
-                        trails.get(i4).dispose();
+                        disposedTrails.add(trails.get(i4));
+                        trailCountDownTimers.add(bulletTrailTimer);
                         trails.removeIndex(i4);
                     }
                 } else if (remove_Bullet.get(i4)) {
@@ -289,7 +297,24 @@ public class Bullet {
                     damages.removeIndex(i4);
                     remove_Bullet.removeIndex(i4);
                     types.removeIndex(i4);
+                    if (!bulletTrailEffect.equals("")) {
+                        disposedTrails.add(trails.get(i4));
+                        trailCountDownTimers.add(bulletTrailTimer);
+                        trails.removeIndex(i4);
+                    }
                 }
+            }
+            for(int i = 0; i<disposedTrails.size; i++){
+                disposedTrails.get(i).draw(batch, delta);
+                trailCountDownTimers.set(i, trailCountDownTimers.get(i)-delta);
+                if(trailCountDownTimers.get(i)<=0){
+                    disposedTrails.get(i).dispose();
+                    disposedTrails.removeIndex(i);
+                    trailCountDownTimers.removeIndex(i);
+                }
+            }
+            for(int i = 0; i<trails.size; i++){
+                trails.get(i).draw(batch, delta);
             }
         } else if (isLaserActive && currentDuration >= 10) {
             laser.setRotation(bounds.getRotation());
@@ -329,12 +354,17 @@ public class Bullet {
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
-        if (!bulletTrailEffect.equals("")) {
-            for (int i3 = 0; i3 < trails.size; i3++) {
-                trails.get(i3).dispose();
-                trails.removeIndex(i3);
-            }
+
+        for (int i3 = 0; i3 < trails.size; i3++) {
+            trails.get(i3).dispose();
+            trails.removeIndex(i3);
         }
+
+        for (int i3 = 0; i3 < disposedTrails.size; i3++) {
+            disposedTrails.get(i3).dispose();
+            disposedTrails.removeIndex(i3);
+        }
+        trailCountDownTimers.clear();
         explosionQueue.clear();
         remove_Bullet.clear();
         types.clear();

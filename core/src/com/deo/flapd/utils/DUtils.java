@@ -550,6 +550,21 @@ public abstract class DUtils {
             case ("laser beam gun"):
                 item = "laserBeamGun";
                 break;
+            case ("armour mk1"):
+                item = "engineArmour1";
+                break;
+            case ("basic armour"):
+                item = "ship";
+                break;
+            case ("armour mk2"):
+                item = "engineArmour2";
+                break;
+            case ("armour mk3"):
+                item = "engineArmour3";
+                break;
+            case ("root"):
+                item = "tree";
+                break;
             default:
                 log("\n no texture for item " + name);
                 item = "ohno";
@@ -572,6 +587,6 @@ public abstract class DUtils {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         String fullStackTrace = sw.toString();
-        log("\n" + fullStackTrace + "\n");
+        log("\n\n" + fullStackTrace + "\n");
     }
 }

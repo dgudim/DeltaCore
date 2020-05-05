@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -42,6 +43,7 @@ import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
@@ -68,7 +70,7 @@ public class MenuScreen implements Screen{
 
     private Image MenuBg;
     private Texture Bg;
-    private Texture Ship;
+    private Image Ship;
     private Image FillTexture;
 
     private Image Lamp;
@@ -115,6 +117,8 @@ public class MenuScreen implements Screen{
 
     private boolean isConfirmationDialogActive = false;
 
+    private String currentShipTexture;
+
     public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
         long genTime = TimeUtils.millis();
         log("\n time to generate menu");
@@ -148,7 +152,9 @@ public class MenuScreen implements Screen{
         FillTexture = new Image((Texture)assetManager.get("menuFill.png"));
         FillTexture.setSize(456, 72);
 
-        Ship = assetManager.get("ship.png");
+        currentShipTexture = getString("currentArmour");
+        Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+        Ship.setBounds(220, 250, 76.8f, 57.6f);
 
         Image buildNumber = new Image((Texture) assetManager.get("greyishButton.png"));
         buildNumber.setBounds(5,5,150, 50);
@@ -305,6 +311,7 @@ public class MenuScreen implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 updateFire();
+                updateShip();
             }
         });
         menuCategoryManager.addCategory(playScreenTable, "online");
@@ -391,9 +398,9 @@ public class MenuScreen implements Screen{
                         putInteger("enemiesKilled",0);
                         putInteger("moneyEarned",0);
                         putInteger("Score",0);
-                        putFloat("Health",100);
-                        putFloat("Shield",100);
-                        putFloat("Charge",100);
+                        putFloat("Health",1000);
+                        putFloat("Shield",1000);
+                        putFloat("Charge",1000);
                         putBoolean("has1stBossSpawned", false);
                         putBoolean("has2ndBossSpawned", false);
                         putInteger("bonuses_collected", 0);
@@ -523,7 +530,7 @@ public class MenuScreen implements Screen{
             batch.begin();
         }
 
-        batch.draw(Ship, 220, 250, 76.8f, 57.6f);
+        Ship.draw(batch, 1);
 
         batch.end();
         ShopStage.draw();
@@ -671,6 +678,13 @@ public class MenuScreen implements Screen{
             log("corrupted fire color array");
             logException(e);
             setFireToDefault(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color");
+        }
+    }
+
+    private void updateShip(){
+        if(!currentShipTexture.equals(getString("currentArmour"))){
+            Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+            Ship.setBounds(220, 250, 76.8f, 57.6f);
         }
     }
 

@@ -1,7 +1,9 @@
 package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonValue;
+import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.enemies.EnemyData;
 
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
@@ -37,7 +39,9 @@ public class BulletData {
 
     public int bulletsPerShot;
 
-    boolean homing;
+    boolean isHoming;
+
+    float explosionTimer;
 
     JsonValue enemyInfo;
 
@@ -63,14 +67,20 @@ public class BulletData {
         shootSound = bulletInfo.get("shootSound").asString();
         bulletsPerShot = bulletInfo.get("bulletsPerShot").asInt();
         explosion = bulletInfo.get("explosionEffect").asString();
-        homing = bulletInfo.get("homing").asBoolean();
+        isHoming = bulletInfo.get("homing").asBoolean();
+        if(isHoming){
+            explosionTimer = bulletInfo.get("explosionTimer").asFloat();
+        }
     }
 
     public BulletData clone(EnemyData enemyData) {
         BulletData copy = new BulletData(enemyInfo, type);
         copy.x = enemyData.x + copy.offset[0];
         copy.y = enemyData.y + copy.offset[1];
-        copy.angle = getRandomInRange(-10, 10) * copy.spread;
+        copy.angle = getRandomInRange(-10, 10) * copy.spread + enemyData.rotation;
+        if(enemyData.canAim){
+            copy.angle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(copy.y - SpaceShip.bounds.getY(), copy.x - SpaceShip.bounds.getX()), enemyData.aimMinAngle, enemyData.aimMaxAngle);
+        }
         return copy;
     }
 }

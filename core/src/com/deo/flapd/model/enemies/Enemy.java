@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
@@ -43,10 +42,13 @@ public class Enemy {
         this.assetManager = assetManager;
         this.data = data;
         difficulty = getFloat("difficulty");
-        bulletData = new BulletData(data.enemyInfo, data.type);
+
+        if(data.spawnsBullets) {
+            bulletData = new BulletData(data.enemyInfo, data.type);
+            shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
+        }
 
         explosionSound = Gdx.audio.newSound(Gdx.files.internal(data.explosionSound));
-        shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
         volume = getFloat("soundVolume");
 
         bullets = new Array<>();
@@ -89,7 +91,20 @@ public class Enemy {
         if (!isDead) {
             enemy.setPosition(data.x, data.y);
             enemy.setColor(data.currentColor);
-            data.x -= data.speed * delta;
+            enemy.setRotation(data.rotation);
+
+            if(!data.isHoming) {
+                data.x -= data.speed * delta;
+            }else{
+                data.x = MathUtils.lerp(data.x, SpaceShip.bounds.getX(), delta * data.speed / 220.0f);
+                data.y = MathUtils.lerp(data.y, SpaceShip.bounds.getY() + SpaceShip.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
+                data.explosionTimer -= delta;
+                enemy.setColor(1, MathUtils.clamp(data.explosionTimer/data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer/data.idealExplosionTimer, 0, 1), 1);
+                if(data.rotateTowardsShip){
+                    data.rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - SpaceShip.bounds.getY(), data.x - SpaceShip.bounds.getX()), data.minAngle, data.maxAngle);
+                }
+            }
+
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
                 data.fireParticleEffects.get(i).setPosition(data.x + data.fireOffsetsX[i], data.y + data.fireOffsetsY[i]);
             }
@@ -104,14 +119,20 @@ public class Enemy {
                 data.currentColor.b = MathUtils.clamp(data.currentColor.b + delta * 2.5f, 0, 1);
             }
 
-            if (data.millis > data.shootingDelay * 100) {
-                shoot();
+            if(data.spawnsBullets) {
+                if (data.millis > data.shootingDelay * 100) {
+                    shoot();
+                }
+                data.millis += delta * 20;
             }
-            data.millis += delta * 20;
 
             if (data.x < -data.width - data.fireParticleEffects.get(0).getBoundingBox().getWidth() - 20) {
                 isDead = true;
                 explosionFinished = true;
+            }
+
+            if(data.isHoming && data.explosionTimer<=0){
+                kill();
             }
 
         }
@@ -162,31 +183,31 @@ public class Enemy {
             SpaceShip.takeDamage(data.health / 3f);
         }
 
-        if (Intersector.overlaps(SpaceShip.repellentRadius, enemy.getBoundingRectangle()) && SpaceShip.Charge >= SpaceShip.repellentPowerConsumption * delta) {
+        if (SpaceShip.repellentField.getBoundingRectangle().overlaps(enemy.getBoundingRectangle()) && SpaceShip.Charge >= SpaceShip.repellentPowerConsumption * delta) {
             float shipWidth = SpaceShip.bounds.getBoundingRectangle().getWidth();
             float shipHeight = SpaceShip.bounds.getBoundingRectangle().getWidth();
             float shipX = SpaceShip.bounds.getBoundingRectangle().getX();
             float shipY = SpaceShip.bounds.getBoundingRectangle().getY();
             if (data.x > shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
-                data.x += 1;
-                data.y += 1;
+                data.x += 50 * delta;
+                data.y += 50 * delta;
             } else if (data.x > shipX + shipWidth / 2 && data.y + data.height < shipY + shipHeight / 2) {
-                data.x += 1;
-                data.y -= 1;
+                data.x += 50 * delta;
+                data.y -= 50 * delta;
             } else if (data.x + data.width < shipX + shipWidth / 2 && data.y + data.height < shipY + shipHeight / 2) {
-                data.x -= 1;
-                data.y -= 1;
+                data.x -= 50 * delta;
+                data.y -= 50 * delta;
             } else if (data.x + data.width < shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
-                data.x -= 1;
-                data.y += 1;
+                data.x -= 50 * delta;
+                data.y += 50 * delta;
             } else if (data.x > shipX + shipWidth) {
-                data.x += 1;
+                data.x += 50 * delta;
             } else if (data.x + data.width < shipX) {
-                data.x -= 1;
+                data.x -= 50 * delta;
             } else if (data.y > shipY + shipHeight) {
-                data.y += 1;
+                data.y += 50 * delta;
             } else if (data.y + data.height < shipY) {
-                data.y -= 1;
+                data.y -= 50 * delta;
             }
             SpaceShip.Charge -= SpaceShip.repellentPowerConsumption * delta;
         }
@@ -216,7 +237,9 @@ public class Enemy {
             bullets.get(i).dispose();
         }
         explosionSound.dispose();
-        shootingSound.dispose();
+        if(data.spawnsBullets) {
+            shootingSound.dispose();
+        }
     }
 
     private void kill() {

@@ -130,7 +130,7 @@ class Tree {
 
     private void addBase(){
         Array<Node> base = new Array<>();
-        base.add(new Node(assetManager, "ship", 5, height-85, 70, 70, treeTable, treeJson));
+        base.add(new Node(assetManager, "root", 5, height-85, 70, 70, treeTable, treeJson));
         nodes.add(base);
     }
 
@@ -239,17 +239,8 @@ class Node {
                 }
             }
         };
-        switch (item){
-            case("ship"):
-                nodeStyle.imageUp = new Image((Texture) assetManager.get("ship.png")).getDrawable();
-                node.setTouchable(Touchable.disabled);
-                break;
-            case("shields"):
-                nodeStyle.imageUp = new Image((Texture) assetManager.get("ColdShield.png")).getDrawable();
-                nodeStyle.imageDown = new Image((Texture) assetManager.get("enabled_ColdShield.png")).getDrawable();
-                nodeStyle.imageOver = new Image((Texture) assetManager.get("over_ColdShield.png")).getDrawable();
-                nodeStyle.imageDisabled = new Image((Texture) assetManager.get("disabledColdShield.png")).getDrawable();
-                break;
+        if(name.equals("root")){
+            node.setTouchable(Touchable.disabled);
         }
         node.setStyle(nodeStyle);
         node.getImageCell().size(width*0.75f, height*0.75f).align(Align.center);
@@ -446,8 +437,8 @@ class Node {
     }
 
     private String getType(){
-        if(name.equals("ship")) {
-            return "root";
+        if(name.equals("root")) {
+            return name;
         }else {
             if(treeJson.get(name) == null) throw new IllegalArgumentException("no item declared with name "+name);
             return treeJson.get(name).get("type").asString();

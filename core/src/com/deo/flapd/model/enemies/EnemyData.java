@@ -18,6 +18,7 @@ public class EnemyData {
 
     public float x;
     public float y;
+    public float rotation;
 
     float width;
     float height;
@@ -67,9 +68,33 @@ public class EnemyData {
 
     boolean onBossWave;
 
+    boolean isHoming;
+
+    boolean rotateTowardsShip;
+
+    float minAngle;
+
+    float maxAngle;
+
+    float explosionTimer;
+
+    float idealExplosionTimer;
+
+    boolean spawnsDrones;
+
+    boolean spawnsBullets;
+
+    boolean hasAnimation;
+
+    public boolean canAim;
+
+    public float aimMinAngle;
+
+    public float aimMaxAngle;
+
     JsonValue enemyInfo;
 
-    EnemyData(JsonValue enemyInfo, String type){
+    EnemyData(JsonValue enemyInfo, String type) {
 
         JsonValue enemyBodyInfo = enemyInfo.get(type).get("body");
         fireParticleEffects = new Array<>();
@@ -101,18 +126,41 @@ public class EnemyData {
         scoreSpawnConditions = enemyInfo.get("spawnConditions").get("score").asIntArray();
         onBossWave = enemyInfo.get("spawnConditions").get("bossWave").asBoolean();
 
-        for(int i = 0; i<fireEffectCount; i++){
-            fireOffsetsX[i] = enemyBodyInfo.get("fire").get("offset"+i).asIntArray()[0];
-            fireOffsetsY[i] = enemyBodyInfo.get("fire").get("offset"+i).asIntArray()[1];
-            fireEffects[i] = enemyBodyInfo.get("fire").get("effect"+i).asString();
-            fireScales[i] = enemyBodyInfo.get("fire").get("scale"+i).asFloat();
+        for (int i = 0; i < fireEffectCount; i++) {
+            fireOffsetsX[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[0];
+            fireOffsetsY[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[1];
+            fireEffects[i] = enemyBodyInfo.get("fire").get("effect" + i).asString();
+            fireScales[i] = enemyBodyInfo.get("fire").get("scale" + i).asFloat();
         }
+
+        hasAnimation = enemyBodyInfo.get("hasAnimation").asBoolean();
+
+        isHoming = enemyBodyInfo.get("homing").asBoolean();
+
+        if (isHoming) {
+            explosionTimer = enemyBodyInfo.get("explosionTimer").asFloat();
+            idealExplosionTimer = enemyBodyInfo.get("explosionTimer").asFloat();
+            rotateTowardsShip = enemyBodyInfo.get("rotateTowardsShip").asBoolean();
+            minAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[0];
+            maxAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[1];
+        }
+
+        spawnsDrones = enemyBodyInfo.get("spawnsDrones").asBoolean();
+
+        spawnsBullets = enemyBodyInfo.get("spawnsBullets").asBoolean();
 
         health = enemyBodyInfo.get("health").asInt();
 
         speed = enemyBodyInfo.get("speed").asInt();
 
-        shootingDelay = enemyBodyInfo.get("shootingDelay").asFloat();
+        if(spawnsBullets) {
+            shootingDelay = enemyBodyInfo.get("shootingDelay").asFloat();
+            canAim = enemyBodyInfo.get("canAim").asBoolean();
+            if(canAim){
+                aimMinAngle = enemyBodyInfo.get("aimAngleLimit").asFloatArray()[0];
+                aimMaxAngle = enemyBodyInfo.get("aimAngleLimit").asFloatArray()[1];
+            }
+        }
 
         hitColor = enemyBodyInfo.get("hitColor").asString();
 
@@ -129,10 +177,10 @@ public class EnemyData {
         millis = 0;
     }
 
-    protected EnemyData clone(){
+    protected EnemyData clone() {
         EnemyData copy = new EnemyData(enemyInfo, type);
         copy.y = getRandomInRange(copy.spawnHeight[0], copy.spawnHeight[1]);
-        copy.shootingDelay += getRandomInRange(-7, 7)/100f;
+        copy.shootingDelay += getRandomInRange(-7, 7) / 100f;
         return copy;
     }
 }

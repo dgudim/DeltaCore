@@ -26,7 +26,7 @@
     "type": "basePart",
     "isCraftable": false,
     "parameters": ["[#3bff38]health multiplier", "[#FEDE15]power generation"],
-    "parameterValues": [1, 2],
+    "parameterValues": [1, 3],
     "saveTo": "currentCore",
     "usesEffect": "explosion2"
   },
@@ -40,7 +40,7 @@
     "requires": ["star core"],
     "type": "part",
     "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier", "[#FEDE15]power generation"],
-    "parameterValues": [1.5, 1.1, 3],
+    "parameterValues": [1.5, 1.1, 4],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_green"
   },
@@ -54,7 +54,7 @@
     "requires": ["warp core"],
     "type": "part",
     "parameters": ["[#3bff38]health multiplier", "[#22DDDD]speed multiplier", "[#DD2222]damage multiplier", "[#FEDE15]power generation"],
-    "parameterValues": [1.8, 1.3, 1.3, 5],
+    "parameterValues": [1.8, 1.3, 1.3, 6],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_cyan"
   },
@@ -67,8 +67,8 @@
     "category": "star core",
     "requires": ["energy core"],
     "type": "part",
-    "parameters": ["[#3bff38]health multiplier", "[#22DDDD]shield strength multiplier" ,"speed multiplier", "[#DD2222]damage multiplier", "[#FEDE15]power generation"],
-    "parameterValues": [2, 1.3, 1.4, 1.5, 7.5],
+    "parameters": ["[#3bff38]health multiplier", "[#22DDDD]shield strength multiplier" ,"speed multiplier", "[#DD2222]damage multiplier", "[#FEED15]charge capacity multiplier", "[#FEDE15]power generation"],
+    "parameterValues": [2, 1.3, 1.4, 1.5, 1.1, 8.5],
     "saveTo": "currentCore",
     "usesEffect": "explosion2_purple"
   },
@@ -170,11 +170,12 @@
     "requires": ["laser gun", "warp core"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
-    "parameterValues": [90, 0.15, 1.1, 3100, 1, 1.25],
+    "parameterValues": [90, 0.15, 1.1, 1500, 1, 1.25],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_3",
     "usesTrail": true,
-    "trailEffect": "bullet_trail_highEmission"
+    "trailEffect": "bullet_trail_highEmission",
+    "trailFadeOutTimer": 0.5
   },
   "rail gun": {
     "items": ["cyan coil", "purple crystal", "composite plate", "cooling unit", "glass rod", "energy cell", "processor mk3"],
@@ -189,7 +190,9 @@
     "parameterValues": [110, 0, 1, 2100, 1, 1.5],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_3",
-    "usesTrail": false
+    "usesTrail": true,
+    "trailEffect": "bullet_trail_highEmission",
+    "trailFadeOutTimer": 0.5
   },
   "laser beam gun": {
     "items": ["composite plate", "purple crystal", "laser emitter", "cooling unit", "circuit board", "energy cell", "fiber cable"],
@@ -218,17 +221,58 @@
     "type": "baseCategory",
     "saveTo": "bonus1C"
   },
-  "armour": {
+  "basic armour": {
     "items": [""],
     "itemCounts": [0],
     "resultCount": 0,
-    "description": "just a category for armour upgrades",
+    "description": "this is your starting ship bruh",
     "isCraftable": false,
     "category": "root",
     "requires": [""],
     "price": "auto",
-    "type": "baseCategory",
-    "saveTo": "armour1C"
+    "type": "basePart",
+    "parameters": ["[#3bff38]health"],
+    "parameterValues": [100],
+    "saveTo": "currentArmour"
+  },
+  "armour mk1": {
+    "items": ["iron plate", "bolt", "cog", "orange crystal"],
+    "itemCounts": [15, 20, 4, 1],
+    "resultCount": 1,
+    "description": "a basic piece of armour, first part of the set",
+    "isCraftable": true,
+    "category": "basic armour",
+    "requires": ["star core"],
+    "type": "part",
+    "parameters": ["[#3bff38]health"],
+    "parameterValues": [130],
+    "saveTo": "currentArmour"
+  },
+  "armour mk2": {
+    "items": ["reinforced iron plate", "iron plate", "bolt", "cog", "green crystal"],
+    "itemCounts": [20, 15, 15, 5, 1],
+    "resultCount": 1,
+    "description": "a basic piece of armour, second part of the set",
+    "isCraftable": true,
+    "category": "basic armour",
+    "requires": ["armour mk1"],
+    "type": "part",
+    "parameters": ["[#3bff38]health"],
+    "parameterValues": [170],
+    "saveTo": "currentArmour"
+  },
+  "armour mk3": {
+    "items": ["composite plate", "reinforced iron plate", "bolt", "reinforced glass pane", "cyan crystal"],
+    "itemCounts": [15, 20, 10, 5, 1],
+    "resultCount": 1,
+    "description": "a basic piece of armour, third part of the set",
+    "isCraftable": true,
+    "category": "basic armour",
+    "requires": ["armour mk2"],
+    "type": "part",
+    "parameters": ["[#3bff38]health"],
+    "parameterValues": [200],
+    "saveTo": "currentArmour"
   },
   "shield generator mk1": {
     "description": "a basic shield generator",
@@ -340,7 +384,7 @@
     "requires": ["star core"],
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#3bff38]attraction radius"],
-    "parameterValues": [1, 250],
+    "parameterValues": [1, 270],
     "saveTo": "currentMagnet"
   },
   "repellent field": {
@@ -353,7 +397,7 @@
     "requires": ["warp core"],
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#3bff38]repellent radius"],
-    "parameterValues": [1, 230],
+    "parameterValues": [1, 210],
     "saveTo": "currentRepellent"
   },
   "reinforced glass pane": {

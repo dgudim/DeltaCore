@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -150,7 +149,7 @@ public class Bonus {
                 removeBonus(i, false);
             }
 
-            if (Intersector.overlaps(SpaceShip.magnetRadius, bonus) && SpaceShip.Charge >= SpaceShip.magnetPowerConsumption * delta) {
+            if (SpaceShip.magnetField.getBoundingRectangle().overlaps(bonus) && SpaceShip.Charge >= SpaceShip.magnetPowerConsumption * delta) {
                 bonus.x = MathUtils.lerp(bonus.x, bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2, delta / 2);
                 bonus.y = MathUtils.lerp(bonus.y, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2, delta / 2);
                 SpaceShip.Charge -= SpaceShip.magnetPowerConsumption * delta;
@@ -159,10 +158,10 @@ public class Bonus {
             if (bonus.overlaps(bounds.getBoundingRectangle())) {
                 if (type == 0) {
                     removeBonus(i, true);
-                    if (SpaceShip.Charge <= SpaceShip.chargeCapacity - 5) {
+                    if (SpaceShip.Charge <= SpaceShip.chargeCapacity * SpaceShip.chargeCapacityMultiplier - 5) {
                         SpaceShip.Charge += 5;
                     } else {
-                        SpaceShip.Charge = SpaceShip.chargeCapacity;
+                        SpaceShip.Charge = SpaceShip.chargeCapacity * SpaceShip.chargeCapacityMultiplier;
                     }
                 }
                 if (type == 1) {
@@ -175,10 +174,10 @@ public class Bonus {
                 }
                 if (type == 2) {
                     removeBonus(i, true);
-                    if (100 * SpaceShip.healthMultiplier >= SpaceShip.Health * SpaceShip.healthMultiplier + 15) {
+                    if (SpaceShip.healthCapacity * SpaceShip.healthMultiplier >= SpaceShip.Health + 15) {
                         SpaceShip.Health += 15;
                     } else {
-                        SpaceShip.Health = 100 * SpaceShip.healthMultiplier;
+                        SpaceShip.Health = SpaceShip.healthCapacity * SpaceShip.healthMultiplier;
                     }
                 }
                 if (type == 3) {
