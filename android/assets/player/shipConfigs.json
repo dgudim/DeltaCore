@@ -46,6 +46,8 @@
         guns:{
             "gun0OffsetX": 68,
             "gun0OffsetY": 12.5f
+            "gun1OffsetX": 68,
+            "gun1OffsetY": 12.5f
         },
         hasAnimation: true,
         "animation": "beastMode",
