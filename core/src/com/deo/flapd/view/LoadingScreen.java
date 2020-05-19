@@ -148,9 +148,12 @@ public class LoadingScreen implements Screen {
         assetManager.load("shop/slots.atlas", TextureAtlas.class);
         assetManager.load("shop/shopButtons.atlas", TextureAtlas.class);
         assetManager.load("shop/ui.atlas", TextureAtlas.class);
-        assetManager.load("bullets.atlas", TextureAtlas.class);
-        assetManager.load("shields.atlas", TextureAtlas.class);
+        assetManager.load("player/bullets.atlas", TextureAtlas.class);
+        assetManager.load("player/shields.atlas", TextureAtlas.class);
+        assetManager.load("player/animations/beastMode.atlas", TextureAtlas.class);
         assetManager.load("bonuses.atlas", TextureAtlas.class);
+        assetManager.load("enemies/enemies.atlas", TextureAtlas.class);
+        assetManager.load("enemies/ufo/ufo.atlas", TextureAtlas.class);
         assetManager.load("9bg.png", Texture.class);
 
         assetManager.load("bg_layer1.png", Texture.class);
@@ -159,12 +162,9 @@ public class LoadingScreen implements Screen {
         assetManager.load("HotShield.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
-        assetManager.load("trainingbot.png", Texture.class);
-        assetManager.load("enemy_shotgun.png", Texture.class);
-        assetManager.load("enemy_sniper.png", Texture.class);
         assetManager.load("pew2.png", Texture.class);
+        assetManager.load("homingPew.png", Texture.class);
         assetManager.load("Meteo.png", Texture.class);
-        assetManager.load("atomic_bomb.png", Texture.class);
 
         assetManager.load("uraniumCell.png", Texture.class);
 
@@ -178,10 +178,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("checkpoint.png", Texture.class);
         assetManager.load("checkpoint_green.png", Texture.class);
 
-        assetManager.load("cat.png", Texture.class);
-        assetManager.load("cat2.png", Texture.class);
         assetManager.load("cat_meteorite.png", Texture.class);
-        assetManager.load("cat_bomb.png", Texture.class);
         assetManager.load("whiskas.png", Texture.class);
         assetManager.load("laser.png", Texture.class);
 

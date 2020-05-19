@@ -92,7 +92,7 @@ public class GameScreen implements Screen {
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         bg3.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        ship = new SpaceShip(assetManager, 0, 204, 76.8f, 57.6f, newGame);
+        ship = new SpaceShip(assetManager, 0, 204, newGame);
 
         uraniumCell = new UraniumCell(assetManager);
 

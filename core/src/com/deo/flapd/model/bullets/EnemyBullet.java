@@ -14,8 +14,8 @@ import com.deo.flapd.model.SpaceShip;
 public class EnemyBullet {
 
     public Sprite bullet;
-    public BulletData data;
-    public boolean isDead = false;
+    private BulletData data;
+    private boolean isDead = false;
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
 
@@ -70,17 +70,18 @@ public class EnemyBullet {
             }else{
                 data.x = MathUtils.lerp(data.x, SpaceShip.bounds.getX(), delta * data.speed / 220.0f);
                 data.y = MathUtils.lerp(data.y, SpaceShip.bounds.getY() + SpaceShip.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
+                bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - SpaceShip.bounds.getY(), data.x - SpaceShip.bounds.getX()));
                 data.explosionTimer -= delta;
             }
             bullet.setPosition(data.x, data.y);
             data.trailParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
 
-            if (data.x < -data.width - data.trailParticleEffect.getBoundingBox().getWidth() - 20) {
+            if (data.x < -data.width - 30 || data.x > 480 + data.width + 30 || data.y > 480 + 30 || data.y < -data.width - 30) {
                 isDead = true;
                 explosionFinished = true;
             }
 
-            if(data.explosionTimer<=0){
+            if(data.isHoming && data.explosionTimer<=0){
                 explode();
             }
         }

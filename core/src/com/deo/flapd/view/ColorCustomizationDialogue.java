@@ -106,7 +106,7 @@ public class ColorCustomizationDialogue {
             }
         });
 
-        Image Ship = new Image((Texture)assetManager.get("ship.png")){
+        Image Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion("ship")){
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 fire.draw(batch);

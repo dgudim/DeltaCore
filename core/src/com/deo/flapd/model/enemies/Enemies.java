@@ -15,10 +15,10 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 public class Enemies {
 
     private AssetManager assetManager;
-    private JsonValue enemiesJson = new JsonReader().parse(Gdx.files.internal("enemies.json"));
+    private JsonValue enemiesJson = new JsonReader().parse(Gdx.files.internal("enemies/enemies.json"));
     private Array<EnemyData> enemies;
     private Array<String> enemyNames;
-    private Array<Enemy> enemyEntities;
+    public static Array<Enemy> enemyEntities;
     private String type;
     private float difficulty;
 
@@ -48,7 +48,7 @@ public class Enemies {
     private void SpawnEnemy(EnemyData data){
         data = data.clone();
         data.health *= difficulty;
-        enemyEntities.add(new Enemy(assetManager, data));
+        enemyEntities.add(new Enemy(assetManager, data, enemiesJson));
     }
 
     public void draw(SpriteBatch batch){

@@ -18,7 +18,8 @@
     "parameterValues": [50, 1.4, 0.7, 1000, 1, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2",
-    "usesTrail": false
+    "usesTrail": false,
+    "homing": false
   },
   "star core": {
     "description": "a base core",
@@ -113,7 +114,8 @@
     "parameterValues": [70, 0.6, 0.9, 1450, 1, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2",
-    "usesTrail": false
+    "usesTrail": false,
+    "homing": false
   },
   "minigun": {
     "items": ["bolt", "cable", "composite plate", "cooling unit", "green crystal"],
@@ -128,7 +130,8 @@
     "parameterValues": [20, 0.8, 2, 1450, 1, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2",
-    "usesTrail": false
+    "usesTrail": false,
+    "homing": false
   },
   "shotgun": {
     "items": ["cog", "cable", "composite plate", "cooling unit", "cyan crystal"],
@@ -143,7 +146,8 @@
     "parameterValues": [7, 1.8, 0.3, 900, 10, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2",
-    "usesTrail": false
+    "usesTrail": false,
+    "homing": false
   },
   "laser gun": {
     "items": ["bolt", "cable", "reinforced iron plate", "cooling unit", "energy cell", "laser emitter"],
@@ -158,7 +162,8 @@
     "parameterValues": [85, 0.3, 1, 2000, 1, 1],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3",
-    "usesTrail": false
+    "usesTrail": false,
+    "homing": false
   },
   "coil gun": {
     "items": ["green coil", "cable", "composite plate", "cooling unit", "glass rod", "cyan crystal"],
@@ -175,7 +180,8 @@
     "usesEffect": "explosion3_3",
     "usesTrail": true,
     "trailEffect": "bullet_trail_highEmission",
-    "trailFadeOutTimer": 0.5
+    "trailFadeOutTimer": 0.5,
+    "homing": false
   },
   "rail gun": {
     "items": ["cyan coil", "purple crystal", "composite plate", "cooling unit", "glass rod", "energy cell", "processor mk3"],
@@ -192,7 +198,8 @@
     "usesEffect": "explosion3_3",
     "usesTrail": true,
     "trailEffect": "bullet_trail_highEmission",
-    "trailFadeOutTimer": 0.5
+    "trailFadeOutTimer": 0.5,
+    "homing": false
   },
   "laser beam gun": {
     "items": ["composite plate", "purple crystal", "laser emitter", "cooling unit", "circuit board", "energy cell", "fiber cable"],
@@ -207,7 +214,8 @@
     "parameterValues": [150, 0, 9, 3000, 2.1],
     "saveTo": "currentCannon",
     "usesEffect": "fire3",
-    "usesTrail": false
+    "usesTrail": false,
+    "homing": false
   },
   "upgrades": {
     "items": [""],
@@ -272,6 +280,19 @@
     "type": "part",
     "parameters": ["[#3bff38]health"],
     "parameterValues": [200],
+    "saveTo": "currentArmour"
+  },
+  "beast mode": {
+    "items": ["composite plate", "cyan fuel cell", "circuit board", "bolt", "orange crystal"],
+    "itemCounts": [35, 3, 3, 15, 4],
+    "resultCount": 1,
+    "description": "an extremely durable ship",
+    "isCraftable": true,
+    "category": "basic armour",
+    "requires": ["armour mk3"],
+    "type": "part",
+    "parameters": ["[#3bff38]health", "[#22DDDD]speed multiplier"],
+    "parameterValues": [250, 0.7],
     "saveTo": "currentArmour"
   },
   "shield generator mk1": {

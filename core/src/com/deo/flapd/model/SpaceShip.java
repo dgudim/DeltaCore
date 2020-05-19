@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class SpaceShip extends ShipObject {
 
-    public SpaceShip(AssetManager assetManager, float x, float y, float width, float height, boolean newGame) {
-        super(assetManager, x, y, width, height, newGame);
+    public SpaceShip(AssetManager assetManager, float x, float y, boolean newGame) {
+        super(assetManager, x, y, newGame);
     }
 
     public void drawBase(SpriteBatch batch, float delta){

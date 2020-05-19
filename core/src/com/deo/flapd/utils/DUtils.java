@@ -565,6 +565,10 @@ public abstract class DUtils {
             case ("root"):
                 item = "tree";
                 break;
+            case("beast mode"):{
+                item = "beastMode";
+                break;
+            }
             default:
                 log("\n no texture for item " + name);
                 item = "ohno";

@@ -20,8 +20,8 @@ public class EnemyData {
     public float y;
     public float rotation;
 
-    float width;
-    float height;
+    public float width;
+    public float height;
 
     int fireEffectCount;
     int[] fireOffsetsX;
@@ -82,9 +82,21 @@ public class EnemyData {
 
     boolean spawnsDrones;
 
+    int dronesPerSpawn;
+
+    float droneSpawnDelay;
+
+    String droneType;
+
+    String droneSpawnSound;
+
+    int[] droneSpawnOffset;
+
     boolean spawnsBullets;
 
     boolean hasAnimation;
+
+    float frameDuration;
 
     public boolean canAim;
 
@@ -134,6 +146,9 @@ public class EnemyData {
         }
 
         hasAnimation = enemyBodyInfo.get("hasAnimation").asBoolean();
+        if(hasAnimation){
+            frameDuration = enemyBodyInfo.get("frameDuration").asFloat();
+        }
 
         isHoming = enemyBodyInfo.get("homing").asBoolean();
 
@@ -162,6 +177,14 @@ public class EnemyData {
             }
         }
 
+        if(spawnsDrones){
+            droneSpawnDelay = enemyBodyInfo.get("droneSpawnDelay").asFloat();
+            dronesPerSpawn = enemyBodyInfo.get("dronesPerSpawn").asInt();
+            droneType = enemyBodyInfo.get("droneType").asString();
+            droneSpawnSound = enemyBodyInfo.get("droneSpawnSound").asString();
+            droneSpawnOffset = enemyBodyInfo.get("droneSpawnOffset").asIntArray();
+        }
+
         hitColor = enemyBodyInfo.get("hitColor").asString();
 
         dropTimer = enemyInfo.get("drops").get("timer").asInt();
@@ -182,5 +205,12 @@ public class EnemyData {
         copy.y = getRandomInRange(copy.spawnHeight[0], copy.spawnHeight[1]);
         copy.shootingDelay += getRandomInRange(-7, 7) / 100f;
         return copy;
+    }
+
+    protected EnemyData useAsDroneData(float x, float y){
+        this.x = x;
+        this.y = y;
+        shootingDelay += getRandomInRange(-10, 10) / 100f;
+        return this;
     }
 }

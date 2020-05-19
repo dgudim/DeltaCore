@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
@@ -25,34 +28,47 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemy {
 
-    private EnemyData data;
+    public EnemyData data;
     private BulletData bulletData;
     private Sprite enemy;
     private Array<EnemyBullet> bullets;
     private AssetManager assetManager;
-    private boolean isDead = false;
+    public boolean isDead = false;
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
     private Sound explosionSound;
     private Sound shootingSound;
     private float volume;
     private float difficulty;
+    private Animation<TextureRegion> enemyAnimation;
+    private float animationDuration;
+    private JsonValue enemies;
 
-    Enemy(AssetManager assetManager, EnemyData data) {
+    Enemy(AssetManager assetManager, EnemyData data, JsonValue enemies) {
         this.assetManager = assetManager;
         this.data = data;
+        this.enemies = enemies;
         difficulty = getFloat("difficulty");
 
-        if(data.spawnsBullets) {
+        if (data.spawnsBullets) {
             bulletData = new BulletData(data.enemyInfo, data.type);
             shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
+        }
+
+        if (data.spawnsDrones) {
+            shootingSound = Gdx.audio.newSound(Gdx.files.internal(data.droneSpawnSound));
         }
 
         explosionSound = Gdx.audio.newSound(Gdx.files.internal(data.explosionSound));
         volume = getFloat("soundVolume");
 
         bullets = new Array<>();
-        enemy = new Sprite((Texture) assetManager.get(data.texture));
+        if (data.hasAnimation) {
+            enemy = new Sprite();
+            enemyAnimation = new Animation<TextureRegion>(data.frameDuration, assetManager.get(data.texture, TextureAtlas.class).findRegions(data.name), Animation.PlayMode.LOOP);
+        } else {
+            enemy = new Sprite(assetManager.get("enemies/enemies.atlas", TextureAtlas.class).findRegion(data.texture));
+        }
         enemy.setSize(data.width, data.height);
         enemy.setPosition(data.x, data.y);
         enemy.setOrigin(data.width / 2, data.height / 2);
@@ -69,8 +85,10 @@ public class Enemy {
     }
 
     void draw(SpriteBatch batch) {
-        if (!isDead) {
+        if (!isDead && !data.hasAnimation) {
             enemy.draw(batch);
+        } else if (data.hasAnimation && !isDead) {
+            batch.draw(enemyAnimation.getKeyFrame(animationDuration), data.x, data.y, data.width, data.height);
         }
     }
 
@@ -89,18 +107,20 @@ public class Enemy {
 
     void update(float delta) {
         if (!isDead) {
+            data.x = MathUtils.clamp(data.x, -data.width, 800);
+            data.y = MathUtils.clamp(data.y, 0, 480 - data.height);
             enemy.setPosition(data.x, data.y);
             enemy.setColor(data.currentColor);
             enemy.setRotation(data.rotation);
 
-            if(!data.isHoming) {
+            if (!data.isHoming) {
                 data.x -= data.speed * delta;
-            }else{
+            } else {
                 data.x = MathUtils.lerp(data.x, SpaceShip.bounds.getX(), delta * data.speed / 220.0f);
                 data.y = MathUtils.lerp(data.y, SpaceShip.bounds.getY() + SpaceShip.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
                 data.explosionTimer -= delta;
-                enemy.setColor(1, MathUtils.clamp(data.explosionTimer/data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer/data.idealExplosionTimer, 0, 1), 1);
-                if(data.rotateTowardsShip){
+                enemy.setColor(1, MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), 1);
+                if (data.rotateTowardsShip) {
                     data.rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - SpaceShip.bounds.getY(), data.x - SpaceShip.bounds.getX()), data.minAngle, data.maxAngle);
                 }
             }
@@ -119,21 +139,30 @@ public class Enemy {
                 data.currentColor.b = MathUtils.clamp(data.currentColor.b + delta * 2.5f, 0, 1);
             }
 
-            if(data.spawnsBullets) {
+            if (data.spawnsBullets) {
                 if (data.millis > data.shootingDelay * 100) {
                     shoot();
                 }
-                data.millis += delta * 20;
             }
+
+            if (data.spawnsDrones) {
+                if (data.millis > data.droneSpawnDelay * 100) {
+                    spawnDrone();
+                }
+            }
+
+            data.millis += delta * 20;
 
             if (data.x < -data.width - data.fireParticleEffects.get(0).getBoundingBox().getWidth() - 20) {
                 isDead = true;
                 explosionFinished = true;
             }
 
-            if(data.isHoming && data.explosionTimer<=0){
+            if (data.isHoming && data.explosionTimer <= 0) {
                 kill();
             }
+
+            animationDuration += delta;
 
         }
 
@@ -227,6 +256,16 @@ public class Enemy {
         data.millis = 0;
     }
 
+    private void spawnDrone() {
+        for (int i = 0; i < data.dronesPerSpawn; i++) {
+            EnemyData droneData = new EnemyData(enemies.get(data.droneType), data.type).useAsDroneData(data.x + data.droneSpawnOffset[0], data.y + data.droneSpawnOffset[1]);
+            droneData.health *= difficulty;
+            Enemies.enemyEntities.add(new Enemy(assetManager, droneData, enemies));
+        }
+        shootingSound.play(volume);
+        data.millis = 0;
+    }
+
     void dispose() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
@@ -237,7 +276,7 @@ public class Enemy {
             bullets.get(i).dispose();
         }
         explosionSound.dispose();
-        if(data.spawnsBullets) {
+        if (data.spawnsBullets) {
             shootingSound.dispose();
         }
     }

@@ -3,10 +3,12 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
@@ -57,11 +59,29 @@ public abstract class ShipObject {
 
     public static float repellentPowerConsumption;
 
-    ShipObject(AssetManager assetManager, float x, float y, float width, float height, boolean newGame) {
+    private Animation<TextureRegion> enemyAnimation;
+    private float animationDuration;
 
-        TextureAtlas fields = assetManager.get("shields.atlas", TextureAtlas.class);
+    ShipObject(AssetManager assetManager, float x, float y, boolean newGame) {
+
+        float width;
+        float height;
+
+        TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
 
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        JsonValue shipConfig = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
+
+        height = shipConfig.get("height").asFloat();
+        width = shipConfig.get("width").asFloat();
+
+        if(shipConfig.get("hasAnimation").asBoolean()){
+            ship = new Sprite();
+            enemyAnimation = new Animation<TextureRegion>(shipConfig.get("frameDuration").asFloat(), assetManager.get("player/animations/"+shipConfig.get("animation").asString()+".atlas", TextureAtlas.class).findRegions(getItemCodeNameByName(shipConfig.get("animation").asString())), Animation.PlayMode.LOOP);
+        }else{
+            ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+        }
+
         String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
         float[] paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
         for (int i = 0; i < params.length; i++) {
@@ -95,6 +115,8 @@ public abstract class ShipObject {
 
         magnetField = new Sprite(fields.findRegion("field_attractor"));
         repellentField = new Sprite(fields.findRegion("field_repellent"));
+        magnetField.setSize(0, 0);
+        repellentField.setSize(0, 0);
 
         if (!getString("currentMagnet").equals("")) {
             params = treeJson.get(getString("currentMagnet")).get("parameters").asStringArray();
@@ -125,7 +147,6 @@ public abstract class ShipObject {
         chargeCapacity = treeJson.get(getString("currentBattery")).get("parameterValues").asFloatArray()[0];
         healthCapacity = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray()[0];
 
-        ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
         shield = new Sprite(fields.findRegion(treeJson.get(getString("currentShield")).get("usesEffect").asString()));
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});

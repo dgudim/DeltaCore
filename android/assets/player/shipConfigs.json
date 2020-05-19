@@ -1,0 +1,54 @@
+{
+    "basic armour": {
+        "width": 76.8,
+        "height": 57.6,
+        "gunCount": 1,
+        guns:{
+         "gun0OffsetX": 68,
+         "gun0OffsetY": 12.5f
+        },
+        "hasAnimation": false
+    },
+    "armour mk1":{
+        "width": 76.8,
+        "height": 57.6,
+        "gunCount": 1,
+        guns:{
+            "gun0OffsetX": 68,
+            "gun0OffsetY": 12.5f
+        },
+        "hasAnimation": false
+    },
+    "armour mk2":{
+        "width": 76.8,
+        "height": 57.6,
+        "gunCount": 1,
+        guns:{
+            "gun0OffsetX": 68,
+            "gun0OffsetY": 12.5f
+        },
+        "hasAnimation": false
+    },
+    "armour mk3":{
+        "width": 76.8,
+        "height": 57.6,
+        "gunCount": 1,
+        guns:{
+            "gun0OffsetX": 68,
+            "gun0OffsetY": 12.5f
+        },
+        "hasAnimation": false
+    },
+    "beast mode":{
+        "width": 76.8,
+        "height": 57.6,
+        gunCount: 2,
+        guns:{
+            "gun0OffsetX": 68,
+            "gun0OffsetY": 12.5f
+        },
+        hasAnimation: true,
+        "animation": "beastMode",
+        "frameDuration": 0.15
+    }
+}

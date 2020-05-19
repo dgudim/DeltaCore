@@ -1,0 +1,19 @@
+
+ufo.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ufo
+  rotate: false
+  xy: 1, 1
+  size: 124, 24
+  orig: 124, 24
+  offset: 0, 0
+  index: 0
+ufo
+  rotate: false
+  xy: 127, 1
+  size: 124, 24
+  orig: 124, 24
+  offset: 0, 0
+  index: 1

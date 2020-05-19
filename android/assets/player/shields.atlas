@@ -1,0 +1,47 @@
+
+shields.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+field_attractor
+  rotate: false
+  xy: 1, 85
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+field_repellent
+  rotate: false
+  xy: 131, 85
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ColdShield
+  rotate: false
+  xy: 1, 1
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1
+ColdShieldMk2
+  rotate: false
+  xy: 261, 131
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1
+ColdShieldMk3
+  rotate: false
+  xy: 131, 1
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1
+ColdShieldMk4
+  rotate: false
+  xy: 261, 47
+  size: 128, 82
+  orig: 128, 82
+  offset: 0, 0
+  index: -1

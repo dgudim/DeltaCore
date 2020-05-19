@@ -68,6 +68,15 @@ public class GameLogic {
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
         speedMultiplier = treeJson.get(getString("currentEngine")).get("parameterValues").asFloatArray()[0];
 
+        float[] shipParamValues = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray();
+        String[] shipParams = treeJson.get(getString("currentArmour")).get("parameters").asStringArray();
+
+        for(int i = 0; i<shipParamValues.length; i++){
+            if(shipParams[i].endsWith("speed multiplier")){
+                speedMultiplier *= shipParamValues[i];
+            }
+        }
+
         String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
         float[] paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
         for (int i = 0; i < params.length; i++) {

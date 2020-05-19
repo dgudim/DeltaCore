@@ -391,12 +391,8 @@ class CraftingDialogue {
                 }
             });
 
-            float scale = 10/Math.max(item.getWidth(),  item.getHeight());
-            float width = item.getWidth()*scale;
-            float height = item.getHeight()*scale;
-
             requirementButtons.add(item);
-            requirement.add(item).size(width, height);
+            requirement.add(item).size(10, 10);
             requirement.add(itemText).pad(1).padLeft(2);
             ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(1);
