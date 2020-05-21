@@ -292,7 +292,7 @@
     "requires": ["armour mk3"],
     "type": "part",
     "parameters": ["[#3bff38]health", "[#22DDDD]speed multiplier"],
-    "parameterValues": [250, 0.7],
+    "parameterValues": [270, 0.7],
     "saveTo": "currentArmour"
   },
   "shield generator mk1": {
@@ -561,7 +561,7 @@
     "isCraftable":false,
     "category": "recepies",
     "requires": [""],
-    "price": "2700",
+    "price": "3700",
     "type": "endItem"
   },
   "prism": {

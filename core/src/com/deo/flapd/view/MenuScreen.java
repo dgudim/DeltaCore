@@ -11,10 +11,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -70,7 +74,13 @@ public class MenuScreen implements Screen{
 
     private Image MenuBg;
     private Texture Bg;
-    private Image Ship;
+    private Sprite Ship;
+
+    private Animation<TextureRegion> enemyAnimation;
+    private float animationPosition;
+    private boolean hasAnimation;
+    private JsonValue shipConfigs;
+
     private Image FillTexture;
 
     private Image Lamp;
@@ -91,7 +101,7 @@ public class MenuScreen implements Screen{
 
     private Game game;
 
-    private ParticleEffect fire, fire2;
+    private Array<ParticleEffect> fires;
 
     private boolean easterEgg;
 
@@ -153,8 +163,12 @@ public class MenuScreen implements Screen{
         FillTexture.setSize(456, 72);
 
         currentShipTexture = getString("currentArmour");
-        Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
-        Ship.setBounds(220, 250, 76.8f, 57.6f);
+
+        shipConfigs = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json"));
+
+        fires = new Array<>();
+
+        initializeShip();
 
         Image buildNumber = new Image((Texture) assetManager.get("greyishButton.png"));
         buildNumber.setBounds(5,5,150, 50);
@@ -178,11 +192,11 @@ public class MenuScreen implements Screen{
         final Slider difficultyControl = (Slider)difficultyT.getCells().get(0).getActor();
         difficultyT.getCells().get(1).getActor().setColor(new Color().fromHsv(120-difficultyControl.getValue()*20, 1.5f, 1).add(0,0,0,1));
 
-        ScrollPane settingsPane = uiComposer.createScrollGroup(15, 62, 531, 412, false, true);
+        ScrollPane settingsPane = uiComposer.createScrollGroup(15, 70, 531, 400, false, true);
         settingsPane.setCancelTouchFocus(false);
         Table settingsGroup = (Table)settingsPane.getActor();
         settingsGroup.align(Align.left);
-        final Table musicVolumeT, soundVolumeT, uiScaleT;
+        final Table musicVolumeT, soundVolumeT, uiScaleT, joystickOffsetX, joystickOffsetY;
         final CheckBox bloomT, showFpsT, transparentUIT, prefsLoggingT;
         musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Music volume ","%", "musicVolume", settingsPane);
         soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundVolume", settingsPane);
@@ -191,6 +205,8 @@ public class MenuScreen implements Screen{
         transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Semi-transparent ui", "transparency");
         prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Prefs logging", "logging");
         showFpsT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Show fps", "showFps");
+        joystickOffsetX = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "[#32ff32]joystick x offset ", "px", "joystickOffsetX", settingsPane);
+        joystickOffsetY = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "[#32ff32]joystick y offset ", "px", "joystickOffsetY", settingsPane);
         settingsGroup.add(musicVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(soundVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(uiScaleT).padTop(5).padBottom(5).align(Align.left).row();
@@ -198,6 +214,8 @@ public class MenuScreen implements Screen{
         settingsGroup.add(prefsLoggingT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(transparentUIT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(showFpsT).padTop(5).padBottom(5).align(Align.left).row();
+        settingsGroup.add(joystickOffsetX).padTop(5).padBottom(5).align(Align.left).row();
+        settingsGroup.add(joystickOffsetY).padTop(5).padBottom(5).align(Align.left).row();
 
         Table moreTable = new Table();
         moreTable.align(Align.topLeft);
@@ -338,9 +356,6 @@ public class MenuScreen implements Screen{
         inventory.attach(Menu);
 
         ShopStage = new Stage(viewport, batch);
-
-        fire = new ParticleEffect();
-        fire2 = new ParticleEffect();
 
         lastFireEffect = " ";
         updateFire();
@@ -521,8 +536,9 @@ public class MenuScreen implements Screen{
 
         batch.draw(Bg, 0, 0, (int)movement, -240, 800, 720);
 
-        fire.draw(batch, delta);
-        fire2.draw(batch, delta);
+        for (int i = 0; i<fires.size; i++){
+            fires.get(i).draw(batch, delta);
+        }
 
         if (enableShader) {
             batch.end();
@@ -530,7 +546,11 @@ public class MenuScreen implements Screen{
             batch.begin();
         }
 
-        Ship.draw(batch, 1);
+        if(hasAnimation){
+            Ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            animationPosition += delta;
+        }
+        Ship.draw(batch);
 
         batch.end();
         ShopStage.draw();
@@ -642,17 +662,29 @@ public class MenuScreen implements Screen{
         Menu.dispose();
         ShopStage.dispose();
         music.dispose();
-        fire.dispose();
-        fire2.dispose();
+        for (int i = 0; i<fires.size; i++){
+            fires.get(i).dispose();
+        }
+        fires.clear();
     }
 
     private void loadFire(){
-        fire.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
-        fire2.load(Gdx.files.internal("particles/"+treeJson.get(getString("currentEngine")).get("usesEffect").asString()+".p"), Gdx.files.internal("particles"));
-        fire.setPosition(230, 268);
-        fire2.setPosition(224, 290);
-        fire.start();
-        fire2.start();
+        JsonValue shipConfig = shipConfigs.get(getString("currentArmour"));
+
+        int fireCount = shipConfig.get("fireCount").asInt();
+
+        for (int i = 0; i<fires.size; i++){
+            fires.get(i).dispose();
+        }
+        fires.clear();
+
+        for (int i = 0; i< fireCount; i++){
+            ParticleEffect fire = new ParticleEffect();
+            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+            fire.setPosition(Ship.getX() + shipConfig.get("fires").get("fire"+i+"OffsetX").asFloat(), Ship.getY() + shipConfig.get("fires").get("fire"+i+"OffsetY").asFloat());
+            fire.start();
+            fires.add(fire);
+        }
         lastFireEffect = treeJson.get(getString("currentEngine")).get("usesEffect").asString();
     }
 
@@ -662,8 +694,6 @@ public class MenuScreen implements Screen{
                 loadFire();
             }
             if (!lastFireEffect.equals(treeJson.get(getString("currentEngine")).get("usesEffect").asString())) {
-                fire.reset();
-                fire2.reset();
                 loadFire();
             }
             String key = treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color";
@@ -671,8 +701,9 @@ public class MenuScreen implements Screen{
                 setFireToDefault(key);
             } else {
                 float[] colors = new JsonReader().parse("{\"colors\":" + getString(key) + "}").get("colors").asFloatArray();
-                fire.getEmitters().get(0).getTint().setColors(colors);
-                fire2.getEmitters().get(0).getTint().setColors(colors);
+                for(int i = 0; i<fires.size; i++){
+                    fires.get(i).getEmitters().get(0).getTint().setColors(colors);
+                }
             }
         }catch (Exception e){
             log("corrupted fire color array");
@@ -683,13 +714,31 @@ public class MenuScreen implements Screen{
 
     private void updateShip(){
         if(!currentShipTexture.equals(getString("currentArmour"))){
-            Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
-            Ship.setBounds(220, 250, 76.8f, 57.6f);
+           initializeShip();
+           lastFireEffect = " ";
+           updateFire();
         }
     }
 
+    private void initializeShip(){
+        JsonValue shipConfig = shipConfigs.get(getString("currentArmour"));
+        hasAnimation = shipConfig.get("hasAnimation").asBoolean();
+
+        if(!hasAnimation){
+            Ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+        }else{
+            Ship = new Sprite();
+            enemyAnimation = new Animation<TextureRegion>(shipConfig.get("frameDuration").asFloat(), assetManager.get("player/animations/"+shipConfig.get("animation").asString()+".atlas", TextureAtlas.class).findRegions(shipConfig.get("animation").asString()), Animation.PlayMode.LOOP);
+        }
+
+        float width = shipConfig.get("width").asFloat();
+        float height = shipConfig.get("height").asFloat();
+
+        Ship.setBounds(258-width/2, 279 - height/2, width, height);
+    }
+
     private void setFireToDefault(String key){
-        float[] colors = fire.getEmitters().get(0).getTint().getColors();
+        float[] colors = fires.get(0).getEmitters().get(0).getTint().getColors();
 
         StringBuilder buffer = new StringBuilder();
         buffer.append('[');

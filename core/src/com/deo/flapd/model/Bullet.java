@@ -405,7 +405,7 @@ public class Bullet {
             laserSaw.setVolume(0);
         }
 
-        millis = millis + 50 * (GameLogic.bonuses_collected / 50.0f + 1) * delta * gunCount;
+        millis = millis + 50 * (GameLogic.bonuses_collected / 100.0f + 1) * delta * gunCount;
 
     }
 

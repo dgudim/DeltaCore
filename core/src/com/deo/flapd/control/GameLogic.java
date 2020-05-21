@@ -129,9 +129,10 @@ public class GameLogic {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             game.pause();
 
-
-        bounds.setPosition(bounds.getX() + 250 * deltaX * delta, bounds.getY() + 250 * deltaY * delta);
-        bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
+        if(delta>0 && SpaceShip.Health>0) {
+            bounds.setPosition(bounds.getX() + 250 * deltaX * delta, bounds.getY() + 250 * deltaY * delta);
+            bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
+        }
 
         if (is_firing) {
             bullet.Spawn(1, false);

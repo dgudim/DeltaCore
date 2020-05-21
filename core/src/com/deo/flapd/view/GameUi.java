@@ -228,7 +228,7 @@ public class GameUi {
             touchpad.setColor(1, 1, 1, 0.7f);
         }
 
-        touchpad.setBounds(10, 10, 110 * uiScale, 110 * uiScale);
+        touchpad.setBounds(10 + getFloat("joystickOffsetX"), 10 + getFloat("joystickOffsetY"), 110 * uiScale, 110 * uiScale);
 
         healthBarStyle = new ProgressBar.ProgressBarStyle();
         shieldBarStyle = new ProgressBar.ProgressBarStyle();

@@ -275,6 +275,7 @@ public abstract class ShipObject {
 
             if(hasAnimation) {
                 ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+                animationPosition += delta;
             }
 
             ship.draw(batch);
@@ -288,8 +289,6 @@ public abstract class ShipObject {
                 Shield += shieldRegenerationSpeed * delta;
                 Charge -= shieldPowerConsumption * delta;
             }
-
-            animationPosition += delta;
 
         } else {
             bounds.setScale(0, 0);

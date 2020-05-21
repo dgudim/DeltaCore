@@ -708,7 +708,7 @@ public class Boss_battleShip {
                 bullet.x = MathUtils.lerp(bullet.x, shipBounds.getX(), delta * 0.7f);
                 bullet.y = MathUtils.lerp(bullet.y, shipBounds.getY() + shipBounds.getBoundingRectangle().getHeight() / 2, delta * 0.7f);
 
-                fire.setPosition(bullet.x + bullet.width / 2, bullet.x + bullet.height / 2);
+                fire.setPosition(bullet.x + bullet.width / 2, bullet.y + bullet.height / 2);
                 fire.draw(batch, delta);
 
                 timer = timer - delta;
