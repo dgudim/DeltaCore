@@ -7,7 +7,14 @@
          "gun0OffsetX": 68,
          "gun0OffsetY": 12.5f
         },
-        "hasAnimation": false
+        "hasAnimation": false,
+        "fireCount": 2,
+        "fires":{
+            "fire0OffsetX": 10,
+            "fire0OffsetY": 18,
+            "fire1OffsetX": 4,
+            "fire1OffsetY": 40,
+        }
     },
     "armour mk1":{
         "width": 76.8,
@@ -17,7 +24,14 @@
             "gun0OffsetX": 68,
             "gun0OffsetY": 12.5f
         },
-        "hasAnimation": false
+        "hasAnimation": false,
+        "fireCount": 2,
+        "fires":{
+            "fire0OffsetX": 10,
+            "fire0OffsetY": 18,
+            "fire1OffsetX": 4,
+            "fire1OffsetY": 40,
+        }
     },
     "armour mk2":{
         "width": 76.8,
@@ -27,7 +41,14 @@
             "gun0OffsetX": 68,
             "gun0OffsetY": 12.5f
         },
-        "hasAnimation": false
+        "hasAnimation": false,
+        "fireCount": 2,
+        "fires":{
+            "fire0OffsetX": 10,
+            "fire0OffsetY": 18,
+            "fire1OffsetX": 4,
+            "fire1OffsetY": 40,
+        }
     },
     "armour mk3":{
         "width": 76.8,
@@ -37,20 +58,38 @@
             "gun0OffsetX": 68,
             "gun0OffsetY": 12.5f
         },
-        "hasAnimation": false
+        "hasAnimation": false,
+        "fireCount": 2,
+        "fires":{
+            "fire0OffsetX": 10,
+            "fire0OffsetY": 18,
+            "fire1OffsetX": 4,
+            "fire1OffsetY": 40,
+        }
     },
     "beast mode":{
-        "width": 76.8,
-        "height": 57.6,
+        "width": 149,
+        "height": 72,
         gunCount: 2,
         guns:{
-            "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5f
-            "gun1OffsetX": 68,
-            "gun1OffsetY": 12.5f
+            "gun0OffsetX": 138,
+            "gun0OffsetY": 13.5f
+            "gun1OffsetX": 138,
+            "gun1OffsetY": 13.5f
         },
         hasAnimation: true,
         "animation": "beastMode",
-        "frameDuration": 0.15
+        "frameDuration": 0.15,
+        "fireCount": 4,
+        "fires":{
+            "fire0OffsetX": 10,
+            "fire0OffsetY": 10,
+            "fire1OffsetX": 3,
+            "fire1OffsetY": 25,
+            "fire2OffsetX": 3,
+            "fire2OffsetY": 46,
+            "fire3OffsetX": 10,
+            "fire3OffsetY": 62,
+        }
     }
 }

@@ -41,7 +41,7 @@ public class Enemy {
     private float volume;
     private float difficulty;
     private Animation<TextureRegion> enemyAnimation;
-    private float animationDuration;
+    private float animationPosition;
     private JsonValue enemies;
 
     Enemy(AssetManager assetManager, EnemyData data, JsonValue enemies) {
@@ -88,7 +88,8 @@ public class Enemy {
         if (!isDead && !data.hasAnimation) {
             enemy.draw(batch);
         } else if (data.hasAnimation && !isDead) {
-            batch.draw(enemyAnimation.getKeyFrame(animationDuration), data.x, data.y, data.width, data.height);
+            enemy.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            enemy.draw(batch);
         }
     }
 
@@ -107,7 +108,7 @@ public class Enemy {
 
     void update(float delta) {
         if (!isDead) {
-            data.x = MathUtils.clamp(data.x, -data.width, 800);
+            data.x = MathUtils.clamp(data.x, -data.width - 500, 800);
             data.y = MathUtils.clamp(data.y, 0, 480 - data.height);
             enemy.setPosition(data.x, data.y);
             enemy.setColor(data.currentColor);
@@ -162,7 +163,7 @@ public class Enemy {
                 kill();
             }
 
-            animationDuration += delta;
+            animationPosition += delta;
 
         }
 
