@@ -75,8 +75,8 @@ public class BulletData {
 
     public BulletData clone(EnemyData enemyData) {
         BulletData copy = new BulletData(enemyInfo, type);
-        copy.x = enemyData.x + enemyData.width/2 + copy.offset[0];
-        copy.y = enemyData.y + enemyData.height/2 + copy.offset[1];
+        copy.x = enemyData.x + copy.offset[0];
+        copy.y = enemyData.y + copy.offset[1];
         copy.angle = getRandomInRange(-10, 10) * copy.spread + enemyData.rotation;
         if(enemyData.canAim){
             copy.angle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(copy.y - SpaceShip.bounds.getY(), copy.x - SpaceShip.bounds.getX()), enemyData.aimMinAngle, enemyData.aimMaxAngle);

@@ -22,7 +22,9 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Enemies;
+import com.deo.flapd.utils.MusicWave;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.utils.postprocessing.effects.Bloom;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -54,7 +56,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    public static boolean is_paused;
+    static boolean is_paused;
 
     private float movement;
 
@@ -73,6 +75,10 @@ public class GameScreen implements Screen {
     private boolean enableShader;
 
     private Enemies enemies;
+
+    private float[] samples;
+    private Music music2;
+    private float maxValue;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame) {
 
@@ -127,6 +133,19 @@ public class GameScreen implements Screen {
 
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
+
+        MusicWave musicWave = new MusicWave();
+
+        samples = musicWave.getSamples();
+        music2 = musicWave.getMusic();
+
+        for(int i = 0; i<samples.length; i++){
+            if(samples[i]>maxValue){
+                maxValue = samples[i];
+            }
+        }
+
+        music2.play();
     }
 
     @Override
@@ -154,6 +173,8 @@ public class GameScreen implements Screen {
         }
 
         if (enableShader) {
+            Bloom effect = (Bloom)postProcessor.effectsManager.get(0);
+            effect.setBloomSaturation(Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue*2.3f));
             postProcessor.capture();
         }
         batch.begin();
@@ -281,5 +302,7 @@ public class GameScreen implements Screen {
         uraniumCell.dispose();
 
         enemies.dispose();
+
+        music2.dispose();
     }
 }

@@ -25,8 +25,8 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.deo.flapd.utils.postprocessing.utils.PingPongBuffer;
 import com.deo.flapd.utils.ItemsManager;
+import com.deo.flapd.utils.postprocessing.utils.PingPongBuffer;
 
 /** Provides a way to capture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
  * screen.
@@ -43,7 +43,7 @@ public final class PostProcessor implements Disposable {
 	private final PingPongBuffer composite;
 	private TextureWrap compositeWrapU;
 	private TextureWrap compositeWrapV;
-	private final ItemsManager<PostProcessorEffect> effectsManager = new ItemsManager<PostProcessorEffect>();
+	public final ItemsManager<PostProcessorEffect> effectsManager = new ItemsManager<PostProcessorEffect>();
 	private static final Array<PingPongBuffer> buffers = new Array<PingPongBuffer>(5);
 	private final Color clearColor = Color.CLEAR;
 	private int clearBits = GL20.GL_COLOR_BUFFER_BIT;

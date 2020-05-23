@@ -76,7 +76,7 @@ public class EnemyBullet {
             bullet.setPosition(data.x, data.y);
             data.trailParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
 
-            if (data.x < -data.width - 30 || data.x > 480 + data.width + 30 || data.y > 480 + 30 || data.y < -data.width - 30) {
+            if (data.x < -data.width - 30 || data.x > 800 + data.width + 30 || data.y > 480 + 30 || data.y < -data.width - 30) {
                 isDead = true;
                 explosionFinished = true;
             }
