@@ -5,10 +5,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -79,6 +85,8 @@ public class GameScreen implements Screen {
     private float[] samples;
     private Music music2;
     private float maxValue;
+    private Array<Float> displayData;
+    private Image bar;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame) {
 
@@ -136,6 +144,16 @@ public class GameScreen implements Screen {
 
         MusicWave musicWave = new MusicWave();
 
+        displayData = new Array<>();
+
+        Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        TextureRegionDrawable BarBackgroundBlank = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+        pixmap.dispose();
+
+        bar = new Image(BarBackgroundBlank);
+
         samples = musicWave.getSamples();
         music2 = musicWave.getMusic();
 
@@ -174,7 +192,12 @@ public class GameScreen implements Screen {
 
         if (enableShader) {
             Bloom effect = (Bloom)postProcessor.effectsManager.get(0);
-            effect.setBloomSaturation(Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue*2.3f));
+            float value = Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue);
+            effect.setBloomSaturation(value*2.3f);
+            //displayData.add(value*150);
+            if(displayData.size>401){
+                displayData.removeIndex(0);
+            }
             postProcessor.capture();
         }
         batch.begin();
@@ -201,6 +224,15 @@ public class GameScreen implements Screen {
             batch.end();
             postProcessor.render();
             batch.begin();
+        }
+
+        for(int i = 0; i<displayData.size; i++){
+            bar.setBounds(400+i, 0, 2, displayData.get(displayData.size-1-i)+10);
+            bar.setColor(new Color().fromHsv(i/3.0f+110, 1.5f, 1).add(0, 0, 0, 1));
+            bar.draw(batch, 1);
+            bar.setBounds(400-i, 0, 2, displayData.get(displayData.size-1-i)+10);
+            bar.setColor(new Color().fromHsv(i/3.0f+110, 1.5f, 1).add(0, 0, 0, 1));
+            bar.draw(batch, 1);
         }
 
         ship.drawBase(batch, delta);

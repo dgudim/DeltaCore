@@ -175,7 +175,9 @@ public class PurchaseDialogue{
                     putString("savedSlots", items.toString());
                     putString("savedSlotQuantities", quantities.toString());
 
-                    itemSlotManager.update();
+                    if(itemSlotManager != null) {
+                        itemSlotManager.update();
+                    }
                     dialog.hide();
                 }
             }

@@ -11,6 +11,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+
 public class MusicWave {
 
     private float[] samples;
@@ -28,6 +29,8 @@ public class MusicWave {
         File file = Gdx.files.external(path).file();
 
         try {
+            boolean thereIsData = true;
+
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
             int frameLength = (int) audioInputStream.getFrameLength();
             int frameSize = audioInputStream.getFormat().getFrameSize();
@@ -44,6 +47,25 @@ public class MusicWave {
             for(int i = 0; i<averageChannelAmplitude.length; i++){
                 averageChannelAmplitude[i] = (twoChannelSamples[0][i] + twoChannelSamples[1][i])/2.0f;
             }
+
+            /*
+            InputStream data = new FileInputStream(file.getPath());
+            Bitstream bitstream = new Bitstream(data);
+            Decoder decoder = new Decoder();
+            while(thereIsData) {
+                Header frameHeader = bitstream.readFrame();
+                SampleBuffer buffer = (SampleBuffer) decoder.decodeFrame(frameHeader, bitstream);
+                short[] pcmBuffer = buffer.getBuffer();
+
+                thereIsData = false;
+
+                for(int i = 0; i<pcmBuffer.length; i++){
+                    System.out.println(pcmBuffer[i]);
+                }
+
+                bitstream.closeFrame();
+            }
+             */
 
             samples = averageChannelAmplitude;
 

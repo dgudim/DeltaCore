@@ -11,8 +11,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
-        
-
     }
 }
 
@@ -75,12 +73,13 @@ project(":android") {
 }
 
 project(":core") {
-    apply plugin: "java-library"
+	apply plugin: "java-library"
 
 
     dependencies {
+		implementation files('libs\\JTransforms-3.1-with-dependencies.jar')
+		implementation files('libs\\jl1.0.1.jar')
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        
     }
 }
