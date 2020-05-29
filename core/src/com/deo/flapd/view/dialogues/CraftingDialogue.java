@@ -46,7 +46,7 @@ public class CraftingDialogue extends Dialogue{
     private Stage stage;
     private AssetManager assetManager;
     private int requestedQuantity;
-    private Array<ImageButton> requirementButtons;
+    private Array<TextButton> buyShortcuts;
     private Array<Label> tableLabels;
     private String[] items;
     private int[] itemCounts;
@@ -76,7 +76,7 @@ public class CraftingDialogue extends Dialogue{
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
 
-        requirementButtons = new Array<>();
+        buyShortcuts = new Array<>();
         tableLabels = new Array<>();
         items = getRequiredItems();
         itemCounts = getRequiredItemCounts();
@@ -336,6 +336,13 @@ public class CraftingDialogue extends Dialogue{
                 tableLabels.get(i).setColor(Color.YELLOW);
             }
         }
+        for(int i = 0; i<items.length; i++){
+            if (!getString("savedSlots").contains(items[i])) {
+                buyShortcuts.get(i).setTouchable(Touchable.disabled);
+                buyShortcuts.get(i).setColor(Color.GRAY);
+                buyShortcuts.get(i).removeListener(buyShortcuts.get(i).getListeners().get(buyShortcuts.get(i).getListeners().size-1));
+            }
+        }
     }
 
     private Image getProductImage() {
@@ -407,7 +414,9 @@ public class CraftingDialogue extends Dialogue{
                         quantities.add(slotsJson.get("productQuantities").asIntArray()[i]);
                     }
 
-                    new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)), CraftingDialogue.this);
+                    new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).get("resultCount").asFloat()),
+                            CraftingDialogue.this);
                 }
             });
 
@@ -429,7 +438,7 @@ public class CraftingDialogue extends Dialogue{
                 }
             });
 
-            requirementButtons.add(item);
+            buyShortcuts.add(buyShortcut);
             requirement.add(item).size(10, 10);
             requirement.add(itemText).width(52).pad(1).padLeft(2);
             requirement.add(buyShortcut).size(10, 5).padLeft(2);
@@ -566,7 +575,6 @@ public class CraftingDialogue extends Dialogue{
             float width = item.getWidth() * scale;
             float height = item.getHeight() * scale;
 
-            requirementButtons.add(item);
             requirement.add(item).size(width, height);
             requirement.add(itemText).pad(1).padLeft(2).align(Align.center);
             ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();

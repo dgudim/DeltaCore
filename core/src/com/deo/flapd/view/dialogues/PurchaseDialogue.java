@@ -41,17 +41,20 @@ public class PurchaseDialogue extends Dialogue{
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity){
-        new PurchaseDialogue(assetManager, stage, result, availableQuantity, null, null);
+        new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, null, null);
     }
-    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final Dialogue previousDialogue){
-        new PurchaseDialogue(assetManager, stage, result, availableQuantity, null, previousDialogue);
+
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue){
+        new PurchaseDialogue(assetManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
     }
 
     public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager){
-        new PurchaseDialogue(assetManager, stage, result, availableQuantity, itemSlotManager, null);
+        new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, itemSlotManager, null);
     }
 
-    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue){
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue){
+
+        requestedQuantity = MathUtils.clamp(requestedQuantity, 1, availableQuantity);
 
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
@@ -85,8 +88,9 @@ public class PurchaseDialogue extends Dialogue{
 
         final Slider quantity = uiComposer.addSlider("sliderDefaultSmall", 1, availableQuantity, 1);
         quantity.setBounds(46.5f, 6, 35, 10);
+        quantity.setValue(requestedQuantity);
 
-        final Label quantityText = new Label("quantity:1", yellowLabelStyle);
+        final Label quantityText = new Label("quantity:"+requestedQuantity, yellowLabelStyle);
         quantityText.setFontScale(0.1f);
         quantityText.setPosition(49, 16);
         quantityText.setSize(30, 10);
@@ -101,7 +105,7 @@ public class PurchaseDialogue extends Dialogue{
         product.setBounds(88, 40, 35, 25);
         product.setScaling(Scaling.fit);
 
-        final Label productName = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+1", yellowLabelStyle);
+        final Label productName = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+"+requestedQuantity, yellowLabelStyle);
         productName.setFontScale(0.08f);
         productName.setBounds(86, 29, 39, 10);
         productName.setWrap(true);
@@ -110,16 +114,16 @@ public class PurchaseDialogue extends Dialogue{
         final int[] price = getPrice(result);
         final Table requirements = new Table();
         Table holder = new Table();
-        final Label uraniumCells_text = new Label(getInteger("money")+"/"+price[0], yellowLabelStyle);
-        final Label cogs_text = new Label(getInteger("cogs")+"/"+price[1], yellowLabelStyle);
+        final Label uraniumCells_text = new Label(getInteger("money")+"/"+price[0]*requestedQuantity, yellowLabelStyle);
+        final Label cogs_text = new Label(getInteger("cogs")+"/"+price[1]*requestedQuantity, yellowLabelStyle);
         uraniumCells_text.setFontScale(0.13f);
         cogs_text.setFontScale(0.13f);
 
-        if (getInteger("money") < price[0]) {
+        if (getInteger("money") < price[0]*requestedQuantity) {
             uraniumCells_text.setColor(Color.valueOf("#DD0000"));
         }
 
-        if (getInteger("cogs") < price[1]) {
+        if (getInteger("cogs") < price[1]*requestedQuantity) {
             cogs_text.setColor(Color.valueOf("#DD0000"));
         }
 

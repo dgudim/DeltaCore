@@ -73,6 +73,7 @@ public class Bullet {
 
     private float laserHeight;
     private float laserDuration, currentDuration;
+    private String laserColor;
     private boolean isLaserActive;
     public boolean isLaser;
     private boolean isHoming;
@@ -94,6 +95,7 @@ public class Bullet {
 
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
         JsonValue shipConfig = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
+        JsonValue currentCannon = treeJson.get(getString("currentCannon"));
 
         gunCount = shipConfig.get("gunCount").asInt();
         currentActiveGun = 0;
@@ -106,11 +108,11 @@ public class Bullet {
             gunOffsetsY[i] = shipConfig.get("guns").get("gun"+i+"OffsetY").asFloat();
         }
 
-        bulletExplosionEffect = treeJson.get(getString("currentCannon")).get("usesEffect").asString();
+        bulletExplosionEffect = currentCannon.get("usesEffect").asString();
 
-        if (treeJson.get(getString("currentCannon")).get("usesTrail").asBoolean()) {
-            bulletTrailEffect = treeJson.get(getString("currentCannon")).get("trailEffect").asString();
-            bulletTrailTimer = treeJson.get(getString("currentCannon")).get("trailFadeOutTimer").asFloat();
+        if (currentCannon.get("usesTrail").asBoolean()) {
+            bulletTrailEffect = currentCannon.get("trailEffect").asString();
+            bulletTrailTimer = currentCannon.get("trailFadeOutTimer").asFloat();
             hasTrail = true;
         }else{
             bulletTrailEffect = "";
@@ -118,8 +120,8 @@ public class Bullet {
             hasTrail = false;
         }
 
-        String[] params = treeJson.get(getString("currentCannon")).get("parameters").asStringArray();
-        float[] paramValues = treeJson.get(getString("currentCannon")).get("parameterValues").asFloatArray();
+        String[] params = currentCannon.get("parameters").asStringArray();
+        float[] paramValues = currentCannon.get("parameterValues").asFloatArray();
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("damage")) {
                 damage = (int) paramValues[i];
@@ -152,6 +154,7 @@ public class Bullet {
 
         if (isLaser) {
             bullet = new Sprite();
+            laserColor = currentCannon.get("laserBeamColor").asString();
         } else {
             bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         }
@@ -165,9 +168,9 @@ public class Bullet {
             }
         }
 
-        isHoming = treeJson.get(getString("currentCannon")).get("homing").asBoolean();
+        isHoming = currentCannon.get("homing").asBoolean();
         if(isHoming){
-            explosionTimer = treeJson.get(getString("currentCannon")).get("explosionTimer").asFloat();
+            explosionTimer = currentCannon.get("explosionTimer").asFloat();
         }
 
         random = new Random();
@@ -391,7 +394,7 @@ public class Bullet {
             laser.setRotation(playerBounds.getRotation());
             laser.setPosition(playerBounds.getX() + MathUtils.cosDeg(laser.getRotation()) * 75, playerBounds.getY() + 16 / MathUtils.cosDeg(laser.getRotation()) + MathUtils.sinDeg(laser.getRotation()) * 80);
             laser.setSize(800, laserHeight);
-            laser.setColor(Color.CYAN);
+            laser.setColor(Color.valueOf(laserColor));
             laser.draw(batch);
             laserSaw.setVolume(soundVolume / 100);
             currentDuration -= delta * 1000;
