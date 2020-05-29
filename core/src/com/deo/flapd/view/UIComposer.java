@@ -27,7 +27,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 
-class UIComposer {
+public class UIComposer {
 
     Array<Button.ButtonStyle> buttonStyles;
     Array<Slider.SliderStyle> sliderStyles;
@@ -39,7 +39,7 @@ class UIComposer {
 
     private AssetManager assetManager;
 
-    UIComposer(AssetManager assetManager){
+    public UIComposer(AssetManager assetManager){
         this.assetManager = assetManager;
         buttonStyles = new Array<>();
         checkBoxStyleNames = new Array<>();
@@ -49,7 +49,7 @@ class UIComposer {
         sliderStyles = new Array<>();
     }
 
-    void loadStyles(String... styleNames){
+    public void loadStyles(String... styleNames){
         JsonValue styles = new JsonReader().parse(Gdx.files.internal("shop/styles.json"));
         Array<BitmapFont> fonts = new Array<>();
         String[] fontNames = styles.get("fonts").asStringArray();
@@ -239,7 +239,7 @@ class UIComposer {
         }
     }
 
-    Actor addScrollText(String text, BitmapFont font, float fontScale, boolean scrollable, boolean horizontal, float x, float y, float width, float height){
+    public Actor addScrollText(String text, BitmapFont font, float fontScale, boolean scrollable, boolean horizontal, float x, float y, float width, float height){
         font.getData().markupEnabled = true;
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
@@ -286,7 +286,7 @@ class UIComposer {
         checkBoxStyleNames.add(assignmentName);
     }
 
-    CheckBox addCheckBox(String style, String text, final String valueKey){
+    public CheckBox addCheckBox(String style, String text, final String valueKey){
         final CheckBox checkBox = addCheckBox(style, text);
         checkBox.setChecked(getBoolean(valueKey));
         checkBox.addListener(new ChangeListener() {
@@ -298,7 +298,7 @@ class UIComposer {
         return checkBox;
     }
 
-    CheckBox addCheckBox(String style, String text){
+    public CheckBox addCheckBox(String style, String text){
         if (checkBoxStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         final CheckBox checkBox = new CheckBox(text, checkBoxStyles.get(checkBoxStyleNames.indexOf(style, false)));
         checkBox.getLabel().setFontScale(0.48f);
@@ -306,7 +306,7 @@ class UIComposer {
         return checkBox;
     }
 
-    Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
+    public Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
         Table slider = addSlider(style, min, max, step, text, postText, valueKey);
         slider.getCells().get(0).getActor().addListener(new ChangeListener() {
             @Override
@@ -317,7 +317,7 @@ class UIComposer {
         return slider;
     }
 
-    Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey){
+    public Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey){
         Table cell = new Table();
         final Slider slider = addSlider(style, min, max, step);
         slider.setValue(getFloat(valueKey));
@@ -334,24 +334,24 @@ class UIComposer {
         return cell;
     }
 
-    Slider addSlider(String style, int min, int max, float step){
+    public Slider addSlider(String style, int min, int max, float step){
         if (sliderStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         return new Slider(min, max, step, false, sliderStyles.get(sliderStyleNames.indexOf(style, false)));
     }
 
-    Button addButton(String style){
+    public Button addButton(String style){
         if (buttonStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         return new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false)));
     }
 
-    Table addButton(String style, String text, float fontScale){
+    public Table addButton(String style, String text, float fontScale){
         Table table = new Table();
         table.add(addButton(style));
         table.add(addText(text, (BitmapFont)assetManager.get("fonts/font2(old).fnt"), fontScale));
         return table;
     }
 
-    TextButton addTextButton(String style, String text, float fontScale){
+    public TextButton addTextButton(String style, String text, float fontScale){
         if (buttonStyleNames.indexOf(style, false) == -1) throw new IllegalArgumentException("Style not loaded: "+style);
         TextButton button = new TextButton(text, (TextButton.TextButtonStyle)buttonStyles.get(buttonStyleNames.indexOf(style, false)));
         button.getLabel().setSize(5, 5);
@@ -359,7 +359,7 @@ class UIComposer {
         return button;
     }
 
-    Table addLinkButton(String style, String text, final String link){
+    public Table addLinkButton(String style, String text, final String link){
         Table cell = addButton(style, text, 0.4f);
         cell.getCells().get(1).padLeft(5);
         cell.getCells().get(0).getActor().addListener(new ClickListener(){
@@ -371,7 +371,7 @@ class UIComposer {
         return cell;
     }
 
-    ScrollPane createScrollGroup(float x, float y, float width, float height, boolean horizontal, boolean vertical){
+    public ScrollPane createScrollGroup(float x, float y, float width, float height, boolean horizontal, boolean vertical){
         ScrollPane scrollPane = new ScrollPane(new Table());
         scrollPane.setBounds(x, y, width, height);
         scrollPane.setScrollingDisabled(!horizontal, !vertical);

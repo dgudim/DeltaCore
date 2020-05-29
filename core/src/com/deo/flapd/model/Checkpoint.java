@@ -20,6 +20,7 @@ public class Checkpoint {
     private Sprite checkpoint_blue, checkpoint_green;
     private boolean checkpointState, effects;
     private Polygon bounds, shipBounds;
+    private ShipObject player;
     private ParticleEffect fire;
     private ParticleEffect fire2;
     private float speed;
@@ -27,11 +28,15 @@ public class Checkpoint {
     private float destination_posY;
     private Random random;
 
-    public Checkpoint(AssetManager assetManager, Polygon shipBounds) {
+    public Checkpoint(AssetManager assetManager, ShipObject ship) {
         checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
         checkpoint_green = new Sprite((Texture) assetManager.get("checkpoint_green.png"));
 
         bounds = new Polygon(new float[]{0f, 0f, 102, 0f, 102, 102, 0f, 102});
+
+        player = ship;
+
+        shipBounds = player.bounds;
 
         random = new Random();
 
@@ -102,7 +107,7 @@ public class Checkpoint {
             checkpoint_blue.draw(batch);
         }
 
-        if (shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && SpaceShip.Health > 0 && !checkpointState) {
+        if (shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && player.Health > 0 && !checkpointState) {
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();
@@ -110,14 +115,14 @@ public class Checkpoint {
             putInteger("enemiesKilled", GameLogic.enemiesKilled);
             putInteger("moneyEarned", GameLogic.moneyEarned);
             putInteger("Score", GameLogic.Score);
-            putFloat("Health", SpaceShip.Health);
-            putFloat("Shield", SpaceShip.Shield);
-            putFloat("Charge", SpaceShip.Charge);
+            putFloat("Health", player.Health);
+            putFloat("Shield", player.Shield);
+            putFloat("Charge", player.Charge);
             putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
             putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
             putInteger("bonuses_collected", GameLogic.bonuses_collected);
             putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
-            putInteger("bulletsShot", Bullet.bulletsShot);
+            putInteger("bulletsShot", player.bulletsShot);
             putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
             putFloat("ShipX", shipBounds.getX());
             putFloat("ShipY", shipBounds.getY());

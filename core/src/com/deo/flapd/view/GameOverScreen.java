@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -61,7 +61,7 @@ public class GameOverScreen implements Screen {
 
     private AssetManager assetManager;
 
-    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor){
+    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject player){
 
         this.batch = batch;
 
@@ -89,7 +89,7 @@ public class GameOverScreen implements Screen {
 
         enemiesKilled = GameLogic.enemiesKilled;
 
-        bulletsShot = Bullet.bulletsShot;
+        bulletsShot = player.bulletsShot;
 
         meteoritesDestroyed = Meteorite.meteoritesDestroyed;
 

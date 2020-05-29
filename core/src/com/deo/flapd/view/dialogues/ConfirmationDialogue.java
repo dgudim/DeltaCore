@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.dialogues;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -14,8 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.deo.flapd.view.UIComposer;
 
-public class ConfirmationDialogue {
+public class ConfirmationDialogue extends Dialogue{
 
     public ConfirmationDialogue(AssetManager assetManager, Stage stage, String message, InputListener okButtonListener, InputListener exitButtonListener){
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");

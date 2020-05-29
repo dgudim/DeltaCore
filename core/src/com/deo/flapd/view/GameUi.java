@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
@@ -27,16 +26,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 import static com.deo.flapd.view.GameScreen.is_paused;
@@ -100,15 +97,13 @@ public class GameUi {
 
     private Polygon bounds;
 
-    private ParticleEffect explosion;
+    private boolean transparency;
 
-    private boolean exploded, transparency;
-
-    private SpaceShip ship;
+    private ShipObject player;
 
     private PostProcessor blurProcessor;
 
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, SpaceShip Ship) {
+    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject ship) {
 
         this.game = game;
 
@@ -116,9 +111,8 @@ public class GameUi {
 
         this.blurProcessor = blurProcessor;
 
-        bounds = Ship.getBounds();
-
-        ship = Ship;
+        player = ship;
+        bounds = player.bounds;
 
         uiScale = getFloat("ui");
 
@@ -267,9 +261,9 @@ public class GameUi {
         chargeBarStyle.knob = BarBackgroundBlank;
         chargeBarStyle.knobBefore = BarForegroundYellow;
 
-        health = new ProgressBar(0, SpaceShip.healthCapacity * SpaceShip.healthMultiplier, 0.01f, false, healthBarStyle);
-        shield = new ProgressBar(0, SpaceShip.shieldStrength * SpaceShip.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
-        charge = new ProgressBar(0, SpaceShip.chargeCapacity * SpaceShip.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
+        health = new ProgressBar(0, player.healthCapacity * player.healthMultiplier, 0.01f, false, healthBarStyle);
+        shield = new ProgressBar(0, player.shieldStrength * player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
+        charge = new ProgressBar(0, player.chargeCapacity * player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
 
         health.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
         shield.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);
@@ -303,9 +297,6 @@ public class GameUi {
         stage.addActor(table);
 
         PauseStage.addActor(Pause);
-
-        explosion = new ParticleEffect();
-        explosion.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
 
         touchpad.addListener(new ChangeListener() {
 
@@ -422,33 +413,18 @@ public class GameUi {
         }
 
         batch.begin();
-        health.setValue(SpaceShip.Health);
-        shield.setValue(SpaceShip.Shield);
-        charge.setValue(SpaceShip.Charge);
-
-        if (SpaceShip.Health <= 0 && !exploded) {
-            explosion.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
-            explosion.start();
-            exploded = true;
-            SpaceShip.Health = -1000;
-            SpaceShip.Shield = -1000;
-            SpaceShip.Charge = -1000;
-            ship.explode();
-        }
+        health.setValue(player.Health);
+        shield.setValue(player.Shield);
+        charge.setValue(player.Charge);
 
         if (transparency) {
             font_main.setColor(0, 0, 0, 0.7f);
         } else {
             font_main.setColor(0, 0, 0, 1);
         }
-    }
 
-    void drawExplosion(float delta) {
-        if (exploded) {
-            explosion.draw(batch, delta);
-            if (explosion.isComplete()) {
-                game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor));
-            }
+        if (player.exploded && player.explosionEffect.isComplete()) {
+            game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor, player));
         }
     }
 
@@ -473,8 +449,6 @@ public class GameUi {
         pauseButton_e.dispose();
         pauseButton_d.dispose();
         pauseButton_o.dispose();
-
-        explosion.dispose();
 
         putInteger("money", GameLogic.money);
     }

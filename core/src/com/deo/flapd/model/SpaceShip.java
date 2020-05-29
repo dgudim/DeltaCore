@@ -3,11 +3,12 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.deo.flapd.model.enemies.Enemies;
 
 public class SpaceShip extends ShipObject {
 
-    public SpaceShip(AssetManager assetManager, float x, float y, boolean newGame) {
-        super(assetManager, x, y, newGame);
+    public SpaceShip(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
+        super(assetManager, x, y, newGame, enemies);
     }
 
     public void drawBase(SpriteBatch batch, float delta){
@@ -15,7 +16,7 @@ public class SpaceShip extends ShipObject {
     }
 
     public void DrawShield(SpriteBatch batch, float delta){
-        super.drawShield(batch, MathUtils.clamp(SpaceShip.Shield/100, 0, 1), delta);
+        super.drawShield(batch, MathUtils.clamp(Shield/100, 0, 1), delta);
     }
 
     public void drawEffects(SpriteBatch batch, float delta){

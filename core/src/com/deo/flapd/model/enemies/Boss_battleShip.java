@@ -21,7 +21,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 
 import java.util.Random;
@@ -83,15 +83,21 @@ public class Boss_battleShip {
 
     private float posX, posY, posX_original, posY_original;
 
-    private Polygon shipBounds, bounds_body, bounds_cannon, bounds_cannon2, bounds_cannon3, bounds_cannon4, bounds_cannon5, bounds_cannon6, bounds_cannon_front, bounds_cannon_front_big, bounds_homing1, bounds_homing2;
+    private Polygon playerBounds, bounds_body, bounds_cannon, bounds_cannon2, bounds_cannon3, bounds_cannon4, bounds_cannon5, bounds_cannon6, bounds_cannon_front, bounds_cannon_front_big, bounds_homing1, bounds_homing2;
 
     private Sound shot, shot2, shot3, shot4, explosion;
 
     private float soundVolume;
 
-    public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds) {
+    private ShipObject player;
 
-        this.shipBounds = shipBounds;
+    private Bullet playerBullet;
+
+    public Boss_battleShip(AssetManager assetManager, float posX, float posY, ShipObject ship) {
+
+        player = ship;
+        playerBounds = player.bounds;
+        playerBullet = player.bullet;
 
         main = new Sprite();
 
@@ -355,15 +361,15 @@ public class Boss_battleShip {
 
         if (is_spawned || deathAnimation) {
 
-            bounds_cannon.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon.getY() - shipBounds.getY() - 30, bounds_cannon.getX() - shipBounds.getX() - 30));
-            bounds_cannon2.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon2.getY() - shipBounds.getY() - 30, bounds_cannon2.getX() - shipBounds.getX() - 30));
-            bounds_cannon3.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon3.getY() - shipBounds.getY() - 30, bounds_cannon3.getX() - shipBounds.getX() - 30));
-            bounds_cannon4.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon4.getY() - shipBounds.getY() - 30, bounds_cannon4.getX() - shipBounds.getX() - 30));
-            bounds_cannon5.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon5.getY() - shipBounds.getY() - 30, bounds_cannon5.getX() - shipBounds.getX() - 30));
-            bounds_cannon6.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon6.getY() - shipBounds.getY() - 30, bounds_cannon6.getX() - shipBounds.getX() - 30));
-            bounds_cannon_front.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon_front.getY() - shipBounds.getY() - 30, bounds_cannon_front.getX() - shipBounds.getX() - 30));
-            bounds_cannon_front_big.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon_front_big.getY() - shipBounds.getY() - 30, bounds_cannon_front_big.getX() - shipBounds.getX() - 30), -20, 20));
-            bounds_homing2.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_homing2.getY() - shipBounds.getY() - 30, bounds_homing2.getX() - shipBounds.getX() - 30), -30, 30));
+            bounds_cannon.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon.getY() - playerBounds.getY() - 30, bounds_cannon.getX() - playerBounds.getX() - 30));
+            bounds_cannon2.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon2.getY() - playerBounds.getY() - 30, bounds_cannon2.getX() - playerBounds.getX() - 30));
+            bounds_cannon3.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon3.getY() - playerBounds.getY() - 30, bounds_cannon3.getX() - playerBounds.getX() - 30));
+            bounds_cannon4.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon4.getY() - playerBounds.getY() - 30, bounds_cannon4.getX() - playerBounds.getX() - 30));
+            bounds_cannon5.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon5.getY() - playerBounds.getY() - 30, bounds_cannon5.getX() - playerBounds.getX() - 30));
+            bounds_cannon6.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon6.getY() - playerBounds.getY() - 30, bounds_cannon6.getX() - playerBounds.getX() - 30));
+            bounds_cannon_front.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon_front.getY() - playerBounds.getY() - 30, bounds_cannon_front.getX() - playerBounds.getX() - 30));
+            bounds_cannon_front_big.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_cannon_front_big.getY() - playerBounds.getY() - 30, bounds_cannon_front_big.getX() - playerBounds.getX() - 30), -20, 20));
+            bounds_homing2.setRotation(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bounds_homing2.getY() - playerBounds.getY() - 30, bounds_homing2.getX() - playerBounds.getX() - 30), -30, 30));
 
             health_cannon1.setPosition(bounds_cannon.getX() + 3, bounds_cannon.getY() - 5);
             health_cannon2.setPosition(bounds_cannon2.getX() + 3, bounds_cannon2.getY() - 5);
@@ -636,15 +642,15 @@ public class Boss_battleShip {
                 bodyOffset++;
             }
 
-            if (bounds_body.getBoundingRectangle().overlaps(shipBounds.getBoundingRectangle()) && !explodedCannons.get(0)) {
-                if (shipBounds.getX() + 76.8f > bounds_body.getX() && shipBounds.getX() + 76.8f < bounds_body.getX() + 30) {
-                    shipBounds.setPosition(bounds_body.getX() - 76.8f, shipBounds.getY());
+            if (bounds_body.getBoundingRectangle().overlaps(playerBounds.getBoundingRectangle()) && !explodedCannons.get(0)) {
+                if (playerBounds.getX() + 76.8f > bounds_body.getX() && playerBounds.getX() + 76.8f < bounds_body.getX() + 30) {
+                    playerBounds.setPosition(bounds_body.getX() - 76.8f, playerBounds.getY());
                 }
-                if (shipBounds.getY() + 57.6f > bounds_body.getY() && shipBounds.getY() + 57.6f < bounds_body.getY() + 30) {
-                    shipBounds.setPosition(shipBounds.getX(), bounds_body.getY() - 57.6f);
+                if (playerBounds.getY() + 57.6f > bounds_body.getY() && playerBounds.getY() + 57.6f < bounds_body.getY() + 30) {
+                    playerBounds.setPosition(playerBounds.getX(), bounds_body.getY() - 57.6f);
                 }
-                if (shipBounds.getY() < bounds_body.getY() + 152 && shipBounds.getY() > bounds_body.getY() + 122) {
-                    shipBounds.setPosition(shipBounds.getX(), bounds_body.getY() + 152);
+                if (playerBounds.getY() < bounds_body.getY() + 152 && playerBounds.getY() > bounds_body.getY() + 122) {
+                    playerBounds.setPosition(playerBounds.getX(), bounds_body.getY() + 152);
                 }
             }
 
@@ -660,8 +666,8 @@ public class Boss_battleShip {
                 bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
                 bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
-                    SpaceShip.takeDamage(5);
+                if (bullet.overlaps(playerBounds.getBoundingRectangle())) {
+                    player.takeDamage(5);
                     removeBullet(i, 1);
                 }
 
@@ -683,8 +689,8 @@ public class Boss_battleShip {
                 bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
                 bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
-                    SpaceShip.takeDamage(10);
+                if (bullet.overlaps(playerBounds.getBoundingRectangle())) {
+                    player.takeDamage(10);
                     removeBullet(i, 2);
                 }
 
@@ -705,8 +711,8 @@ public class Boss_battleShip {
                 this.bullet3.draw(batch);
                 this.bullet3.rotate(2);
 
-                bullet.x = MathUtils.lerp(bullet.x, shipBounds.getX(), delta * 0.7f);
-                bullet.y = MathUtils.lerp(bullet.y, shipBounds.getY() + shipBounds.getBoundingRectangle().getHeight() / 2, delta * 0.7f);
+                bullet.x = MathUtils.lerp(bullet.x, playerBounds.getX(), delta * 0.7f);
+                bullet.y = MathUtils.lerp(bullet.y, playerBounds.getY() + playerBounds.getBoundingRectangle().getHeight() / 2, delta * 0.7f);
 
                 fire.setPosition(bullet.x + bullet.width / 2, bullet.y + bullet.height / 2);
                 fire.draw(batch, delta);
@@ -714,8 +720,8 @@ public class Boss_battleShip {
                 timer = timer - delta;
                 bullets_red_big_timers.set(i, timer);
 
-                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
-                    SpaceShip.takeDamage(15);
+                if (bullet.overlaps(playerBounds.getBoundingRectangle())) {
+                    player.takeDamage(15);
                     removeBullet(i, 3);
                 }
 
@@ -742,8 +748,8 @@ public class Boss_battleShip {
                 bullet.x -= MathUtils.cosDeg(degree) * 300 * delta;
                 bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
-                if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
-                    SpaceShip.takeDamage(7);
+                if (bullet.overlaps(playerBounds.getBoundingRectangle())) {
+                    player.takeDamage(7);
                     removeBullet(i, 4);
                 }
 
@@ -754,70 +760,70 @@ public class Boss_battleShip {
 
             if (posX < 246) {
 
-                for (int i = 0; i < Bullet.bullets.size; i++) {
+                for (int i = 0; i < playerBullet.bullets.size; i++) {
 
-                    if (Bullet.bullets.get(i).overlaps(bounds_cannon.getBoundingRectangle())) {
-                        healths.set(1, healths.get(1) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon2.getBoundingRectangle())) {
-                        healths.set(2, healths.get(2) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon3.getBoundingRectangle())) {
-                        healths.set(3, healths.get(3) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon4.getBoundingRectangle())) {
-                        healths.set(4, healths.get(4) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon5.getBoundingRectangle())) {
-                        healths.set(5, healths.get(5) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon6.getBoundingRectangle())) {
-                        healths.set(6, healths.get(6) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon_front.getBoundingRectangle())) {
-                        healths.set(8, healths.get(8) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_homing1.getBoundingRectangle()) || Bullet.bullets.get(i).overlaps(bounds_homing2.getBoundingRectangle())) {
-                        healths.set(10, healths.get(10) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0) {
-                        healths.set(7, healths.get(7) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
-                    } else if (Bullet.bullets.get(i).overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2) {
-                        healths.set(9, healths.get(9) - Bullet.damages.get(i));
-                        Bullet.removeBullet(i, true);
+                    if (playerBullet.bullets.get(i).overlaps(bounds_cannon.getBoundingRectangle())) {
+                        healths.set(1, healths.get(1) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon2.getBoundingRectangle())) {
+                        healths.set(2, healths.get(2) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon3.getBoundingRectangle())) {
+                        healths.set(3, healths.get(3) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon4.getBoundingRectangle())) {
+                        healths.set(4, healths.get(4) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon5.getBoundingRectangle())) {
+                        healths.set(5, healths.get(5) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon6.getBoundingRectangle())) {
+                        healths.set(6, healths.get(6) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon_front.getBoundingRectangle())) {
+                        healths.set(8, healths.get(8) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_homing1.getBoundingRectangle()) || playerBullet.bullets.get(i).overlaps(bounds_homing2.getBoundingRectangle())) {
+                        healths.set(10, healths.get(10) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0) {
+                        healths.set(7, healths.get(7) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
+                    } else if (playerBullet.bullets.get(i).overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2) {
+                        healths.set(9, healths.get(9) - playerBullet.damages.get(i));
+                        playerBullet.removeBullet(i, true);
                     }
                 }
 
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon.getBoundingRectangle())) {
-                    healths.set(1, healths.get(1) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon.getBoundingRectangle())) {
+                    healths.set(1, healths.get(1) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon2.getBoundingRectangle())) {
-                    healths.set(2, healths.get(2) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon2.getBoundingRectangle())) {
+                    healths.set(2, healths.get(2) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon3.getBoundingRectangle())) {
-                    healths.set(3, healths.get(3) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon3.getBoundingRectangle())) {
+                    healths.set(3, healths.get(3) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon4.getBoundingRectangle())) {
-                    healths.set(4, healths.get(4) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon4.getBoundingRectangle())) {
+                    healths.set(4, healths.get(4) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon5.getBoundingRectangle())) {
-                    healths.set(5, healths.get(5) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon5.getBoundingRectangle())) {
+                    healths.set(5, healths.get(5) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon6.getBoundingRectangle())) {
-                    healths.set(6, healths.get(6) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon6.getBoundingRectangle())) {
+                    healths.set(6, healths.get(6) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon_front.getBoundingRectangle())) {
-                    healths.set(8, healths.get(8) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon_front.getBoundingRectangle())) {
+                    healths.set(8, healths.get(8) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_homing1.getBoundingRectangle()) || Bullet.laser.getBoundingRectangle().overlaps(bounds_homing2.getBoundingRectangle())) {
-                    healths.set(10, healths.get(10) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_homing1.getBoundingRectangle()) || playerBullet.laser.getBoundingRectangle().overlaps(bounds_homing2.getBoundingRectangle())) {
+                    healths.set(10, healths.get(10) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0) {
-                    healths.set(7, healths.get(7) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_body.getBoundingRectangle()) && stage2 && healths.get(7) > 0) {
+                    healths.set(7, healths.get(7) - playerBullet.damage / 10);
                 }
-                if (Bullet.laser.getBoundingRectangle().overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2) {
-                    healths.set(9, healths.get(9) - Bullet.damage / 10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(bounds_cannon_front_big.getBoundingRectangle()) && stage2) {
+                    healths.set(9, healths.get(9) - playerBullet.damage / 10);
                 }
 
                 shoot(delta);

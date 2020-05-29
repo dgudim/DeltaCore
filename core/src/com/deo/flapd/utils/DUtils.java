@@ -326,6 +326,7 @@ public abstract class DUtils {
             case ("upgrades"):
             case ("shotgun"):
             case ("minigun"):
+            case ("radar"):
                 item = name;
                 break;
             case ("metal shard"):
@@ -550,6 +551,9 @@ public abstract class DUtils {
             case ("laser beam gun"):
                 item = "laserBeamGun";
                 break;
+            case ("ion gun"):
+                item = "coreGun";
+                break;
             case ("armour mk1"):
                 item = "engineArmour1";
                 break;
@@ -565,10 +569,15 @@ public abstract class DUtils {
             case ("root"):
                 item = "tree";
                 break;
-            case("beast mode"):{
+            case("beast mode"):
                 item = "beastMode";
                 break;
-            }
+            case("laser weapons"):
+                item = "category_laser";
+                break;
+            case("basic ammo weapons"):
+                item = "category_basic";
+                break;
             default:
                 log("\n no texture for item " + name);
                 item = "ohno";

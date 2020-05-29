@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.ShipObject;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -15,18 +16,26 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 public class Enemies {
 
     private AssetManager assetManager;
-    private JsonValue enemiesJson = new JsonReader().parse(Gdx.files.internal("enemies/enemies.json"));
+
+    JsonValue enemiesJson = new JsonReader().parse(Gdx.files.internal("enemies/enemies.json"));
     private Array<EnemyData> enemies;
     private Array<String> enemyNames;
-    public static Array<Enemy> enemyEntities;
+    public Array<Enemy> enemyEntities;
+
     private String type;
+
     private float difficulty;
 
+    private ShipObject player;
+
     public Enemies(AssetManager assetManager){
+
         this.assetManager = assetManager;
+
         enemies = new Array<>();
         enemyNames = new Array<>();
         enemyEntities = new Array<>();
+
         if(getBoolean("easterEgg")){
             type = "easterEgg";
         }else{
@@ -48,7 +57,7 @@ public class Enemies {
     private void SpawnEnemy(EnemyData data){
         data = data.clone();
         data.health *= difficulty;
-        enemyEntities.add(new Enemy(assetManager, data, enemiesJson));
+        enemyEntities.add(new Enemy(assetManager, data, this, player));
     }
 
     public void draw(SpriteBatch batch){
@@ -88,4 +97,7 @@ public class Enemies {
         }
     }
 
+    public void setTargetPlayer(ShipObject targetPlayer){
+        player = targetPlayer;
+    }
 }

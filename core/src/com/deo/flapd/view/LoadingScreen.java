@@ -52,7 +52,7 @@ public class LoadingScreen implements Screen {
     private PostProcessor blurProcessor;
     private boolean enableShader;
     private long loadingTime;
-    static Tree craftingTree;
+    public static Tree craftingTree;
     private String stateName;
 
     public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor){

@@ -107,7 +107,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "basic ammo weapons",
     "requires": ["small machine gun"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
@@ -123,7 +123,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "basic ammo weapons",
     "requires": ["machine gun"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
@@ -139,7 +139,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "basic ammo weapons",
     "requires": ["machine gun"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
@@ -155,7 +155,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "laser weapons",
     "requires": ["machine gun"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
@@ -207,7 +207,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "laser weapons",
     "requires": ["machine gun", "energy core"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "laser beam thickness", "laser pulse duration", "[#FEDE15]power consumption"],
@@ -228,6 +228,30 @@
     "price": "auto",
     "type": "baseCategory",
     "saveTo": "bonus1C"
+  },
+  "basic ammo weapons":{
+    "items": [""],
+    "itemCounts": [0],
+    "resultCount": 0,
+    "description": "just a category for basic cannons",
+    "isCraftable": false,
+    "category": "small machine gun",
+    "requires": [""],
+    "price": "auto",
+    "type": "baseCategory",
+    "saveTo": "bonus2C"
+  },
+  "laser weapons":{
+    "items": [""],
+    "itemCounts": [0],
+    "resultCount": 0,
+    "description": "just a category for laser cannons",
+    "isCraftable": false,
+    "category": "small machine gun",
+    "requires": [""],
+    "price": "auto",
+    "type": "baseCategory",
+    "saveTo": "bonus3C"
   },
   "basic armour": {
     "items": [""],
@@ -406,7 +430,7 @@
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#3bff38]attraction radius"],
     "parameterValues": [1, 270],
-    "saveTo": "currentMagnet"
+    "saveTo": "currentBonus"
   },
   "repellent field": {
     "items": ["energy cell", "reinforced iron plate", "cyan crystal", "circuit board", "bolt", "cable"],
@@ -419,7 +443,20 @@
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#3bff38]repellent radius"],
     "parameterValues": [1, 210],
-    "saveTo": "currentRepellent"
+    "saveTo": "currentBonus"
+  },
+  "radar": {
+    "items": ["energy cell", "iron plate", "purple crystal", "processor mk2", "bolt", "fiber cable"],
+    "itemCounts": [2, 5, 1, 1, 10, 2],
+    "resultCount": 1,
+    "description": "allows your weapon to target enemies",
+    "isCraftable": true,
+    "category": "upgrades",
+    "requires": ["warp core"],
+    "type": "part",
+    "parameters": ["[#FEDE15]power consumption", "[#03B1FC]aim radius"],
+    "parameterValues": [1, 310],
+    "saveTo": "currentBonus"
   },
   "reinforced glass pane": {
     "items": ["iron plate", "bolt", "glass rod", "glass shard", "green crystal"],

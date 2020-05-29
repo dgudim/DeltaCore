@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.dialogues;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.view.LoadingScreen;
+import com.deo.flapd.view.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -38,7 +40,7 @@ import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-class CraftingDialogue {
+public class CraftingDialogue extends Dialogue{
 
     private Dialog dialog;
     private Stage stage;
@@ -56,15 +58,19 @@ class CraftingDialogue {
     private TextureAtlas itemAtlas;
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
         this(stage, assetManager, result, 1, false, null);
     }
 
-    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, boolean showDescription) {
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity) {
+        this(stage, assetManager, result, requestedQuantity, false, null);
+    }
+
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, boolean showDescription) {
         this(stage, assetManager, result, 1, showDescription, null);
     }
 
-    CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final CraftingDialogue previousDialogue) {
+    private CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue) {
         this.stage = stage;
         this.assetManager = assetManager;
         this.result = result;
@@ -186,7 +192,7 @@ class CraftingDialogue {
                                     }
                                     dialog.hide();
                                     if (previousDialogue != null) {
-                                        previousDialogue.updateRequirements();
+                                        previousDialogue.update();
                                     }
                                     LoadingScreen.craftingTree.update();
                                 }
@@ -320,7 +326,8 @@ class CraftingDialogue {
         return treeJson.get(result).getInt("resultCount");
     }
 
-    private void updateRequirements() {
+    @Override
+    public void update() {
         for (int i = 0; i < itemCounts.length; i++) {
             tableLabels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + (int) (itemCounts[i] * quantity.getValue()));
             if (itemCounts[i] * quantity.getValue() > getInteger("item_" + getItemCodeNameByName(items[i]))) {
@@ -370,6 +377,7 @@ class CraftingDialogue {
             final Table requirement = new Table();
             Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "/" + itemCounts[i] * requestedQuantity, yellowLabelStyle);
             itemText.setFontScale(0.1f);
+            itemText.setWrap(true);
             if (itemCounts[i] * requestedQuantity > getInteger("item_" + getItemCodeNameByName(items[i]))) {
                 itemText.setColor(Color.valueOf("#DD0000"));
             }
@@ -399,7 +407,7 @@ class CraftingDialogue {
                         quantities.add(slotsJson.get("productQuantities").asIntArray()[i]);
                     }
 
-                    new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)), null);
+                    new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)), CraftingDialogue.this);
                 }
             });
 
@@ -423,7 +431,7 @@ class CraftingDialogue {
 
             requirementButtons.add(item);
             requirement.add(item).size(10, 10);
-            requirement.add(itemText).pad(1).padLeft(2);
+            requirement.add(itemText).width(52).pad(1).padLeft(2);
             requirement.add(buyShortcut).size(10, 5).padLeft(2);
             ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(1);
@@ -453,7 +461,7 @@ class CraftingDialogue {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 quantityText.setText("quantity:" + (int) quantity.getValue());
-                updateRequirements();
+                update();
                 productQuantity.setText(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
             }
         });
@@ -472,7 +480,7 @@ class CraftingDialogue {
         question.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, 1, true, null);
+                new CraftingDialogue(stage, assetManager, result, true);
             }
         });
 

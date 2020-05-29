@@ -3,16 +3,23 @@ shields.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-field_attractor
+circle
   rotate: false
   xy: 1, 85
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-field_repellent
+field_attractor
   rotate: false
   xy: 131, 85
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+field_repellent
+  rotate: false
+  xy: 261, 85
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -26,7 +33,7 @@ ColdShield
   index: -1
 ColdShieldMk2
   rotate: false
-  xy: 261, 131
+  xy: 391, 131
   size: 128, 82
   orig: 128, 82
   offset: 0, 0
@@ -40,7 +47,7 @@ ColdShieldMk3
   index: -1
 ColdShieldMk4
   rotate: false
-  xy: 261, 47
+  xy: 521, 131
   size: 128, 82
   orig: 128, 82
   offset: 0, 0

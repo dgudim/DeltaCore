@@ -28,9 +28,11 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class Bullet {
 
-    private Polygon bounds;
-    public static Array<Rectangle> bullets;
-    public static Array<Integer> damages;
+    private ShipObject player;
+    private Enemies enemies;
+    private Polygon playerBounds;
+    public Array<Rectangle> bullets;
+    public Array<Integer> damages;
     private Array<ParticleEffect> trails, disposedTrails;
     private Array<Float> trailCountDownTimers;
     private Array<Float> degrees;
@@ -44,18 +46,16 @@ public class Bullet {
 
     private float soundVolume;
 
-    public static int bulletsShot;
-
     private Random random;
 
     private float spread;
 
-    private static Array<Boolean> explosionQueue, remove_Bullet;
+    private Array<Boolean> explosionQueue, remove_Bullet;
 
     private float shootingSpeedMultiplier;
     private float powerConsumption;
 
-    public static Sprite laser;
+    public Sprite laser;
 
     private String bulletExplosionEffect;
     private String bulletTrailEffect;
@@ -63,7 +63,7 @@ public class Bullet {
 
     private float width, height;
 
-    public static int damage;
+    public int damage;
     private int baseDamage;
     private int bulletSpeed;
     private int bulletsPerShot;
@@ -83,8 +83,12 @@ public class Bullet {
     private float[] gunOffsetsX;
     private float[] gunOffsetsY;
 
-    public Bullet(AssetManager assetManager, Polygon shipBounds, boolean newGame) {
-        bounds = shipBounds;
+    public Bullet(AssetManager assetManager, ShipObject ship, Enemies enemies, boolean newGame) {
+
+        player = ship;
+        playerBounds = player.bounds;
+
+        this.enemies = enemies;
 
         TextureAtlas bullets = assetManager.get("player/bullets.atlas");
 
@@ -168,7 +172,7 @@ public class Bullet {
 
         random = new Random();
 
-        Bullet.bullets = new Array<>();
+        this.bullets = new Array<>();
         damages = new Array<>();
         degrees = new Array<>();
         explosions = new Array<>();
@@ -181,9 +185,9 @@ public class Bullet {
         explosionTimers = new Array<>();
 
         if (!newGame) {
-            bulletsShot = getInteger("bulletsShot");
+            player.bulletsShot = getInteger("bulletsShot");
         } else {
-            bulletsShot = 0;
+            player.bulletsShot = 0;
         }
 
         laser = new Sprite((Texture) assetManager.get("laser.png"));
@@ -213,14 +217,14 @@ public class Bullet {
     public void Spawn(float damageMultiplier, boolean is_charged) {
 
         if (!isLaser) {
-            if (SpaceShip.Charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {
+            if (player.Charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {
                 for (int i = 0; i < bulletsPerShot; i++) {
                     Rectangle bullet = new Rectangle();
 
                     bullet.setSize(width, height);
 
-                    bullet.x = bounds.getX() + gunOffsetsX[currentActiveGun];
-                    bullet.y = bounds.getY() + gunOffsetsY[currentActiveGun];
+                    bullet.x = playerBounds.getX() + gunOffsetsX[currentActiveGun];
+                    bullet.y = playerBounds.getY() + gunOffsetsY[currentActiveGun];
 
                     if(currentActiveGun+1 < gunCount){
                         currentActiveGun++;
@@ -231,24 +235,24 @@ public class Bullet {
                     bullets.add(bullet);
                     explosionQueue.add(false);
                     remove_Bullet.add(false);
-                    if (SpaceShip.Charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
+                    if (player.Charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
                         types.add(true);
                         damages.add((int) (damage * damageMultiplier));
-                        SpaceShip.Charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
+                        player.Charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
                     } else {
                         types.add(false);
                         damages.add(damage);
-                        SpaceShip.Charge -= powerConsumption / bulletsPerShot;
+                        player.Charge -= powerConsumption / bulletsPerShot;
                     }
 
-                    degrees.add((random.nextFloat() - 0.5f) * spread + bounds.getRotation() / 20);
+                    degrees.add((random.nextFloat() - 0.5f) * spread + playerBounds.getRotation() / 20);
 
                     if(isHoming){
                         explosionTimers.add(explosionTimer);
                     }
 
-                    bullet.x += MathUtils.cosDeg(bounds.getRotation()) * 6;
-                    bullet.y += MathUtils.cosDeg(bounds.getRotation());
+                    bullet.x += MathUtils.cosDeg(playerBounds.getRotation()) * 6;
+                    bullet.y += MathUtils.cosDeg(playerBounds.getRotation());
 
                     if (hasTrail) {
                         ParticleEffect trail = new ParticleEffect();
@@ -256,8 +260,7 @@ public class Bullet {
                         trail.start();
                         trails.add(trail);
                     }
-
-                    bulletsShot++;
+                    player.bulletsShot++;
                 }
 
                 if (soundVolume > 0) {
@@ -301,12 +304,12 @@ public class Bullet {
                     bullet.y += 300 * bulletSpeed / 1500.0f * angle * delta;
                     this.bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(300 * angle, 1500));
                 }else{
-                    float posX = bounds.getX() + 1000;
-                    float posY = bounds.getY();
-                    for(int i2 = 0; i2<Enemies.enemyEntities.size; i2++){
-                        if(!Enemies.enemyEntities.get(i2).isDead){
-                            posX = Enemies.enemyEntities.get(i2).data.x + Enemies.enemyEntities.get(i2).data.width / 2;
-                            posY = Enemies.enemyEntities.get(i2).data.y + Enemies.enemyEntities.get(i2).data.height / 2;
+                    float posX = playerBounds.getX() + 1000;
+                    float posY = playerBounds.getY();
+                    for(int i2 = 0; i2<enemies.enemyEntities.size; i2++){
+                        if(!enemies.enemyEntities.get(i2).isDead){
+                            posX = enemies.enemyEntities.get(i2).data.x + enemies.enemyEntities.get(i2).data.width / 2;
+                            posY = enemies.enemyEntities.get(i2).data.y + enemies.enemyEntities.get(i2).data.height / 2;
                             break;
                         }
                     }
@@ -315,12 +318,12 @@ public class Bullet {
                     this.bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(posY - bullet.y, posX - bullet.x));
                     explosionTimers.set(i, explosionTimers.get(i) - delta);
                     if(explosionTimers.get(i)<=0){
-                        Bullet.removeBullet(i, true);
+                        removeBullet(i, true);
                     }
                 }
 
                 if (bullet.x > 800) {
-                    Bullet.removeBullet(i, false);
+                    removeBullet(i, false);
                 }
             }
             for (int i3 = 0; i3 < explosions.size; i3++) {
@@ -385,8 +388,8 @@ public class Bullet {
                 trails.get(i).draw(batch, delta);
             }
         } else if (isLaserActive && currentDuration >= 10) {
-            laser.setRotation(bounds.getRotation());
-            laser.setPosition(bounds.getX() + MathUtils.cosDeg(laser.getRotation()) * 75, bounds.getY() + 16 / MathUtils.cosDeg(laser.getRotation()) + MathUtils.sinDeg(laser.getRotation()) * 80);
+            laser.setRotation(playerBounds.getRotation());
+            laser.setPosition(playerBounds.getX() + MathUtils.cosDeg(laser.getRotation()) * 75, playerBounds.getY() + 16 / MathUtils.cosDeg(laser.getRotation()) + MathUtils.sinDeg(laser.getRotation()) * 80);
             laser.setSize(800, laserHeight);
             laser.setColor(Color.CYAN);
             laser.draw(batch);
@@ -394,8 +397,8 @@ public class Bullet {
             currentDuration -= delta * 1000;
         } else {
             if (currentDuration < laserDuration) {
-                if (SpaceShip.Charge >= powerConsumption * delta * 10) {
-                    SpaceShip.Charge -= powerConsumption * delta * 10;
+                if (player.Charge >= powerConsumption * delta * 10) {
+                    player.Charge -= powerConsumption * delta * 10;
                     currentDuration += delta * 500;
                 }
             }
@@ -440,7 +443,7 @@ public class Bullet {
         types.clear();
     }
 
-    public static void removeBullet(int i, boolean explode) {
+    public void removeBullet(int i, boolean explode) {
         if (explode) {
             explosionQueue.set(i, true);
             remove_Bullet.set(i, true);

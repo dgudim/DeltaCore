@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
-import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Meteorite;
@@ -46,7 +45,6 @@ public class GameScreen implements Screen {
     private Texture FillTexture;
     private final int fillingThreshold = 7;
 
-    private Bullet bullet;
     private Meteorite meteorite;
     private Boss_battleShip boss_battleShip;
     private Boss_evilEye boss_evilEye;
@@ -106,30 +104,30 @@ public class GameScreen implements Screen {
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         bg3.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        ship = new SpaceShip(assetManager, 0, 204, newGame);
+        enemies = new Enemies(assetManager);
+        enemies.loadEnemies();
+
+        ship = new SpaceShip(assetManager, 0, 204, newGame, enemies);
+
+        enemies.setTargetPlayer(ship);
 
         uraniumCell = new UraniumCell(assetManager);
 
-        boss_battleShip = new Boss_battleShip(assetManager, 1100, 150, ship.getBounds());
+        boss_battleShip = new Boss_battleShip(assetManager, 1100, 150, ship);
 
-        boss_evilEye = new Boss_evilEye(assetManager, ship.getBounds());
+        boss_evilEye = new Boss_evilEye(assetManager, ship);
 
-        bonus = new Bonus(assetManager, 50, 50, ship.getBounds(), boss_battleShip, boss_evilEye);
+        bonus = new Bonus(assetManager, 50, 50, ship, boss_battleShip, boss_evilEye);
 
         drops = new Drops(assetManager, 48, getFloat("ui"));
 
         gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship);
 
-        bullet = new Bullet(assetManager, ship.getBounds(), newGame);
-
-        enemies = new Enemies(assetManager);
-        enemies.loadEnemies();
-
         meteorite = new Meteorite(assetManager, newGame, getBoolean("easterEgg"));
 
-        checkpoint = new Checkpoint(assetManager, ship.getBounds());
+        checkpoint = new Checkpoint(assetManager, ship);
 
-        gameLogic = new GameLogic(ship.getBounds(), newGame, game, bullet, meteorite, boss_battleShip, checkpoint, boss_evilEye);
+        gameLogic = new GameLogic(ship, newGame, game, meteorite, boss_battleShip, checkpoint, boss_evilEye);
 
         musicVolume = getFloat("musicVolume");
 
@@ -216,9 +214,6 @@ public class GameScreen implements Screen {
         boss_evilEye.draw(batch, delta);
         meteorite.drawEffects(batch, delta);
         checkpoint.drawEffects(batch, delta);
-        bullet.draw(batch, delta);
-
-        gameUi.drawExplosion(delta);
 
         if (enableShader) {
             batch.end();
@@ -320,7 +315,6 @@ public class GameScreen implements Screen {
 
         gameUi.dispose();
         meteorite.dispose();
-        bullet.dispose();
 
         ship.dispose();
 

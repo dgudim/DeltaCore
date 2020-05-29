@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.dialogues;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -26,6 +26,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.view.ItemSlotManager;
+import com.deo.flapd.view.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -34,11 +36,22 @@ import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class PurchaseDialogue{
+public class PurchaseDialogue extends Dialogue{
 
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-    PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager){
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity){
+        new PurchaseDialogue(assetManager, stage, result, availableQuantity, null, null);
+    }
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final Dialogue previousDialogue){
+        new PurchaseDialogue(assetManager, stage, result, availableQuantity, null, previousDialogue);
+    }
+
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager){
+        new PurchaseDialogue(assetManager, stage, result, availableQuantity, itemSlotManager, null);
+    }
+
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue){
 
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
@@ -177,6 +190,9 @@ public class PurchaseDialogue{
 
                     if(itemSlotManager != null) {
                         itemSlotManager.update();
+                    }
+                    if(previousDialogue != null){
+                        previousDialogue.update();
                     }
                     dialog.hide();
                 }

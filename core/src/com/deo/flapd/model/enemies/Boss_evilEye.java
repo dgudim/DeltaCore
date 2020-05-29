@@ -23,7 +23,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 
 import java.util.Random;
@@ -53,6 +53,8 @@ public class Boss_evilEye {
     private float rotation, posX, millis, shieldSize;
 
     private Polygon shipBounds;
+    private ShipObject player;
+    private Bullet playerBullet;
 
     private Random random;
 
@@ -72,7 +74,7 @@ public class Boss_evilEye {
 
     private float soundVolume;
 
-    public Boss_evilEye(AssetManager assetManager, Polygon shipBounds) {
+    public Boss_evilEye(AssetManager assetManager, ShipObject ship) {
 
         soundVolume = getFloat("soundVolume");
 
@@ -94,7 +96,9 @@ public class Boss_evilEye {
         bullet = new Sprite((Texture) assetManager.get("pew2.png"));
         shield = new Sprite((Texture) assetManager.get("HotShield.png"));
 
-        this.shipBounds = shipBounds;
+        player = ship;
+        shipBounds = player.bounds;
+        playerBullet = player.bullet;
 
         cannonBounds = new Array<>();
         degrees = new Array<>();
@@ -310,7 +314,7 @@ public class Boss_evilEye {
                             laser.draw(batch);
                         }
                         float multiplier = laser.getWidth() / 4;
-                        SpaceShip.takeDamage(multiplier * 30 * delta);
+                        player.takeDamage(multiplier * 30 * delta);
                         break;
                     }
                 }
@@ -335,38 +339,38 @@ public class Boss_evilEye {
 
             if (is_in_position) {
                 for (int i2 = 0; i2 < 10; i2++) {
-                    if (Bullet.laser.getBoundingRectangle().overlaps(cannonBounds.get(i2))) {
-                        health.set(i2, health.get(i2) - Bullet.damage / 10);
+                    if (playerBullet.laser.getBoundingRectangle().overlaps(cannonBounds.get(i2))) {
+                        health.set(i2, health.get(i2) - playerBullet.damage / 10);
                     }
                 }
                 if (stage2) {
                     if (health.get(11) > 0) {
-                        if (Bullet.laser.getBoundingRectangle().overlaps(bodyBounds)) {
-                            health.set(11, health.get(11) - Bullet.damage / 10);
+                        if (playerBullet.laser.getBoundingRectangle().overlaps(bodyBounds)) {
+                            health.set(11, health.get(11) - playerBullet.damage / 10);
                         }
                     } else {
-                        if (Bullet.laser.getBoundingRectangle().overlaps(bodyBounds)) {
-                            health.set(10, health.get(10) - Bullet.damage / 10);
+                        if (playerBullet.laser.getBoundingRectangle().overlaps(bodyBounds)) {
+                            health.set(10, health.get(10) - playerBullet.damage / 10);
                         }
                     }
                 }
-                for (int i = 0; i < Bullet.bullets.size; i++) {
+                for (int i = 0; i < playerBullet.bullets.size; i++) {
                     for (int i2 = 0; i2 < 10; i2++) {
-                        if (Bullet.bullets.get(i).overlaps(cannonBounds.get(i2))) {
-                            Bullet.removeBullet(i, true);
-                            health.set(i2, health.get(i2) - Bullet.damages.get(i));
+                        if (playerBullet.bullets.get(i).overlaps(cannonBounds.get(i2))) {
+                            playerBullet.removeBullet(i, true);
+                            health.set(i2, health.get(i2) - playerBullet.damages.get(i));
                         }
                     }
                     if (stage2) {
                         if (health.get(11) > 0) {
-                            if (Bullet.bullets.get(i).overlaps(bodyBounds)) {
-                                Bullet.removeBullet(i, true);
-                                health.set(11, health.get(11) - Bullet.damages.get(i));
+                            if (playerBullet.bullets.get(i).overlaps(bodyBounds)) {
+                                playerBullet.removeBullet(i, true);
+                                health.set(11, health.get(11) - playerBullet.damages.get(i));
                             }
                         } else {
-                            if (Bullet.bullets.get(i).overlaps(bodyBounds)) {
-                                Bullet.removeBullet(i, true);
-                                health.set(10, health.get(10) - Bullet.damages.get(i));
+                            if (playerBullet.bullets.get(i).overlaps(bodyBounds)) {
+                                playerBullet.removeBullet(i, true);
+                                health.set(10, health.get(10) - playerBullet.damages.get(i));
                             }
                         }
                     }
@@ -396,7 +400,7 @@ public class Boss_evilEye {
                 bullet.y -= MathUtils.sinDeg(degree) * 300 * delta;
 
                 if (bullet.overlaps(shipBounds.getBoundingRectangle())) {
-                    SpaceShip.takeDamage(1);
+                    player.takeDamage(1);
                     removeBullet(i);
                 }
 

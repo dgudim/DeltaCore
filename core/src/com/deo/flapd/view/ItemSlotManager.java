@@ -26,6 +26,9 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.deo.flapd.view.dialogues.ConfirmationDialogue;
+import com.deo.flapd.view.dialogues.PurchaseDialogue;
+import com.deo.flapd.view.dialogues.SellUncraftDialogue;
 
 import java.util.concurrent.TimeUnit;
 
@@ -327,7 +330,7 @@ public class ItemSlotManager {
         scrollPane.setBounds(x, y, width, height);
     }
 
-    void update() {
+    public void update() {
         inventory.clearChildren();
         table.clearChildren();
         if (type == SHOP) {

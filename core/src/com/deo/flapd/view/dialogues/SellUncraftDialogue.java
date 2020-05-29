@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.dialogues;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -28,13 +28,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.view.ItemSlotManager;
+import com.deo.flapd.view.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class SellUncraftDialogue {
+public class SellUncraftDialogue extends Dialogue{
 
     private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 

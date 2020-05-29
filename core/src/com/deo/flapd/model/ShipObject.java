@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.deo.flapd.model.enemies.Enemies;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
@@ -21,44 +22,46 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public abstract class ShipObject {
 
-    public static Polygon bounds;
+    public Polygon bounds;
     private Sprite ship;
     private Sprite shield;
-    static Sprite magnetField;
-    public static Sprite repellentField;
+    Sprite magnetField;
+    public Sprite repellentField;
+    private Sprite aimRadius;
 
-    private ParticleEffect damage_fire, damage_fire2, damage_fire3;
+    private ParticleEffect damage_fire;
+    private ParticleEffect damage_fire2;
+    private ParticleEffect damage_fire3;
+    public ParticleEffect explosionEffect;
 
-    private static float red;
-    private static float green;
-    private static float blue;
-    private static float red2;
-    private static float green2;
-    private static float blue2;
+    private float red;
+    private float green;
+    private float blue;
+    private float red2;
+    private float green2;
+    private float blue2;
 
-    private boolean exploded;
+    public boolean exploded;
 
     private Sound explosion;
 
     private float soundVolume;
 
-    public static float Health, Shield, Charge;
+    public float Health, Shield, Charge;
 
     private float shieldRegenerationSpeed;
     private float shieldPowerConsumption;
-    public static float shieldStrength;
-    public static float shieldStrengthMultiplier = 1;
+    public float shieldStrength;
+    public float shieldStrengthMultiplier = 1;
 
     private float powerGeneration;
-    public static float chargeCapacity;
-    public static float chargeCapacityMultiplier = 1;
+    public float chargeCapacity;
+    public float chargeCapacityMultiplier = 1;
 
-    public static float healthCapacity;
-    public static float healthMultiplier = 1;
+    public float healthCapacity;
+    public float healthMultiplier = 1;
 
-    static float magnetPowerConsumption;
-
-    public static float repellentPowerConsumption;
+    public float bonusPowerConsumption;
 
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
@@ -72,7 +75,10 @@ public abstract class ShipObject {
     private float width;
     private float height;
 
-    ShipObject(AssetManager assetManager, float x, float y, boolean newGame) {
+    public Bullet bullet;
+    public int bulletsShot;
+
+    ShipObject(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
 
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
 
@@ -143,15 +149,19 @@ public abstract class ShipObject {
 
         magnetField = new Sprite(fields.findRegion("field_attractor"));
         repellentField = new Sprite(fields.findRegion("field_repellent"));
+        aimRadius = new Sprite(fields.findRegion("circle"));
         magnetField.setSize(0, 0);
         repellentField.setSize(0, 0);
+        aimRadius.setSize(0, 0);
 
-        if (!getString("currentMagnet").equals("")) {
-            params = treeJson.get(getString("currentMagnet")).get("parameters").asStringArray();
-            paramValues = treeJson.get(getString("currentMagnet")).get("parameterValues").asFloatArray();
+        String bonus = getString("currentBonus");
+
+        if (bonus.contains("magnet")) {
+            params = treeJson.get(bonus).get("parameters").asStringArray();
+            paramValues = treeJson.get(bonus).get("parameterValues").asFloatArray();
             for (int i = 0; i < params.length; i++) {
                 if (params[i].endsWith("power consumption")) {
-                    magnetPowerConsumption = paramValues[i];
+                    bonusPowerConsumption = paramValues[i];
                 }
                 if (params[i].endsWith("attraction radius")) {
                     magnetField.setSize(paramValues[i], paramValues[i]);
@@ -159,15 +169,28 @@ public abstract class ShipObject {
             }
         }
 
-        if (!getString("currentRepellent").equals("")) {
-            params = treeJson.get(getString("currentRepellent")).get("parameters").asStringArray();
-            paramValues = treeJson.get(getString("currentRepellent")).get("parameterValues").asFloatArray();
+        if (bonus.contains("repellent")) {
+            params = treeJson.get(bonus).get("parameters").asStringArray();
+            paramValues = treeJson.get(bonus).get("parameterValues").asFloatArray();
             for (int i = 0; i < params.length; i++) {
                 if (params[i].endsWith("power consumption")) {
-                    repellentPowerConsumption = paramValues[i];
+                    bonusPowerConsumption = paramValues[i];
                 }
                 if (params[i].endsWith("repellent radius")) {
                     repellentField.setSize(paramValues[i], paramValues[i]);
+                }
+            }
+        }
+
+        if (bonus.contains("radar")) {
+            params = treeJson.get(bonus).get("parameters").asStringArray();
+            paramValues = treeJson.get(bonus).get("parameterValues").asFloatArray();
+            for (int i = 0; i < params.length; i++) {
+                if (params[i].endsWith("aim radius")) {
+                    aimRadius.setSize(paramValues[i], paramValues[i]);
+                }
+                if (params[i].endsWith("power consumption")) {
+                    bonusPowerConsumption = paramValues[i];
                 }
             }
         }
@@ -208,6 +231,9 @@ public abstract class ShipObject {
         damage_fire3 = new ParticleEffect();
         damage_fire3.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
 
+        explosionEffect = new ParticleEffect();
+        explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+
         damage_fire.start();
         damage_fire2.start();
         damage_fire3.start();
@@ -222,6 +248,8 @@ public abstract class ShipObject {
         soundVolume = getFloat("soundVolume");
 
         explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
+
+        bullet = new Bullet(assetManager, ShipObject.this, enemies, newGame);
     }
 
     public void drawEffects(SpriteBatch batch, float delta) {
@@ -247,7 +275,10 @@ public abstract class ShipObject {
             if (Health < 30) {
                 damage_fire3.draw(batch, delta);
             }
+        }else{
+            explosionEffect.draw(batch, delta);
         }
+        bullet.draw(batch, delta);
     }
 
     public void draw(SpriteBatch batch, float delta) {
@@ -256,6 +287,7 @@ public abstract class ShipObject {
 
             magnetField.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - magnetField.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - magnetField.getHeight() / 2);
             repellentField.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - repellentField.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - repellentField.getHeight() / 2);
+            aimRadius.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - aimRadius.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - aimRadius.getHeight() / 2);
 
             ship.setRotation(bounds.getRotation());
             ship.setColor(red, green, blue, 1);
@@ -272,6 +304,7 @@ public abstract class ShipObject {
 
             magnetField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
             repellentField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
+            aimRadius.draw(batch, 1);
 
             if(hasAnimation) {
                 ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
@@ -288,6 +321,10 @@ public abstract class ShipObject {
             if (Shield < shieldStrength * shieldStrengthMultiplier && Charge >= shieldPowerConsumption * delta) {
                 Shield += shieldRegenerationSpeed * delta;
                 Charge -= shieldPowerConsumption * delta;
+            }
+
+            if (Health <= 0 && !exploded) {
+                explode();
             }
 
         } else {
@@ -315,10 +352,6 @@ public abstract class ShipObject {
         }
     }
 
-    public Polygon getBounds() {
-        return bounds;
-    }
-
     public void dispose() {
 
         for (int i = 0; i<fires.size; i++){
@@ -327,12 +360,14 @@ public abstract class ShipObject {
         fires.clear();
 
         explosion.dispose();
+        explosionEffect.dispose();
         damage_fire.dispose();
         damage_fire2.dispose();
         damage_fire3.dispose();
+        bullet.dispose();
     }
 
-    private static void set_color(float red1, float green1, float blue1, boolean shield) {
+    private void set_color(float red1, float green1, float blue1, boolean shield) {
         if (!shield) {
             red = red1;
             green = green1;
@@ -344,7 +379,7 @@ public abstract class ShipObject {
         }
     }
 
-    public static void takeDamage(float damage) {
+    public void takeDamage(float damage) {
         if (Shield >= damage) {
             Shield -= damage;
             set_color(1, 0, 1, true);
@@ -356,7 +391,12 @@ public abstract class ShipObject {
     }
 
     public void explode() {
+        explosionEffect.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
+        explosionEffect.start();
         exploded = true;
+        Health = -1000;
+        Shield = -1000;
+        Charge = -1000;
         if (soundVolume > 0) {
             explosion.play(soundVolume / 100);
         }

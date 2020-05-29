@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
@@ -407,7 +408,7 @@ public class MenuScreen implements Screen{
         newGame.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener(){
+                new com.deo.flapd.view.dialogues.ConfirmationDialogue(assetManager, Menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         putInteger("enemiesKilled",0);

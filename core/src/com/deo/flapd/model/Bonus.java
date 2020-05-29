@@ -24,7 +24,8 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class Bonus {
 
-    private Polygon bounds;
+    private Polygon playerBounds;
+    private ShipObject player;
     private static Array<Rectangle> bonuses;
     private static Array<Integer> types;
     private static Array<Float> anglesY;
@@ -43,8 +44,10 @@ public class Bonus {
     private Boss_battleShip boss_battleShip;
     private Boss_evilEye boss_evilEye;
 
-    public Bonus(AssetManager assetManager, float width, float height, Polygon shipBounds, Boss_battleShip boss_battleShip, Boss_evilEye boss_evilEye) {
-        bounds = shipBounds;
+    public Bonus(AssetManager assetManager, float width, float height, ShipObject ship, Boss_battleShip boss_battleShip, Boss_evilEye boss_evilEye) {
+        player = ship;
+        playerBounds = player.bounds;
+
         uiScale = getFloat("ui");
 
         random = new Random();
@@ -149,35 +152,35 @@ public class Bonus {
                 removeBonus(i, false);
             }
 
-            if (SpaceShip.magnetField.getBoundingRectangle().overlaps(bonus) && SpaceShip.Charge >= SpaceShip.magnetPowerConsumption * delta) {
-                bonus.x = MathUtils.lerp(bonus.x, bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2, delta / 2);
-                bonus.y = MathUtils.lerp(bonus.y, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2, delta / 2);
-                SpaceShip.Charge -= SpaceShip.magnetPowerConsumption * delta;
+            if (player.magnetField.getBoundingRectangle().overlaps(bonus) && player.Charge >= player.bonusPowerConsumption * delta) {
+                bonus.x = MathUtils.lerp(bonus.x, playerBounds.getX() + playerBounds.getBoundingRectangle().getWidth() / 2, delta / 2);
+                bonus.y = MathUtils.lerp(bonus.y, playerBounds.getY() + playerBounds.getBoundingRectangle().getHeight() / 2, delta / 2);
+                player.Charge -= player.bonusPowerConsumption * delta;
             }
 
-            if (bonus.overlaps(bounds.getBoundingRectangle())) {
+            if (bonus.overlaps(playerBounds.getBoundingRectangle())) {
                 if (type == 0) {
                     removeBonus(i, true);
-                    if (SpaceShip.Charge <= SpaceShip.chargeCapacity * SpaceShip.chargeCapacityMultiplier - 5) {
-                        SpaceShip.Charge += 5;
+                    if (player.Charge <= player.chargeCapacity * player.chargeCapacityMultiplier - 5) {
+                        player.Charge += 5;
                     } else {
-                        SpaceShip.Charge = SpaceShip.chargeCapacity * SpaceShip.chargeCapacityMultiplier;
+                        player.Charge = player.chargeCapacity * player.chargeCapacityMultiplier;
                     }
                 }
                 if (type == 1) {
                     removeBonus(i, true);
-                    if (SpaceShip.Shield <= SpaceShip.shieldStrength - 15) {
-                        SpaceShip.Shield += 15;
+                    if (player.Shield <= player.shieldStrength - 15) {
+                        player.Shield += 15;
                     } else {
-                        SpaceShip.Shield = SpaceShip.shieldStrength;
+                        player.Shield = player.shieldStrength;
                     }
                 }
                 if (type == 2) {
                     removeBonus(i, true);
-                    if (SpaceShip.healthCapacity * SpaceShip.healthMultiplier >= SpaceShip.Health + 15) {
-                        SpaceShip.Health += 15;
+                    if (player.healthCapacity * player.healthMultiplier >= player.Health + 15) {
+                        player.Health += 15;
                     } else {
-                        SpaceShip.Health = SpaceShip.healthCapacity * SpaceShip.healthMultiplier;
+                        player.Health = player.healthCapacity * player.healthMultiplier;
                     }
                 }
                 if (type == 3) {

@@ -1,12 +1,7 @@
 package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonValue;
-import com.deo.flapd.model.SpaceShip;
-import com.deo.flapd.model.enemies.EnemyData;
-
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class BulletData {
 
@@ -17,15 +12,15 @@ public class BulletData {
     public float x;
     public float y;
 
-    float[] offset;
+    public float[] offset;
 
     int damage;
 
     int speed;
 
-    float angle;
+    public float angle;
 
-    float spread;
+    public float spread;
 
     String trail;
     public ParticleEffect trailParticleEffect;
@@ -71,16 +66,5 @@ public class BulletData {
         if(isHoming){
             explosionTimer = bulletInfo.get("explosionTimer").asFloat();
         }
-    }
-
-    public BulletData clone(EnemyData enemyData) {
-        BulletData copy = new BulletData(enemyInfo, type);
-        copy.x = enemyData.x + copy.offset[0];
-        copy.y = enemyData.y + copy.offset[1];
-        copy.angle = getRandomInRange(-10, 10) * copy.spread + enemyData.rotation;
-        if(enemyData.canAim){
-            copy.angle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(copy.y - SpaceShip.bounds.getY(), copy.x - SpaceShip.bounds.getX()), enemyData.aimMinAngle, enemyData.aimMaxAngle);
-        }
-        return copy;
     }
 }

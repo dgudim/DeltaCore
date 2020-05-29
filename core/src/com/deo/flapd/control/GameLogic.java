@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
 
@@ -25,7 +25,7 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class GameLogic {
 
-    private Polygon bounds;
+    private ShipObject player;
 
     private Random random;
 
@@ -45,19 +45,21 @@ public class GameLogic {
 
     private Game game;
 
-    private Bullet bullet;
+    private Bullet playerBullet;
+    private Polygon playerBounds;
     private Meteorite meteorite;
     private Boss_battleShip boss_battleShip;
     private Checkpoint checkpoint;
     private Boss_evilEye boss_evilEye;
 
-    public GameLogic(Polygon bounds, boolean newGame, Game game, Bullet bullet, Meteorite meteorite, Boss_battleShip boss_battleShip, Checkpoint checkpoint, Boss_evilEye boss_evilEye) {
-        this.bounds = bounds;
+    public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorite meteorite, Boss_battleShip boss_battleShip, Checkpoint checkpoint, Boss_evilEye boss_evilEye) {
+        player = ship;
         random = new Random();
 
         this.game = game;
 
-        this.bullet = bullet;
+        playerBullet = player.bullet;
+        playerBounds = player.bounds;
         this.meteorite = meteorite;
         this.boss_battleShip = boss_battleShip;
         this.checkpoint = checkpoint;
@@ -129,21 +131,21 @@ public class GameLogic {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             game.pause();
 
-        if(delta>0 && SpaceShip.Health>0) {
-            bounds.setPosition(bounds.getX() + 250 * deltaX * delta, bounds.getY() + 250 * deltaY * delta);
-            bounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
+        if(delta>0 && player.Health>0) {
+            playerBounds.setPosition(playerBounds.getX() + 250 * deltaX * delta, playerBounds.getY() + 250 * deltaY * delta);
+            playerBounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
         }
 
         if (is_firing) {
-            bullet.Spawn(1, false);
+            playerBullet.Spawn(1, false);
         }
 
         if (is_firing_secondary) {
-            bullet.Spawn(1.5f, true);
+            playerBullet.Spawn(1.5f, true);
         }
 
-        if(bullet.isLaser){
-            bullet.updateLaser(is_firing || is_firing_secondary);
+        if(playerBullet.isLaser){
+            playerBullet.updateLaser(is_firing || is_firing_secondary);
         }
 
         if (!bossWave) {
@@ -170,17 +172,17 @@ public class GameLogic {
             boss_battleShip.Spawn();
         }
 
-        if (bounds.getX() < 0) {
-            bounds.setPosition(0, bounds.getY());
+        if (playerBounds.getX() < 0) {
+            playerBounds.setPosition(0, playerBounds.getY());
         }
-        if (bounds.getX() > 800 - bounds.getBoundingRectangle().getWidth()) {
-            bounds.setPosition(800 - bounds.getBoundingRectangle().getWidth(), bounds.getY());
+        if (playerBounds.getX() > 800 - playerBounds.getBoundingRectangle().getWidth()) {
+            playerBounds.setPosition(800 - playerBounds.getBoundingRectangle().getWidth(), playerBounds.getY());
         }
-        if (bounds.getY() < 0) {
-            bounds.setPosition(bounds.getX(), 0);
+        if (playerBounds.getY() < 0) {
+            playerBounds.setPosition(playerBounds.getX(), 0);
         }
-        if (bounds.getY() > 480 - bounds.getBoundingRectangle().getHeight()) {
-            bounds.setPosition(bounds.getX(), 480 - bounds.getBoundingRectangle().getHeight());
+        if (playerBounds.getY() > 480 - playerBounds.getBoundingRectangle().getHeight()) {
+            playerBounds.setPosition(playerBounds.getX(), 480 - playerBounds.getBoundingRectangle().getHeight());
         }
     }
 
@@ -193,9 +195,9 @@ public class GameLogic {
 
             if (!is_paused) {
 
-                if (meteorite.overlaps(bounds.getBoundingRectangle())) {
+                if (meteorite.overlaps(playerBounds.getBoundingRectangle())) {
 
-                    SpaceShip.takeDamage(Meteorite.healths.get(i));
+                    player.takeDamage(Meteorite.healths.get(i));
 
                     Score = (int) (Score + Meteorite.radiuses.get(i) / 2);
 
@@ -205,14 +207,14 @@ public class GameLogic {
 
                 }
 
-                for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
-                    if (meteorite.overlaps(Bullet.bullets.get(i2))) {
+                for (int i2 = 0; i2 < playerBullet.bullets.size; i2++) {
+                    if (meteorite.overlaps(playerBullet.bullets.get(i2))) {
 
                         Score = (int) (Score + radius / 2);
 
-                        Meteorite.healths.set(i, Meteorite.healths.get(i) - Bullet.damages.get(i2));
+                        Meteorite.healths.set(i, Meteorite.healths.get(i) - playerBullet.damages.get(i2));
 
-                        Bullet.removeBullet(i2, true);
+                        playerBullet.removeBullet(i2, true);
 
                         if (Meteorite.healths.get(i) <= 0) {
 
@@ -223,8 +225,8 @@ public class GameLogic {
                         }
                     }
                 }
-                if(Bullet.laser.getBoundingRectangle().overlaps(Meteorite.meteorites.get(i))){
-                    Meteorite.healths.set(i, Meteorite.healths.get(i) - Bullet.damage/10);
+                if(playerBullet.laser.getBoundingRectangle().overlaps(Meteorite.meteorites.get(i))){
+                    Meteorite.healths.set(i, Meteorite.healths.get(i) - playerBullet.damage/10);
                     if (Meteorite.healths.get(i) <= 0) {
                         Meteorite.removeMeteorite(i, true);
                         Meteorite.meteoritesDestroyed++;

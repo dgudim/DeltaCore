@@ -9,18 +9,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.ShipObject;
 
 public class EnemyBullet {
 
     public Sprite bullet;
     private BulletData data;
+
     private boolean isDead = false;
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
 
-    public EnemyBullet(AssetManager assetManager, BulletData bulletData) {
+    private ShipObject player;
+    private Bullet playerBullet;
+
+    public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship) {
+
         data = bulletData;
+
+        player = ship;
+        playerBullet = player.bullet;
+
         bullet = new Sprite((Texture) assetManager.get(bulletData.texture));
         bullet.setPosition(bulletData.x, bulletData.y);
         bullet.setRotation(bulletData.angle);
@@ -47,15 +56,15 @@ public class EnemyBullet {
     }
 
     public void update(float delta) {
-        for (int i = 0; i < Bullet.bullets.size; i++) {
-            if (Bullet.bullets.get(i).overlaps(bullet.getBoundingRectangle())) {
+        for (int i = 0; i < playerBullet.bullets.size; i++) {
+            if (playerBullet.bullets.get(i).overlaps(bullet.getBoundingRectangle())) {
                 explode();
-                Bullet.removeBullet(i, true);
+                playerBullet.removeBullet(i, true);
             }
         }
-        if (bullet.getBoundingRectangle().overlaps(SpaceShip.bounds.getBoundingRectangle())) {
+        if (bullet.getBoundingRectangle().overlaps(player.bounds.getBoundingRectangle())) {
             explode();
-            SpaceShip.takeDamage(data.damage);
+            player.takeDamage(data.damage);
         }
         for (int i = 0; i < Meteorite.meteorites.size; i++) {
             if (Meteorite.meteorites.get(i).overlaps(bullet.getBoundingRectangle())) {
@@ -68,9 +77,9 @@ public class EnemyBullet {
                 data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
                 data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
             }else{
-                data.x = MathUtils.lerp(data.x, SpaceShip.bounds.getX(), delta * data.speed / 220.0f);
-                data.y = MathUtils.lerp(data.y, SpaceShip.bounds.getY() + SpaceShip.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
-                bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - SpaceShip.bounds.getY(), data.x - SpaceShip.bounds.getX()));
+                data.x = MathUtils.lerp(data.x, player.bounds.getX(), delta * data.speed / 220.0f);
+                data.y = MathUtils.lerp(data.y, player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
+                bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - player.bounds.getY(), data.x - player.bounds.getX()));
                 data.explosionTimer -= delta;
             }
             bullet.setPosition(data.x, data.y);

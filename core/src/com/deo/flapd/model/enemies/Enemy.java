@@ -11,14 +11,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
@@ -29,25 +29,39 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 public class Enemy {
 
     public EnemyData data;
-    private BulletData bulletData;
     private Sprite enemy;
+
+    private BulletData bulletData;
     private Array<EnemyBullet> bullets;
+
     private AssetManager assetManager;
+
     public boolean isDead = false;
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
+
     private Sound explosionSound;
     private Sound shootingSound;
     private float volume;
+
     private float difficulty;
+
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
-    private JsonValue enemies;
 
-    Enemy(AssetManager assetManager, EnemyData data, JsonValue enemies) {
+    private Enemies enemies;
+
+    private ShipObject player;
+    private Polygon playerBounds;
+    private Bullet playerBullet;
+
+    Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, ShipObject ship) {
         this.assetManager = assetManager;
         this.data = data;
         this.enemies = enemies;
+        player = ship;
+        playerBounds = player.bounds;
+        playerBullet = player.bullet;
         difficulty = getFloat("difficulty");
 
         if (data.spawnsBullets) {
@@ -117,12 +131,12 @@ public class Enemy {
             if (!data.isHoming) {
                 data.x -= data.speed * delta;
             } else {
-                data.x = MathUtils.lerp(data.x, SpaceShip.bounds.getX(), delta * data.speed / 220.0f);
-                data.y = MathUtils.lerp(data.y, SpaceShip.bounds.getY() + SpaceShip.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
+                data.x = MathUtils.lerp(data.x, playerBounds.getX(), delta * data.speed / 220.0f);
+                data.y = MathUtils.lerp(data.y, playerBounds.getY() + playerBounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
                 data.explosionTimer -= delta;
                 enemy.setColor(1, MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), 1);
                 if (data.rotateTowardsShip) {
-                    data.rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - SpaceShip.bounds.getY(), data.x - SpaceShip.bounds.getX()), data.minAngle, data.maxAngle);
+                    data.rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - playerBounds.getY(), data.x - playerBounds.getX()), data.minAngle, data.maxAngle);
                 }
             }
 
@@ -175,21 +189,21 @@ public class Enemy {
             }
         }
 
-        for (int i = 0; i < Bullet.bullets.size; i++) {
-            if (Bullet.bullets.get(i).overlaps(enemy.getBoundingRectangle())) {
+        for (int i = 0; i < playerBullet.bullets.size; i++) {
+            if (playerBullet.bullets.get(i).overlaps(enemy.getBoundingRectangle())) {
                 data.currentColor = Color.valueOf(data.hitColor);
-                data.health -= Bullet.damages.get(i);
-                GameLogic.Score += 30 + 10 * (Bullet.damages.get(i) / 50 - 1);
-                Bullet.removeBullet(i, true);
+                data.health -= playerBullet.damages.get(i);
+                GameLogic.Score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
+                playerBullet.removeBullet(i, true);
             }
         }
 
-        if (Bullet.laser.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
+        if (playerBullet.laser.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
             data.currentColor = Color.valueOf(data.hitColor);
             if (data.health > 0) {
                 GameLogic.Score += 10;
             }
-            data.health -= Bullet.damage / 10;
+            data.health -= playerBullet.damage / 10;
         }
 
         for (int i = 0; i < Meteorite.meteorites.size; i++) {
@@ -208,16 +222,16 @@ public class Enemy {
             }
         }
 
-        if (SpaceShip.bounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
+        if (playerBounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
             kill();
-            SpaceShip.takeDamage(data.health / 3f);
+            player.takeDamage(data.health / 3f);
         }
 
-        if (SpaceShip.repellentField.getBoundingRectangle().overlaps(enemy.getBoundingRectangle()) && SpaceShip.Charge >= SpaceShip.repellentPowerConsumption * delta) {
-            float shipWidth = SpaceShip.bounds.getBoundingRectangle().getWidth();
-            float shipHeight = SpaceShip.bounds.getBoundingRectangle().getWidth();
-            float shipX = SpaceShip.bounds.getBoundingRectangle().getX();
-            float shipY = SpaceShip.bounds.getBoundingRectangle().getY();
+        if (player.repellentField.getBoundingRectangle().overlaps(enemy.getBoundingRectangle()) && player.Charge >= player.bonusPowerConsumption * delta) {
+            float shipWidth = playerBounds.getBoundingRectangle().getWidth();
+            float shipHeight = playerBounds.getBoundingRectangle().getWidth();
+            float shipX = playerBounds.getBoundingRectangle().getX();
+            float shipY = playerBounds.getBoundingRectangle().getY();
             if (data.x > shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
                 data.x += 50 * delta;
                 data.y += 50 * delta;
@@ -239,7 +253,7 @@ public class Enemy {
             } else if (data.y + data.height < shipY) {
                 data.y -= 50 * delta;
             }
-            SpaceShip.Charge -= SpaceShip.repellentPowerConsumption * delta;
+            player.Charge -= player.bonusPowerConsumption * delta;
         }
 
         if (data.health <= 0 && !isDead) {
@@ -251,7 +265,14 @@ public class Enemy {
 
     private void shoot() {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
-            bullets.add(new EnemyBullet(assetManager, bulletData.clone(data)));
+            BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
+            newBulletData.x = data.x + newBulletData.offset[0];
+            newBulletData.y = data.y + newBulletData.offset[1];
+            newBulletData.angle = getRandomInRange(-10, 10) * newBulletData.spread + data.rotation;
+            if(data.canAim){
+                newBulletData.angle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newBulletData.y - playerBounds.getY(), newBulletData.x - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
+            }
+            bullets.add(new EnemyBullet(assetManager, newBulletData, player ));
         }
         shootingSound.play(volume);
         data.millis = 0;
@@ -259,9 +280,9 @@ public class Enemy {
 
     private void spawnDrone() {
         for (int i = 0; i < data.dronesPerSpawn; i++) {
-            EnemyData droneData = new EnemyData(enemies.get(data.droneType), data.type).useAsDroneData(data.x + data.droneSpawnOffset[0], data.y + data.droneSpawnOffset[1]);
+            EnemyData droneData = new EnemyData(enemies.enemiesJson.get(data.droneType), data.type).useAsDroneData(data.x + data.droneSpawnOffset[0], data.y + data.droneSpawnOffset[1]);
             droneData.health *= difficulty;
-            Enemies.enemyEntities.add(new Enemy(assetManager, droneData, enemies));
+            enemies.enemyEntities.add(new Enemy(assetManager, droneData, enemies, player));
         }
         shootingSound.play(volume);
         data.millis = 0;
