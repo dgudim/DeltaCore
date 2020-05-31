@@ -140,7 +140,7 @@ public class GameScreen implements Screen {
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
 
-        //MusicWave musicWave = new MusicWave();
+        MusicWave musicWave = new MusicWave();
 
         displayData = new Array<>();
 
@@ -152,8 +152,8 @@ public class GameScreen implements Screen {
 
         bar = new Image(BarBackgroundBlank);
 
-        //samples = musicWave.getSamples();
-        //music2 = musicWave.getMusic();
+        samples = musicWave.getSamples();
+        music2 = musicWave.getMusic();
 
         for(int i = 0; i<samples.length; i++){
             if(samples[i]>maxValue){

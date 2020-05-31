@@ -150,13 +150,13 @@ public class Bonus {
 
             if (bonus.y < -height || bonus.y > 480 || bonus.x < -width || bonus.x > 800) {
                 removeBonus(i, false);
-            }
+            }else
 
             if (player.magnetField.getBoundingRectangle().overlaps(bonus) && player.Charge >= player.bonusPowerConsumption * delta) {
                 bonus.x = MathUtils.lerp(bonus.x, playerBounds.getX() + playerBounds.getBoundingRectangle().getWidth() / 2, delta / 2);
                 bonus.y = MathUtils.lerp(bonus.y, playerBounds.getY() + playerBounds.getBoundingRectangle().getHeight() / 2, delta / 2);
                 player.Charge -= player.bonusPowerConsumption * delta;
-            }
+            }else
 
             if (bonus.overlaps(playerBounds.getBoundingRectangle())) {
                 if (type == 0) {
