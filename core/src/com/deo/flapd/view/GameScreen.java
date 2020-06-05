@@ -35,6 +35,7 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.logVariables;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
@@ -190,7 +191,8 @@ public class GameScreen implements Screen {
 
         if (enableShader) {
             Bloom effect = (Bloom)postProcessor.effectsManager.get(0);
-            float value = Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue);
+            //float value = Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue);
+            float value = 0;
             effect.setBloomSaturation(value*2.3f);
             //displayData.add(value*150);
             if(displayData.size>401){
@@ -330,5 +332,7 @@ public class GameScreen implements Screen {
         enemies.dispose();
 
         music2.dispose();
+
+        logVariables();
     }
 }

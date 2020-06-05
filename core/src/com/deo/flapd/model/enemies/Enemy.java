@@ -23,13 +23,15 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 
+import static com.deo.flapd.utils.DUtils.enemyDisposes;
+import static com.deo.flapd.utils.DUtils.enemyFireDisposes;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemy {
 
     public EnemyData data;
-    private Sprite enemy;
+    public Sprite enemy;
 
     private BulletData bulletData;
     private Array<EnemyBullet> bullets;
@@ -291,6 +293,7 @@ public class Enemy {
     void dispose() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
+            enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.dispose();
@@ -301,11 +304,13 @@ public class Enemy {
         if (data.spawnsBullets) {
             shootingSound.dispose();
         }
+        enemyDisposes++;
     }
 
     private void kill() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
+            enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);

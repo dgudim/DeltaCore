@@ -5,12 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+import java.io.FileInputStream;
 
 public class MusicWave {
 
@@ -22,56 +17,62 @@ public class MusicWave {
         String path;
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            path = "Android/data/!DeltaCore/music.wav";
+            path = "Android/data/!DeltaCore/music.mp3";
         } else {
-            path = "!DeltaCore/music.wav";
+            path = "!DeltaCore/music.mp3";
         }
+
         File file = Gdx.files.external(path).file();
 
         try {
-            boolean thereIsData = true;
-
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-            int frameLength = (int) audioInputStream.getFrameLength();
-            int frameSize = audioInputStream.getFormat().getFrameSize();
-            byte[] bytes = new byte[frameLength * frameSize];
-            try {
-                audioInputStream.read(bytes);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            float[][] twoChannelSamples = getUnscaledAmplitude(bytes, audioInputStream.getFormat().getChannels());
-
-            float[] averageChannelAmplitude = new float[twoChannelSamples[0].length];
-            for(int i = 0; i<averageChannelAmplitude.length; i++){
-                averageChannelAmplitude[i] = (twoChannelSamples[0][i] + twoChannelSamples[1][i])/2.0f;
-            }
 
             /*
+            boolean done = false;
+
+            short[] pcmOut = new short[]{};
+
             InputStream data = new FileInputStream(file.getPath());
-            Bitstream bitstream = new Bitstream(data);
+            Bitstream bitStream = new Bitstream(data);
             Decoder decoder = new Decoder();
-            while(thereIsData) {
-                Header frameHeader = bitstream.readFrame();
-                SampleBuffer buffer = (SampleBuffer) decoder.decodeFrame(frameHeader, bitstream);
-                short[] pcmBuffer = buffer.getBuffer();
-
-                thereIsData = false;
-
-                for(int i = 0; i<pcmBuffer.length; i++){
-                    System.out.println(pcmBuffer[i]);
+            while (!done) {
+                Header frameHeader = bitStream.readFrame();
+                if (frameHeader == null) {
+                    done = true;
+                } else {
+                    //WaveFile waveFile = new WaveFile();
+                    //waveFile.Open(path, );
+                    //waveFile.Read();
+                    SampleBuffer output = (SampleBuffer) decoder.decodeFrame(frameHeader, bitStream);
+                    System.out.println("test");
+                    short[] next = output.getBuffer();
+                    for (int i = 0; i < next.length; i++) System.out.print(" " + next[i]);
+                    pcmOut = concatArray(pcmOut, next);
                 }
-
-                bitstream.closeFrame();
             }
+             byte[] bytes = new byte[pcmOut.length];
+
+            for(int i = 0; i<bytes.length; i++){
+                bytes[i] = (byte)pcmOut[i];
+            }
+
              */
+
+            FileInputStream f = new FileInputStream(file);
+            byte[] bytes = new byte[100000];
+            f.read(bytes);
+
+            float[][] twoChannelSamples = getUnscaledAmplitude(bytes, 2);
+
+            float[] averageChannelAmplitude = new float[twoChannelSamples[0].length];
+            for (int i = 0; i < averageChannelAmplitude.length; i++) {
+                averageChannelAmplitude[i] = (twoChannelSamples[0][i] + twoChannelSamples[1][i]) / 2.0f;
+            }
 
             samples = averageChannelAmplitude;
 
             music = Gdx.audio.newMusic(Gdx.files.external(path));
 
-        } catch (UnsupportedAudioFileException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -101,11 +102,11 @@ public class MusicWave {
         return toReturn;
     }
 
-    public float[] getSamples(){
+    public float[] getSamples() {
         return samples;
     }
 
-    public Music getMusic(){
+    public Music getMusic() {
         return music;
     }
 

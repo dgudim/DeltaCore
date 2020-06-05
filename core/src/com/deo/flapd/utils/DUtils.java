@@ -6,6 +6,8 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.io.FileInputStream;
@@ -15,12 +17,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.util.Map;
 
 public abstract class DUtils {
 
     private static Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
+    private static JsonValue itemNames = new JsonReader().parse(Gdx.files.internal("shop/itemNames.json"));
+    public static int bulletDisposes;
+    public static int bulletTrailDisposes;
+    public static int enemyDisposes;
+    public static int enemyFireDisposes;
+    public static int enemyBulletDisposes;
+    public static int enemyBulletTrailDisposes;
 
     public static void log(String contents) {
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -308,280 +318,11 @@ public abstract class DUtils {
 
     public static String getItemCodeNameByName(String name) {
         String item;
-        switch (name) {
-            case ("coloring crystal"):
-                item = "crystal";
-                break;
-            case ("ore"):
-            case ("prism"):
-            case ("bolt"):
-            case ("cable"):
-            case ("cog"):
-            case ("plastic"):
-            case ("transistor"):
-            case ("rubber"):
-            case ("wire"):
-            case ("resistor"):
-            case ("magnet"):
-            case ("upgrades"):
-            case ("shotgun"):
-            case ("minigun"):
-            case ("radar"):
-                item = name;
-                break;
-            case ("metal shard"):
-                item = "ironShard";
-                break;
-            case ("iron plate"):
-                item = "ironPlate";
-                break;
-            case ("glass shard"):
-                item = "glassShard";
-                break;
-            case ("cyan warp shard"):
-                item = "bonus_warp";
-                break;
-            case ("green warp shard"):
-                item = "bonus_warp2";
-                break;
-            case ("purple warp shard"):
-                item = "bonus_warp3";
-                break;
-            case ("red crystal"):
-                item = "redCrystal";
-                break;
-            case ("energy cell"):
-                item = "energyCell";
-                break;
-            case ("core shard"):
-                item = "fragment_core";
-                break;
-            case ("green coil"):
-                item = "green_coil";
-                break;
-            case ("cyan coil"):
-                item = "neon_coil";
-                break;
-            case ("cyan crystal"):
-                item = "cyanCrystal";
-                break;
-            case ("orange crystal"):
-                item = "orangeCrystal";
-                break;
-            case ("green crystal"):
-                item = "greenCrystal";
-                break;
-            case ("purple crystal"):
-                item = "purpleCrystal";
-                break;
-            case ("drone engine"):
-                item = "drone_engine";
-                break;
-            case ("red fuel cell"):
-                item = "fuelCell";
-                break;
-            case ("cyan fuel cell"):
-                item = "fuelCell2";
-                break;
-            case ("motherboard mk1"):
-                item = "chipset";
-                break;
-            case ("motherboard mk2"):
-                item = "chipset_big";
-                break;
-            case ("energy crystal"):
-                item = "energyCrystal";
-                break;
-            case ("blue ore"):
-                item = "warp_ore";
-                break;
-            case ("crafting card"):
-                item = "craftingCard";
-                break;
-            case ("memory cell mk1"):
-                item = "cell1";
-                break;
-            case ("memory cell mk2"):
-                item = "cell2";
-                break;
-            case ("cyan blank card"):
-                item = "card1";
-                break;
-            case ("orange blank card"):
-                item = "card2";
-                break;
-            case ("ai card"):
-                item = "aiCard";
-                break;
-            case ("ai processor"):
-                item = "aiChip";
-                break;
-            case ("processor mk1"):
-                item = "processor1";
-                break;
-            case ("processor mk2"):
-                item = "processor2";
-                break;
-            case ("processor mk3"):
-                item = "processor3";
-                break;
-            case ("reinforced iron plate"):
-                item = "ironPlate2";
-                break;
-            case ("memory card"):
-                item = "memoryCard";
-                break;
-            case ("screen card"):
-                item = "screenCard";
-                break;
-            case ("green core"):
-                item = "warpCore";
-                break;
-            case ("yellow core"):
-                item = "core_yellow";
-                break;
-            case ("laser emitter"):
-                item = "bonus_laser";
-                break;
-            case ("laser coil"):
-                item = "gun";
-                break;
-            case ("fiber cable"):
-                item = "cable_fiber";
-                break;
-            case ("advanced chip"):
-                item = "advancedChip";
-                break;
-            case ("circuit board"):
-                item = "Circuit_Board";
-                break;
-            case ("cooling unit"):
-                item = "coolingUnit";
-                break;
-            case ("reinforced glass pane"):
-                item = "IrradiantGlassPane";
-                break;
-            case ("composite plate"):
-                item = "ReinforcedIridiumIronPlate";
-                break;
-            case ("grasshopper engine"):
-                item = "engine1";
-                break;
-            case ("nuclear engine"):
-                item = "engine2";
-                break;
-            case ("plasma engine"):
-                item = "engine3";
-                break;
-            case ("small machine gun"):
-                item = "Cannon1";
-                break;
-            case ("machine gun"):
-                item = "Cannon2";
-                break;
-            case ("laser gun"):
-                item = "Cannon3";
-                break;
-            case ("cores"):
-                item = "energyCore";
-                break;
-            case ("copper coil"):
-                item = "coil_copper";
-                break;
-            case ("glass rod"):
-                item = "glass_panel";
-                break;
-            case ("star core"):
-                item = "core_yellow";
-                break;
-            case ("warp core"):
-                item = "warp_core";
-                break;
-            case ("energy core"):
-                item = "energyCore";
-                break;
-            case ("rail gun"):
-                item = "Cannon5";
-                break;
-            case ("coil gun"):
-                item = "Cannon4";
-                break;
-            case ("ai chip"):
-                item = "aiChip";
-                break;
-            case ("armour"):
-                item = "grid";
-                break;
-            case ("shield generator mk1"):
-                item = "shieldGeneratorMk1";
-                break;
-            case ("shield generator mk2"):
-                item = "shieldGeneratorMk2";
-                break;
-            case ("shield generator mk3"):
-                item = "shieldGeneratorMk3";
-                break;
-            case ("battery mk1"):
-                item = "batteryMk1";
-                break;
-            case ("battery mk2"):
-                item = "batteryMk2";
-                break;
-            case ("battery mk3"):
-                item = "batteryMk3";
-                break;
-            case ("battery mk4"):
-                item = "batteryMk4";
-                break;
-            case ("repellent field"):
-                item = "repeller";
-                break;
-            case ("shield generator mk4"):
-                item = "shieldMk4";
-                break;
-            case ("thermonuclear core"):
-                item = "thermoNuclearCore";
-                break;
-            case ("processor crystal"):
-                item = "cpuCrystal";
-                break;
-            case ("unstable crystal"):
-                item = "unstableCrystal";
-                break;
-            case ("laser beam gun"):
-                item = "laserBeamGun";
-                break;
-            case ("ion gun"):
-                item = "coreGun";
-                break;
-            case ("armour mk1"):
-                item = "engineArmour1";
-                break;
-            case ("basic armour"):
-                item = "ship";
-                break;
-            case ("armour mk2"):
-                item = "engineArmour2";
-                break;
-            case ("armour mk3"):
-                item = "engineArmour3";
-                break;
-            case ("root"):
-                item = "tree";
-                break;
-            case("beast mode"):
-                item = "beastMode";
-                break;
-            case("laser weapons"):
-                item = "category_laser";
-                break;
-            case("basic ammo weapons"):
-                item = "category_basic";
-                break;
-            default:
-                log("\n no texture for item " + name);
-                item = "ohno";
-                break;
+        try{
+            item = itemNames.get(name).asString();
+        }catch (Exception e){
+            item = "ohno";
+            log("\n no texture for item " + name);
         }
         return item;
     }
@@ -601,5 +342,47 @@ public abstract class DUtils {
         e.printStackTrace(new PrintWriter(sw));
         String fullStackTrace = sw.toString();
         log("\n\n" + fullStackTrace + "\n");
+    }
+
+    public static <T> T concatArray(T a, T b) {
+        if (!a.getClass().isArray() || !b.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+
+        Class<?> resCompType;
+        Class<?> aCompType = a.getClass().getComponentType();
+        Class<?> bCompType = b.getClass().getComponentType();
+
+        if (aCompType.isAssignableFrom(bCompType)) {
+            resCompType = aCompType;
+        } else if (bCompType.isAssignableFrom(aCompType)) {
+            resCompType = bCompType;
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        int aLen = Array.getLength(a);
+        int bLen = Array.getLength(b);
+
+        T result = (T) Array.newInstance(resCompType, aLen + bLen);
+        System.arraycopy(a, 0, result, 0, aLen);
+        System.arraycopy(b, 0, result, aLen, bLen);
+
+        return result;
+    }
+
+    public static void logVariables(){
+        log("\n total bullet dispose calls: "+bulletDisposes);
+        log("\n total bullet trail particle effects dispose calls: "+bulletTrailDisposes);
+        log("\n total enemy bullet dispose calls: "+enemyBulletDisposes);
+        log("\n total enemy bullet trail particle effects dispose calls: "+enemyBulletTrailDisposes);
+        log("\n total enemy dispose calls: "+enemyDisposes);
+        log("\n total enemy fire particle effects dispose calls: "+enemyFireDisposes);
+        bulletDisposes = 0;
+        bulletTrailDisposes = 0;
+        enemyDisposes = 0;
+        enemyFireDisposes = 0;
+        enemyBulletDisposes = 0;
+        enemyBulletTrailDisposes = 0;
     }
 }

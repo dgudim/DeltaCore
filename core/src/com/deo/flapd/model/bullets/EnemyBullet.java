@@ -11,6 +11,9 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.ShipObject;
 
+import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
+import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
+
 public class EnemyBullet {
 
     public Sprite bullet;
@@ -19,6 +22,7 @@ public class EnemyBullet {
     private boolean isDead = false;
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
+    private boolean explosionStarted;
 
     private ShipObject player;
     private Bullet playerBullet;
@@ -100,12 +104,18 @@ public class EnemyBullet {
     public void dispose() {
         data.explosionParticleEffect.dispose();
         data.trailParticleEffect.dispose();
+        if(!explosionStarted) {
+            enemyBulletTrailDisposes++;
+        }
+        enemyBulletDisposes++;
     }
 
     private void explode() {
         data.trailParticleEffect.dispose();
+        enemyBulletTrailDisposes++;
         data.explosionParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
         data.explosionParticleEffect.start();
+        explosionStarted = true;
         bullet.setPosition(-100, -100);
         isDead = true;
     }

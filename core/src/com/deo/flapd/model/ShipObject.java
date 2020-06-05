@@ -27,7 +27,7 @@ public abstract class ShipObject {
     private Sprite shield;
     Sprite magnetField;
     public Sprite repellentField;
-    private Sprite aimRadius;
+    Sprite aimRadius;
 
     private ParticleEffect damage_fire;
     private ParticleEffect damage_fire2;

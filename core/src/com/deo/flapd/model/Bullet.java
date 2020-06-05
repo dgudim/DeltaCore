@@ -21,6 +21,8 @@ import com.deo.flapd.model.enemies.Enemies;
 
 import java.util.Random;
 
+import static com.deo.flapd.utils.DUtils.bulletDisposes;
+import static com.deo.flapd.utils.DUtils.bulletTrailDisposes;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
@@ -103,9 +105,9 @@ public class Bullet {
         gunOffsetsX = new float[gunCount];
         gunOffsetsY = new float[gunCount];
 
-        for(int i = 0; i<gunCount; i++){
-            gunOffsetsX[i] = shipConfig.get("guns").get("gun"+i+"OffsetX").asFloat();
-            gunOffsetsY[i] = shipConfig.get("guns").get("gun"+i+"OffsetY").asFloat();
+        for (int i = 0; i < gunCount; i++) {
+            gunOffsetsX[i] = shipConfig.get("guns").get("gun" + i + "OffsetX").asFloat();
+            gunOffsetsY[i] = shipConfig.get("guns").get("gun" + i + "OffsetY").asFloat();
         }
 
         bulletExplosionEffect = currentCannon.get("usesEffect").asString();
@@ -114,7 +116,7 @@ public class Bullet {
             bulletTrailEffect = currentCannon.get("trailEffect").asString();
             bulletTrailTimer = currentCannon.get("trailFadeOutTimer").asFloat();
             hasTrail = true;
-        }else{
+        } else {
             bulletTrailEffect = "";
             bulletTrailTimer = 0;
             hasTrail = false;
@@ -169,7 +171,7 @@ public class Bullet {
         }
 
         isHoming = currentCannon.get("homing").asBoolean();
-        if(isHoming){
+        if (isHoming) {
             explosionTimer = currentCannon.get("explosionTimer").asFloat();
         }
 
@@ -229,9 +231,9 @@ public class Bullet {
                     bullet.x = playerBounds.getX() + gunOffsetsX[currentActiveGun];
                     bullet.y = playerBounds.getY() + gunOffsetsY[currentActiveGun];
 
-                    if(currentActiveGun+1 < gunCount){
+                    if (currentActiveGun + 1 < gunCount) {
                         currentActiveGun++;
-                    }else{
+                    } else {
                         currentActiveGun = 0;
                     }
 
@@ -248,9 +250,22 @@ public class Bullet {
                         player.Charge -= powerConsumption / bulletsPerShot;
                     }
 
-                    degrees.add((random.nextFloat() - 0.5f) * spread + playerBounds.getRotation() / 20);
+                    boolean aim = false;
+                    for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
+                        if (enemies.enemyEntities.get(i).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle())) {
+                            degrees.add(-MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - enemies.enemyEntities.get(i).enemy.getBoundingRectangle().getY() - 30, bullet.x - enemies.enemyEntities.get(i).enemy.getBoundingRectangle().getX() - 30), -30, 30));
+                            aim = true;
+                            break;
+                        }
+                    }
 
-                    if(isHoming){
+                    if (!aim) {
+                        degrees.add(0f);
+                    }
+
+                    degrees.set(degrees.size - 1, degrees.get(degrees.size - 1) + playerBounds.getRotation() + (random.nextFloat() - 0.5f) * spread * 7);
+
+                    if (isHoming) {
                         explosionTimers.add(explosionTimer);
                     }
 
@@ -302,15 +317,17 @@ public class Bullet {
                 }
                 this.bullet.draw(batch);
 
-                if(!isHoming) {
-                    bullet.x += bulletSpeed * delta;
-                    bullet.y += 300 * bulletSpeed / 1500.0f * angle * delta;
-                    this.bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(300 * angle, 1500));
-                }else{
+                if (!isHoming) {
+
+                    bullet.x += MathUtils.cosDeg(angle) * bulletSpeed * delta;
+                    bullet.y += MathUtils.sinDeg(angle) * bulletSpeed * delta;
+
+                    this.bullet.setRotation(angle);
+                } else {
                     float posX = playerBounds.getX() + 1000;
                     float posY = playerBounds.getY();
-                    for(int i2 = 0; i2<enemies.enemyEntities.size; i2++){
-                        if(!enemies.enemyEntities.get(i2).isDead){
+                    for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
+                        if (!enemies.enemyEntities.get(i2).isDead) {
                             posX = enemies.enemyEntities.get(i2).data.x + enemies.enemyEntities.get(i2).data.width / 2;
                             posY = enemies.enemyEntities.get(i2).data.y + enemies.enemyEntities.get(i2).data.height / 2;
                             break;
@@ -320,7 +337,7 @@ public class Bullet {
                     bullet.y = MathUtils.lerp(bullet.y, posY, bulletSpeed * delta / 1300);
                     this.bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(posY - bullet.y, posX - bullet.x));
                     explosionTimers.set(i, explosionTimers.get(i) - delta);
-                    if(explosionTimers.get(i)<=0){
+                    if (explosionTimers.get(i) <= 0) {
                         removeBullet(i, true);
                     }
                 }
@@ -353,12 +370,13 @@ public class Bullet {
                     damages.removeIndex(i4);
                     remove_Bullet.removeIndex(i4);
                     types.removeIndex(i4);
+                    bulletDisposes++;
                     if (hasTrail) {
                         disposedTrails.add(trails.get(i4));
                         trailCountDownTimers.add(bulletTrailTimer);
                         trails.removeIndex(i4);
                     }
-                    if(isHoming){
+                    if (isHoming) {
                         explosionTimers.removeIndex(i4);
                     }
                 } else if (remove_Bullet.get(i4)) {
@@ -368,26 +386,28 @@ public class Bullet {
                     damages.removeIndex(i4);
                     remove_Bullet.removeIndex(i4);
                     types.removeIndex(i4);
+                    bulletDisposes++;
                     if (hasTrail) {
                         disposedTrails.add(trails.get(i4));
                         trailCountDownTimers.add(bulletTrailTimer);
                         trails.removeIndex(i4);
                     }
-                    if(isHoming){
+                    if (isHoming) {
                         explosionTimers.removeIndex(i4);
                     }
                 }
             }
-            for(int i = 0; i<disposedTrails.size; i++){
+            for (int i = 0; i < disposedTrails.size; i++) {
                 disposedTrails.get(i).draw(batch, delta);
-                trailCountDownTimers.set(i, trailCountDownTimers.get(i)-delta);
-                if(trailCountDownTimers.get(i)<=0){
+                trailCountDownTimers.set(i, trailCountDownTimers.get(i) - delta);
+                if (trailCountDownTimers.get(i) <= 0) {
                     disposedTrails.get(i).dispose();
                     disposedTrails.removeIndex(i);
+                    bulletTrailDisposes++;
                     trailCountDownTimers.removeIndex(i);
                 }
             }
-            for(int i = 0; i<trails.size; i++){
+            for (int i = 0; i < trails.size; i++) {
                 trails.get(i).draw(batch, delta);
             }
         } else if (isLaserActive && currentDuration >= 10) {
@@ -432,16 +452,19 @@ public class Bullet {
         for (int i3 = 0; i3 < trails.size; i3++) {
             trails.get(i3).dispose();
             trails.removeIndex(i3);
+            bulletTrailDisposes++;
         }
 
         for (int i3 = 0; i3 < disposedTrails.size; i3++) {
             disposedTrails.get(i3).dispose();
             disposedTrails.removeIndex(i3);
+            bulletTrailDisposes++;
         }
 
         trailCountDownTimers.clear();
         explosionTimers.clear();
         explosionQueue.clear();
+        bulletDisposes += remove_Bullet.size;
         remove_Bullet.clear();
         types.clear();
     }
