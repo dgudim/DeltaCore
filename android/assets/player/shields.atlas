@@ -5,21 +5,21 @@ filter: Nearest,Nearest
 repeat: none
 circle
   rotate: false
-  xy: 1, 85
-  size: 128, 128
-  orig: 128, 128
+  xy: 1, 215
+  size: 572, 574
+  orig: 572, 574
   offset: 0, 0
   index: -1
 field_attractor
   rotate: false
-  xy: 131, 85
+  xy: 1, 85
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 field_repellent
   rotate: false
-  xy: 261, 85
+  xy: 575, 661
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -33,21 +33,21 @@ ColdShield
   index: -1
 ColdShieldMk2
   rotate: false
-  xy: 391, 131
+  xy: 131, 131
   size: 128, 82
   orig: 128, 82
   offset: 0, 0
   index: -1
 ColdShieldMk3
   rotate: false
-  xy: 131, 1
+  xy: 575, 577
   size: 128, 82
   orig: 128, 82
   offset: 0, 0
   index: -1
 ColdShieldMk4
   rotate: false
-  xy: 521, 131
+  xy: 705, 707
   size: 128, 82
   orig: 128, 82
   offset: 0, 0
