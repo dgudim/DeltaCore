@@ -73,8 +73,8 @@ public class GameLogic {
         float[] shipParamValues = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray();
         String[] shipParams = treeJson.get(getString("currentArmour")).get("parameters").asStringArray();
 
-        for(int i = 0; i<shipParamValues.length; i++){
-            if(shipParams[i].endsWith("speed multiplier")){
+        for (int i = 0; i < shipParamValues.length; i++) {
+            if (shipParams[i].endsWith("speed multiplier")) {
                 speedMultiplier *= shipParamValues[i];
             }
         }
@@ -131,7 +131,7 @@ public class GameLogic {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             game.pause();
 
-        if(delta>0 && player.Health>0) {
+        if (delta > 0 && player.Health > 0) {
             playerBounds.setPosition(playerBounds.getX() + 250 * deltaX * delta, playerBounds.getY() + 250 * deltaY * delta);
             playerBounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
         }
@@ -144,7 +144,7 @@ public class GameLogic {
             playerBullet.Spawn(1.5f, true);
         }
 
-        if(playerBullet.isLaser){
+        if (playerBullet.isLaser) {
             playerBullet.updateLaser(is_firing || is_firing_secondary);
         }
 
@@ -225,8 +225,8 @@ public class GameLogic {
                         }
                     }
                 }
-                if(playerBullet.laser.getBoundingRectangle().overlaps(Meteorite.meteorites.get(i))){
-                    Meteorite.healths.set(i, Meteorite.healths.get(i) - playerBullet.damage/10);
+                if (playerBullet.laser.getBoundingRectangle().overlaps(Meteorite.meteorites.get(i))) {
+                    Meteorite.healths.set(i, Meteorite.healths.get(i) - playerBullet.damage / 10);
                     if (Meteorite.healths.get(i) <= 0) {
                         Meteorite.removeMeteorite(i, true);
                         Meteorite.meteoritesDestroyed++;

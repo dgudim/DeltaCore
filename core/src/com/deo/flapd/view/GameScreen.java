@@ -2,6 +2,7 @@ package com.deo.flapd.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -44,7 +45,8 @@ public class GameScreen implements Screen {
     private Texture bg2;
     private Texture bg3;
     private Texture FillTexture;
-    private final int fillingThreshold = 7;
+    private int horizontalFillingThreshold;
+    private int verticalFillingThreshold;
 
     private Meteorite meteorite;
     private Boss_battleShip boss_battleShip;
@@ -86,6 +88,7 @@ public class GameScreen implements Screen {
     private float maxValue;
     private Array<Float> displayData;
     private Image bar;
+    private boolean drawScreenExtenders = true;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame) {
 
@@ -156,8 +159,8 @@ public class GameScreen implements Screen {
         samples = musicWave.getSamples();
         music2 = musicWave.getMusic();
 
-        for(int i = 0; i<samples.length; i++){
-            if(samples[i]>maxValue){
+        for (int i = 0; i < samples.length; i++) {
+            if (samples[i] > maxValue) {
                 maxValue = samples[i];
             }
         }
@@ -190,12 +193,12 @@ public class GameScreen implements Screen {
         }
 
         if (enableShader) {
-            Bloom effect = (Bloom)postProcessor.effectsManager.get(0);
+            Bloom effect = (Bloom) postProcessor.effectsManager.get(0);
             //float value = Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue);
             float value = 0;
-            effect.setBloomSaturation(value*2.3f);
+            effect.setBloomSaturation(value * 2.3f);
             //displayData.add(value*150);
-            if(displayData.size>401){
+            if (displayData.size > 401) {
                 displayData.removeIndex(0);
             }
             postProcessor.capture();
@@ -223,12 +226,12 @@ public class GameScreen implements Screen {
             batch.begin();
         }
 
-        for(int i = 0; i<displayData.size; i++){
-            bar.setBounds(400+i, 0, 2, displayData.get(displayData.size-1-i)+10);
-            bar.setColor(new Color().fromHsv(i/3.0f+110, 1.5f, 1).add(0, 0, 0, 1));
+        for (int i = 0; i < displayData.size; i++) {
+            bar.setBounds(400 + i, 0, 2, displayData.get(displayData.size - 1 - i) + 10);
+            bar.setColor(new Color().fromHsv(i / 3.0f + 110, 1.5f, 1).add(0, 0, 0, 1));
             bar.draw(batch, 1);
-            bar.setBounds(400-i, 0, 2, displayData.get(displayData.size-1-i)+10);
-            bar.setColor(new Color().fromHsv(i/3.0f+110, 1.5f, 1).add(0, 0, 0, 1));
+            bar.setBounds(400 - i, 0, 2, displayData.get(displayData.size - 1 - i) + 10);
+            bar.setColor(new Color().fromHsv(i / 3.0f + 110, 1.5f, 1).add(0, 0, 0, 1));
             bar.draw(batch, 1);
         }
 
@@ -247,17 +250,19 @@ public class GameScreen implements Screen {
             movement = 0;
         }
 
-        for (int i = 0; i < fillingThreshold; i++) {
-            batch.draw(FillTexture, 0, -72 * (i + 1), 456, 72);
-            batch.draw(FillTexture, 456, -72 * (i + 1), 456, 72);
-            batch.draw(FillTexture, 0, 408 + 72 * (i + 1), 456, 72);
-            batch.draw(FillTexture, 456, 408 + 72 * (i + 1), 456, 72);
-        }
+        if (drawScreenExtenders) {
+            for (int i = 0; i < verticalFillingThreshold; i++) {
+                batch.draw(FillTexture, 0, -72 * (i + 1), 456, 72);
+                batch.draw(FillTexture, 456, -72 * (i + 1), 456, 72);
+                batch.draw(FillTexture, 0, 408 + 72 * (i + 1), 456, 72);
+                batch.draw(FillTexture, 456, 408 + 72 * (i + 1), 456, 72);
+            }
 
-        for (int i = 0; i < (fillingThreshold / 6) + 1; i++) {
-            for (int i2 = 0; i2 < 7; i2++) {
-                batch.draw(FillTexture, -456 - 456 * i, 408 - i2 * 72, 456, 72);
-                batch.draw(FillTexture, 800 + 456 * i, 408 - i2 * 72, 456, 72);
+            for (int i = 0; i < horizontalFillingThreshold; i++) {
+                for (int i2 = 0; i2 < 7; i2++) {
+                    batch.draw(FillTexture, -456 - 456 * i, 408 - i2 * 72, 456, 72);
+                    batch.draw(FillTexture, 800 + 456 * i, 408 - i2 * 72, 456, 72);
+                }
             }
         }
 
@@ -288,12 +293,56 @@ public class GameScreen implements Screen {
             }
 
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
+            camera.zoom *= 1.01;
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
+            camera.zoom *= 0.99;
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            camera.translate(3, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            camera.translate(-3, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.translate(0, 3);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.translate(0, -3);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+            drawScreenExtenders = !drawScreenExtenders;
+        }
     }
 
     @Override
     public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
         gameUi.resize(width, height);
+
+        float targetHeight = viewport.getScreenHeight();
+        float targetWidth = viewport.getScreenWidth();
+
+        float sourceHeight = 480.0f;
+        float sourceWidth = 800.0f;
+
+        float targetRatio = targetHeight / targetWidth;
+        float sourceRatio = sourceHeight / sourceWidth;
+        float scale;
+        if (targetRatio > sourceRatio) {
+            scale = targetWidth / sourceWidth;
+        } else {
+            scale = targetHeight / sourceHeight;
+        }
+
+        int actualWidth = (int) (sourceWidth * scale);
+        int actualHeight = (int) (sourceHeight * scale);
+
+        verticalFillingThreshold = (int) Math.ceil((targetHeight - actualHeight) / 144);
+        horizontalFillingThreshold = (int) Math.ceil((targetWidth - actualWidth) / 912);
     }
 
     @Override

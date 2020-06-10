@@ -252,8 +252,9 @@ public class Bullet {
 
                     boolean aim = false;
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (enemies.enemyEntities.get(i).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle())) {
-                            degrees.add(-MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - enemies.enemyEntities.get(i).enemy.getBoundingRectangle().getY() - 30, bullet.x - enemies.enemyEntities.get(i).enemy.getBoundingRectangle().getX() - 30), -30, 30));
+                        if (enemies.enemyEntities.get(i).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i).isDead) {
+                            Rectangle enemy = enemies.enemyEntities.get(i).enemy.getBoundingRectangle();
+                            degrees.add(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight()/2, enemy.getX() - bullet.x + enemy.getWidth()/2), -8830, 3880));
                             aim = true;
                             break;
                         }

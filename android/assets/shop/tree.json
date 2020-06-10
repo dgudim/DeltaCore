@@ -473,7 +473,7 @@
     "requires": ["warp core"],
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#03B1FC]aim radius"],
-    "parameterValues": [1, 410],
+    "parameterValues": [1, 610],
     "saveTo": "currentBonus"
   },
   "reinforced glass pane": {

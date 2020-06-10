@@ -426,6 +426,27 @@ public class GameUi {
         if (player.exploded && player.explosionEffect.isComplete()) {
             game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor, player));
         }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
+            cam.zoom*=1.01;
+            cam.update();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.EQUALS)){
+            cam.zoom*=0.99;
+            cam.update();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            cam.translate(3, 0);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            cam.translate(-3, 0);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+            cam.translate(0, 3);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            cam.translate(0, -3);
+        }
     }
 
     void resize(int width, int height) {

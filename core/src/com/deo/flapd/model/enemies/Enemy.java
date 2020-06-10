@@ -103,6 +103,7 @@ public class Enemy {
     void draw(SpriteBatch batch) {
         if (!isDead && !data.hasAnimation) {
             enemy.draw(batch);
+            System.out.println(enemy.getWidth()<20);
         } else if (data.hasAnimation && !isDead) {
             enemy.setRegion(enemyAnimation.getKeyFrame(animationPosition));
             enemy.draw(batch);
@@ -326,7 +327,9 @@ public class Enemy {
 
         Drops.drop(enemy.getBoundingRectangle(), (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
 
-        enemy.setPosition(-100, -100);
+        enemy.setPosition(-data.width-100, -data.height-100);
+        data.x = -data.width-100;
+        data.y = -data.height-100;
 
         explosionSound.play(volume);
     }

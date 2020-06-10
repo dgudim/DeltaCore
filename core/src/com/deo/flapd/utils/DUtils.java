@@ -337,6 +337,10 @@ public abstract class DUtils {
         camera.update();
     }
 
+    public static void updateCameraCustomDimensions(OrthographicCamera camera, Viewport viewport, int width, int height, float worldWidth, float worldHeight) {
+
+    }
+
     public static void logException(Exception e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
