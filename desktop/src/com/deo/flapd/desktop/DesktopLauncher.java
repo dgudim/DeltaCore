@@ -12,7 +12,7 @@ public class DesktopLauncher {
 		config.height = 480;
 		config.title = "Deltacore";
 		config.allowSoftwareMode = true;
-		//config.fullscreen = true;
+		config.fullscreen = true;
 		config.vSyncEnabled = true;
 		new LwjglApplication(new Main(), config);
 	}
