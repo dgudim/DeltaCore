@@ -138,7 +138,7 @@ public class CraftingDialogue extends Dialogue{
                         customize.addListener(new ClickListener() {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
-                                new ColorCustomizationDialogue(assetManager, treeJson.get(result).get("usesEffect").asString(), stage);
+                                new ColorCustomizationDialogue(assetManager, treeJson.get(result).getString("usesEffect"), stage);
                             }
                         });
                         yes.setText("ok");
@@ -218,7 +218,7 @@ public class CraftingDialogue extends Dialogue{
                             customize.addListener(new ClickListener() {
                                 @Override
                                 public void clicked(InputEvent event, float x, float y) {
-                                    new ColorCustomizationDialogue(assetManager, treeJson.get(result).get("usesEffect").asString(), stage);
+                                    new ColorCustomizationDialogue(assetManager, treeJson.get(result).getString("usesEffect"), stage);
                                 }
                             });
                             yes.setText("ok");
@@ -301,7 +301,7 @@ public class CraftingDialogue extends Dialogue{
     }
 
     private String getDescription(String result) {
-        return treeJson.get(result).get("description").asString();
+        return treeJson.get(result).getString("description");
     }
 
     private String getStats() {
@@ -353,11 +353,11 @@ public class CraftingDialogue extends Dialogue{
     }
 
     private String getType() {
-        return treeJson.get(result).get("type").asString();
+        return treeJson.get(result).getString("type");
     }
 
     private String saveTo() {
-        return treeJson.get(result).get("saveTo").asString();
+        return treeJson.get(result).getString("saveTo");
     }
 
     private void addCloseListener(TextButton... buttons) {
@@ -415,7 +415,7 @@ public class CraftingDialogue extends Dialogue{
                     }
 
                     new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).get("resultCount").asFloat()),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat("resultCount")),
                             CraftingDialogue.this);
                 }
             });
@@ -424,7 +424,7 @@ public class CraftingDialogue extends Dialogue{
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(stage, assetManager, items[finalI],
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).get("resultCount").asFloat()),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat("resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
@@ -433,7 +433,7 @@ public class CraftingDialogue extends Dialogue{
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(stage, assetManager, items[finalI],
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).get("resultCount").asFloat()),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemCodeNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat("resultCount")),
                             false, CraftingDialogue.this);
                 }
             });

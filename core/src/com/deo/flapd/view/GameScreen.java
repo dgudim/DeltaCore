@@ -28,7 +28,6 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Enemies;
-import com.deo.flapd.utils.MusicWave;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
 
@@ -144,7 +143,7 @@ public class GameScreen implements Screen {
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
 
-        MusicWave musicWave = new MusicWave();
+        //MusicWave musicWave = new MusicWave();
 
         displayData = new Array<>();
 
@@ -156,8 +155,9 @@ public class GameScreen implements Screen {
 
         bar = new Image(BarBackgroundBlank);
 
-        samples = musicWave.getSamples();
-        music2 = musicWave.getMusic();
+        //samples = musicWave.getSamples();
+        //music2 = musicWave.getMusic();
+        samples = new float[]{};
 
         for (int i = 0; i < samples.length; i++) {
             if (samples[i] > maxValue) {
@@ -165,7 +165,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        music2.play();
+        //music2.play();
     }
 
     @Override
@@ -380,7 +380,7 @@ public class GameScreen implements Screen {
 
         enemies.dispose();
 
-        music2.dispose();
+        //music2.dispose();
 
         logVariables();
     }

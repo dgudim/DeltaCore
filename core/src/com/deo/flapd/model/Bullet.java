@@ -99,22 +99,22 @@ public class Bullet {
         JsonValue shipConfig = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
         JsonValue currentCannon = treeJson.get(getString("currentCannon"));
 
-        gunCount = shipConfig.get("gunCount").asInt();
+        gunCount = shipConfig.getInt("gunCount");
         currentActiveGun = 0;
 
         gunOffsetsX = new float[gunCount];
         gunOffsetsY = new float[gunCount];
 
         for (int i = 0; i < gunCount; i++) {
-            gunOffsetsX[i] = shipConfig.get("guns").get("gun" + i + "OffsetX").asFloat();
-            gunOffsetsY[i] = shipConfig.get("guns").get("gun" + i + "OffsetY").asFloat();
+            gunOffsetsX[i] = shipConfig.get("guns").getFloat("gun" + i + "OffsetX");
+            gunOffsetsY[i] = shipConfig.get("guns").getFloat("gun" + i + "OffsetY");
         }
 
-        bulletExplosionEffect = currentCannon.get("usesEffect").asString();
+        bulletExplosionEffect = currentCannon.getString("usesEffect");
 
-        if (currentCannon.get("usesTrail").asBoolean()) {
-            bulletTrailEffect = currentCannon.get("trailEffect").asString();
-            bulletTrailTimer = currentCannon.get("trailFadeOutTimer").asFloat();
+        if (currentCannon.getBoolean("usesTrail")) {
+            bulletTrailEffect = currentCannon.getString("trailEffect");
+            bulletTrailTimer = currentCannon.getFloat("trailFadeOutTimer");
             hasTrail = true;
         } else {
             bulletTrailEffect = "";
@@ -156,7 +156,7 @@ public class Bullet {
 
         if (isLaser) {
             bullet = new Sprite();
-            laserColor = currentCannon.get("laserBeamColor").asString();
+            laserColor = currentCannon.getString("laserBeamColor");
         } else {
             bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         }
@@ -170,9 +170,9 @@ public class Bullet {
             }
         }
 
-        isHoming = currentCannon.get("homing").asBoolean();
+        isHoming = currentCannon.getBoolean("homing");
         if (isHoming) {
-            explosionTimer = currentCannon.get("explosionTimer").asFloat();
+            explosionTimer = currentCannon.getFloat("explosionTimer");
         }
 
         random = new Random();

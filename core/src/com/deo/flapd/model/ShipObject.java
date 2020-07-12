@@ -87,31 +87,31 @@ public abstract class ShipObject {
 
         fires = new Array<>();
 
-        int fireCount = shipConfig.get("fireCount").asInt();
+        int fireCount = shipConfig.getInt("fireCount");
 
         fireOffsetsX = new float[fireCount];
         fireOffsetsY = new float[fireCount];
 
-        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color") + "}").get("colors").asFloatArray();
+        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.get(getString("currentEngine")).getString("usesEffect") + "_color") + "}").get("colors").asFloatArray();
 
         for (int i = 0; i< fireCount; i++){
-            fireOffsetsX[i] = shipConfig.get("fires").get("fire"+i+"OffsetX").asFloat();
-            fireOffsetsY[i] = shipConfig.get("fires").get("fire"+i+"OffsetY").asFloat();
+            fireOffsetsX[i] = shipConfig.get("fires").getFloat("fire"+i+"OffsetX");
+            fireOffsetsY[i] = shipConfig.get("fires").getFloat("fire"+i+"OffsetY");
             ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
             fire.start();
             fire.getEmitters().get(0).getTint().setColors(colors);
             fires.add(fire);
         }
 
-        height = shipConfig.get("height").asFloat();
-        width = shipConfig.get("width").asFloat();
+        height = shipConfig.getFloat("height");
+        width = shipConfig.getFloat("width");
 
-        hasAnimation = shipConfig.get("hasAnimation").asBoolean();
+        hasAnimation = shipConfig.getBoolean("hasAnimation");
 
         if(hasAnimation){
             ship = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(shipConfig.get("frameDuration").asFloat(), assetManager.get("player/animations/"+shipConfig.get("animation").asString()+".atlas", TextureAtlas.class).findRegions(shipConfig.get("animation").asString()), Animation.PlayMode.LOOP);
+            enemyAnimation = new Animation<TextureRegion>(shipConfig.getFloat("frameDuration"), assetManager.get("player/animations/"+shipConfig.getString("animation")+".atlas", TextureAtlas.class).findRegions(shipConfig.getString("animation")), Animation.PlayMode.LOOP);
         }else{
             ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
         }
@@ -198,7 +198,7 @@ public abstract class ShipObject {
         chargeCapacity = treeJson.get(getString("currentBattery")).get("parameterValues").asFloatArray()[0];
         healthCapacity = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray()[0];
 
-        shield = new Sprite(fields.findRegion(treeJson.get(getString("currentShield")).get("usesEffect").asString()));
+        shield = new Sprite(fields.findRegion(treeJson.get(getString("currentShield")).getString("usesEffect")));
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
 
@@ -232,7 +232,7 @@ public abstract class ShipObject {
         damage_fire3.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
 
         explosionEffect = new ParticleEffect();
-        explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
+        explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
 
         damage_fire.start();
         damage_fire2.start();

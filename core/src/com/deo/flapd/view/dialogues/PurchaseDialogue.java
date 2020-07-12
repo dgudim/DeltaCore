@@ -236,7 +236,7 @@ public class PurchaseDialogue extends Dialogue{
             int[] itemCounts = treeJson.get(result).get("itemCounts").asIntArray();
             for(int i = 0; i<items.length; i++){
                 int[] buffer = getPrice(items[i]);
-                priceArray[0] += Math.ceil(buffer[0]/treeJson.get(result).get("resultCount").asFloat()*itemCounts[i]);
+                priceArray[0] += Math.ceil(buffer[0]/treeJson.get(result).getFloat("resultCount")*itemCounts[i]);
                 priceArray[1] += buffer[1] + 1;
             }
         }else{

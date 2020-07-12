@@ -70,13 +70,13 @@ public class UIComposer {
         if(treeJson.get(style) == null) {
             throw new IllegalArgumentException("No style defined with name " + style);
         }else{
-            dependency = treeJson.get(style).get("loadFrom").asString();
+            dependency = treeJson.get(style).getString("loadFrom");
         }
         if(!dependencies.contains(dependency, false)) {
             dependencies.add(dependency);
             textures.addRegions((TextureAtlas)assetManager.get(dependency));
         }
-        switch (treeJson.get(style).get("type").asString()){
+        switch (treeJson.get(style).getString("type")){
             case ("buttonStyle"):
                 loadButtonStyle(treeJson.get(style), textures);
                 break;
@@ -120,9 +120,9 @@ public class UIComposer {
 
     private void setButtonStyleDimensionsAndTextures(JsonValue styleJson, Button.ButtonStyle style, Skin textures){
 
-        style.up = textures.getDrawable(styleJson.get("up").get("texture").asString());
-        style.over = textures.getDrawable(styleJson.get("over").get("texture").asString());
-        style.down = textures.getDrawable(styleJson.get("down").get("texture").asString());
+        style.up = textures.getDrawable(styleJson.get("up").getString("texture"));
+        style.over = textures.getDrawable(styleJson.get("over").getString("texture"));
+        style.down = textures.getDrawable(styleJson.get("down").getString("texture"));
 
         if(!styleJson.get("up").get("size").asStringArray()[0].equals("default")){
             style.up.setMinWidth(styleJson.get("up").get("size").asIntArray()[0]);
@@ -146,10 +146,10 @@ public class UIComposer {
 
     private void setCheckBoxStyleDimensionsAndTextures(JsonValue styleJson, CheckBox.CheckBoxStyle style, Skin textures){
 
-        style.checkboxOn = textures.getDrawable(styleJson.get("on").get("texture").asString());
-        style.checkboxOnOver = textures.getDrawable(styleJson.get("onOver").get("texture").asString());
-        style.checkboxOff = textures.getDrawable(styleJson.get("off").get("texture").asString());
-        style.checkboxOver = textures.getDrawable(styleJson.get("offOver").get("texture").asString());
+        style.checkboxOn = textures.getDrawable(styleJson.get("on").getString("texture"));
+        style.checkboxOnOver = textures.getDrawable(styleJson.get("onOver").getString("texture"));
+        style.checkboxOff = textures.getDrawable(styleJson.get("off").getString("texture"));
+        style.checkboxOver = textures.getDrawable(styleJson.get("offOver").getString("texture"));
 
         if(!styleJson.get("on").get("size").asStringArray()[0].equals("default")){
             style.checkboxOn.setMinWidth(styleJson.get("on").get("size").asIntArray()[0]);
@@ -178,24 +178,24 @@ public class UIComposer {
     }
 
     private void setTextButtonFontStyle(TextButton.TextButtonStyle buttonStyle, JsonValue styleJson, Array<BitmapFont> fonts){
-        buttonStyle.font = fonts.get(styleJson.get("font").asInt());
-        if(!styleJson.get("up").get("fontColor").asString().equals("default")) {
-            buttonStyle.fontColor = Color.valueOf(styleJson.get("up").get("fontColor").asString());
+        buttonStyle.font = fonts.get(styleJson.getInt("font"));
+        if(!styleJson.get("up").getString("fontColor").equals("default")) {
+            buttonStyle.fontColor = Color.valueOf(styleJson.get("up").getString("fontColor"));
         }
-        if(!styleJson.get("over").get("fontColor").asString().equals("default")) {
-            buttonStyle.overFontColor = Color.valueOf(styleJson.get("over").get("fontColor").asString());
+        if(!styleJson.get("over").getString("fontColor").equals("default")) {
+            buttonStyle.overFontColor = Color.valueOf(styleJson.get("over").getString("fontColor"));
         }
-        if(!styleJson.get("down").get("fontColor").asString().equals("default")) {
-            buttonStyle.downFontColor = Color.valueOf(styleJson.get("down").get("fontColor").asString());
+        if(!styleJson.get("down").getString("fontColor").equals("default")) {
+            buttonStyle.downFontColor = Color.valueOf(styleJson.get("down").getString("fontColor"));
         }
     }
 
     private void setSliderStyleDimensionsAndTextures(JsonValue styleJson, Slider.SliderStyle style, Skin textures){
 
-        style.background = textures.getDrawable(styleJson.get("background").get("texture").asString());
-        style.knob = textures.getDrawable(styleJson.get("knob").get("texture").asString());
-        style.knobOver = textures.getDrawable(styleJson.get("knobOver").get("texture").asString());
-        style.knobDown = textures.getDrawable(styleJson.get("knobDown").get("texture").asString());
+        style.background = textures.getDrawable(styleJson.get("background").getString("texture"));
+        style.knob = textures.getDrawable(styleJson.get("knob").getString("texture"));
+        style.knobOver = textures.getDrawable(styleJson.get("knobOver").getString("texture"));
+        style.knobDown = textures.getDrawable(styleJson.get("knobDown").getString("texture"));
 
         if(!styleJson.get("background").get("size").asStringArray()[0].equals("default")){
             style.background.setMinWidth(styleJson.get("background").get("size").asIntArray()[0]);
@@ -224,18 +224,18 @@ public class UIComposer {
     }
 
     private void setCheckBoxFontStyle(CheckBox.CheckBoxStyle checkBoxStyle, JsonValue styleJson, Array<BitmapFont> fonts){
-        checkBoxStyle.font = fonts.get(styleJson.get("font").asInt());
-        if(!styleJson.get("off").get("fontColor").asString().equals("default")) {
-            checkBoxStyle.fontColor = Color.valueOf(styleJson.get("off").get("fontColor").asString());
+        checkBoxStyle.font = fonts.get(styleJson.getInt("font"));
+        if(!styleJson.get("off").getString("fontColor").equals("default")) {
+            checkBoxStyle.fontColor = Color.valueOf(styleJson.get("off").getString("fontColor"));
         }
-        if(!styleJson.get("on").get("fontColor").asString().equals("default")) {
-            checkBoxStyle.checkedFontColor = Color.valueOf(styleJson.get("on").get("fontColor").asString());
+        if(!styleJson.get("on").getString("fontColor").equals("default")) {
+            checkBoxStyle.checkedFontColor = Color.valueOf(styleJson.get("on").getString("fontColor"));
         }
-        if(!styleJson.get("offOver").get("fontColor").asString().equals("default")) {
-            checkBoxStyle.overFontColor = Color.valueOf(styleJson.get("offOver").get("fontColor").asString());
+        if(!styleJson.get("offOver").getString("fontColor").equals("default")) {
+            checkBoxStyle.overFontColor = Color.valueOf(styleJson.get("offOver").getString("fontColor"));
         }
-        if(!styleJson.get("onOver").get("fontColor").asString().equals("default")) {
-            checkBoxStyle.checkedOverFontColor = Color.valueOf(styleJson.get("onOver").get("fontColor").asString());
+        if(!styleJson.get("onOver").getString("fontColor").equals("default")) {
+            checkBoxStyle.checkedOverFontColor = Color.valueOf(styleJson.get("onOver").getString("fontColor"));
         }
     }
 

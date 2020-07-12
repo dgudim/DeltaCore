@@ -319,7 +319,7 @@ public abstract class DUtils {
     public static String getItemCodeNameByName(String name) {
         String item;
         try{
-            item = itemNames.get(name).asString();
+            item = itemNames.getString(name);
         }catch (Exception e){
             item = "ohno";
             log("\n no texture for item " + name);

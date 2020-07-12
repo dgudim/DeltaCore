@@ -114,18 +114,18 @@ public class EnemyData {
         this.enemyInfo = enemyInfo;
 
         name = enemyInfo.name;
-        texture = enemyBodyInfo.get("texture").asString();
-        explosionSound = enemyBodyInfo.get("explosionSound").asString();
-        explosion = enemyBodyInfo.get("explosionEffect").asString();
-        explosionScale = enemyBodyInfo.get("explosionScale").asFloat();
+        texture = enemyBodyInfo.getString("texture");
+        explosionSound = enemyBodyInfo.getString("explosionSound");
+        explosion = enemyBodyInfo.getString("explosionEffect");
+        explosionScale = enemyBodyInfo.getFloat("explosionScale");
 
-        width = enemyBodyInfo.get("width").asFloat();
-        height = enemyBodyInfo.get("height").asFloat();
+        width = enemyBodyInfo.getFloat("width");
+        height = enemyBodyInfo.getFloat("height");
 
         x = 805;
         y = 0;
 
-        fireEffectCount = enemyInfo.get(type).get("body").get("fire").get("count").asInt();
+        fireEffectCount = enemyInfo.get(type).get("body").get("fire").getInt("count");
 
         fireOffsetsX = new int[fireEffectCount];
         fireOffsetsY = new int[fireEffectCount];
@@ -133,44 +133,44 @@ public class EnemyData {
         fireScales = new float[fireEffectCount];
         fireParticleEffects.setSize(fireEffectCount);
         spawnHeight = enemyInfo.get("spawnHeight").asIntArray();
-        spawnDelay = enemyInfo.get("spawnDelay").asFloat();
+        spawnDelay = enemyInfo.getFloat("spawnDelay");
         enemyCountSpawnConditions = enemyInfo.get("spawnConditions").get("enemiesKilled").asIntArray();
         scoreSpawnConditions = enemyInfo.get("spawnConditions").get("score").asIntArray();
-        onBossWave = enemyInfo.get("spawnConditions").get("bossWave").asBoolean();
+        onBossWave = enemyInfo.get("spawnConditions").getBoolean("bossWave");
 
         for (int i = 0; i < fireEffectCount; i++) {
             fireOffsetsX[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[0];
             fireOffsetsY[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[1];
-            fireEffects[i] = enemyBodyInfo.get("fire").get("effect" + i).asString();
-            fireScales[i] = enemyBodyInfo.get("fire").get("scale" + i).asFloat();
+            fireEffects[i] = enemyBodyInfo.get("fire").getString("effect" + i);
+            fireScales[i] = enemyBodyInfo.get("fire").getFloat("scale" + i);
         }
 
-        hasAnimation = enemyBodyInfo.get("hasAnimation").asBoolean();
+        hasAnimation = enemyBodyInfo.getBoolean("hasAnimation");
         if(hasAnimation){
-            frameDuration = enemyBodyInfo.get("frameDuration").asFloat();
+            frameDuration = enemyBodyInfo.getFloat("frameDuration");
         }
 
         isHoming = enemyBodyInfo.get("homing").asBoolean();
 
         if (isHoming) {
-            explosionTimer = enemyBodyInfo.get("explosionTimer").asFloat();
-            idealExplosionTimer = enemyBodyInfo.get("explosionTimer").asFloat();
-            rotateTowardsShip = enemyBodyInfo.get("rotateTowardsShip").asBoolean();
+            explosionTimer = enemyBodyInfo.getFloat("explosionTimer");
+            idealExplosionTimer = enemyBodyInfo.getFloat("explosionTimer");
+            rotateTowardsShip = enemyBodyInfo.getBoolean("rotateTowardsShip");
             minAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[0];
             maxAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[1];
         }
 
-        spawnsDrones = enemyBodyInfo.get("spawnsDrones").asBoolean();
+        spawnsDrones = enemyBodyInfo.getBoolean("spawnsDrones");
 
-        spawnsBullets = enemyBodyInfo.get("spawnsBullets").asBoolean();
+        spawnsBullets = enemyBodyInfo.getBoolean("spawnsBullets");
 
-        health = enemyBodyInfo.get("health").asInt();
+        health = enemyBodyInfo.getInt("health");
 
-        speed = enemyBodyInfo.get("speed").asInt();
+        speed = enemyBodyInfo.getInt("speed");
 
         if(spawnsBullets) {
-            shootingDelay = enemyBodyInfo.get("shootingDelay").asFloat();
-            canAim = enemyBodyInfo.get("canAim").asBoolean();
+            shootingDelay = enemyBodyInfo.getFloat("shootingDelay");
+            canAim = enemyBodyInfo.getBoolean("canAim");
             if(canAim){
                 aimMinAngle = enemyBodyInfo.get("aimAngleLimit").asFloatArray()[0];
                 aimMaxAngle = enemyBodyInfo.get("aimAngleLimit").asFloatArray()[1];
@@ -178,23 +178,23 @@ public class EnemyData {
         }
 
         if(spawnsDrones){
-            droneSpawnDelay = enemyBodyInfo.get("droneSpawnDelay").asFloat();
-            dronesPerSpawn = enemyBodyInfo.get("dronesPerSpawn").asInt();
-            droneType = enemyBodyInfo.get("droneType").asString();
-            droneSpawnSound = enemyBodyInfo.get("droneSpawnSound").asString();
+            droneSpawnDelay = enemyBodyInfo.getFloat("droneSpawnDelay");
+            dronesPerSpawn = enemyBodyInfo.getInt("dronesPerSpawn");
+            droneType = enemyBodyInfo.getString("droneType");
+            droneSpawnSound = enemyBodyInfo.getString("droneSpawnSound");
             droneSpawnOffset = enemyBodyInfo.get("droneSpawnOffset").asIntArray();
         }
 
-        hitColor = enemyBodyInfo.get("hitColor").asString();
+        hitColor = enemyBodyInfo.getString("hitColor");
 
-        dropTimer = enemyInfo.get("drops").get("timer").asInt();
+        dropTimer = enemyInfo.get("drops").getInt("timer");
         dropCount = enemyInfo.get("drops").get("count").asIntArray();
         dropRarity = enemyInfo.get("drops").get("rarity").asIntArray();
 
         moneyCount = enemyInfo.get("money").get("count").asIntArray();
-        moneyTimer = enemyInfo.get("money").get("timer").asInt();
+        moneyTimer = enemyInfo.get("money").getInt("timer");
 
-        bonusChance = enemyInfo.get("bonuses").get("chance").asInt();
+        bonusChance = enemyInfo.get("bonuses").getInt("chance");
         bonusType = enemyInfo.get("bonuses").get("type").asIntArray();
 
         millis = 0;

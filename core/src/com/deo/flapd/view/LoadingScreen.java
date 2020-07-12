@@ -66,9 +66,9 @@ public class LoadingScreen implements Screen {
             putBoolean("bloom", true);
             JsonValue tree = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
             for(int i = 0; i<tree.size; i++){
-                if(tree.get(i).get("type").asString().equals("basePart")){
+                if(tree.get(i).getString("type").equals("basePart")){
                     putBoolean("unlocked_"+getItemCodeNameByName(tree.get(i).name), true);
-                    putString(tree.get(i).get("saveTo").asString(), tree.get(i).name);
+                    putString(tree.get(i).getString("saveTo"), tree.get(i).name);
                 }
             }
             log("\n------------first launch------------"+"\n");
@@ -323,7 +323,7 @@ public class LoadingScreen implements Screen {
                     log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
                 }
             }
-            if(stateName.equals("Loading tree")){
+            if(stateName.equals("Building tree")){
                 craftingTree = new Tree(LoadingScreen.this.assetManager, 105, 65, 430, 410);
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }

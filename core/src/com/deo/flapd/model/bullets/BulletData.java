@@ -44,27 +44,27 @@ public class BulletData {
 
     public BulletData(JsonValue enemyInfo, String type) {
         JsonValue bulletInfo = enemyInfo.get(type).get("bullet");
-        texture = bulletInfo.get("texture").asString();
-        width = bulletInfo.get("width").asFloat();
-        height = bulletInfo.get("height").asFloat();
+        texture = bulletInfo.getString("texture");
+        width = bulletInfo.getFloat("width");
+        height = bulletInfo.getFloat("height");
         x = 0;
         y = 0;
         angle = 0;
         this.enemyInfo = enemyInfo;
         this.type = type;
         offset = bulletInfo.get("offset").asFloatArray();
-        damage = bulletInfo.get("damage").asInt();
-        spread = bulletInfo.get("spread").asFloat();
-        speed = bulletInfo.get("speed").asInt();
-        trail = bulletInfo.get("trail").asString();
-        trailScale = bulletInfo.get("trailScale").asFloat();
-        explosionScale = bulletInfo.get("explosionScale").asFloat();
-        shootSound = bulletInfo.get("shootSound").asString();
-        bulletsPerShot = bulletInfo.get("bulletsPerShot").asInt();
-        explosion = bulletInfo.get("explosionEffect").asString();
-        isHoming = bulletInfo.get("homing").asBoolean();
+        damage = bulletInfo.getInt("damage");
+        spread = bulletInfo.getFloat("spread");
+        speed = bulletInfo.getInt("speed");
+        trail = bulletInfo.getString("trail");
+        trailScale = bulletInfo.getFloat("trailScale");
+        explosionScale = bulletInfo.getFloat("explosionScale");
+        shootSound = bulletInfo.getString("shootSound");
+        bulletsPerShot = bulletInfo.getInt("bulletsPerShot");
+        explosion = bulletInfo.getString("explosionEffect");
+        isHoming = bulletInfo.getBoolean("homing");
         if(isHoming){
-            explosionTimer = bulletInfo.get("explosionTimer").asFloat();
+            explosionTimer = bulletInfo.getFloat("explosionTimer");
         }
     }
 }

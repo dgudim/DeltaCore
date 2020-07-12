@@ -693,7 +693,7 @@ public class MenuScreen implements Screen {
     private void loadFire() {
         JsonValue shipConfig = shipConfigs.get(getString("currentArmour"));
 
-        int fireCount = shipConfig.get("fireCount").asInt();
+        int fireCount = shipConfig.getInt("fireCount");
 
         for (int i = 0; i < fires.size; i++) {
             fires.get(i).dispose();
@@ -702,12 +702,12 @@ public class MenuScreen implements Screen {
 
         for (int i = 0; i < fireCount; i++) {
             ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).get("usesEffect").asString() + ".p"), Gdx.files.internal("particles"));
-            fire.setPosition(Ship.getX() + shipConfig.get("fires").get("fire" + i + "OffsetX").asFloat(), Ship.getY() + shipConfig.get("fires").get("fire" + i + "OffsetY").asFloat());
+            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
+            fire.setPosition(Ship.getX() + shipConfig.get("fires").getFloat("fire" + i + "OffsetX"), Ship.getY() + shipConfig.get("fires").getFloat("fire" + i + "OffsetY"));
             fire.start();
             fires.add(fire);
         }
-        lastFireEffect = treeJson.get(getString("currentEngine")).get("usesEffect").asString();
+        lastFireEffect = treeJson.get(getString("currentEngine")).getString("usesEffect");
     }
 
     private void updateFire() {
@@ -715,10 +715,10 @@ public class MenuScreen implements Screen {
             if (lastFireEffect.equals(" ")) {
                 loadFire();
             }
-            if (!lastFireEffect.equals(treeJson.get(getString("currentEngine")).get("usesEffect").asString())) {
+            if (!lastFireEffect.equals(treeJson.get(getString("currentEngine")).getString("usesEffect"))) {
                 loadFire();
             }
-            String key = treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color";
+            String key = treeJson.get(getString("currentEngine")).getString("usesEffect") + "_color";
             if (getString(key).equals("")) {
                 setFireToDefault(key);
             } else {
@@ -730,7 +730,7 @@ public class MenuScreen implements Screen {
         } catch (Exception e) {
             log("corrupted fire color array");
             logException(e);
-            setFireToDefault(treeJson.get(getString("currentEngine")).get("usesEffect").asString() + "_color");
+            setFireToDefault(treeJson.get(getString("currentEngine")).getString("usesEffect") + "_color");
         }
     }
 
@@ -744,17 +744,17 @@ public class MenuScreen implements Screen {
 
     private void initializeShip() {
         JsonValue shipConfig = shipConfigs.get(getString("currentArmour"));
-        hasAnimation = shipConfig.get("hasAnimation").asBoolean();
+        hasAnimation = shipConfig.getBoolean("hasAnimation");
 
         if (!hasAnimation) {
             Ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
         } else {
             Ship = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(shipConfig.get("frameDuration").asFloat(), assetManager.get("player/animations/" + shipConfig.get("animation").asString() + ".atlas", TextureAtlas.class).findRegions(shipConfig.get("animation").asString()), Animation.PlayMode.LOOP);
+            enemyAnimation = new Animation<TextureRegion>(shipConfig.getFloat("frameDuration"), assetManager.get("player/animations/" + shipConfig.getString("animation") + ".atlas", TextureAtlas.class).findRegions(shipConfig.getString("animation")), Animation.PlayMode.LOOP);
         }
 
-        float width = shipConfig.get("width").asFloat();
-        float height = shipConfig.get("height").asFloat();
+        float width = shipConfig.getFloat("width");
+        float height = shipConfig.getFloat("height");
 
         Ship.setBounds(258 - width / 2, 279 - height / 2, width, height);
     }

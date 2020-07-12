@@ -122,7 +122,7 @@ public class ItemSlotManager {
         type = INVENTORY;
         boolean nextRow = false;
         for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.get(i).get("category").asString().equals("recepies") && getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)) > 0) {
+            if (treeJson.get(i).getString("category").equals("recepies") && getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)) > 0) {
                 addInventorySlot(treeJson.get(i).name, getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)), nextRow);
                 nextRow = !nextRow;
             }
@@ -135,7 +135,7 @@ public class ItemSlotManager {
         Array<Integer> quantities = new Array<>();
 
         for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.get(i).get("category").asString().equals("recepies")) {
+            if (treeJson.get(i).getString("category").equals("recepies")) {
                 itemsToAdd.add(treeJson.get(i).name);
             }
         }

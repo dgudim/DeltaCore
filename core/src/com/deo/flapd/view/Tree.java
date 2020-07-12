@@ -64,13 +64,13 @@ public class Tree {
         long loadingTime = TimeUtils.millis();
 
         for (int i = 0; i < treeJson.size; i++) {
-            if (!categories.contains(treeJson.get(i).get("category").asString(), false)) {
-                categories.add(treeJson.get(i).get("category").asString());
+            if (!categories.contains(treeJson.get(i).getString("category"), false)) {
+                categories.add(treeJson.get(i).getString("category"));
                 Array<String> items1 = new Array<>();
                 items1.add(treeJson.get(i).name);
                 items.add(items1);
             } else {
-                int index = categories.indexOf(treeJson.get(i).get("category").asString(), false);
+                int index = categories.indexOf(treeJson.get(i).getString("category"), false);
                 items.get(index).add(treeJson.get(i).name);
             }
         }
@@ -398,7 +398,7 @@ class Node {
         Color color = Color.WHITE;
         switch (getType()) {
             case ("basePart"):
-                if (getString(treeJson.get(name).get("saveTo").asString()).equals(name)) {
+                if (getString(treeJson.get(name).getString("saveTo")).equals(name)) {
                     color = Color.GREEN;
                 }
                 break;
@@ -407,7 +407,7 @@ class Node {
                 break;
             case ("part"):
                 color = Color.SKY;
-                if (getString(treeJson.get(name).get("saveTo").asString()).equals(name)) {
+                if (getString(treeJson.get(name).getString("saveTo")).equals(name)) {
                     color = Color.GREEN;
                 }
                 break;
@@ -444,7 +444,7 @@ class Node {
         } else {
             if (treeJson.get(name) == null)
                 throw new IllegalArgumentException("no item declared with name " + name);
-            return treeJson.get(name).get("type").asString();
+            return treeJson.get(name).getString("type");
         }
     }
 
@@ -460,9 +460,9 @@ class Node {
 
     private float getResultCount(boolean parent) {
         if (parent) {
-            return treeJson.get(this.parent.name).get("resultCount").asInt();
+            return treeJson.get(this.parent.name).getInt("resultCount");
         } else {
-            return treeJson.get(name).get("resultCount").asInt();
+            return treeJson.get(name).getInt("resultCount");
         }
     }
 }
