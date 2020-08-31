@@ -30,13 +30,17 @@ public class Bosses {
 
     public void update(float delta){
         for(int i = 0; i<bosses.size; i++){
-            bosses.get(i).update(delta);
+            if(bosses.get(i).visible) {
+                bosses.get(i).update(delta);
+            }
         }
     }
 
     public void draw(SpriteBatch batch){
         for(int i = 0; i<bosses.size; i++){
-            bosses.get(i).draw(batch);
+            if(bosses.get(i).visible) {
+                bosses.get(i).draw(batch);
+            }
         }
     }
 

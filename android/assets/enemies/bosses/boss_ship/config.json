@@ -1,9 +1,11 @@
 {
   "textures": "bossShip.atlas",
+  "spawnAt": [820, 100],
   "parts": {
     "body": {
       "type": "basePart",
       "health": 2333,
+      "hasCollision": true,
       "width": 556,
       "height": 172,
       "originX": "standard",
@@ -13,6 +15,7 @@
     "homingCannonBase": {
       "type": "part",
       "health": 666,
+      "hasCollision": true,
       "width": 100,
       "height": 28,
       "originX": "standard",
@@ -29,6 +32,9 @@
       "health": 333,
       "width": 32,
       "height": 28,
+      "originX": "standard",
+      "originY": "standard",
+      "hasCollision": true,
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "bullet": {
@@ -47,7 +53,8 @@
       "fireRate":{
        "baseRate": 1,
         "randomness": 0.3
-      }
+      },
+      "texture": "cannon1"
     },
     "smallCannon2": {
       "type": "clone",
@@ -107,8 +114,11 @@
     "mediumCannon1": {
       "type": "cannon",
       "health": 1000,
+      "hasCollision": true,
       "width": 44,
       "height": 32,
+      "originX": "standard",
+      "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "bullet": {
@@ -127,13 +137,17 @@
       "fireRate":{
         "baseRate": 0.8,
         "randomness": 0.2
-      }
+      },
+      "texture": "cannon2"
     },
     "cannon2ndStage": {
       "type": "cannon",
       "health": 1333,
+      "hasCollision": true,
       "width": 120,
       "height": 32,
+      "originX": "standard",
+      "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-20, 20],
       "bullet": {
@@ -152,10 +166,37 @@
       "fireRate":{
         "baseRate": 0.5,
         "randomness": 0.3
-      }
+      },
+      "texture": "bigCannon"
     },
     "homingCannon": {
-
+      "type": "cannon",
+      "health": 1,
+      "hasCollision": false,
+      "width": 36,
+      "height": 8,
+      "originX": "standard",
+      "originY": "standard",
+      "canAim": true,
+      "aimAngleLimit": [-30, 30],
+      "texture": "upperCannon_part1",
+      "bullet": {
+        "preset": "homingRedBossBulletLong",
+        "offset": {
+          "X": 0,
+          "Y": 0
+        }
+      },
+      "spread": 0,
+      "offset": {
+        "relativeTo": "body",
+        "X": 67,
+        "Y": 126
+      },
+      "fireRate":{
+        "baseRate": 0.3,
+        "randomness": 0.1
+      }
     }
   },
 
@@ -191,11 +232,12 @@
         }
       },
       "startAnimation": {
-        "target": "body",
-        "moveSinY": {
+        "moveSin": {
+          "target": "body",
           "amplitude": 13
         },
         "moveLinearX": {
+          "target": "body",
           "speed": 35,
           "targetX": 240,
           "whenDone":{
@@ -248,7 +290,7 @@
     "phase2": {
       "startAnimation": {
         "target": "cannon2ndStage",
-        "moveLinearX": {
+        "moveLinear": {
           "speed": 45,
           "targetX": 380,
           "whenDone":{
@@ -284,10 +326,10 @@
             "speed": 35,
             "targetAngle": 130
           },
-          "moveLinearX": {
+          "moveLinear": {
 
           },
-          "moveLinearY": {
+          "moveLinear": {
 
           }
         }
