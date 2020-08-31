@@ -62,7 +62,6 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
-
 public class MenuScreen implements Screen {
 
     private float number;
@@ -508,7 +507,7 @@ public class MenuScreen implements Screen {
                 new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to quit?", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.exit(1);
+                        Gdx.app.exit();
                     }
                 }, new ClickListener() {
                     @Override

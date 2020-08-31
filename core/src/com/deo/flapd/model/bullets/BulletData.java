@@ -1,6 +1,7 @@
 package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonValue;
 
 public class BulletData {
@@ -13,6 +14,8 @@ public class BulletData {
     public float y;
 
     public float[] offset;
+    public float bulletAngle;
+    public float bulletDistance;
 
     int damage;
 
@@ -35,8 +38,8 @@ public class BulletData {
     public int bulletsPerShot;
 
     boolean isHoming;
-
     float explosionTimer;
+    float homingSpeed;
 
     JsonValue enemyInfo;
 
@@ -53,6 +56,8 @@ public class BulletData {
         this.enemyInfo = enemyInfo;
         this.type = type;
         offset = bulletInfo.get("offset").asFloatArray();
+        bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
+        bulletDistance = (float) Math.sqrt(offset[1] * offset[1] + offset[0] * offset[0]);
         damage = bulletInfo.getInt("damage");
         spread = bulletInfo.getFloat("spread");
         speed = bulletInfo.getInt("speed");
@@ -65,6 +70,7 @@ public class BulletData {
         isHoming = bulletInfo.getBoolean("homing");
         if(isHoming){
             explosionTimer = bulletInfo.getFloat("explosionTimer");
+            homingSpeed = bulletInfo.getFloat("homingSpeed");
         }
     }
 }

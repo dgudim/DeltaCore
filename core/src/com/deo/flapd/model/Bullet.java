@@ -79,6 +79,7 @@ public class Bullet {
     private boolean isLaserActive;
     public boolean isLaser;
     private boolean isHoming;
+    private float homingSpeed;
     private float explosionTimer;
 
     private int gunCount;
@@ -173,6 +174,7 @@ public class Bullet {
         isHoming = currentCannon.getBoolean("homing");
         if (isHoming) {
             explosionTimer = currentCannon.getFloat("explosionTimer");
+            homingSpeed = currentCannon.getFloat("homingSpeed");
         }
 
         random = new Random();
@@ -254,7 +256,14 @@ public class Bullet {
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
                         if (enemies.enemyEntities.get(i).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i).isDead) {
                             Rectangle enemy = enemies.enemyEntities.get(i).enemy.getBoundingRectangle();
-                            degrees.add(MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight()/2, enemy.getX() - bullet.x + enemy.getWidth()/2), -8830, 3880));
+                            float degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight() / 2, enemy.getX() - bullet.x + enemy.getWidth() / 2);
+
+                            if (degree > 45 || degree < -45) {
+                                degrees.add(0f);
+                            } else {
+                                degrees.add(degree);
+                            }
+
                             aim = true;
                             break;
                         }
@@ -268,6 +277,7 @@ public class Bullet {
 
                     if (isHoming) {
                         explosionTimers.add(explosionTimer);
+                        degrees.set(degrees.size - 1, degrees.get(degrees.size - 1) + 180);
                     }
 
                     bullet.x += MathUtils.cosDeg(playerBounds.getRotation()) * 6;
@@ -325,25 +335,27 @@ public class Bullet {
 
                     this.bullet.setRotation(angle);
                 } else {
+
                     float posX = playerBounds.getX() + 1000;
                     float posY = playerBounds.getY();
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (!enemies.enemyEntities.get(i2).isDead) {
+                        if (!enemies.enemyEntities.get(i2).isDead && enemies.enemyEntities.get(i2).data.x < posX) {
                             posX = enemies.enemyEntities.get(i2).data.x + enemies.enemyEntities.get(i2).data.width / 2;
                             posY = enemies.enemyEntities.get(i2).data.y + enemies.enemyEntities.get(i2).data.height / 2;
-                            break;
                         }
                     }
-                    bullet.x = MathUtils.lerp(bullet.x, posX, bulletSpeed * delta / 1300);
-                    bullet.y = MathUtils.lerp(bullet.y, posY, bulletSpeed * delta / 1300);
-                    this.bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(posY - bullet.y, posX - bullet.x));
+                    degrees.set(i, MathUtils.lerpAngleDeg(angle, MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - posY, bullet.x - posX), homingSpeed/700f));
+                    this.bullet.setRotation(angle + 180);
+                    bullet.x += MathUtils.cosDeg(angle + 180) * (bulletSpeed / 1.2f) * delta;
+                    bullet.y += MathUtils.sinDeg(angle + 180) * (bulletSpeed / 1.2f) * delta;
                     explosionTimers.set(i, explosionTimers.get(i) - delta);
+
                     if (explosionTimers.get(i) <= 0) {
                         removeBullet(i, true);
                     }
                 }
 
-                if (bullet.x > 800) {
+                if (bullet.x > 800 || bullet.x < Math.max(bullet.height, bullet.width) || bullet.y > 480 || bullet.y < Math.max(bullet.height, bullet.width)) {
                     removeBullet(i, false);
                 }
             }

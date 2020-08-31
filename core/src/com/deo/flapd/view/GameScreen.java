@@ -6,16 +6,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -27,9 +21,9 @@ import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
+import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
-import com.deo.flapd.utils.postprocessing.effects.Bloom;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -81,12 +75,8 @@ public class GameScreen implements Screen {
     private boolean enableShader;
 
     private Enemies enemies;
+    private Bosses bosses;
 
-    private float[] samples;
-    private Music music2;
-    private float maxValue;
-    private Array<Float> displayData;
-    private Image bar;
     private boolean drawScreenExtenders = true;
 
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, boolean newGame) {
@@ -110,9 +100,13 @@ public class GameScreen implements Screen {
         enemies = new Enemies(assetManager);
         enemies.loadEnemies();
 
+        bosses = new Bosses(assetManager);
+        bosses.loadBosses();
+
         ship = new SpaceShip(assetManager, 0, 204, newGame, enemies);
 
         enemies.setTargetPlayer(ship);
+        bosses.setTargetPlayer(ship);
 
         uraniumCell = new UraniumCell(assetManager);
 
@@ -143,29 +137,6 @@ public class GameScreen implements Screen {
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
 
-        //MusicWave musicWave = new MusicWave();
-
-        displayData = new Array<>();
-
-        Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        TextureRegionDrawable BarBackgroundBlank = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-        pixmap.dispose();
-
-        bar = new Image(BarBackgroundBlank);
-
-        //samples = musicWave.getSamples();
-        //music2 = musicWave.getMusic();
-        samples = new float[]{};
-
-        for (int i = 0; i < samples.length; i++) {
-            if (samples[i] > maxValue) {
-                maxValue = samples[i];
-            }
-        }
-
-        //music2.play();
     }
 
     @Override
@@ -193,14 +164,6 @@ public class GameScreen implements Screen {
         }
 
         if (enableShader) {
-            Bloom effect = (Bloom) postProcessor.effectsManager.get(0);
-            //float value = Math.abs(samples[(int)(music2.getPosition()*44100)]/maxValue);
-            float value = 0;
-            effect.setBloomSaturation(value * 2.3f);
-            //displayData.add(value*150);
-            if (displayData.size > 401) {
-                displayData.removeIndex(0);
-            }
             postProcessor.capture();
         }
         batch.begin();
@@ -215,6 +178,7 @@ public class GameScreen implements Screen {
 
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
+        bosses.draw(batch);
         boss_battleShip.draw(batch, delta);
         boss_evilEye.draw(batch, delta);
         meteorite.drawEffects(batch, delta);
@@ -226,18 +190,11 @@ public class GameScreen implements Screen {
             batch.begin();
         }
 
-        for (int i = 0; i < displayData.size; i++) {
-            bar.setBounds(400 + i, 0, 2, displayData.get(displayData.size - 1 - i) + 10);
-            bar.setColor(new Color().fromHsv(i / 3.0f + 110, 1.5f, 1).add(0, 0, 0, 1));
-            bar.draw(batch, 1);
-            bar.setBounds(400 - i, 0, 2, displayData.get(displayData.size - 1 - i) + 10);
-            bar.setColor(new Color().fromHsv(i / 3.0f + 110, 1.5f, 1).add(0, 0, 0, 1));
-            bar.draw(batch, 1);
-        }
-
         ship.drawBase(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
+        bosses.draw(batch);
+        bosses.update(delta);
         meteorite.drawBase(batch, delta);
         checkpoint.drawBase(batch);
 
@@ -379,8 +336,7 @@ public class GameScreen implements Screen {
         uraniumCell.dispose();
 
         enemies.dispose();
-
-        //music2.dispose();
+        bosses.dispose();
 
         logVariables();
     }

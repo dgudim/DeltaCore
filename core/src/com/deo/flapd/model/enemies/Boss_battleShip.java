@@ -532,7 +532,7 @@ public class Boss_battleShip {
             }
 
             if (healths.get(5) > 0) {
-                bounds_cannon5.setPosition(posX + 408, posY + 40);
+                bounds_cannon5.setPosition(posX + 376, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
                 cannon_small.setRotation(bounds_cannon5.getRotation());
@@ -550,7 +550,7 @@ public class Boss_battleShip {
             }
 
             if (healths.get(6) > 0) {
-                bounds_cannon6.setPosition(posX + 440, posY + 40);
+                bounds_cannon6.setPosition(posX + 376, posY + 40);
 
                 cannon_small.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
                 cannon_small.setRotation(bounds_cannon6.getRotation());

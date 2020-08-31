@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.utils.DUtils;
 
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
 import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
@@ -77,13 +78,13 @@ public class EnemyBullet {
             }
         }
         if (!isDead) {
-            if(!data.isHoming) {
+            if (!data.isHoming) {
                 data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
                 data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
-            }else{
-                data.x = MathUtils.lerp(data.x, player.bounds.getX(), delta * data.speed / 220.0f);
-                data.y = MathUtils.lerp(data.y, player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2, delta * data.speed / 220.0f);
-                bullet.setRotation(MathUtils.radiansToDegrees * MathUtils.atan2(data.y - player.bounds.getY(), data.x - player.bounds.getX()));
+            } else {
+                bullet.setRotation(DUtils.lerpAngleWithConstantSpeed(bullet.getRotation(), MathUtils.radiansToDegrees * MathUtils.atan2(data.y - player.bounds.getY(), data.x - player.bounds.getX()), data.homingSpeed, delta));
+                data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * 2 * delta;
+                data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * 2 * delta;
                 data.explosionTimer -= delta;
             }
             bullet.setPosition(data.x, data.y);
@@ -94,7 +95,7 @@ public class EnemyBullet {
                 explosionFinished = true;
             }
 
-            if(data.isHoming && data.explosionTimer<=0){
+            if (data.isHoming && data.explosionTimer <= 0) {
                 explode();
             }
         }
@@ -104,7 +105,7 @@ public class EnemyBullet {
     public void dispose() {
         data.explosionParticleEffect.dispose();
         data.trailParticleEffect.dispose();
-        if(!explosionStarted) {
+        if (!explosionStarted) {
             enemyBulletTrailDisposes++;
         }
         enemyBulletDisposes++;

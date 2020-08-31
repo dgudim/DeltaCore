@@ -2,6 +2,7 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -29,6 +30,8 @@ public class EnemyData {
     String[] fireEffects;
     float[] fireScales;
     Array<ParticleEffect> fireParticleEffects;
+    Array<Float> fireParticleEffectAngles;
+    Array<Float> fireParticleEffectDistances;
 
     int health;
 
@@ -69,15 +72,10 @@ public class EnemyData {
     boolean onBossWave;
 
     boolean isHoming;
-
-    boolean rotateTowardsShip;
-
     float minAngle;
-
     float maxAngle;
-
+    float homingSpeed;
     float explosionTimer;
-
     float idealExplosionTimer;
 
     boolean spawnsDrones;
@@ -91,6 +89,8 @@ public class EnemyData {
     String droneSpawnSound;
 
     int[] droneSpawnOffset;
+    float droneAngle;
+    float droneDistance;
 
     boolean spawnsBullets;
 
@@ -110,6 +110,8 @@ public class EnemyData {
 
         JsonValue enemyBodyInfo = enemyInfo.get(type).get("body");
         fireParticleEffects = new Array<>();
+        fireParticleEffectAngles = new Array<>();
+        fireParticleEffectDistances = new Array<>();
         this.type = type;
         this.enemyInfo = enemyInfo;
 
@@ -132,6 +134,9 @@ public class EnemyData {
         fireEffects = new String[fireEffectCount];
         fireScales = new float[fireEffectCount];
         fireParticleEffects.setSize(fireEffectCount);
+        fireParticleEffectDistances.setSize(fireEffectCount);
+        fireParticleEffectAngles.setSize(fireEffectCount);
+
         spawnHeight = enemyInfo.get("spawnHeight").asIntArray();
         spawnDelay = enemyInfo.getFloat("spawnDelay");
         enemyCountSpawnConditions = enemyInfo.get("spawnConditions").get("enemiesKilled").asIntArray();
@@ -143,6 +148,8 @@ public class EnemyData {
             fireOffsetsY[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[1];
             fireEffects[i] = enemyBodyInfo.get("fire").getString("effect" + i);
             fireScales[i] = enemyBodyInfo.get("fire").getFloat("scale" + i);
+            fireParticleEffectAngles.set(i, MathUtils.atan2(fireOffsetsY[i], fireOffsetsX[i]) * MathUtils.radiansToDegrees);
+            fireParticleEffectDistances.set(i, (float) Math.sqrt(fireOffsetsY[i] * fireOffsetsY[i] + fireOffsetsX[i] * fireOffsetsX[i]));
         }
 
         hasAnimation = enemyBodyInfo.getBoolean("hasAnimation");
@@ -155,9 +162,9 @@ public class EnemyData {
         if (isHoming) {
             explosionTimer = enemyBodyInfo.getFloat("explosionTimer");
             idealExplosionTimer = enemyBodyInfo.getFloat("explosionTimer");
-            rotateTowardsShip = enemyBodyInfo.getBoolean("rotateTowardsShip");
             minAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[0];
             maxAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[1];
+            homingSpeed = enemyBodyInfo.get("homingSpeed").asFloat();
         }
 
         spawnsDrones = enemyBodyInfo.getBoolean("spawnsDrones");
@@ -183,6 +190,8 @@ public class EnemyData {
             droneType = enemyBodyInfo.getString("droneType");
             droneSpawnSound = enemyBodyInfo.getString("droneSpawnSound");
             droneSpawnOffset = enemyBodyInfo.get("droneSpawnOffset").asIntArray();
+            droneAngle = MathUtils.atan2(droneSpawnOffset[1], droneSpawnOffset[0]) * MathUtils.radiansToDegrees;
+            droneDistance = (float) Math.sqrt(droneSpawnOffset[1] * droneSpawnOffset[1] + droneSpawnOffset[0] * droneSpawnOffset[0]);
         }
 
         hitColor = enemyBodyInfo.getString("hitColor");
@@ -207,7 +216,7 @@ public class EnemyData {
         return copy;
     }
 
-    protected EnemyData useAsDroneData(float x, float y){
+    protected EnemyData setNewPosition(float x, float y){
         this.x = x;
         this.y = y;
         shootingDelay += getRandomInRange(-10, 10) / 100f;

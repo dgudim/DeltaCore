@@ -219,7 +219,7 @@ public abstract class DUtils {
             s.close();
         } catch (Exception e) {
             logException(e);
-            throw new FileNotFoundException("no save file found in "+file.file().getPath());
+            throw new FileNotFoundException("no save file found in " + file.file().getPath());
         }
 
     }
@@ -318,9 +318,9 @@ public abstract class DUtils {
 
     public static String getItemCodeNameByName(String name) {
         String item;
-        try{
+        try {
             item = itemNames.getString(name);
-        }catch (Exception e){
+        } catch (Exception e) {
             item = "ohno";
             log("\n no texture for item " + name);
         }
@@ -335,10 +335,6 @@ public abstract class DUtils {
         float zoom = Math.min(tempScaleH, tempScaleW);
         camera.zoom = 1 / zoom;
         camera.update();
-    }
-
-    public static void updateCameraCustomDimensions(OrthographicCamera camera, Viewport viewport, int width, int height, float worldWidth, float worldHeight) {
-
     }
 
     public static void logException(Exception e) {
@@ -375,13 +371,33 @@ public abstract class DUtils {
         return result;
     }
 
-    public static void logVariables(){
-        log("\n total bullet dispose calls: "+bulletDisposes);
-        log("\n total bullet trail particle effects dispose calls: "+bulletTrailDisposes);
-        log("\n total enemy bullet dispose calls: "+enemyBulletDisposes);
-        log("\n total enemy bullet trail particle effects dispose calls: "+enemyBulletTrailDisposes);
-        log("\n total enemy dispose calls: "+enemyDisposes);
-        log("\n total enemy fire particle effects dispose calls: "+enemyFireDisposes);
+    public static float lerpWithConstantSpeed(float from, float to, float speed, float delta) {
+        if (from + speed * delta < to) {
+            return from + speed * delta;
+        } else if (from - speed * delta > to) {
+            return from - speed * delta;
+        } else {
+            return to;
+        }
+    }
+
+    public static float lerpAngleWithConstantSpeed(float from, float to, float speed, float delta) {
+        float variant1 = Math.abs(from - to - 360);
+        float variant2 = Math.abs(to - from - 360);
+        if(variant2 >= variant1){
+            return lerpWithConstantSpeed(from, to, speed, delta);
+        }else{
+            return from + speed * delta;
+        }
+    }
+
+    public static void logVariables() {
+        log("\n total bullet dispose calls: " + bulletDisposes);
+        log("\n total bullet trail particle effects dispose calls: " + bulletTrailDisposes);
+        log("\n total enemy bullet dispose calls: " + enemyBulletDisposes);
+        log("\n total enemy bullet trail particle effects dispose calls: " + enemyBulletTrailDisposes);
+        log("\n total enemy dispose calls: " + enemyDisposes);
+        log("\n total enemy fire particle effects dispose calls: " + enemyFireDisposes);
         bulletDisposes = 0;
         bulletTrailDisposes = 0;
         enemyDisposes = 0;

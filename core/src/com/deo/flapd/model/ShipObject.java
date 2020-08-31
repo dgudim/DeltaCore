@@ -81,7 +81,7 @@ public abstract class ShipObject {
     ShipObject(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
 
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
-
+        
         JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
         JsonValue shipConfig = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
 
@@ -97,6 +97,7 @@ public abstract class ShipObject {
         for (int i = 0; i< fireCount; i++){
             fireOffsetsX[i] = shipConfig.get("fires").getFloat("fire"+i+"OffsetX");
             fireOffsetsY[i] = shipConfig.get("fires").getFloat("fire"+i+"OffsetY");
+
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
             fire.start();

@@ -9,7 +9,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [80, 10],
+          "offset0": [34, -21],
           "scale0": 1
         },
         "speed": 110,
@@ -38,7 +38,7 @@
         "explosionScale": 1,
         "height": 16,
         "width": 16,
-        "offset": [0, 0]
+        "offset": [-39, -28]
       }
     },
 
@@ -51,7 +51,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [90, 20],
+          "offset0": [32, 2],
           "scale0": 1
         },
         "speed": 110,
@@ -80,7 +80,7 @@
         "explosionScale": 1,
         "height": 16,
         "width": 16,
-        "offset": [0, 0]
+        "offset": [-60, -23]
       }
     },
 
@@ -118,7 +118,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [190, 40],
+          "offset0": [95, 4],
           "scale0": 1
         },
         "speed": 70,
@@ -147,7 +147,7 @@
         "explosionScale": 1,
         "height": 16,
         "width": 16,
-        "offset": [3, 17]
+        "offset": [-82, -21]
       }
     },
 
@@ -160,7 +160,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [180, 25],
+          "offset0": [62, 3],
           "scale0": 1
         },
         "speed": 70,
@@ -189,7 +189,7 @@
         "explosionScale": 1,
         "height": 16,
         "width": 16,
-        "offset": [3, 17]
+        "offset": [-94, -25]
       }
     },
 
@@ -228,21 +228,21 @@
         "fire": {
           "count": 1,
           "effect0": "particles/particle_nowind2.p",
-          "offset0": [52.2, 28.8],
-          "scale0": 1
+          "offset0": [21, 0],
+          "scale0": 0.5
         },
         "speed": 100,
         "health": 300,
         "homing": true,
+        "homingSpeed": 70,
         "hasAnimation": false,
         "spawnsDrones": false,
         "spawnsBullets": false,
-        "rotateTowardsShip": true,
         "explosionTimer": 4,
         "rotationLimit": [-360, 360],
         "hitColor": "#FF0000",
-        "height": 57.6,
-        "width": 104.4
+        "height": 28.8,
+        "width": 52.2
       }
     },
 
@@ -255,21 +255,21 @@
         "fire": {
           "count": 1,
           "effect0": "particles/particle_nowind2.p",
-          "offset0": [52.2, 28.8],
-          "scale0": 1
+          "offset0": [14, 4],
+          "scale0": 0.5
         },
         "speed": 100,
         "health": 300,
         "homing": true,
+        "homingSpeed": 70,
         "hasAnimation": false,
         "spawnsDrones": false,
         "spawnsBullets": false,
-        "rotateTowardsShip": true,
         "explosionTimer": 4,
         "rotationLimit": [-360, 360],
         "hitColor": "#FF0000",
-        "height": 57.6,
-        "width": 104.4
+        "height": 28.8,
+        "width": 52.2
       }
     },
 
@@ -308,10 +308,10 @@
         "fire": {
           "count": 2,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [80, 14],
+          "offset0": [38, 10],
           "scale0": 0.5,
           "effect1": "particles/fire_engine_left_blue.p",
-          "offset1": [80, 34],
+          "offset1": [38, -9],
           "scale1": 0.5
         },
         "speed": 80,
@@ -341,7 +341,7 @@
         "explosionScale": 1,
         "height": 6,
         "width": 50,
-        "offset": [3, 11]
+        "offset": [-50, -12]
       }
     },
 
@@ -354,7 +354,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [77, 16],
+          "offset0": [30, 0],
           "scale0": 1
         },
         "speed": 80,
@@ -384,7 +384,7 @@
         "explosionScale": 1,
         "height": 6,
         "width": 50,
-        "offset": [3, 11]
+        "offset": [-67, -14]
       }
     },
 
@@ -436,7 +436,7 @@
         "dronesPerSpawn": 1,
         "droneSpawnDelay": 1.5,
         "droneSpawnSound": "sfx/gun3.ogg",
-        "droneSpawnOffset": [50, -25],
+        "droneSpawnOffset": [-24, -52],
         "spawnsBullets": false,
         "hitColor": "#FF0000",
         "height": 47,
@@ -466,7 +466,7 @@
         "dronesPerSpawn": 1,
         "droneSpawnDelay": 1.5,
         "droneSpawnSound": "sfx/gun3.ogg",
-        "droneSpawnOffset": [50, -25],
+        "droneSpawnOffset": [30, -21],
         "spawnsBullets": false,
         "hitColor": "#FF0000",
         "height": 47,
@@ -509,10 +509,10 @@
         "fire": {
           "count": 2,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [47, 10],
+          "offset0": [20, -2],
           "scale0": 0.2,
           "effect1": "particles/fire_engine_left_blue.p",
-          "offset1": [47, 15],
+          "offset1": [20, 3],
           "scale1": 0.2
         },
         "speed": 45,
@@ -535,6 +535,7 @@
         "bulletsPerShot": 2,
         "damage": 20,
         "homing": true,
+        "homingSpeed": 70,
         "explosionTimer": 7,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.3,
@@ -542,7 +543,7 @@
         "explosionScale": 1,
         "height": 5,
         "width": 7,
-        "offset": [3, 0]
+        "offset": [-16, -11]
       }
     },
 
@@ -555,7 +556,7 @@
         "fire": {
           "count": 1,
           "effect0": "particles/fire_engine_left_blue.p",
-          "offset0": [45, 13],
+          "offset0": [16, 0],
           "scale0": 0.2
         },
         "speed": 45,
@@ -578,6 +579,7 @@
         "bulletsPerShot": 2,
         "damage": 20,
         "homing": true,
+        "homingSpeed": 70,
         "explosionTimer": 7,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.3,
@@ -585,7 +587,7 @@
         "explosionScale": 1,
         "height": 7,
         "width": 7,
-        "offset": [3, 0]
+        "offset": [-24, -9]
       }
     },
 

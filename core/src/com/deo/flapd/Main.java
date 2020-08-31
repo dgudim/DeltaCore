@@ -42,7 +42,6 @@ public class Main extends Game {
         blurProcessor = new PostProcessor( false, false, Gdx.app.getType() == Application.ApplicationType.Desktop );
         Bloom bloom = new Bloom( (int)(Gdx.graphics.getWidth() * 0.25f), (int)(Gdx.graphics.getHeight() * 0.25f) );
         bloom.setBlurPasses(2);
-        bloom.setBloomIntesity(1.3f);
         blurProcessor.addEffect(bloom);
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
@@ -68,7 +67,7 @@ public class Main extends Game {
             logException(e);
             log("dump pf preferences\n"+getPrefs()+"\n");
             log("force exiting");
-            System.exit(1);
+            Gdx.app.exit();
         }
     }
 

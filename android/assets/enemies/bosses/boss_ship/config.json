@@ -1,0 +1,297 @@
+{
+  "textures": "bossShip.atlas",
+  "parts": {
+    "body": {
+      "type": "basePart",
+      "health": 2333,
+      "width": 556,
+      "height": 172,
+      "originX": "standard",
+      "originY": "standard",
+      "texture": "boss"
+    },
+    "homingCannonBase": {
+      "type": "part",
+      "health": 666,
+      "width": 100,
+      "height": 28,
+      "originX": "standard",
+      "originY": "standard",
+      "offset": {
+        "relativeTo": "body",
+        "X": 94,
+        "Y": 116
+      },
+      "texture": "upperCannon_part1"
+    },
+    "smallCannon1": {
+      "type": "cannon",
+      "health": 333,
+      "width": 32,
+      "height": 28,
+      "canAim": true,
+      "aimAngleLimit": [-360, 360],
+      "bullet": {
+        "preset": "smallBlueBossBullet",
+        "offset": {
+          "X": 0,
+          "Y": 0
+        }
+      },
+      "spread": 0.3,
+      "offset": {
+        "relativeTo": "body",
+        "X": 224,
+        "Y": 40
+      },
+      "fireRate":{
+       "baseRate": 1,
+        "randomness": 0.3
+      }
+    },
+    "smallCannon2": {
+      "type": "clone",
+      "copyFrom": "smallCannon1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 256,
+          "Y": 40
+        }
+      }
+    },
+    "smallCannon3": {
+      "type": "clone",
+      "copyFrom": "smallCannon1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 288,
+          "Y": 40
+        }
+      }
+    },
+    "smallCannon4": {
+      "type": "clone",
+      "copyFrom": "smallCannon1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 376,
+          "Y": 40
+        }
+      }
+    },
+    "smallCannon5": {
+      "type": "clone",
+      "copyFrom": "smallCannon1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 376,
+          "Y": 40
+        }
+      }
+    },
+    "smallCannon6": {
+      "type": "clone",
+      "copyFrom": "smallCannon1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 376,
+          "Y": 40
+        }
+      }
+    },
+    "mediumCannon1": {
+      "type": "cannon",
+      "health": 1000,
+      "width": 44,
+      "height": 32,
+      "canAim": true,
+      "aimAngleLimit": [-360, 360],
+      "bullet": {
+        "preset": "mediumRedBossBullet",
+        "offset": {
+          "X": 0,
+          "Y": 0
+        }
+      },
+      "spread": 0.3,
+      "offset": {
+        "relativeTo": "body",
+        "X": 60,
+        "Y": 58
+      },
+      "fireRate":{
+        "baseRate": 0.8,
+        "randomness": 0.2
+      }
+    },
+    "cannon2ndStage": {
+      "type": "cannon",
+      "health": 1333,
+      "width": 120,
+      "height": 32,
+      "canAim": true,
+      "aimAngleLimit": [-20, 20],
+      "bullet": {
+        "preset": "homingRedBossBullet",
+        "offset": {
+          "X": 0,
+          "Y": 0
+        }
+      },
+      "spread": 0,
+      "offset": {
+        "relativeTo": "body",
+        "X": 40,
+        "Y": 48
+      },
+      "fireRate":{
+        "baseRate": 0.5,
+        "randomness": 0.3
+      }
+    },
+    "homingCannon": {
+
+    }
+  },
+
+  "phases": {
+    "phase0": {
+      "showParts": {
+        "smallCannon1": {
+          "showHealthBar": false
+        },
+        "smallCannon2": {
+          "showHealthBar": false
+        },
+        "smallCannon3": {
+          "showHealthBar": false
+        },
+        "smallCannon4": {
+          "showHealthBar": false
+        },
+        "smallCannon5": {
+          "showHealthBar": false
+        },
+        "smallCannon6": {
+          "showHealthBar": false
+        },
+        "body": {
+          "showHealthBar": false
+        },
+        "homingCannonBase": {
+          "showHealthBar": false
+        },
+        "mediumCannon1": {
+          "showHealthBar": false
+        }
+      },
+      "startAnimation": {
+        "target": "body",
+        "moveSinY": {
+          "amplitude": 13
+        },
+        "moveLinearX": {
+          "speed": 35,
+          "targetX": 240,
+          "whenDone":{
+            "action": "startNextPhase"
+          }
+        }
+      }
+    },
+    "phase1": {
+      "showParts": {
+        "smallCannon1": {
+          "showHealthBar": true
+        },
+        "smallCannon2": {
+          "showHealthBar": true
+        },
+        "smallCannon3": {
+          "showHealthBar": true
+        },
+        "smallCannon4": {
+          "showHealthBar": true
+        },
+        "smallCannon5": {
+          "showHealthBar": true
+        },
+        "smallCannon6": {
+          "showHealthBar": true
+        },
+        "body": {
+          "showHealthBar": false
+        },
+        "homingCannonBase": {
+          "showHealthBar": true
+        },
+        "mediumCannon1": {
+          "showHealthBar": true
+        }
+      },
+      "enableCollisions": {
+        "smallCannon1": true,
+        "smallCannon2": true,
+        "smallCannon3": true,
+        "smallCannon4": true,
+        "smallCannon5": true,
+        "smallCannon6":true,
+        "homingCannonBase": true,
+        "mediumCannon1": true
+      }
+    },
+    "phase2": {
+      "startAnimation": {
+        "target": "cannon2ndStage",
+        "moveLinearX": {
+          "speed": 45,
+          "targetX": 380,
+          "whenDone":{
+            "action": "startNextPhase"
+          }
+        }
+      }
+    },
+    "phase3": {
+      "enableCollisions": {
+        "body": true,
+        "cannon2ndStage": true
+      },
+      "showParts": {
+        "body": {
+          "showHealthBar": true
+        },
+        "cannon2ndStage": {
+          "showHealthBar": true
+        }
+      }
+    },
+    "deathTrigger": {
+      "healthTrigger": {
+        "part": "body",
+        "action": {
+          "setTexture": "boss_dead"
+        },
+        "startAnimation": {
+          "stopAllPreviousAnimations": true,
+          "rotate": {
+            "target": "body",
+            "speed": 35,
+            "targetAngle": 130
+          },
+          "moveLinearX": {
+
+          },
+          "moveLinearY": {
+
+          }
+        }
+      }
+    }
+  }
+}

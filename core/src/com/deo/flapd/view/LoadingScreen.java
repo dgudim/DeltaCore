@@ -142,6 +142,8 @@ public class LoadingScreen implements Screen {
         assetManager.load("menuButtons/buttons.atlas", TextureAtlas.class);
         assetManager.load("boss_evil/bossEvil.atlas", TextureAtlas.class);
         assetManager.load("boss_ship/bossShip.atlas", TextureAtlas.class);
+        assetManager.load("enemies/bosses/boss_evil/bossEvil.atlas", TextureAtlas.class);
+        assetManager.load("enemies/bosses/boss_ship/bossShip.atlas", TextureAtlas.class);
         assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
         assetManager.load("items/items.atlas", TextureAtlas.class);
         assetManager.load("shop/workshop.atlas", TextureAtlas.class);
@@ -328,7 +330,7 @@ public class LoadingScreen implements Screen {
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }
             if(assetManager.isFinished()){
-                stateName = "Loading tree";
+                stateName = "Building tree";
             }
         }catch (ClassCastException | NumberFormatException e){
             logException(e);
@@ -338,7 +340,7 @@ public class LoadingScreen implements Screen {
         } catch (Exception e2) {
             logException(e2);
             log("force exiting");
-            System.exit(1);
+            Gdx.app.exit();
         }
     }
 

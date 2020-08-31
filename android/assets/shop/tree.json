@@ -193,7 +193,7 @@
     "requires": ["machine gun", "energy core"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
-    "parameterValues": [110, 0, 1, 2100, 1, 1.5],
+    "parameterValues": [110, 0, 1, 1700, 1, 1.5],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_3",
     "usesTrail": true,
@@ -214,7 +214,7 @@
     "parameterValues": [170, 0, 9, 3000, 2.1],
     "saveTo": "currentCannon",
     "usesEffect": "fire3",
-    "laserBeamColor": "#00d9ff"
+    "laserBeamColor": "#00d9ff",
     "usesTrail": false,
     "homing": false
   },
@@ -231,7 +231,7 @@
     "parameterValues": [280, 0, 11, 5000, 2.1],
     "saveTo": "currentCannon",
     "usesEffect": "fire3",
-    "laserBeamColor": "#5721b5"
+    "laserBeamColor": "#5721b5",
     "usesTrail": false,
     "homing": false
   },
@@ -441,7 +441,7 @@
     "items": ["energy cell", "iron plate", "green coil", "cyan coil", "bolt", "cable"],
     "itemCounts": [1, 4, 2, 2, 5, 5],
     "resultCount": 1,
-    "description": "special tool, attracts bonuses",
+    "description": "attracts bonuses",
     "isCraftable": true,
     "category": "upgrades",
     "requires": ["star core"],
@@ -454,7 +454,7 @@
     "items": ["energy cell", "reinforced iron plate", "cyan crystal", "circuit board", "bolt", "cable"],
     "itemCounts": [1, 3, 4, 1, 7, 10],
     "resultCount": 1,
-    "description": "special tool, attracts bonuses",
+    "description": "repels enemies",
     "isCraftable": true,
     "category": "upgrades",
     "requires": ["warp core"],

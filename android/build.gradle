@@ -89,6 +89,3 @@ task run(type: Exec) {
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.deo.flapd/com.deo.flapd.AndroidLauncher'
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-}

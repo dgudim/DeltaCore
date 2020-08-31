@@ -1,0 +1,75 @@
+
+bossShip.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss
+  rotate: false
+  xy: 1, 235
+  size: 556, 172
+  orig: 556, 172
+  offset: 0, 0
+  index: -1
+boss_dead
+  rotate: false
+  xy: 1, 61
+  size: 556, 172
+  orig: 556, 172
+  offset: 0, 0
+  index: -1
+bigCannon
+  rotate: false
+  xy: 559, 375
+  size: 120, 32
+  orig: 120, 32
+  offset: 0, 0
+  index: -1
+upperCannon_part1
+  rotate: false
+  xy: 1, 31
+  size: 100, 28
+  orig: 100, 28
+  offset: 0, 0
+  index: -1
+cannon1
+  rotate: false
+  xy: 559, 341
+  size: 44, 32
+  orig: 44, 32
+  offset: 0, 0
+  index: -1
+bullet_red
+  rotate: false
+  xy: 681, 395
+  size: 52, 12
+  orig: 52, 12
+  offset: 0, 0
+  index: -1
+cannon2
+  rotate: false
+  xy: 1, 1
+  size: 32, 28
+  orig: 32, 28
+  offset: 0, 0
+  index: -1
+bullet_blue
+  rotate: false
+  xy: 103, 31
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+bullet_red_thick
+  rotate: false
+  xy: 559, 311
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+upperCannon_part2
+  rotate: false
+  xy: 605, 365
+  size: 36, 8
+  orig: 36, 8
+  offset: 0, 0
+  index: -1

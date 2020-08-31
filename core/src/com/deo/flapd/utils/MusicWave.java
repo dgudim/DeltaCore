@@ -1,20 +1,33 @@
 package com.deo.flapd.utils;
 
+/*
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.AudioDevice;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.Decoder;
+import javazoom.jl.decoder.Header;
+import javazoom.jl.decoder.SampleBuffer;
+
+import static com.deo.flapd.utils.DUtils.concatArray;
 
 public class MusicWave {
 
-    private float[] samples;
-    private Music music;
+    private short[] samples;
+    private float[] averageChannelAmplitude;
+    private AudioDevice device;
 
     public MusicWave() {
 
         String path;
+
+        device = Gdx.audio.newAudioDevice(44100, true);
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             path = "Android/data/!DeltaCore/music.mp3";
@@ -26,7 +39,6 @@ public class MusicWave {
 
         try {
 
-            /*
             boolean done = false;
 
             short[] pcmOut = new short[]{};
@@ -34,43 +46,30 @@ public class MusicWave {
             InputStream data = new FileInputStream(file.getPath());
             Bitstream bitStream = new Bitstream(data);
             Decoder decoder = new Decoder();
+            decoder.getOutputChannels();
             while (!done) {
                 Header frameHeader = bitStream.readFrame();
                 if (frameHeader == null) {
                     done = true;
                 } else {
-                    //WaveFile waveFile = new WaveFile();
-                    //waveFile.Open(path, );
-                    //waveFile.Read();
                     SampleBuffer output = (SampleBuffer) decoder.decodeFrame(frameHeader, bitStream);
-                    System.out.println("test");
                     short[] next = output.getBuffer();
-                    for (int i = 0; i < next.length; i++) System.out.print(" " + next[i]);
                     pcmOut = concatArray(pcmOut, next);
                 }
-            }
-             byte[] bytes = new byte[pcmOut.length];
-
-            for(int i = 0; i<bytes.length; i++){
-                bytes[i] = (byte)pcmOut[i];
+                bitStream.closeFrame();
             }
 
-             */
+            short[] samples1ch = new short[pcmOut.length/2];
 
-            FileInputStream f = new FileInputStream(file);
-            byte[] bytes = new byte[100000];
-            f.read(bytes);
-
-            float[][] twoChannelSamples = getUnscaledAmplitude(bytes, 2);
-
-            float[] averageChannelAmplitude = new float[twoChannelSamples[0].length];
-            for (int i = 0; i < averageChannelAmplitude.length; i++) {
-                averageChannelAmplitude[i] = (twoChannelSamples[0][i] + twoChannelSamples[1][i]) / 2.0f;
+            for(int i = 0; i<samples1ch.length/2; i+=2){
+                samples1ch[i/2] = (short)((pcmOut[i] + pcmOut[i+1])/2f);
             }
 
-            samples = averageChannelAmplitude;
-
-            music = Gdx.audio.newMusic(Gdx.files.external(path));
+            samples = samples1ch;
+            averageChannelAmplitude = new float[samples.length];
+            for(int i = 0; i<samples.length; i++){
+                averageChannelAmplitude[i] = samples[i];
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,7 +80,7 @@ public class MusicWave {
         return (high << 8) + (low & 0x00ff);
     }
 
-    private float[][] getUnscaledAmplitude(byte[] eightBitByteArray, int nbChannels) {
+    private float[][] getUnscaledAmplitude(short[] eightBitByteArray, int nbChannels) {
 
         float[][] toReturn = new float[nbChannels][eightBitByteArray.length / (2 * nbChannels)];
         int index = 0;
@@ -102,12 +101,21 @@ public class MusicWave {
         return toReturn;
     }
 
-    public float[] getSamples() {
+    public float[] getAmplitude() {
+        return averageChannelAmplitude;
+    }
+
+    public short[] getSamples() {
         return samples;
     }
 
-    public Music getMusic() {
-        return music;
+    public AudioDevice getMusic() {
+        return device;
     }
 
+    public void dispose() {
+        device.dispose();
+    }
 }
+
+ */
