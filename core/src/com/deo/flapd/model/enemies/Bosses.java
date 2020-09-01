@@ -15,7 +15,7 @@ public class Bosses {
     public Bosses(AssetManager assetManager){
         this.assetManager = assetManager;
         bosses = new Array<>();
-        bossNames = new String[]{"boss_ship", "boss_evil"};
+        bossNames = new String[]{"boss_ship"};
     }
 
     public void loadBosses(){

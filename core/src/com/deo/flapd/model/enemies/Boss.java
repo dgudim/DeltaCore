@@ -9,23 +9,27 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.deo.flapd.model.ShipObject;
 
 public class Boss {
 
     private JsonValue bossConfig;
     private Array<BasePart> parts;
+    private Array<Phase> phases;
     private TextureAtlas bossAtlas;
     private float x = 1000;
     private float y = 1000;
     private int[] spawnAt;
     boolean dead;
     boolean visible;
+    ShipObject player;
 
     Boss(String bossName, AssetManager assetManager) {
         bossConfig = new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json"));
@@ -62,7 +66,14 @@ public class Boss {
             }
         }
 
+        phases = new Array<>();
 
+        for (int i = 0; i < bossConfig.get("phases").size; i++) {
+            Phase phase = new Phase(bossConfig.get("phases").get(i), parts);
+            phases.add(phase);
+        }
+
+        phases.get(0).activate();
 
     }
 
@@ -76,15 +87,22 @@ public class Boss {
         for (int i = 0; i < parts.size; i++) {
             parts.get(i).x = x + parts.get(i).offsetX;
             parts.get(i).y = y + parts.get(i).offsetY;
-            parts.get(i).update();
+            parts.get(i).update(delta);
         }
     }
 
-    void spawn(){
+    void spawn() {
         x = spawnAt[0];
         y = spawnAt[1];
         dead = false;
         visible = true;
+    }
+
+    void setTargetPlayer(ShipObject player) {
+        this.player = player;
+        for (int i = 0; i < parts.size; i++) {
+            parts.get(i).setTargetPlayer(player);
+        }
     }
 
 }
@@ -106,23 +124,31 @@ class BasePart {
     String type;
     JsonValue config;
     ProgressBar healthBar;
+    ShipObject player;
+    boolean collisionEnabled = true;
+    boolean hasCollision = true;
+    boolean visible;
+    boolean active;
 
     BasePart(JsonValue config, TextureAtlas textures) {
         name = config.name;
         this.config = config;
-        type = config.getString("type");
-        health = config.getInt("health");
-        width = config.getInt("width");
-        height = config.getInt("height");
-        part = new Sprite(textures.findRegion(config.getString("texture")));
+        if (config.getString("type").equals("clone")) {
+            this.config = config.parent.get(config.getString("copyFrom"));
+        }
+        type = this.config.getString("type");
+        health = this.config.getInt("health");
+        width = this.config.getInt("width");
+        height = this.config.getInt("height");
+        part = new Sprite(textures.findRegion(this.config.getString("texture")));
         part.setSize(width, height);
         originX = width / 2f;
         originY = height / 2;
-        if (!config.getString("originX").equals("standard")) {
-            originX = config.getFloat("originX");
+        if (!this.config.getString("originX").equals("standard")) {
+            originX = this.config.getFloat("originX");
         }
-        if (!config.getString("originY").equals("standard")) {
-            originY = config.getFloat("originY");
+        if (!this.config.getString("originY").equals("standard")) {
+            originY = this.config.getFloat("originY");
         }
         part.setOrigin(originX, originY);
 
@@ -158,10 +184,18 @@ class BasePart {
 
     void draw(SpriteBatch batch) {
         part.draw(batch);
+        healthBar.draw(batch, 1);
+
     }
 
-    void update(){
-        healthBar.setPosition(originX- 12.5f, y-7);
+    void update(float delta) {
+        healthBar.setPosition(originX - 12.5f, y - 7);
+        part.setRotation(rotation);
+        healthBar.act(delta);
+    }
+
+    void setTargetPlayer(ShipObject player) {
+        this.player = player;
     }
 
 }
@@ -174,14 +208,29 @@ class Part extends BasePart {
     Part(JsonValue config, TextureAtlas textures, Array<BasePart> parts) {
         super(config, textures);
         this.parts = parts;
-        String relativeTo = config.get("offset").getString("relativeTo");
-        relativeX = config.get("offset").getFloat("X");
-        relativeY = config.get("offset").getFloat("Y");
+        String relativeTo = this.config.get("offset").getString("relativeTo");
+        relativeX = this.config.get("offset").getFloat("X");
+        relativeY = this.config.get("offset").getFloat("Y");
+        if (config.getString("type").equals("clone")) {
+            for (int i = 0; i < config.get("override").size; i++) {
+                if (config.get("override").get(i).name.equals("offset")) {
+                    relativeX = config.get("override").get(i).getFloat("X");
+                    relativeY = config.get("override").get(i).getFloat("Y");
+                    relativeTo = config.get("override").get(i).getString("relativeTo");
+                }
+            }
+        }
         getOffset(relativeTo);
         offsetX = relativeX;
         offsetY = relativeY;
+        hasCollision = this.config.getBoolean("hasCollision");
+        if (!hasCollision) {
+            collisionEnabled = false;
+        }
+
         System.out.println(offsetX);
         System.out.println(offsetY);
+        System.out.println("\n");
     }
 
     private void getOffset(String relativeTo) {
@@ -202,10 +251,40 @@ class Part extends BasePart {
 
 class Cannon extends Part {
 
+    boolean canAim;
+    int[] aimAngleLimit;
+    float spread;
+    float fireRate;
+    float fireRateRandomness;
+    float timer;
+
     Cannon(JsonValue partConfig, TextureAtlas textures, Array<BasePart> parts) {
         super(partConfig, textures, parts);
+
+        canAim = this.config.getBoolean("canAim");
+        aimAngleLimit = this.config.get("aimAngleLimit").asIntArray();
+        spread = this.config.getFloat("spread");
+
+        fireRate = this.config.get("fireRate").getFloat("baseRate");
+        fireRateRandomness = this.config.get("fireRate").getFloat("randomness");
+
     }
 
+    @Override
+    void update(float delta) {
+        super.update(delta);
+        if (canAim) {
+            rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - player.bounds.getY() - 30, x - player.bounds.getX() - 30), aimAngleLimit[0], aimAngleLimit[1]);
+        }
+        timer += delta;
+        if (timer > fireRate + MathUtils.random() * fireRateRandomness) {
+            shoot();
+        }
+    }
+
+    void shoot() {
+
+    }
 }
 
 class Movement {
@@ -216,30 +295,30 @@ class Movement {
     BasePart target;
     boolean vertical;
 
-    Movement(JsonValue actionValue, Array<BasePart> parts){
+    Movement(JsonValue actionValue, Array<BasePart> parts) {
         active = false;
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(actionValue.getString("target"))) {
                 target = parts.get(i);
             }
         }
-        if(actionValue.name.equals("moveLinearX")){
+        if (actionValue.name.equals("moveLinearX")) {
             speed = actionValue.getFloat("speed");
             to = actionValue.getFloat("targetX");
             vertical = false;
-        }else if(actionValue.name.equals("moveLinearY")){
+        } else if (actionValue.name.equals("moveLinearY")) {
             speed = actionValue.getFloat("speed");
             to = actionValue.getFloat("targetY");
             vertical = true;
         }
     }
 
-    void start(){
+    void start() {
         active = true;
     }
 
-    void update(float delta){
-        if(active) {
+    void update(float delta) {
+        if (active) {
             if (vertical) {
                 if (target.y < to) {
                     target.y += speed * delta * 10;
@@ -248,7 +327,7 @@ class Movement {
                 } else {
                     active = false;
                 }
-            }else{
+            } else {
                 if (target.x < to) {
                     target.x += speed * delta * 10;
                 } else if (target.y > to) {
@@ -262,14 +341,15 @@ class Movement {
 
 }
 
-class SinusMovement extends Movement{
+class SinusMovement extends Movement {
 
     SinusMovement(JsonValue actionValue, Array<BasePart> parts) {
         super(actionValue, parts);
     }
+
 }
 
-class ComplexMovement extends Movement{
+class ComplexMovement extends Movement {
 
     Vector2[] points;
     boolean loop;
@@ -286,10 +366,36 @@ class ComplexMovement extends Movement{
     }
 }
 
-class Phase{
+class Phase {
 
-    Phase(JsonValue phaseData){
+    Array<Action> actions;
 
+    Phase(JsonValue phaseData, Array<BasePart> parts) {
+        actions = new Array<>();
+        for (int i = 0; i < phaseData.size; i++) {
+            Action action = new Action(parts);
+            actions.add(action);
+        }
     }
 
+    void activate() {
+        for (int i = 0; i < actions.size; i++) {
+            actions.get(i).activate();
+
+        }
+    }
+
+}
+
+class Action {
+
+    Array<BasePart> baseParts;
+
+    Action(Array<BasePart> baseParts) {
+        this.baseParts = baseParts;
+    }
+
+    void activate() {
+
+    }
 }

@@ -52,7 +52,7 @@
       },
       "fireRate":{
        "baseRate": 1,
-        "randomness": 0.3
+       "randomness": 0.3
       },
       "texture": "cannon1"
     },
