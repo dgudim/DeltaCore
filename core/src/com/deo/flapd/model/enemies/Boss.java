@@ -16,7 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.ShipObject;
+
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.log;
 
 public class Boss {
 
@@ -30,11 +34,20 @@ public class Boss {
     boolean dead;
     boolean visible;
     ShipObject player;
+    Array<Movement> animations;
+    private boolean hasAlreadySpawned;
+    private int spawnScore;
 
     Boss(String bossName, AssetManager assetManager) {
+
+        log("\n\n loading boss config, name: " + bossName);
+
         bossConfig = new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json"));
         bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
         parts = new Array<>();
+        animations = new Array<>();
+        hasAlreadySpawned = false;
+        spawnScore = bossConfig.get("spawnConditions").getInt("score") + getRandomInRange(-bossConfig.get("spawnConditions").getInt("randomness"), bossConfig.get("spawnConditions").getInt("randomness"));
         spawnAt = bossConfig.get("spawnAt").asIntArray();
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
             String type = bossConfig.get("parts").get(i).getString("type");
@@ -69,25 +82,37 @@ public class Boss {
         phases = new Array<>();
 
         for (int i = 0; i < bossConfig.get("phases").size; i++) {
-            Phase phase = new Phase(bossConfig.get("phases").get(i), parts);
+            Phase phase = new Phase(bossConfig.get("phases").get(i), parts, animations);
             phases.add(phase);
         }
 
-        phases.get(0).activate();
-
+        spawn();
     }
 
     void draw(SpriteBatch batch) {
-        for (int i = 0; i < parts.size; i++) {
-            parts.get(i).draw(batch);
+        if (visible) {
+            for (int i = 0; i < parts.size; i++) {
+                parts.get(i).draw(batch);
+            }
         }
     }
 
     void update(float delta) {
-        for (int i = 0; i < parts.size; i++) {
-            parts.get(i).x = x + parts.get(i).offsetX;
-            parts.get(i).y = y + parts.get(i).offsetY;
-            parts.get(i).update(delta);
+        if (GameLogic.Score >= spawnScore && !hasAlreadySpawned) {
+            spawn();
+        }
+        if (visible) {
+            for (int i = 0; i < parts.size; i++) {
+                parts.get(i).x = x + parts.get(i).offsetX;
+                parts.get(i).y = y + parts.get(i).offsetY;
+                parts.get(i).update(delta);
+            }
+            for (int i = 0; i < animations.size; i++) {
+                animations.get(i).update(delta);
+            }
+            for (int i = 0; i < phases.size; i++) {
+                phases.get(i).update();
+            }
         }
     }
 
@@ -96,6 +121,9 @@ public class Boss {
         y = spawnAt[1];
         dead = false;
         visible = true;
+        hasAlreadySpawned = true;
+        GameLogic.bossWave = true;
+        phases.get(0).activate();
     }
 
     void setTargetPlayer(ShipObject player) {
@@ -129,8 +157,12 @@ class BasePart {
     boolean hasCollision = true;
     boolean visible;
     boolean active;
+    boolean showHealthBar;
 
     BasePart(JsonValue config, TextureAtlas textures) {
+
+        log("\n loading boss part, name: " + config.name);
+
         name = config.name;
         this.config = config;
         if (config.getString("type").equals("clone")) {
@@ -183,9 +215,12 @@ class BasePart {
     }
 
     void draw(SpriteBatch batch) {
-        part.draw(batch);
-        healthBar.draw(batch, 1);
-
+        if (visible) {
+            part.draw(batch);
+            if (showHealthBar) {
+                healthBar.draw(batch, 1);
+            }
+        }
     }
 
     void update(float delta) {
@@ -197,7 +232,6 @@ class BasePart {
     void setTargetPlayer(ShipObject player) {
         this.player = player;
     }
-
 }
 
 class Part extends BasePart {
@@ -227,10 +261,6 @@ class Part extends BasePart {
         if (!hasCollision) {
             collisionEnabled = false;
         }
-
-        System.out.println(offsetX);
-        System.out.println(offsetY);
-        System.out.println("\n");
     }
 
     private void getOffset(String relativeTo) {
@@ -289,27 +319,35 @@ class Cannon extends Part {
 
 class Movement {
 
+    private final int MOVEX = 0;
+    private final int MOVEY = 1;
+    private final int ROTATE = 2;
     float to;
     float speed;
     boolean active;
     BasePart target;
-    boolean vertical;
+    int type;
 
-    Movement(JsonValue actionValue, Array<BasePart> parts) {
+    Movement(JsonValue actionValue, String target, Array<BasePart> parts) {
+
+        log("\n loading boss movement, name: " + actionValue.name);
+
         active = false;
         for (int i = 0; i < parts.size; i++) {
-            if (parts.get(i).name.equals(actionValue.getString("target"))) {
-                target = parts.get(i);
+            if (parts.get(i).name.equals(target)) {
+                this.target = parts.get(i);
             }
         }
+        speed = actionValue.getFloat("speed");
         if (actionValue.name.equals("moveLinearX")) {
-            speed = actionValue.getFloat("speed");
             to = actionValue.getFloat("targetX");
-            vertical = false;
+            type = MOVEX;
         } else if (actionValue.name.equals("moveLinearY")) {
-            speed = actionValue.getFloat("speed");
             to = actionValue.getFloat("targetY");
-            vertical = true;
+            type = MOVEY;
+        } else if (actionValue.name.equals("rotate")) {
+            to = actionValue.getFloat("targetAngle");
+            type = ROTATE;
         }
     }
 
@@ -319,22 +357,34 @@ class Movement {
 
     void update(float delta) {
         if (active) {
-            if (vertical) {
-                if (target.y < to) {
-                    target.y += speed * delta * 10;
-                } else if (target.y > to) {
-                    target.y -= speed * delta * 10;
-                } else {
-                    active = false;
-                }
-            } else {
-                if (target.x < to) {
-                    target.x += speed * delta * 10;
-                } else if (target.y > to) {
-                    target.x -= speed * delta * 10;
-                } else {
-                    active = false;
-                }
+            switch (type) {
+                case (MOVEX):
+                    if (target.x < to) {
+                        target.x += speed * delta * 10;
+                    } else if (target.x > to) {
+                        target.x -= speed * delta * 10;
+                    } else {
+                        active = false;
+                    }
+                    break;
+                case (MOVEY):
+                    if (target.y < to) {
+                        target.y += speed * delta * 10;
+                    } else if (target.y > to) {
+                        target.y -= speed * delta * 10;
+                    } else {
+                        active = false;
+                    }
+                    break;
+                case (ROTATE):
+                    if (target.rotation < to) {
+                        target.rotation += speed * delta * 10;
+                    } else if (target.rotation > to) {
+                        target.rotation -= speed * delta * 10;
+                    } else {
+                        active = false;
+                    }
+                    break;
             }
         }
     }
@@ -343,8 +393,8 @@ class Movement {
 
 class SinusMovement extends Movement {
 
-    SinusMovement(JsonValue actionValue, Array<BasePart> parts) {
-        super(actionValue, parts);
+    SinusMovement(JsonValue actionValue, String target, Array<BasePart> parts) {
+        super(actionValue, target, parts);
     }
 
 }
@@ -356,8 +406,8 @@ class ComplexMovement extends Movement {
     int currentPoint;
     boolean randomPointMode;
 
-    ComplexMovement(JsonValue actionValue, Array<BasePart> parts) {
-        super(actionValue, parts);
+    ComplexMovement(JsonValue actionValue, String target, Array<BasePart> parts) {
+        super(actionValue, target, parts);
     }
 
     @Override
@@ -369,19 +419,52 @@ class ComplexMovement extends Movement {
 class Phase {
 
     Array<Action> actions;
+    boolean activated;
+    JsonValue config;
+    Array<PhaseTrigger> phaseTriggers;
 
-    Phase(JsonValue phaseData, Array<BasePart> parts) {
+    Phase(JsonValue phaseData, Array<BasePart> parts, Array<Movement> animations) {
+
+        log("\n loading boss phase, name: " + phaseData.name);
+
         actions = new Array<>();
+        phaseTriggers = new Array<>();
+        activated = false;
+        config = phaseData;
         for (int i = 0; i < phaseData.size; i++) {
-            Action action = new Action(parts);
+            Action action = new Action(phaseData.get(i), parts, animations);
             actions.add(action);
+        }
+        JsonValue triggers = null;
+        try {
+            triggers = phaseData.parent.parent.get("phaseTriggers").get(config.name).get("triggers");
+        } catch (Exception e) {
+            log("\n no triggers for "+phaseData.name);
+        }
+        if (triggers != null) {
+            for (int i = 0; i < triggers.size; i++) {
+                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts);
+                phaseTriggers.add(trigger);
+            }
         }
     }
 
     void activate() {
         for (int i = 0; i < actions.size; i++) {
             actions.get(i).activate();
+        }
+        activated = true;
+    }
 
+    void update() {
+        if (!activated) {
+            boolean activate = true;
+            for (int i = 0; i < phaseTriggers.size; i++) {
+                activate = activate && phaseTriggers.get(i).conditionsMet;
+            }
+            if (activate) {
+                activate();
+            }
         }
     }
 
@@ -390,12 +473,121 @@ class Phase {
 class Action {
 
     Array<BasePart> baseParts;
+    boolean enableCollisions;
+    boolean showHealthBar;
+    boolean visible;
+    boolean enabled;
+    BasePart target;
+    Movement movement;
+    boolean hasMovement;
 
-    Action(Array<BasePart> baseParts) {
+    Action(JsonValue actionValue, Array<BasePart> baseParts, Array<Movement> animations) {
+
+        log("\n loading boss action, name: " + actionValue.name);
+
         this.baseParts = baseParts;
+        String target = actionValue.getString("target");
+        for (int i = 0; i < baseParts.size; i++) {
+            if (baseParts.get(i).name.equals(target)) {
+                this.target = baseParts.get(i);
+            }
+        }
+        showHealthBar = actionValue.getBoolean("showHealthBar");
+        enableCollisions = actionValue.getBoolean("enableCollisions");
+        visible = actionValue.getBoolean("visible");
+        enabled = actionValue.getBoolean("active");
+
+        int movementCount = 0;
+
+        if (actionValue.get("move").isBoolean()) {
+            log("\n no movement for " + actionValue.name);
+            hasMovement = false;
+        } else {
+            movementCount = actionValue.get("move").size;
+            hasMovement = true;
+            for (int i = 0; i < movementCount; i++) {
+                movement = new Movement(actionValue.get("move").get(i), target, baseParts);
+                animations.add(movement);
+            }
+        }
+
     }
 
     void activate() {
-
+        if (hasMovement) {
+            movement.start();
+        }
+        if (target.hasCollision) {
+            target.collisionEnabled = enableCollisions;
+        }
+        target.visible = visible;
+        target.active = enabled;
+        target.showHealthBar = showHealthBar;
     }
+}
+
+class PhaseTrigger {
+
+    boolean conditionsMet;
+    float value;
+    String triggerType;
+    String triggerModifier;
+    BasePart triggerTarget;
+
+    PhaseTrigger(JsonValue triggerData, Array<BasePart> parts) {
+
+        log("\n loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent.parent.name);
+
+        conditionsMet = false;
+        triggerType = triggerData.getString("triggerType");
+        value = triggerData.getFloat("value");
+        String targetPart = triggerData.getString("target");
+        for (int i2 = 0; i2 < parts.size; i2++) {
+            if (parts.get(i2).name.equals(targetPart)) {
+                triggerTarget = parts.get(i2);
+            }
+        }
+        triggerModifier = triggerData.getString("triggerModifier");
+    }
+
+    void update() {
+        float partValue = 0;
+        switch (triggerType) {
+            case ("positionX"):
+                partValue = triggerTarget.x;
+                break;
+            case ("positionY"):
+                partValue = triggerTarget.y;
+                break;
+            case ("rotation"):
+                partValue = triggerTarget.rotation;
+                break;
+            case ("health"):
+                partValue = triggerTarget.health;
+                break;
+        }
+        switch (triggerModifier) {
+            case ("<"):
+                if (partValue < value) {
+                    conditionsMet = true;
+                }
+                break;
+            case (">"):
+                if (partValue > value) {
+                    conditionsMet = true;
+                }
+                break;
+            case ("<="):
+                if (partValue <= value) {
+                    conditionsMet = true;
+                }
+                break;
+            case (">="):
+                if (partValue >= value) {
+                    conditionsMet = true;
+                }
+                break;
+        }
+    }
+
 }

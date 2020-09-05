@@ -1,6 +1,10 @@
 {
   "textures": "bossShip.atlas",
   "spawnAt": [820, 100],
+  "spawnConditions": {
+    "score": 70000,
+    "randomness": 5000
+  },
   "parts": {
     "body": {
       "type": "basePart",
@@ -201,139 +205,117 @@
   },
 
   "phases": {
-    "phase0": {
-      "showParts": {
-        "smallCannon1": {
-          "showHealthBar": false
-        },
-        "smallCannon2": {
-          "showHealthBar": false
-        },
-        "smallCannon3": {
-          "showHealthBar": false
-        },
-        "smallCannon4": {
-          "showHealthBar": false
-        },
-        "smallCannon5": {
-          "showHealthBar": false
-        },
-        "smallCannon6": {
-          "showHealthBar": false
-        },
-        "body": {
-          "showHealthBar": false
-        },
-        "homingCannonBase": {
-          "showHealthBar": false
-        },
-        "mediumCannon1": {
-          "showHealthBar": false
-        }
-      },
-      "startAnimation": {
-        "moveSin": {
+    "initialisingPhase": {
+        "bodyInit": {
           "target": "body",
-          "amplitude": 13
-        },
-        "moveLinearX": {
-          "target": "body",
-          "speed": 35,
-          "targetX": 240,
-          "whenDone":{
-            "action": "startNextPhase"
+          "enableCollisions": false,
+          "showHealthBar": false,
+          "visible": true,
+          "active": false,
+          "move": {
+            "moveLinearX": {
+              "targetX": 100,
+              "speed": 1
+            }
           }
-        }
+        },
+      "smallCannon1Init": {
+        "target": "smallCannon1",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "smallCannon2Init": {
+        "target": "smallCannon2",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "smallCannon3Init": {
+        "target": "smallCannon3",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "smallCannon4Init": {
+        "target": "smallCannon4",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "smallCannon5Init": {
+        "target": "smallCannon5",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "smallCannon6Init": {
+        "target": "smallCannon6",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "frontMediumCannonInit": {
+        "target": "mediumCannon1",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "homingCannonInit": {
+        "target": "homingCannon",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "homingCannonBaseInit": {
+        "target": "homingCannonBase",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "move": false
+      },
+      "2ndStageCannonInit": {
+        "target": "cannon2ndStage",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": false,
+        "active": false,
+        "move": false
       }
     },
     "phase1": {
-      "showParts": {
-        "smallCannon1": {
-          "showHealthBar": true
-        },
-        "smallCannon2": {
-          "showHealthBar": true
-        },
-        "smallCannon3": {
-          "showHealthBar": true
-        },
-        "smallCannon4": {
-          "showHealthBar": true
-        },
-        "smallCannon5": {
-          "showHealthBar": true
-        },
-        "smallCannon6": {
-          "showHealthBar": true
-        },
-        "body": {
-          "showHealthBar": false
-        },
-        "homingCannonBase": {
-          "showHealthBar": true
-        },
-        "mediumCannon1": {
-          "showHealthBar": true
-        }
-      },
-      "enableCollisions": {
-        "smallCannon1": true,
-        "smallCannon2": true,
-        "smallCannon3": true,
-        "smallCannon4": true,
-        "smallCannon5": true,
-        "smallCannon6":true,
-        "homingCannonBase": true,
-        "mediumCannon1": true
-      }
-    },
-    "phase2": {
-      "startAnimation": {
-        "target": "cannon2ndStage",
-        "moveLinear": {
-          "speed": 45,
-          "targetX": 380,
-          "whenDone":{
-            "action": "startNextPhase"
-          }
-        }
-      }
-    },
-    "phase3": {
-      "enableCollisions": {
-        "body": true,
-        "cannon2ndStage": true
-      },
-      "showParts": {
-        "body": {
-          "showHealthBar": true
-        },
-        "cannon2ndStage": {
-          "showHealthBar": true
-        }
-      }
-    },
-    "deathTrigger": {
-      "healthTrigger": {
-        "part": "body",
-        "action": {
-          "setTexture": "boss_dead"
-        },
-        "startAnimation": {
-          "stopAllPreviousAnimations": true,
-          "rotate": {
-            "target": "body",
-            "speed": 35,
-            "targetAngle": 130
-          },
-          "moveLinear": {
 
-          },
-          "moveLinear": {
+    }
+  },
 
-          }
+  "phaseTriggers": {
+    "phase1": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 100
         }
       }
     }
   }
+
 }

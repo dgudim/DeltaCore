@@ -26,21 +26,20 @@ public class Bosses {
 
     public void setTargetPlayer(ShipObject player) {
         this.player = player;
+        for(int i = 0; i<bosses.size; i++){
+            bosses.get(i).setTargetPlayer(player);
+        }
     }
 
     public void update(float delta){
         for(int i = 0; i<bosses.size; i++){
-            if(bosses.get(i).visible) {
-                bosses.get(i).update(delta);
-            }
+            bosses.get(i).update(delta);
         }
     }
 
     public void draw(SpriteBatch batch){
         for(int i = 0; i<bosses.size; i++){
-            if(bosses.get(i).visible) {
-                bosses.get(i).draw(batch);
-            }
+            bosses.get(i).draw(batch);
         }
     }
 
