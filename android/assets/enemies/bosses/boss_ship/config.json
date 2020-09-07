@@ -1,6 +1,6 @@
 {
   "textures": "bossShip.atlas",
-  "spawnAt": [820, 100],
+  "spawnAt": [850, 100],
   "spawnConditions": {
     "score": 70000,
     "randomness": 5000
@@ -14,7 +14,8 @@
       "height": 172,
       "originX": "standard",
       "originY": "standard",
-      "texture": "boss"
+      "texture": "boss",
+      "explosionEffect": "particles/explosion2.p"
     },
     "homingCannonBase": {
       "type": "part",
@@ -29,14 +30,16 @@
         "X": 94,
         "Y": 116
       },
-      "texture": "upperCannon_part1"
+      "linked": false,
+      "texture": "upperCannon_part1",
+      "explosionEffect": "particles/explosion.p"
     },
     "smallCannon1": {
       "type": "cannon",
       "health": 333,
-      "width": 32,
-      "height": 28,
-      "originX": "standard",
+      "width": 30.8,
+      "height": 22.4,
+      "originX": 19.6,
       "originY": "standard",
       "hasCollision": true,
       "canAim": true,
@@ -52,13 +55,15 @@
       "offset": {
         "relativeTo": "body",
         "X": 224,
-        "Y": 40
+        "Y": 42.8
       },
       "fireRate":{
        "baseRate": 1,
        "randomness": 0.3
       },
-      "texture": "cannon1"
+      "linked": false,
+      "texture": "cannon1",
+      "explosionEffect": "particles/explosion.p"
     },
     "smallCannon2": {
       "type": "clone",
@@ -67,7 +72,7 @@
         "offset": {
           "relativeTo": "body",
           "X": 256,
-          "Y": 40
+          "Y": 42.8
         }
       }
     },
@@ -78,7 +83,7 @@
         "offset": {
           "relativeTo": "body",
           "X": 288,
-          "Y": 40
+          "Y": 42.8
         }
       }
     },
@@ -89,7 +94,7 @@
         "offset": {
           "relativeTo": "body",
           "X": 376,
-          "Y": 40
+          "Y": 42.8
         }
       }
     },
@@ -99,8 +104,8 @@
       "override": {
         "offset": {
           "relativeTo": "body",
-          "X": 376,
-          "Y": 40
+          "X": 408,
+          "Y": 42.8
         }
       }
     },
@@ -110,8 +115,8 @@
       "override": {
         "offset": {
           "relativeTo": "body",
-          "X": 376,
-          "Y": 40
+          "X": 440,
+          "Y": 42.8
         }
       }
     },
@@ -119,9 +124,9 @@
       "type": "cannon",
       "health": 1000,
       "hasCollision": true,
-      "width": 44,
+      "width": 38,
       "height": 32,
-      "originX": "standard",
+      "originX": 21.375,
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
@@ -135,14 +140,16 @@
       "spread": 0.3,
       "offset": {
         "relativeTo": "body",
-        "X": 60,
+        "X": 66,
         "Y": 58
       },
       "fireRate":{
         "baseRate": 0.8,
         "randomness": 0.2
       },
-      "texture": "cannon2"
+      "linked": false,
+      "texture": "cannon2",
+      "explosionEffect": "particles/explosion.p"
     },
     "cannon2ndStage": {
       "type": "cannon",
@@ -171,7 +178,9 @@
         "baseRate": 0.5,
         "randomness": 0.3
       },
-      "texture": "bigCannon"
+      "linked": false,
+      "texture": "bigCannon",
+      "explosionEffect": "particles/explosion.p"
     },
     "homingCannon": {
       "type": "cannon",
@@ -179,11 +188,12 @@
       "hasCollision": false,
       "width": 36,
       "height": 8,
-      "originX": "standard",
+      "originX": 36,
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-30, 30],
-      "texture": "upperCannon_part1",
+      "linked": "homingCannonBase",
+      "texture": "upperCannon_part2",
       "bullet": {
         "preset": "homingRedBossBulletLong",
         "offset": {
@@ -194,7 +204,7 @@
       "spread": 0,
       "offset": {
         "relativeTo": "body",
-        "X": 67,
+        "X": 66,
         "Y": 126
       },
       "fireRate":{
@@ -214,8 +224,12 @@
           "active": false,
           "move": {
             "moveLinearX": {
-              "targetX": 100,
-              "speed": 1
+              "targetX": 215,
+              "speed": 10
+            },
+            "moveSinY": {
+              "amplitudeY": 0.5,
+              "speed": 0.15
             }
           }
         },
@@ -301,7 +315,88 @@
       }
     },
     "phase1": {
-
+      "smallCannon1Activate": {
+        "target": "smallCannon1",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "smallCannon2Activate": {
+        "target": "smallCannon2",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "smallCannon3Activate": {
+        "target": "smallCannon3",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "smallCannon4Activate": {
+        "target": "smallCannon4",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "smallCannon5Activate": {
+        "target": "smallCannon5",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "smallCannon6Activate": {
+        "target": "smallCannon6",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "mediumCannonActivate": {
+        "target": "mediumCannon1",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "homingCannonActivate": {
+        "target": "homingCannonBase",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      },
+      "homingCannonPart2Activate": {
+        "target": "homingCannon",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": true,
+        "move": false
+      }
+    },
+    "phase2": {
+      "bodyActivate": {
+        "target": "body",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "move": false
+      }
     }
   },
 
@@ -312,7 +407,53 @@
           "triggerType": "positionX",
           "triggerModifier": "<=",
           "target": "body",
-          "value": 100
+          "value": 220
+        }
+      }
+    },
+    "phase2": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon1",
+          "value": 0
+        },
+        "trigger1": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon2",
+          "value": 0
+        },
+        "trigger2": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon3",
+          "value": 0
+        },
+        "trigger3": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon4",
+          "value": 0
+        },
+        "trigger4": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon5",
+          "value": 0
+        },
+        "trigger5": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon6",
+          "value": 0
+        },
+        "trigger6": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "mediumCannon1",
+          "value": 0
         }
       }
     }

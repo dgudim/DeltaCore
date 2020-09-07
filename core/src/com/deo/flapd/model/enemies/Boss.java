@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,6 +38,7 @@ public class Boss {
     Array<Movement> animations;
     private boolean hasAlreadySpawned;
     private int spawnScore;
+    private BasePart body;
 
     Boss(String bossName, AssetManager assetManager) {
 
@@ -53,26 +55,24 @@ public class Boss {
             String type = bossConfig.get("parts").get(i).getString("type");
             switch (type) {
                 case ("basePart"):
-                    parts.add(new BasePart(bossConfig.get("parts").get(i), bossAtlas));
+                    body = new BasePart(bossConfig.get("parts").get(i), bossAtlas);
+                    parts.add(body);
                     break;
                 case ("part"):
-                    parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts));
+                    parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts, body));
                     break;
                 case ("cannon"):
-                    parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts));
+                    parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body));
                     break;
                 case ("clone"):
                     String cloneType = bossConfig.get("parts").get(i).getString("copyFrom");
                     cloneType = bossConfig.get("parts").get(cloneType).getString("type");
                     switch (cloneType) {
-                        case ("basePart"):
-                            parts.add(new BasePart(bossConfig.get("parts").get(i), bossAtlas));
-                            break;
                         case ("part"):
-                            parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts));
+                            parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts, body));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts));
+                            parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body));
                             break;
                     }
                     break;
@@ -102,6 +102,8 @@ public class Boss {
             spawn();
         }
         if (visible) {
+            x = body.x;
+            y = body.y;
             for (int i = 0; i < parts.size; i++) {
                 parts.get(i).x = x + parts.get(i).offsetX;
                 parts.get(i).y = y + parts.get(i).offsetY;
@@ -117,8 +119,8 @@ public class Boss {
     }
 
     void spawn() {
-        x = spawnAt[0];
-        y = spawnAt[1];
+        body.x = spawnAt[0];
+        body.y = spawnAt[1];
         dead = false;
         visible = true;
         hasAlreadySpawned = true;
@@ -145,7 +147,7 @@ class BasePart {
     float originX;
     float originY;
     float rotation;
-    private Sprite part;
+    Sprite part;
     float x;
     float y;
     String name;
@@ -159,10 +161,14 @@ class BasePart {
     boolean active;
     boolean showHealthBar;
 
+    ParticleEffect explosionEffect;
+    boolean exploded;
+
     BasePart(JsonValue config, TextureAtlas textures) {
 
         log("\n loading boss part, name: " + config.name);
 
+        exploded = false;
         name = config.name;
         this.config = config;
         if (config.getString("type").equals("clone")) {
@@ -170,8 +176,9 @@ class BasePart {
         }
         type = this.config.getString("type");
         health = this.config.getInt("health");
-        width = this.config.getInt("width");
-        height = this.config.getInt("height");
+        width = this.config.getFloat("width");
+        height = this.config.getFloat("height");
+        hasCollision = this.config.getBoolean("hasCollision");
         part = new Sprite(textures.findRegion(this.config.getString("texture")));
         part.setSize(width, height);
         originX = width / 2f;
@@ -181,6 +188,9 @@ class BasePart {
         }
         if (!this.config.getString("originY").equals("standard")) {
             originY = this.config.getFloat("originY");
+        }
+        if (!hasCollision) {
+            collisionEnabled = false;
         }
         part.setOrigin(originX, originY);
 
@@ -211,6 +221,13 @@ class BasePart {
         healthBar = new ProgressBar(0, health, 0.01f, false, healthBarStyle);
         healthBar.setAnimateDuration(0.25f);
         healthBar.setSize(25, 6);
+        healthBar.setValue(health);
+
+        if (hasCollision) {
+            explosionEffect = new ParticleEffect();
+            explosionEffect.load(Gdx.files.internal(this.config.getString("explosionEffect")), Gdx.files.internal("particles"));
+            explosionEffect.setPosition(x + originX, y + originY);
+        }
 
     }
 
@@ -221,12 +238,35 @@ class BasePart {
                 healthBar.draw(batch, 1);
             }
         }
+        if (exploded) {
+            explosionEffect.setPosition(x + originX, y + originY);
+            explosionEffect.draw(batch);
+        }
     }
 
     void update(float delta) {
-        healthBar.setPosition(originX - 12.5f, y - 7);
+        part.setPosition(x, y);
         part.setRotation(rotation);
-        healthBar.act(delta);
+        if (showHealthBar) {
+            healthBar.setValue(health);
+            healthBar.setPosition(originX + x - 12.5f, y - 7);
+            healthBar.act(delta);
+        }
+        if (hasCollision && collisionEnabled && health > 0) {
+            for (int i = 0; i < player.bullet.bullets.size; i++) {
+                if (player.bullet.bullets.get(i).overlaps(part.getBoundingRectangle())) {
+                    health -= player.bullet.damages.get(i);
+                    player.bullet.removeBullet(i, true);
+                }
+            }
+        }
+        if (health <= 0 && !exploded) {
+            explosionEffect.start();
+            exploded = true;
+        }
+        if (exploded) {
+            explosionEffect.update(delta);
+        }
     }
 
     void setTargetPlayer(ShipObject player) {
@@ -238,10 +278,12 @@ class Part extends BasePart {
 
     private Array<BasePart> parts;
     private float relativeX, relativeY;
+    private BasePart link;
 
-    Part(JsonValue config, TextureAtlas textures, Array<BasePart> parts) {
+    Part(JsonValue config, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
         super(config, textures);
         this.parts = parts;
+        link = body;
         String relativeTo = this.config.get("offset").getString("relativeTo");
         relativeX = this.config.get("offset").getFloat("X");
         relativeY = this.config.get("offset").getFloat("Y");
@@ -253,14 +295,22 @@ class Part extends BasePart {
                     relativeTo = config.get("override").get(i).getString("relativeTo");
                 }
             }
+
         }
+
+        if (!this.config.get("linked").isBoolean()) {
+            for (int i = 0; i < parts.size; i++) {
+                if (this.config.getString("linked").equals(parts.get(i).name)) {
+                    link = parts.get(i);
+                    break;
+                }
+            }
+        }
+
         getOffset(relativeTo);
         offsetX = relativeX;
         offsetY = relativeY;
-        hasCollision = this.config.getBoolean("hasCollision");
-        if (!hasCollision) {
-            collisionEnabled = false;
-        }
+
     }
 
     private void getOffset(String relativeTo) {
@@ -277,6 +327,24 @@ class Part extends BasePart {
         }
     }
 
+    @Override
+    void update(float delta) {
+        super.update(delta);
+    }
+
+    @Override
+    void draw(SpriteBatch batch) {
+        if (visible && health > 0 && link.health > 0) {
+            part.draw(batch);
+            if (showHealthBar) {
+                healthBar.draw(batch, 1);
+            }
+        }
+        if (exploded) {
+            explosionEffect.setPosition(x + originX, y + originY);
+            explosionEffect.draw(batch);
+        }
+    }
 }
 
 class Cannon extends Part {
@@ -288,8 +356,8 @@ class Cannon extends Part {
     float fireRateRandomness;
     float timer;
 
-    Cannon(JsonValue partConfig, TextureAtlas textures, Array<BasePart> parts) {
-        super(partConfig, textures, parts);
+    Cannon(JsonValue partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
+        super(partConfig, textures, parts, body);
 
         canAim = this.config.getBoolean("canAim");
         aimAngleLimit = this.config.get("aimAngleLimit").asIntArray();
@@ -303,7 +371,7 @@ class Cannon extends Part {
     @Override
     void update(float delta) {
         super.update(delta);
-        if (canAim) {
+        if (canAim && active) {
             rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - player.bounds.getY() - 30, x - player.bounds.getX() - 30), aimAngleLimit[0], aimAngleLimit[1]);
         }
         timer += delta;
@@ -322,8 +390,12 @@ class Movement {
     private final int MOVEX = 0;
     private final int MOVEY = 1;
     private final int ROTATE = 2;
+    private final int MOVESINX = 3;
+    private final int MOVESINY = 4;
+    private final int ROTATESIN = 5;
     float to;
     float speed;
+    float progress;
     boolean active;
     BasePart target;
     int type;
@@ -336,18 +408,42 @@ class Movement {
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(target)) {
                 this.target = parts.get(i);
+                break;
             }
         }
         speed = actionValue.getFloat("speed");
-        if (actionValue.name.equals("moveLinearX")) {
-            to = actionValue.getFloat("targetX");
-            type = MOVEX;
-        } else if (actionValue.name.equals("moveLinearY")) {
-            to = actionValue.getFloat("targetY");
-            type = MOVEY;
-        } else if (actionValue.name.equals("rotate")) {
-            to = actionValue.getFloat("targetAngle");
-            type = ROTATE;
+
+        switch (actionValue.name) {
+            case ("moveLinearX"): {
+                to = actionValue.getFloat("targetX");
+                type = MOVEX;
+                break;
+            }
+            case ("moveLinearY"): {
+                to = actionValue.getFloat("targetY");
+                type = MOVEY;
+                break;
+            }
+            case ("moveSinX"): {
+                to = actionValue.getFloat("amplitudeX");
+                type = MOVESINX;
+                break;
+            }
+            case ("moveSinY"): {
+                to = actionValue.getFloat("amplitudeY");
+                type = MOVESINY;
+                break;
+            }
+            case ("rotate"): {
+                to = actionValue.getFloat("targetAngle");
+                type = ROTATE;
+                break;
+            }
+            case ("rotateSin"): {
+                to = actionValue.getFloat("amplitude");
+                type = ROTATESIN;
+                break;
+            }
         }
     }
 
@@ -363,7 +459,8 @@ class Movement {
                         target.x += speed * delta * 10;
                     } else if (target.x > to) {
                         target.x -= speed * delta * 10;
-                    } else {
+                    }
+                    if (target.x > to - speed * delta * 10 && target.x < to + speed * delta * 10) {
                         active = false;
                     }
                     break;
@@ -372,7 +469,8 @@ class Movement {
                         target.y += speed * delta * 10;
                     } else if (target.y > to) {
                         target.y -= speed * delta * 10;
-                    } else {
+                    }
+                    if (target.y > to - speed * delta * 10 && target.y < to + speed * delta * 10) {
                         active = false;
                     }
                     break;
@@ -381,22 +479,29 @@ class Movement {
                         target.rotation += speed * delta * 10;
                     } else if (target.rotation > to) {
                         target.rotation -= speed * delta * 10;
-                    } else {
+                    }
+                    if (target.rotation > to - speed * delta * 10 && target.rotation < to + speed * delta * 10) {
                         active = false;
                     }
                     break;
+                case (MOVESINX): {
+                    target.x = target.x + (float) (Math.sin(progress) * to);
+                    progress += speed * delta * 10;
+                    break;
+                }
+                case (MOVESINY): {
+                    target.y = target.y + (float) (Math.sin(progress) * to);
+                    progress += speed * delta * 10;
+                    break;
+                }
+                case (ROTATESIN): {
+                    target.rotation = (float) (Math.sin(progress) * to);
+                    progress += speed * delta * 10;
+                    break;
+                }
             }
         }
     }
-
-}
-
-class SinusMovement extends Movement {
-
-    SinusMovement(JsonValue actionValue, String target, Array<BasePart> parts) {
-        super(actionValue, target, parts);
-    }
-
 }
 
 class ComplexMovement extends Movement {
@@ -439,7 +544,7 @@ class Phase {
         try {
             triggers = phaseData.parent.parent.get("phaseTriggers").get(config.name).get("triggers");
         } catch (Exception e) {
-            log("\n no triggers for "+phaseData.name);
+            log("\n no triggers for " + phaseData.name);
         }
         if (triggers != null) {
             for (int i = 0; i < triggers.size; i++) {
@@ -457,6 +562,9 @@ class Phase {
     }
 
     void update() {
+        for (int i = 0; i < phaseTriggers.size; i++) {
+            phaseTriggers.get(i).update();
+        }
         if (!activated) {
             boolean activate = true;
             for (int i = 0; i < phaseTriggers.size; i++) {
@@ -478,7 +586,7 @@ class Action {
     boolean visible;
     boolean enabled;
     BasePart target;
-    Movement movement;
+    Array<Movement> movements;
     boolean hasMovement;
 
     Action(JsonValue actionValue, Array<BasePart> baseParts, Array<Movement> animations) {
@@ -490,6 +598,7 @@ class Action {
         for (int i = 0; i < baseParts.size; i++) {
             if (baseParts.get(i).name.equals(target)) {
                 this.target = baseParts.get(i);
+                break;
             }
         }
         showHealthBar = actionValue.getBoolean("showHealthBar");
@@ -497,7 +606,7 @@ class Action {
         visible = actionValue.getBoolean("visible");
         enabled = actionValue.getBoolean("active");
 
-        int movementCount = 0;
+        int movementCount;
 
         if (actionValue.get("move").isBoolean()) {
             log("\n no movement for " + actionValue.name);
@@ -506,16 +615,19 @@ class Action {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
-                movement = new Movement(actionValue.get("move").get(i), target, baseParts);
-                animations.add(movement);
+                animations.add(new Movement(actionValue.get("move").get(i), target, baseParts));
             }
         }
+
+        movements = animations;
 
     }
 
     void activate() {
         if (hasMovement) {
-            movement.start();
+            for (int i = 0; i < movements.size; i++) {
+                movements.get(i).start();
+            }
         }
         if (target.hasCollision) {
             target.collisionEnabled = enableCollisions;
@@ -545,7 +657,11 @@ class PhaseTrigger {
         for (int i2 = 0; i2 < parts.size; i2++) {
             if (parts.get(i2).name.equals(targetPart)) {
                 triggerTarget = parts.get(i2);
+                break;
             }
+        }
+        if (triggerTarget == null) {
+            log("\n error setting up trigger for part " + targetPart);
         }
         triggerModifier = triggerData.getString("triggerModifier");
     }

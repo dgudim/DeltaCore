@@ -176,9 +176,10 @@ public class GameScreen implements Screen {
         drops.draw(batch, delta);
         uraniumCell.draw(batch, delta);
 
+        bosses.draw(batch);
+        bosses.update(delta);
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
-        bosses.draw(batch);
         boss_battleShip.draw(batch, delta);
         boss_evilEye.draw(batch, delta);
         meteorite.drawEffects(batch, delta);
@@ -193,8 +194,6 @@ public class GameScreen implements Screen {
         ship.drawBase(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
-        bosses.draw(batch);
-        bosses.update(delta);
         meteorite.drawBase(batch, delta);
         checkpoint.drawBase(batch);
 
