@@ -124,7 +124,7 @@ public class GameScreen implements Screen {
 
         checkpoint = new Checkpoint(assetManager, ship);
 
-        gameLogic = new GameLogic(ship, newGame, game, meteorite, boss_battleShip, checkpoint, boss_evilEye);
+        gameLogic = new GameLogic(ship, newGame, game, meteorite, checkpoint);
 
         musicVolume = getFloat("musicVolume");
 
