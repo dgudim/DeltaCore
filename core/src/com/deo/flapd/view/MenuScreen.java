@@ -51,12 +51,12 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.initNewGame;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
-import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
@@ -408,23 +408,10 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new com.deo.flapd.view.dialogues.ConfirmationDialogue(assetManager, Menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
+                new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        putInteger("enemiesKilled", 0);
-                        putInteger("moneyEarned", 0);
-                        putInteger("Score", 0);
-                        putFloat("Health", 1000);
-                        putFloat("Shield", 1000);
-                        putFloat("Charge", 1000);
-                        putBoolean("has1stBossSpawned", false);
-                        putBoolean("has2ndBossSpawned", false);
-                        putInteger("bonuses_collected", 0);
-                        putInteger("lastCheckpoint", 0);
-                        putInteger("bulletsShot", 0);
-                        putInteger("meteoritesDestroyed", 0);
-                        putFloat("ShipX", 0);
-                        putFloat("ShipY", 220);
+                        initNewGame();
                         game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
                     }
                 });

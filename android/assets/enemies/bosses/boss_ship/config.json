@@ -15,7 +15,8 @@
       "originX": "standard",
       "originY": "standard",
       "texture": "boss",
-      "explosionEffect": "particles/explosion2.p"
+      "explosionEffect": "particles/explosion2.p",
+      "layer": 1
     },
     "homingCannonBase": {
       "type": "part",
@@ -32,7 +33,8 @@
       },
       "linked": false,
       "texture": "upperCannon_part1",
-      "explosionEffect": "particles/explosion.p"
+      "explosionEffect": "particles/explosion.p",
+      "layer": 2
     },
     "smallCannon1": {
       "type": "cannon",
@@ -63,7 +65,8 @@
       },
       "linked": false,
       "texture": "cannon1",
-      "explosionEffect": "particles/explosion.p"
+      "explosionEffect": "particles/explosion.p",
+      "layer": 2
     },
     "smallCannon2": {
       "type": "clone",
@@ -149,15 +152,16 @@
       },
       "linked": false,
       "texture": "cannon2",
-      "explosionEffect": "particles/explosion.p"
+      "explosionEffect": "particles/explosion.p",
+      "layer": 2
     },
     "cannon2ndStage": {
       "type": "cannon",
       "health": 1333,
       "hasCollision": true,
-      "width": 120,
-      "height": 32,
-      "originX": "standard",
+      "width": 80,
+      "height": 21.333,
+      "originX": "80",
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-20, 20],
@@ -180,7 +184,8 @@
       },
       "linked": false,
       "texture": "bigCannon",
-      "explosionEffect": "particles/explosion.p"
+      "explosionEffect": "particles/explosion.p",
+      "layer": 0
     },
     "homingCannon": {
       "type": "cannon",
@@ -210,7 +215,8 @@
       "fireRate":{
         "baseRate": 0.3,
         "randomness": 0.1
-      }
+      },
+      "layer": 0
     }
   },
 
@@ -222,14 +228,22 @@
           "showHealthBar": false,
           "visible": true,
           "active": false,
-          "move": {
+          "changeTexture": false,
+        "move": {
             "moveLinearX": {
-              "targetX": 215,
-              "speed": 10
+              "moveBy": -350,
+              "speed": 5,
+              "stopPreviousAnimations": false
+            },
+            "moveLinearX": {
+              "moveBy": -320,
+              "speed": 5,
+              "stopPreviousAnimations": false
             },
             "moveSinY": {
-              "amplitudeY": 0.5,
-              "speed": 0.15
+              "amplitude": 0.5,
+              "speed": 0.15,
+              "stopPreviousAnimations": false
             }
           }
         },
@@ -239,6 +253,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon2Init": {
@@ -247,6 +262,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon3Init": {
@@ -255,6 +271,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon4Init": {
@@ -263,6 +280,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon5Init": {
@@ -271,6 +289,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon6Init": {
@@ -279,6 +298,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "frontMediumCannonInit": {
@@ -287,6 +307,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "homingCannonInit": {
@@ -295,6 +316,7 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "homingCannonBaseInit": {
@@ -303,14 +325,16 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       },
       "2ndStageCannonInit": {
         "target": "cannon2ndStage",
         "enableCollisions": false,
         "showHealthBar": false,
-        "visible": false,
+        "visible": true,
         "active": false,
+        "changeTexture": false,
         "move": false
       }
     },
@@ -321,6 +345,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon2Activate": {
@@ -329,6 +354,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon3Activate": {
@@ -337,6 +363,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon4Activate": {
@@ -345,6 +372,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon5Activate": {
@@ -353,6 +381,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "smallCannon6Activate": {
@@ -361,6 +390,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "mediumCannonActivate": {
@@ -369,6 +399,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "homingCannonActivate": {
@@ -377,6 +408,7 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       },
       "homingCannonPart2Activate": {
@@ -385,17 +417,72 @@
         "showHealthBar": false,
         "visible": true,
         "active": true,
+        "changeTexture": false,
         "move": false
       }
     },
     "phase2": {
-      "bodyActivate": {
+      "bodyMoveBack": {
         "target": "body",
         "enableCollisions": true,
         "showHealthBar": true,
         "visible": true,
         "active": true,
-        "move": false
+        "changeTexture": false,
+        "move": {
+          "moveLinearX": {
+            "moveBy": 310,
+            "speed": 10,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "moveCannon2ndStageToFront": {
+        "target": "cannon2ndStage",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "moveLinearX": {
+            "moveBy": -100,
+            "speed": 3,
+            "stopPreviousAnimations": false
+          },
+          "moveLinearY": {
+            "moveBy": 10,
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      }
+    },
+    "deathPhase": {
+      "bodyDie": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": true,
+        "changeTexture": "boss_dead",
+        "move": {
+          "rotate": {
+            "moveBy": 90,
+            "speed": 0.5,
+            "stopPreviousAnimations": true
+          },
+          "moveLinearX": {
+            "moveBy": -100,
+            "speed": 2,
+            "stopPreviousAnimations": false
+          },
+          "moveLinearY": {
+            "moveBy": -500,
+            "speed": 2,
+            "stopPreviousAnimations": false
+          }
+        }
       }
     }
   },
@@ -454,6 +541,26 @@
           "triggerModifier": "<=",
           "target": "mediumCannon1",
           "value": 0
+        }
+      }
+    },
+    "deathAnimationPhase": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": 0
+        }
+      }
+    },
+    "RESET": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionY",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": -400
         }
       }
     }

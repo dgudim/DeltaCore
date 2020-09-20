@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.enemies.Bosses;
 
 import java.util.Random;
 
@@ -118,8 +119,9 @@ public class Checkpoint {
             putFloat("Health", player.Health);
             putFloat("Shield", player.Shield);
             putFloat("Charge", player.Charge);
-            putBoolean("has1stBossSpawned", GameLogic.has1stBossSpawned);
-            putBoolean("has2ndBossSpawned", GameLogic.has2ndBossSpawned);
+            for(int i = 0; i< Bosses.bosses.size; i++){
+                putBoolean("boss_spawned_"+Bosses.bosses.get(i).bossConfig.name, Bosses.bosses.get(i).hasAlreadySpawned);
+            }
             putInteger("bonuses_collected", GameLogic.bonuses_collected);
             putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
             putInteger("bulletsShot", player.bulletsShot);

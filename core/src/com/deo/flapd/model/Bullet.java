@@ -254,8 +254,8 @@ public class Bullet {
 
                     boolean aim = false;
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (enemies.enemyEntities.get(i).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i).isDead) {
-                            Rectangle enemy = enemies.enemyEntities.get(i).enemy.getBoundingRectangle();
+                        if (enemies.enemyEntities.get(i2).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i2).isDead) {
+                            Rectangle enemy = enemies.enemyEntities.get(i2).enemy.getBoundingRectangle();
                             float degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight() / 2, enemy.getX() - bullet.x + enemy.getWidth() / 2);
 
                             if (degree > 45 || degree < -45) {

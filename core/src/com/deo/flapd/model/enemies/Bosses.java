@@ -8,14 +8,13 @@ import com.deo.flapd.model.ShipObject;
 public class Bosses {
 
     private AssetManager assetManager;
-    private Array<Boss> bosses;
-    private final String[] bossNames;
+    public static Array<Boss> bosses;
+    private final String[] bossNames = new String[]{"boss_ship"};
     private ShipObject player;
 
     public Bosses(AssetManager assetManager){
         this.assetManager = assetManager;
         bosses = new Array<>();
-        bossNames = new String[]{"boss_ship"};
     }
 
     public void loadBosses(){
@@ -43,11 +42,9 @@ public class Bosses {
         }
     }
 
-    public void drawEffects(SpriteBatch batch, float delta){
-
-    }
-
     public void dispose(){
-
+        for(int i = 0;i<bosses.size; i++){
+            bosses.get(i).dispose();
+        }
     }
 }

@@ -73,4 +73,30 @@ public class BulletData {
             homingSpeed = bulletInfo.getFloat("homingSpeed");
         }
     }
+
+    public BulletData(JsonValue bulletData) {
+        texture = bulletData.getString("texture");
+        width = bulletData.getFloat("width");
+        height = bulletData.getFloat("height");
+        x = 0;
+        y = 0;
+        angle = 0;
+        offset = bulletData.get("offset").asFloatArray();
+        bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
+        bulletDistance = (float) Math.sqrt(offset[1] * offset[1] + offset[0] * offset[0]);
+        damage = bulletData.getInt("damage");
+        spread = bulletData.getFloat("spread");
+        speed = bulletData.getInt("speed");
+        trail = bulletData.getString("trail");
+        trailScale = bulletData.getFloat("trailScale");
+        explosionScale = bulletData.getFloat("explosionScale");
+        shootSound = bulletData.getString("shootSound");
+        bulletsPerShot = bulletData.getInt("bulletsPerShot");
+        explosion = bulletData.getString("explosionEffect");
+        isHoming = bulletData.getBoolean("homing");
+        if(isHoming){
+            explosionTimer = bulletData.getFloat("explosionTimer");
+            homingSpeed = bulletData.getFloat("homingSpeed");
+        }
+    }
 }

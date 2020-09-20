@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.model.enemies.Bosses;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -342,6 +343,24 @@ public abstract class DUtils {
         e.printStackTrace(new PrintWriter(sw));
         String fullStackTrace = sw.toString();
         log("\n\n" + fullStackTrace + "\n");
+    }
+
+    public static void initNewGame(){
+        putInteger("enemiesKilled", 0);
+        putInteger("moneyEarned", 0);
+        putInteger("Score", 0);
+        putFloat("Health", 1000);
+        putFloat("Shield", 1000);
+        putFloat("Charge", 1000);
+        for(int i = 0; i< Bosses.bosses.size; i++){
+            putBoolean("boss_spawned_"+Bosses.bosses.get(i).bossConfig.name, false);
+        }
+        putInteger("bonuses_collected", 0);
+        putInteger("lastCheckpoint", 0);
+        putInteger("bulletsShot", 0);
+        putInteger("meteoritesDestroyed", 0);
+        putFloat("ShipX", 0);
+        putFloat("ShipY", 220);
     }
 
     public static <T> T concatArray(T a, T b) {

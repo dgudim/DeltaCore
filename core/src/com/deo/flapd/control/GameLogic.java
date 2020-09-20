@@ -12,8 +12,6 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.ShipObject;
-import com.deo.flapd.model.enemies.Boss_battleShip;
-import com.deo.flapd.model.enemies.Boss_evilEye;
 
 import java.util.Random;
 
@@ -48,11 +46,9 @@ public class GameLogic {
     private Bullet playerBullet;
     private Polygon playerBounds;
     private Meteorite meteorite;
-    private Boss_battleShip boss_battleShip;
     private Checkpoint checkpoint;
-    private Boss_evilEye boss_evilEye;
 
-    public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorite meteorite, Boss_battleShip boss_battleShip, Checkpoint checkpoint, Boss_evilEye boss_evilEye) {
+    public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorite meteorite, Checkpoint checkpoint) {
         player = ship;
         random = new Random();
 
@@ -61,9 +57,7 @@ public class GameLogic {
         playerBullet = player.bullet;
         playerBounds = player.bounds;
         this.meteorite = meteorite;
-        this.boss_battleShip = boss_battleShip;
         this.checkpoint = checkpoint;
-        this.boss_evilEye = boss_evilEye;
 
         difficulty = getFloat("difficulty");
 
@@ -158,18 +152,6 @@ public class GameLogic {
                 lastCheckpoint = Score;
                 checkpoint.Spawn(random.nextInt(300) + 150, random.nextInt(201) + 100, 1);
             }
-        }
-
-        if (Score > 30000 && !has1stBossSpawned) {
-            bossWave = true;
-            has1stBossSpawned = true;
-            boss_evilEye.Spawn();
-        }
-
-        if (Score > 70000 && !has2ndBossSpawned) {
-            bossWave = true;
-            has2ndBossSpawned = true;
-            boss_battleShip.Spawn();
         }
 
         if (playerBounds.getX() < 0) {

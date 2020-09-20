@@ -20,23 +20,23 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.ShipObject;
 
+import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 
 public class Boss {
 
-    private JsonValue bossConfig;
+    public JsonValue bossConfig;
     private Array<BasePart> parts;
     private Array<Phase> phases;
     private TextureAtlas bossAtlas;
-    private float x = 1000;
-    private float y = 1000;
+    private float x = 1500;
+    private float y = 1500;
     private int[] spawnAt;
-    boolean dead;
     boolean visible;
     ShipObject player;
     Array<Movement> animations;
-    private boolean hasAlreadySpawned;
+    public boolean hasAlreadySpawned;
     private int spawnScore;
     private BasePart body;
 
@@ -48,7 +48,7 @@ public class Boss {
         bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
         parts = new Array<>();
         animations = new Array<>();
-        hasAlreadySpawned = false;
+        hasAlreadySpawned = getBoolean("boss_spawned_"+bossConfig.name);
         spawnScore = bossConfig.get("spawnConditions").getInt("score") + getRandomInRange(-bossConfig.get("spawnConditions").getInt("randomness"), bossConfig.get("spawnConditions").getInt("randomness"));
         spawnAt = bossConfig.get("spawnAt").asIntArray();
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
@@ -79,10 +79,38 @@ public class Boss {
             }
         }
 
+        Array<Array<BasePart>> sortedParts = new Array<>();
+
+        int maxLayer = 0;
+
+        for (int i = 0; i < parts.size; i++) {
+            maxLayer = Math.max(maxLayer, parts.get(i).layer);
+        }
+
+        maxLayer = maxLayer + 1;
+
+        sortedParts.setSize(maxLayer);
+
+        for (int i = 0; i < maxLayer; i++) {
+            sortedParts.set(i, new Array<BasePart>());
+        }
+
+        for (int i = 0; i < parts.size; i++) {
+            sortedParts.get(parts.get(i).layer).add(parts.get(i));
+        }
+
+        parts.clear();
+
+        for (int i = 0; i < maxLayer; i++) {
+            for (int i2 = 0; i2 < sortedParts.get(i).size; i2++) {
+                parts.add(sortedParts.get(i).get(i2));
+            }
+        }
+
         phases = new Array<>();
 
         for (int i = 0; i < bossConfig.get("phases").size; i++) {
-            Phase phase = new Phase(bossConfig.get("phases").get(i), parts, animations);
+            Phase phase = new Phase(bossConfig.get("phases").get(i), parts, animations, this);
             phases.add(phase);
         }
 
@@ -121,7 +149,6 @@ public class Boss {
     void spawn() {
         body.x = spawnAt[0];
         body.y = spawnAt[1];
-        dead = false;
         visible = true;
         hasAlreadySpawned = true;
         GameLogic.bossWave = true;
@@ -135,15 +162,45 @@ public class Boss {
         }
     }
 
+    void dispose() {
+        for (int i = 0; i < parts.size; i++) {
+            parts.get(i).dispose();
+        }
+    }
+
+    void reset() {
+        new Runnable() {
+            @Override
+            public void run() {
+                visible = false;
+                body.x = 1500;
+                body.y = 1500;
+                GameLogic.bossWave = false;
+                for(int i = 0; i<animations.size; i++){
+                    animations.get(i).reset();
+                }
+                for(int i = 0; i<parts.size; i++){
+                    parts.get(i).reset();
+                }
+                for(int i = 0; i<phases.size; i++){
+                    phases.get(i).reset();
+                }
+                System.out.println("boss reset success!");
+            }
+        }.run();
+    }
 }
 
 class BasePart {
 
     float health;
+    float originalHealth;
     float height;
     float width;
     float offsetX = 0;
     float offsetY = 0;
+    float originalOffsetX = 0;
+    float originalOffsetY = 0;
     float originX;
     float originY;
     float rotation;
@@ -156,13 +213,19 @@ class BasePart {
     ProgressBar healthBar;
     ShipObject player;
     boolean collisionEnabled = true;
-    boolean hasCollision = true;
+    boolean hasCollision;
     boolean visible;
     boolean active;
     boolean showHealthBar;
 
+    int layer;
+
     ParticleEffect explosionEffect;
     boolean exploded;
+
+    TextureAtlas textures;
+
+    Array<BasePart> links;
 
     BasePart(JsonValue config, TextureAtlas textures) {
 
@@ -171,13 +234,17 @@ class BasePart {
         exploded = false;
         name = config.name;
         this.config = config;
+        this.textures = textures;
+        links = new Array<>();
         if (config.getString("type").equals("clone")) {
             this.config = config.parent.get(config.getString("copyFrom"));
         }
         type = this.config.getString("type");
         health = this.config.getInt("health");
+        originalHealth = health;
         width = this.config.getFloat("width");
         height = this.config.getFloat("height");
+        layer = this.config.getInt("layer");
         hasCollision = this.config.getBoolean("hasCollision");
         part = new Sprite(textures.findRegion(this.config.getString("texture")));
         part.setSize(width, height);
@@ -226,7 +293,7 @@ class BasePart {
         if (hasCollision) {
             explosionEffect = new ParticleEffect();
             explosionEffect.load(Gdx.files.internal(this.config.getString("explosionEffect")), Gdx.files.internal("particles"));
-            explosionEffect.setPosition(x + originX, y + originY);
+            log("\n creating explosion effect for part: " + config.name);
         }
 
     }
@@ -239,7 +306,6 @@ class BasePart {
             }
         }
         if (exploded) {
-            explosionEffect.setPosition(x + originX, y + originY);
             explosionEffect.draw(batch);
         }
     }
@@ -249,7 +315,7 @@ class BasePart {
         part.setRotation(rotation);
         if (showHealthBar) {
             healthBar.setValue(health);
-            healthBar.setPosition(originX + x - 12.5f, y - 7);
+            healthBar.setPosition(width / 2 + x - 12.5f, y - 7);
             healthBar.act(delta);
         }
         if (hasCollision && collisionEnabled && health > 0) {
@@ -261,8 +327,12 @@ class BasePart {
             }
         }
         if (health <= 0 && !exploded) {
-            explosionEffect.start();
-            exploded = true;
+            explode();
+            for (int i = 0; i < links.size; i++) {
+                if (!links.get(i).exploded && links.get(i).explosionEffect != null) {
+                    links.get(i).explode();
+                }
+            }
         }
         if (exploded) {
             explosionEffect.update(delta);
@@ -272,6 +342,33 @@ class BasePart {
     void setTargetPlayer(ShipObject player) {
         this.player = player;
     }
+
+    void dispose() {
+        if (hasCollision) {
+            explosionEffect.dispose();
+        }
+    }
+
+    void addLinkedPart(BasePart part) {
+        links.add(part);
+    }
+
+    void explode() {
+        explosionEffect.start();
+        explosionEffect.setPosition(x + width / 2, y + height / 2);
+        exploded = true;
+    }
+
+    void reset() {
+        offsetX = originalOffsetX;
+        offsetY = originalOffsetY;
+        health = originalHealth;
+        showHealthBar = false;
+        visible = false;
+        active = false;
+        collisionEnabled = false;
+        exploded = false;
+    }
 }
 
 class Part extends BasePart {
@@ -279,11 +376,13 @@ class Part extends BasePart {
     private Array<BasePart> parts;
     private float relativeX, relativeY;
     private BasePart link;
+    private BasePart body;
 
     Part(JsonValue config, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
         super(config, textures);
         this.parts = parts;
         link = body;
+        this.body = body;
         String relativeTo = this.config.get("offset").getString("relativeTo");
         relativeX = this.config.get("offset").getFloat("X");
         relativeY = this.config.get("offset").getFloat("Y");
@@ -298,18 +397,29 @@ class Part extends BasePart {
 
         }
 
+        boolean customLink = false;
+
         if (!this.config.get("linked").isBoolean()) {
             for (int i = 0; i < parts.size; i++) {
                 if (this.config.getString("linked").equals(parts.get(i).name)) {
                     link = parts.get(i);
+                    link.addLinkedPart(this);
+                    customLink = true;
                     break;
                 }
             }
         }
 
+        if (!customLink) {
+            link.addLinkedPart(this);
+        }
+
         getOffset(relativeTo);
         offsetX = relativeX;
         offsetY = relativeY;
+
+        originalOffsetX = relativeX;
+        originalOffsetY = relativeY;
 
     }
 
@@ -328,20 +438,14 @@ class Part extends BasePart {
     }
 
     @Override
-    void update(float delta) {
-        super.update(delta);
-    }
-
-    @Override
     void draw(SpriteBatch batch) {
-        if (visible && health > 0 && link.health > 0) {
+        if (visible && health > 0 && link.health > 0 && body.health > 0) {
             part.draw(batch);
             if (showHealthBar) {
                 healthBar.draw(batch, 1);
             }
         }
         if (exploded) {
-            explosionEffect.setPosition(x + originX, y + originY);
             explosionEffect.draw(batch);
         }
     }
@@ -355,6 +459,7 @@ class Cannon extends Part {
     float fireRate;
     float fireRateRandomness;
     float timer;
+    JsonValue bulletData;
 
     Cannon(JsonValue partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
         super(partConfig, textures, parts, body);
@@ -375,7 +480,7 @@ class Cannon extends Part {
             rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - player.bounds.getY() - 30, x - player.bounds.getX() - 30), aimAngleLimit[0], aimAngleLimit[1]);
         }
         timer += delta;
-        if (timer > fireRate + MathUtils.random() * fireRateRandomness) {
+        if (timer > fireRate + MathUtils.random() * fireRateRandomness && health > 0) {
             shoot();
         }
     }
@@ -387,24 +492,35 @@ class Cannon extends Part {
 
 class Movement {
 
-    private final int MOVEX = 0;
-    private final int MOVEY = 1;
-    private final int ROTATE = 2;
-    private final int MOVESINX = 3;
-    private final int MOVESINY = 4;
-    private final int ROTATESIN = 5;
-    float to;
+    private final byte MOVEX = 0;
+    private final byte MOVEY = 1;
+    private final byte ROTATE = 2;
+    private final byte MOVESINX = 3;
+    private final byte MOVESINY = 4;
+    private final byte ROTATESIN = 5;
+    private final byte NEGATIVE = 10;
+    private final byte POSITIVE = 15;
+    float moveBy;
+    float amplitude;
+    float currentAddPosition;
     float speed;
     float progress;
     boolean active;
     BasePart target;
-    int type;
+    byte type;
+    byte typeModifier;
+    boolean stopPrevAnim;
+    JsonValue config;
 
-    Movement(JsonValue actionValue, String target, Array<BasePart> parts) {
+    Array<Movement> animations;
+
+    Movement(JsonValue actionValue, String target, Array<BasePart> parts, Array<Movement> animations) {
 
         log("\n loading boss movement, name: " + actionValue.name);
 
         active = false;
+        config = actionValue;
+        this.animations = animations;
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(target)) {
                 this.target = parts.get(i);
@@ -413,94 +529,131 @@ class Movement {
         }
         speed = actionValue.getFloat("speed");
 
+        stopPrevAnim = actionValue.getBoolean("stopPreviousAnimations");
+
         switch (actionValue.name) {
             case ("moveLinearX"): {
-                to = actionValue.getFloat("targetX");
+                moveBy = actionValue.getFloat("moveBy");
                 type = MOVEX;
                 break;
             }
             case ("moveLinearY"): {
-                to = actionValue.getFloat("targetY");
+                moveBy = actionValue.getFloat("moveBy");
                 type = MOVEY;
                 break;
             }
             case ("moveSinX"): {
-                to = actionValue.getFloat("amplitudeX");
+                amplitude = actionValue.getFloat("amplitude");
                 type = MOVESINX;
                 break;
             }
             case ("moveSinY"): {
-                to = actionValue.getFloat("amplitudeY");
+                amplitude = actionValue.getFloat("amplitude");
                 type = MOVESINY;
                 break;
             }
             case ("rotate"): {
-                to = actionValue.getFloat("targetAngle");
+                moveBy = actionValue.getFloat("moveBy");
                 type = ROTATE;
                 break;
             }
             case ("rotateSin"): {
-                to = actionValue.getFloat("amplitude");
+                amplitude = actionValue.getFloat("amplitude");
                 type = ROTATESIN;
                 break;
             }
         }
+        if (currentAddPosition < moveBy) {
+            typeModifier = POSITIVE;
+        } else {
+            typeModifier = NEGATIVE;
+        }
     }
 
     void start() {
+        if (stopPrevAnim) {
+            for (int i = 0; i < animations.size; i++) {
+                animations.get(i).stop();
+            }
+        }
         active = true;
+    }
+
+    void stop() {
+        active = false;
     }
 
     void update(float delta) {
         if (active) {
+            if (currentAddPosition < moveBy && typeModifier == POSITIVE) {
+                currentAddPosition += speed * delta * 10;
+                if (currentAddPosition >= moveBy) {
+                    active = false;
+                }
+            }
+            if (currentAddPosition > moveBy && typeModifier == NEGATIVE) {
+                currentAddPosition -= speed * delta * 10;
+                if (currentAddPosition <= moveBy) {
+                    active = false;
+                }
+            }
+
             switch (type) {
                 case (MOVEX):
-                    if (target.x < to) {
+                    if (typeModifier == POSITIVE) {
                         target.x += speed * delta * 10;
-                    } else if (target.x > to) {
+                        if (!target.getClass().equals(BasePart.class)) {
+                            target.offsetX += speed * delta * 10;
+                        }
+                    } else if (typeModifier == NEGATIVE) {
                         target.x -= speed * delta * 10;
-                    }
-                    if (target.x > to - speed * delta * 10 && target.x < to + speed * delta * 10) {
-                        active = false;
+                        if (!target.getClass().equals(BasePart.class)) {
+                            target.offsetX -= speed * delta * 10;
+                        }
                     }
                     break;
                 case (MOVEY):
-                    if (target.y < to) {
+                    if (typeModifier == POSITIVE) {
                         target.y += speed * delta * 10;
-                    } else if (target.y > to) {
+                        if (!target.getClass().equals(BasePart.class)) {
+                            target.offsetY += speed * delta * 10;
+                        }
+                    } else if (typeModifier == NEGATIVE) {
                         target.y -= speed * delta * 10;
-                    }
-                    if (target.y > to - speed * delta * 10 && target.y < to + speed * delta * 10) {
-                        active = false;
+                        if (!target.getClass().equals(BasePart.class)) {
+                            target.offsetY -= speed * delta * 10;
+                        }
                     }
                     break;
                 case (ROTATE):
-                    if (target.rotation < to) {
+                    if (typeModifier == POSITIVE) {
                         target.rotation += speed * delta * 10;
-                    } else if (target.rotation > to) {
+                    } else if (typeModifier == NEGATIVE) {
                         target.rotation -= speed * delta * 10;
-                    }
-                    if (target.rotation > to - speed * delta * 10 && target.rotation < to + speed * delta * 10) {
-                        active = false;
                     }
                     break;
                 case (MOVESINX): {
-                    target.x = target.x + (float) (Math.sin(progress) * to);
+                    target.x = target.x + (float) (Math.sin(progress) * amplitude) * delta * 60;
                     progress += speed * delta * 10;
                     break;
                 }
                 case (MOVESINY): {
-                    target.y = target.y + (float) (Math.sin(progress) * to);
+                    target.y = target.y + (float) (Math.sin(progress) * amplitude) * delta * 60;
                     progress += speed * delta * 10;
                     break;
                 }
                 case (ROTATESIN): {
-                    target.rotation = (float) (Math.sin(progress) * to);
+                    target.rotation = (float) (Math.sin(progress) * amplitude) * delta * 60;
                     progress += speed * delta * 10;
                     break;
                 }
             }
         }
+    }
+
+    void reset() {
+        stop();
+        progress = 0;
     }
 }
 
@@ -511,8 +664,8 @@ class ComplexMovement extends Movement {
     int currentPoint;
     boolean randomPointMode;
 
-    ComplexMovement(JsonValue actionValue, String target, Array<BasePart> parts) {
-        super(actionValue, target, parts);
+    ComplexMovement(JsonValue actionValue, String target, Array<BasePart> parts, Array<Movement> animations) {
+        super(actionValue, target, parts, animations);
     }
 
     @Override
@@ -528,7 +681,7 @@ class Phase {
     JsonValue config;
     Array<PhaseTrigger> phaseTriggers;
 
-    Phase(JsonValue phaseData, Array<BasePart> parts, Array<Movement> animations) {
+    Phase(JsonValue phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
 
         log("\n loading boss phase, name: " + phaseData.name);
 
@@ -548,7 +701,7 @@ class Phase {
         }
         if (triggers != null) {
             for (int i = 0; i < triggers.size; i++) {
-                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts);
+                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts, boss);
                 phaseTriggers.add(trigger);
             }
         }
@@ -576,6 +729,9 @@ class Phase {
         }
     }
 
+    void reset() {
+        activated = false;
+    }
 }
 
 class Action {
@@ -585,15 +741,19 @@ class Action {
     boolean showHealthBar;
     boolean visible;
     boolean enabled;
+    String changeTexture;
     BasePart target;
     Array<Movement> movements;
     boolean hasMovement;
+    JsonValue config;
 
     Action(JsonValue actionValue, Array<BasePart> baseParts, Array<Movement> animations) {
 
         log("\n loading boss action, name: " + actionValue.name);
 
         this.baseParts = baseParts;
+        config = actionValue;
+        movements = new Array<>();
         String target = actionValue.getString("target");
         for (int i = 0; i < baseParts.size; i++) {
             if (baseParts.get(i).name.equals(target)) {
@@ -605,6 +765,7 @@ class Action {
         enableCollisions = actionValue.getBoolean("enableCollisions");
         visible = actionValue.getBoolean("visible");
         enabled = actionValue.getBoolean("active");
+        changeTexture = actionValue.getString("changeTexture");
 
         int movementCount;
 
@@ -615,12 +776,11 @@ class Action {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
-                animations.add(new Movement(actionValue.get("move").get(i), target, baseParts));
+                Movement movement = new Movement(actionValue.get("move").get(i), target, baseParts, animations);
+                animations.add(movement);
+                movements.add(movement);
             }
         }
-
-        movements = animations;
-
     }
 
     void activate() {
@@ -632,6 +792,9 @@ class Action {
         if (target.hasCollision) {
             target.collisionEnabled = enableCollisions;
         }
+        if (!changeTexture.equals("false")) {
+            target.part.setRegion(target.textures.findRegion(changeTexture));
+        }
         target.visible = visible;
         target.active = enabled;
         target.showHealthBar = showHealthBar;
@@ -641,14 +804,20 @@ class Action {
 class PhaseTrigger {
 
     boolean conditionsMet;
+    boolean isResetPhase;
     float value;
     String triggerType;
     String triggerModifier;
     BasePart triggerTarget;
+    Boss boss;
 
-    PhaseTrigger(JsonValue triggerData, Array<BasePart> parts) {
+    PhaseTrigger(JsonValue triggerData, Array<BasePart> parts, Boss boss) {
 
         log("\n loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent.parent.name);
+
+        isResetPhase = triggerData.name.equals("RESET");
+
+        this.boss = boss;
 
         conditionsMet = false;
         triggerType = triggerData.getString("triggerType");
@@ -703,6 +872,10 @@ class PhaseTrigger {
                     conditionsMet = true;
                 }
                 break;
+        }
+        if(conditionsMet && isResetPhase){
+            boss.reset();
+            System.out.println("boss reset");
         }
     }
 
