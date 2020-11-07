@@ -1,12 +1,14 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Polygon;
+import com.deo.flapd.view.MenuScreen;
 
 abstract class ShipObject {
 
@@ -24,6 +26,10 @@ abstract class ShipObject {
     private static float blue2;
 
     private boolean exploded;
+
+    private Sound explosion;
+
+    private boolean sound;
 
     ShipObject(Texture shipTexture, Texture ShieldTexture, float x, float y, float width, float height) {
         ship = new Sprite(shipTexture);
@@ -54,6 +60,7 @@ abstract class ShipObject {
         green2 = 1;
         blue2 = 1;
         exploded = false;
+        sound = MenuScreen.Sound;
     }
 
 
@@ -139,6 +146,9 @@ abstract class ShipObject {
 
     public void explode(){
         exploded = true;
+        if(sound){
+            explosion.play(MenuScreen.SoundVolume/100);
+        }
     }
 
     public boolean isExploded(){

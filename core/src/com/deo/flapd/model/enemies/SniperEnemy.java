@@ -11,9 +11,6 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Bonus;
-import com.deo.flapd.model.Bullet;
-import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
@@ -29,7 +26,6 @@ public class SniperEnemy {
     private Sprite enemy;
     private float millis;
     private Random random;
-    private Polygon bounds;
     private EnemyBullet_sniper enemyBullet;
 
     private Sound explosion;
@@ -40,8 +36,9 @@ public class SniperEnemy {
 
     private Bonus bonus;
 
+    private static Array<Boolean> explosionQueue, remove_Enemy;
+
     public SniperEnemy(AssetManager assetManager, float width, float height, float Bwidth, float Bheight, float Boffset_x, float Boffset_y, float Bspread, float fire_offset_x, float fire_offset_y, Polygon shipBounds, Bonus bonus) {
-        bounds = shipBounds;
         this.height = height;
         this.width = width;
         this.fire_x = fire_offset_x;
@@ -55,6 +52,8 @@ public class SniperEnemy {
 
         explosions = new Array<>();
         fires = new Array<>();
+        explosionQueue = new Array<>();
+        remove_Enemy = new Array<>();
 
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
@@ -81,6 +80,8 @@ public class SniperEnemy {
             fire.start();
 
             fires.add(fire);
+            explosionQueue.add(false);
+            remove_Enemy.add(false);
 
             millis = 0;
             GameUi.enemiesSpawned++;
@@ -112,99 +113,8 @@ public class SniperEnemy {
 
             this.enemy.draw(batch);
 
-            if(enemy.x < -enemy.width-110){
-                removeEnemy(i, false);
-            }
-
             if (!is_paused) {
                 enemy.x -= 70 * Gdx.graphics.getDeltaTime();
-
-                if(enemy.overlaps(bounds.getBoundingRectangle())){
-
-                    if (GameUi.Shield >= healths.get(i)) {
-                        GameUi.Shield -= healths.get(i);
-                        SpaceShip.set_color(1, 0, 1, true);
-                    } else {
-                        GameUi.Health = GameUi.Health - (healths.get(i) - GameUi.Shield) / 5;
-                        GameUi.Shield = 0;
-                        SpaceShip.set_color(1, 0, 1, false);
-                    }
-
-                    GameUi.Score = (int)(GameUi.Score + healths.get(i)/2);
-
-                    GameUi.enemiesKilled++;
-
-                    if(random.nextBoolean()) {
-                        bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemy);
-                    }
-
-                    removeEnemy(i, true);
-
-                    if(sound) {
-                        explosion.play(MenuScreen.SoundVolume/100);
-                    }
-
-                }
-
-                for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
-                    if (enemy.overlaps(Bullet.bullets.get(i2))) {
-
-                        GameUi.Score = (int)(GameUi.Score + 30 + enemy.x / 20);
-
-                        healths.set(i, healths.get(i) - Bullet.damages.get(i2));
-
-                        Bullet.removeBullet(i2, true);
-
-                        if(healths.get(i) <= 0) {
-
-                            if(random.nextBoolean()) {
-                                bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemy);
-                            }
-
-                            removeEnemy(i, true);
-
-                            GameUi.enemiesKilled++;
-
-                            if (sound){
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-                        }
-                    }
-                }
-
-                for (int i3 = 0; i3 < Meteorite.meteorites.size; i3++) {
-                    if (Meteorite.meteorites.get(i3).overlaps(enemy)) {
-
-                        if(Meteorite.healths.get(i3) > healths.get(i)){
-                            Meteorite.healths.set(i3, Meteorite.healths.get(i3) - healths.get(i));
-                            removeEnemy(i, true);
-
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-
-                        }else if(Meteorite.healths.get(i3) < healths.get(i)){
-                            healths.set(i, healths.get(i) - Meteorite.healths.get(i3));
-                            Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-
-                        }else{
-                            removeEnemy(i, true);
-                            Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-                        }
-                    }
-                }
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
@@ -217,6 +127,36 @@ public class SniperEnemy {
             if(explosions.get(i3).isComplete()){
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
+            }
+        }
+        for(int i4 = 0; i4 < enemies.size; i4++){
+            if(explosionQueue.get(i4)) {
+                ParticleEffect explosionEffect = new ParticleEffect();
+                explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
+                explosionEffect.setPosition(enemies.get(i4).x + enemies.get(i4).width / 2, enemies.get(i4).y + enemies.get(i4).height / 2);
+                explosionEffect.start();
+                if(random.nextBoolean()) {
+                    bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, enemies.get(i4));
+                }
+                explosions.add(explosionEffect);
+                explosionQueue.removeIndex(i4);
+                enemies.removeIndex(i4);
+                healths.removeIndex(i4);
+                scales.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Enemy.removeIndex(i4);
+                if(sound) {
+                    explosion.play(MenuScreen.SoundVolume/100);
+                }
+            }else if (remove_Enemy.get(i4)){
+                explosionQueue.removeIndex(i4);
+                enemies.removeIndex(i4);
+                healths.removeIndex(i4);
+                scales.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Enemy.removeIndex(i4);
             }
         }
     }
@@ -232,27 +172,21 @@ public class SniperEnemy {
             fires.get(i3).dispose();
             fires.removeIndex(i3);
         }
-        for(int i3 = 0; i3 < enemies.size; i3 ++){
-            enemies.removeIndex(i3);
-            scales.removeIndex(i3);
-            healths.removeIndex(i3);
-        }
-        bonus.dispose();
+        enemies.clear();
+        scales.clear();
+        healths.clear();
+        explosionQueue.clear();
+        remove_Enemy.clear();
     }
 
     public static void removeEnemy(int i, boolean explode){
         if(explode){
-            ParticleEffect explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-            explosionEffect.setPosition(enemies.get(i).x + enemies.get(i).width/2, enemies.get(i).y + enemies.get(i).height/2);
-            explosionEffect.start();
-            explosions.add(explosionEffect);
+            explosionQueue.set(i, true);
+            remove_Enemy.set(i, true);
+        }else{
+            explosionQueue.set(i, false);
+            remove_Enemy.set(i, true);
         }
-        enemies.removeIndex(i);
-        healths.removeIndex(i);
-        fires.get(i).dispose();
-        fires.removeIndex(i);
-        scales.removeIndex(i);
     }
 
     public void shoot(int i){

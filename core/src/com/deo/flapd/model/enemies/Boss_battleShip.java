@@ -2,6 +2,7 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +21,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.view.GameUi;
+import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
@@ -70,7 +72,7 @@ public class Boss_battleShip {
 
     private Random random;
 
-    private boolean animation, animation2, animation3;
+    private boolean animation2, animation3;
 
     private float offset, millis2;
 
@@ -79,6 +81,10 @@ public class Boss_battleShip {
     private float posX, posY, posX_original, posY_original;
 
     private Polygon shipBounds, bounds_body, bounds_cannon, bounds_cannon2, bounds_cannon3, bounds_cannon4, bounds_cannon5, bounds_cannon6, bounds_cannon_front, bounds_cannon_front_big, bounds_homing1, bounds_homing2;
+
+    private Sound shot, shot2, shot3, shot4, explosion;
+
+    private boolean sound;
 
     public Boss_battleShip(AssetManager assetManager, float posX, float posY, Polygon shipBounds){
 
@@ -136,7 +142,6 @@ public class Boss_battleShip {
         bullet4.setOrigin(26, 6);
 
         is_spawned = false;
-        animation = true;
         animation2 = false;
         animation3 = false;
         stage2 = false;
@@ -267,11 +272,17 @@ public class Boss_battleShip {
         health_cannon_front.setAnimateDuration(0.25f);
         health_cannon_homing.setAnimateDuration(0.25f);
         health_cannon_stage2.setAnimateDuration(0.25f);
+
+        sound = MenuScreen.Sound;
+        shot = Gdx.audio.newSound(Gdx.files.internal("music/gun1.ogg"));
+        shot2 = Gdx.audio.newSound(Gdx.files.internal("music/gun2.ogg"));
+        shot3 = Gdx.audio.newSound(Gdx.files.internal("music/gun3.ogg"));
+        shot4 = Gdx.audio.newSound(Gdx.files.internal("music/gun4.ogg"));
+        explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
     }
 
     public void Spawn(){
         is_spawned = true;
-        animation = true;
         animation2 = false;
         animation3 = false;
         stage2 = false;
@@ -378,11 +389,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(8)){
                     explodedCannons.set(8, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(cannon_stage2.getX(), cannon_stage2.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 9);
                     GameUi.Score += 2000;
                 }
                 bounds_cannon_front_big.setPosition(-100, -100);
@@ -407,13 +414,7 @@ public class Boss_battleShip {
                     main.set(main_wrecked);
                     explodedCannons.set(0, true);
                     animation3 = true;
-                    for(int i = 0; i < 5; i++) {
-                        ParticleEffect explosionEffect = new ParticleEffect();
-                        explosionEffect.load(Gdx.files.internal("particles/explosion2.p"), Gdx.files.internal("particles"));
-                        explosionEffect.setPosition(posX+i*100+100, posY+i*10);
-                        explosionEffect.start();
-                        explosions.add(explosionEffect);
-                    }
+                    play_shot_Sound(2, sound, true, 0);
                     GameLogic.bossWave = false;
                     is_spawned = false;
                     stage2 = false;
@@ -443,11 +444,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(1)){
                     explodedCannons.set(1, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon.getX(), bounds_cannon.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 1);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon.setPosition(-100, -100);
@@ -465,11 +462,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(2)){
                     explodedCannons.set(2, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon2.getX(), bounds_cannon2.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 2);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon2.setPosition(-100, -100);
@@ -487,11 +480,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(3)){
                     explodedCannons.set(3, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon3.getX(), bounds_cannon3.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 3);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon3.setPosition(-100, -100);
@@ -509,11 +498,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(4)){
                     explodedCannons.set(4, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon4.getX(), bounds_cannon4.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 4);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon4.setPosition(-100, -100);
@@ -531,11 +516,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(5)){
                     explodedCannons.set(5, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 5);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon5.setPosition(-100, -100);
@@ -553,11 +534,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(6)){
                     explodedCannons.set(6, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 6);
                     GameUi.Score += 1000;
                 }
                 bounds_cannon6.setPosition(-100, -100);
@@ -575,11 +552,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(7)){
                     explodedCannons.set(7, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 7);
                     GameUi.Score += 1500;
                 }
                 bounds_cannon_front.setPosition(-100, -100);
@@ -602,11 +575,7 @@ public class Boss_battleShip {
             }else{
                 if(!explodedCannons.get(9)){
                     explodedCannons.set(9, true);
-                    ParticleEffect explosionEffect = new ParticleEffect();
-                    explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-                    explosionEffect.setPosition(bounds_homing1.getX(), bounds_homing1.getY());
-                    explosionEffect.start();
-                    explosions.add(explosionEffect);
+                    play_shot_Sound(1, sound, true, 8);
                     GameUi.Score += 1500;
                 }
                 bounds_homing1.setPosition(-100, -100);
@@ -615,11 +584,8 @@ public class Boss_battleShip {
 
             if(!is_paused){
 
-                if(animation){
+                if(posX>245){
                     posX--;
-                    if(posX<245){
-                        animation = false;
-                    }
                 }
 
                 if(animation2){
@@ -909,6 +875,8 @@ public class Boss_battleShip {
                         bullet.y -= MathUtils.sinDeg(bounds_cannon.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon.getRotation());
+
+                        play_shot_Sound(2, sound, false, 0);
                     }
                     break;
                 case(2):
@@ -920,6 +888,8 @@ public class Boss_battleShip {
                         bullet.y -= MathUtils.sinDeg(bounds_cannon2.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon2.getRotation());
+
+                        play_shot_Sound(2, sound, false, 0);
                     }
                     break;
                 case(3):
@@ -931,6 +901,8 @@ public class Boss_battleShip {
                         bullet.y -= MathUtils.sinDeg(bounds_cannon3.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon3.getRotation());
+
+                        play_shot_Sound(2, sound, false, 0);
                     }
                     break;
                 case(4):
@@ -942,6 +914,8 @@ public class Boss_battleShip {
                         bullet.y -= MathUtils.sinDeg(bounds_cannon4.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon4.getRotation());
+
+                        play_shot_Sound(2, sound, false, 0);
                     }
                     break;
                 case(5):
@@ -953,6 +927,8 @@ public class Boss_battleShip {
                         bullet.y -= MathUtils.sinDeg(bounds_cannon5.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon5.getRotation());
+
+                        play_shot_Sound(2, sound, false, 0);
                     }
                     break;
                 case(6):
@@ -964,6 +940,8 @@ public class Boss_battleShip {
                         bullet.y -= MathUtils.sinDeg(bounds_cannon6.getRotation()) * 1100 * Gdx.graphics.getDeltaTime();
                         bullets_blue.add(bullet);
                         degrees_blue.add(bounds_cannon6.getRotation());
+
+                        play_shot_Sound(2, sound, false, 0);
                     }
                     break;
                 case(7): if(healths.get(8)>0) {
@@ -974,6 +952,8 @@ public class Boss_battleShip {
                     bullet.y -= MathUtils.sinDeg(bounds_cannon_front.getRotation()) * 1300 * Gdx.graphics.getDeltaTime();
                     bullets_red.add(bullet);
                     degrees_red.add(bounds_cannon_front.getRotation());
+
+                    play_shot_Sound(1, sound, false, 0);
                 }
                     break;
                 case(8): if(healths.get(9)>0 && stage2) {
@@ -991,6 +971,8 @@ public class Boss_battleShip {
                     fire.start();
 
                     fires.add(fire);
+
+                    play_shot_Sound(4, sound, false, 0);
                 }
                     break;
                 case(9): if(healths.get(10)>0) {
@@ -1001,6 +983,8 @@ public class Boss_battleShip {
                     bullet.y -= MathUtils.sinDeg(bounds_homing2.getRotation()) * 2100 * Gdx.graphics.getDeltaTime();
                     bullets_red_long.add(bullet);
                     degrees_red_long.add(bounds_homing2.getRotation());
+
+                    play_shot_Sound(3, sound, false, 0);
                 }
                     break;
             }
@@ -1048,6 +1032,12 @@ public class Boss_battleShip {
         degrees_red_long.clear();
         explodedCannons.clear();
 
+        shot.dispose();
+        shot2.dispose();
+        shot3.dispose();
+        shot4.dispose();
+        explosion.dispose();
+
         for(int i3 = 0; i3 < fires.size; i3 ++){
             fires.get(i3).dispose();
             fires.removeIndex(i3);
@@ -1058,5 +1048,78 @@ public class Boss_battleShip {
             explosions.removeIndex(i3);
         }
 
+    }
+
+    private void play_shot_Sound(int shotType, boolean sound, boolean explosion, int cannon) {
+        if (posX<645) {
+            if (!explosion) {
+                if (sound) {
+                    switch (shotType) {
+                        case (1):
+                            shot.play(MenuScreen.SoundVolume/100);
+                            break;
+                        case (2):
+                            shot2.play(MenuScreen.SoundVolume/100);
+                            break;
+                        case (3):
+                            shot3.play(MenuScreen.SoundVolume/100);
+                            break;
+                        case (4):
+                            shot4.play(MenuScreen.SoundVolume/100);
+                            break;
+                    }
+                }
+            } else {
+                if (sound) {
+                    this.explosion.play(MenuScreen.SoundVolume/100);
+                }
+                switch (shotType) {
+                    case (1):
+                        ParticleEffect explosionEffect = new ParticleEffect();
+                        explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
+                        switch (cannon) {
+                            case (1):
+                                explosionEffect.setPosition(bounds_cannon.getX(), bounds_cannon.getY());
+                                break;
+                            case (2):
+                                explosionEffect.setPosition(bounds_cannon2.getX(), bounds_cannon2.getY());
+                                break;
+                            case (3):
+                                explosionEffect.setPosition(bounds_cannon3.getX(), bounds_cannon3.getY());
+                                break;
+                            case (4):
+                                explosionEffect.setPosition(bounds_cannon4.getX(), bounds_cannon4.getY());
+                                break;
+                            case (5):
+                                explosionEffect.setPosition(bounds_cannon5.getX(), bounds_cannon5.getY());
+                                break;
+                            case (6):
+                                explosionEffect.setPosition(bounds_cannon6.getX(), bounds_cannon6.getY());
+                                break;
+                            case (7):
+                                explosionEffect.setPosition(bounds_cannon_front.getX(), bounds_cannon_front.getY());
+                                break;
+                            case (8):
+                                explosionEffect.setPosition(bounds_homing1.getX(), bounds_homing1.getY());
+                                break;
+                            case (9):
+                                explosionEffect.setPosition(bounds_cannon_front_big.getX(), bounds_cannon_front_big.getY());
+                                break;
+                        }
+                        explosionEffect.start();
+                        explosions.add(explosionEffect);
+                        break;
+                    case (2):
+                        for (int i = 0; i < 5; i++) {
+                            ParticleEffect explosionEffect2 = new ParticleEffect();
+                            explosionEffect2.load(Gdx.files.internal("particles/explosion2.p"), Gdx.files.internal("particles"));
+                            explosionEffect2.setPosition(posX + i * 100 + 100, posY + i * 10);
+                            explosionEffect2.start();
+                            explosions.add(explosionEffect2);
+                        }
+                        break;
+                }
+            }
+        }
     }
 }

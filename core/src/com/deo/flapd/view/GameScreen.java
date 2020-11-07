@@ -23,6 +23,9 @@ import com.deo.flapd.model.enemies.Kamikadze;
 import com.deo.flapd.model.enemies.ShotgunEnemy;
 import com.deo.flapd.model.enemies.SniperEnemy;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 public class GameScreen implements Screen{
 
     private Texture bg1;
@@ -67,6 +70,8 @@ public class GameScreen implements Screen{
 
     private Bonus bonus;
 
+    private Executor executor;
+
     public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, boolean newGame){
 
         this.game = game;
@@ -74,6 +79,8 @@ public class GameScreen implements Screen{
         this.batch = batch;
 
         this.assetManager = assetManager;
+
+        executor = Executors.newSingleThreadExecutor();
 
         assetManager.load("bg_layer1.png", Texture.class);
         assetManager.load("bg_layer2.png", Texture.class);
@@ -142,10 +149,10 @@ public class GameScreen implements Screen{
 
         bullet = new Bullet(pew,0.4f, ship.getBounds());
 
-        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10, ship.getBounds());
+        enemy = new BasicEnemy(assetManager,104, 74, 32, 32, 0, 0, 0.4f, 100, 10);
         enemy_sniper = new SniperEnemy(assetManager,336, 188, 100, 12, 20, 14, 0, 270, 94, ship.getBounds(), bonus);
-        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, ship.getBounds(), bonus);
-        kamikadze = new Kamikadze(assetManager,348, 192,310, 100, ship.getBounds(), bonus);
+        enemy_shotgun = new ShotgunEnemy(assetManager,388, 144, 16, 16, 3, 17, 1.2f, 371, 80, bonus);
+        kamikadze = new Kamikadze(assetManager,348, 192, ship.getBounds(), bonus);
 
         meteorite = new Meteorite(assetManager, ship.getBounds(), bonus);
 
@@ -181,25 +188,31 @@ public class GameScreen implements Screen{
 
             if(!is_paused && !ship.isExploded()) {
                 gameLogic.handleInput(gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing(), bullet, enemy, enemy_shotgun, enemy_sniper, meteorite, kamikadze, boss_battleShip);
+                executor.execute(new Runnable(){
+                    @Override
+                    public void run(){
+                        gameLogic.detectCollisions(is_paused);
+                    }
+                });
             }
 
-           try {
+           //try {
 
-                enemy.draw(batch, is_paused);
-                enemy_sniper.draw(batch, is_paused);
-                enemy_shotgun.draw(batch, is_paused);
-                kamikadze.draw(batch, is_paused);
-                boss_battleShip.draw(batch, is_paused);
+            enemy.draw(batch, is_paused);
+            enemy_sniper.draw(batch, is_paused);
+            enemy_shotgun.draw(batch, is_paused);
+            kamikadze.draw(batch, is_paused);
+            boss_battleShip.draw(batch, is_paused);
 
             bullet.draw(batch, is_paused);
             meteorite.draw(batch, is_paused);
 
             bonus.draw(batch, is_paused);
 
-            }catch (Exception e){
-                prefs.putString("lastError", e.getLocalizedMessage());
-                prefs.flush();
-            }
+            //}catch (Exception e){
+                //prefs.putString("lastError", e.getLocalizedMessage());
+                //prefs.flush();
+            //}
 
             ship.DrawShield(is_paused);
 
@@ -305,5 +318,7 @@ public class GameScreen implements Screen{
     boss_battleShip.dispose();
 
     music.dispose();
+
+    bonus.dispose();
     }
 }

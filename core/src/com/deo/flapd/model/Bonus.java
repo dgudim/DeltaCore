@@ -85,20 +85,6 @@ public class Bonus {
             anglesY.add(random.nextFloat()*2-1);
     }
 
-    public void Spawn(int type, float scale, Circle enemy) {
-
-        Rectangle bonus = new Rectangle();
-
-        bonus.x = enemy.x+enemy.radius-width/2;
-        bonus.y = enemy.y+enemy.radius-height/2;
-
-        bonus.setSize(width*scale, height*scale);
-
-        bonuses.add(bonus);
-        types.add(type);
-        anglesY.add(random.nextFloat()*2-1);
-    }
-
     public void draw(SpriteBatch batch, boolean is_paused) {
 
         for (int i = 0; i < bonuses.size; i ++) {
@@ -205,11 +191,9 @@ public class Bonus {
     }
 
     public void dispose(){
-        for (int i = 0; i < bonuses.size; i ++) {
-            bonuses.removeIndex(i);
-            types.removeIndex(i);
-            anglesY.removeIndex(i);
-        }
+        bonuses.clear();
+        types.clear();
+        anglesY.clear();
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);

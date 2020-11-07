@@ -38,16 +38,16 @@ public class Kamikadze {
 
     private boolean sound;
 
-    private float width, height, fire_x, fire_y;
+    private float width, height;
 
     private Bonus bonus;
 
-    public Kamikadze(AssetManager assetManager, float width, float height, float fire_offset_x, float fire_offset_y, Polygon shipBounds, Bonus bonus) {
+    private static Array<Boolean> explosionQueue, remove_Enemy;
+
+    public Kamikadze(AssetManager assetManager, float width, float height, Polygon shipBounds, Bonus bonus) {
         bounds = shipBounds;
         this.height = height;
         this.width = width;
-        this.fire_x = fire_offset_x;
-        this.fire_y = fire_offset_y;
         enemy = new Sprite((Texture)assetManager.get("atomic_bomb.png"));
         enemies = new Array<>();
         healths = new Array<>();
@@ -57,6 +57,8 @@ public class Kamikadze {
 
         explosions = new Array<>();
         fires = new Array<>();
+        explosionQueue = new Array<>();
+        remove_Enemy = new Array<>();
 
         sound = MenuScreen.Sound;
         explosion = Gdx.audio.newSound(Gdx.files.internal("music/explosion.ogg"));
@@ -84,6 +86,8 @@ public class Kamikadze {
             fire.start();
 
             fires.add(fire);
+            explosionQueue.add(false);
+            remove_Enemy.add(false);
 
             millis = 0;
             GameUi.enemiesSpawned++;
@@ -134,94 +138,8 @@ public class Kamikadze {
             if (!is_paused) {
                 enemy.x = pos1.x;
                 enemy.y = pos1.y;
-
-                if(enemy.overlaps(bounds.getBoundingRectangle())){
-
-                    if (GameUi.Shield >= healths.get(i)) {
-                        GameUi.Shield -= healths.get(i);
-                        SpaceShip.set_color(1, 0, 1, true);
-                    } else {
-                        GameUi.Health = GameUi.Health - (healths.get(i) - GameUi.Shield) / 5;
-                        GameUi.Shield = 0;
-                        SpaceShip.set_color(1, 0, 1, false);
-                    }
-
-                    GameUi.Score = (int)(GameUi.Score + healths.get(i)/2);
-
-                    GameUi.enemiesKilled++;
-
-                    if(random.nextBoolean()) {
-                        bonus.Spawn((int) (random.nextFloat() + 0.4) + 3, 1, enemy);
-                    }
-
-                    removeEnemy(i, true);
-
-                    if(sound) {
-                        explosion.play(MenuScreen.SoundVolume/100);
-                    }
-
-                }
-
-                for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
-                    if (enemy.overlaps(Bullet.bullets.get(i2))) {
-
-                        GameUi.Score = (int)(GameUi.Score + 30 + enemy.x / 20);
-
-                        healths.set(i, healths.get(i) - Bullet.damages.get(i2));
-
-                        Bullet.removeBullet(i2, true);
-
-                        if(healths.get(i) <= 0) {
-
-                            if(random.nextBoolean()) {
-                                bonus.Spawn((int) (random.nextFloat() + 0.4) + 3, 1, enemy);
-                            }
-
-                            removeEnemy(i, true);
-
-                            GameUi.enemiesKilled++;
-
-                            if (sound){
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-                        }
-                    }
-                }
-
-                for (int i3 = 0; i3 < Meteorite.meteorites.size; i3++) {
-                    if (Meteorite.meteorites.get(i3).overlaps(enemy)) {
-
-                        if(Meteorite.healths.get(i3) > healths.get(i)){
-                            Meteorite.healths.set(i3, Meteorite.healths.get(i3) - healths.get(i));
-                            removeEnemy(i, true);
-
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-
-                        }else if(Meteorite.healths.get(i3) < healths.get(i)){
-                            healths.set(i, healths.get(i) - Meteorite.healths.get(i3));
-                            Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-
-                        }else{
-                            removeEnemy(i, true);
-                            Meteorite.removeMeteorite(i3, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-                        }
-                    }
-                }
             }
+
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
@@ -235,6 +153,40 @@ public class Kamikadze {
                 explosions.removeIndex(i3);
             }
         }
+
+        for(int i4 = 0; i4 < enemies.size; i4++){
+            if(explosionQueue.get(i4)) {
+                ParticleEffect explosionEffect = new ParticleEffect();
+                explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
+                explosionEffect.setPosition(enemies.get(i4).x + enemies.get(i4).width / 2, enemies.get(i4).y + enemies.get(i4).height / 2);
+                explosionEffect.start();
+                if (random.nextBoolean()) {
+                    bonus.Spawn((int) (random.nextFloat() + 0.4) + 3, 1, enemies.get(i4));
+                }
+                explosions.add(explosionEffect);
+                explosionQueue.removeIndex(i4);
+                enemies.removeIndex(i4);
+                healths.removeIndex(i4);
+                timers.removeIndex(i4);
+                timers2.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Enemy.removeIndex(i4);
+                if(sound) {
+                    explosion.play(MenuScreen.SoundVolume/100);
+                }
+            }else if (remove_Enemy.get(i4)){
+                explosionQueue.removeIndex(i4);
+                enemies.removeIndex(i4);
+                healths.removeIndex(i4);
+                timers.removeIndex(i4);
+                timers2.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Enemy.removeIndex(i4);
+            }
+        }
+
     }
 
     public void dispose(){
@@ -247,28 +199,21 @@ public class Kamikadze {
             fires.get(i3).dispose();
             fires.removeIndex(i3);
         }
-        for(int i3 = 0; i3 < enemies.size; i3 ++){
-            enemies.removeIndex(i3);
-            timers.removeIndex(i3);
-            timers2.removeIndex(i3);
-            healths.removeIndex(i3);
-        }
-        bonus.dispose();
+        enemies.clear();
+        timers.clear();
+        timers2.clear();
+        healths.clear();
+        explosionQueue.clear();
+        remove_Enemy.clear();
     }
 
     public static void removeEnemy(int i, boolean explode){
         if(explode){
-            ParticleEffect explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-            explosionEffect.setPosition(enemies.get(i).x + enemies.get(i).width/2, enemies.get(i).y + enemies.get(i).height/2);
-            explosionEffect.start();
-            explosions.add(explosionEffect);
+            explosionQueue.set(i, true);
+            remove_Enemy.set(i, true);
+        }else{
+            explosionQueue.set(i, false);
+            remove_Enemy.set(i, true);
         }
-        enemies.removeIndex(i);
-        healths.removeIndex(i);
-        fires.get(i).dispose();
-        fires.removeIndex(i);
-        timers.removeIndex(i);
-        timers2.removeIndex(i);
     }
 }

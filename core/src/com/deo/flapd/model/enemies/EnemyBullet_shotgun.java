@@ -10,18 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.model.Bullet;
-import com.deo.flapd.model.Meteorite;
-import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.view.GameScreen;
-import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
 public class EnemyBullet_shotgun {
 
-    private Polygon bounds;
     public static Array<Rectangle> bullets;
     public static Array<Float> damages;
     private static Array <ParticleEffect> fires;
@@ -38,8 +33,9 @@ public class EnemyBullet_shotgun {
 
     private float Boffset_x, Boffset_y, width, height, spread;
 
-    public EnemyBullet_shotgun(AssetManager assetManager, Polygon shipBounds, float width, float height, float Boffset_x, float Boffset_y, float Bspread) {
-        bounds = shipBounds;
+    private static Array<Boolean> explosionQueue, remove_Bullet;
+
+    public EnemyBullet_shotgun(AssetManager assetManager, float width, float height, float Boffset_x, float Boffset_y, float Bspread) {
         this.Boffset_x = Boffset_x;
         this.Boffset_y = Boffset_y;
         this.width = width;
@@ -51,6 +47,8 @@ public class EnemyBullet_shotgun {
         damages = new Array<>();
         degrees = new Array<>();
         explosions = new Array<>();
+        explosionQueue = new Array<>();
+        remove_Bullet = new Array<>();
 
         fires = new Array<>();
 
@@ -75,6 +73,8 @@ public class EnemyBullet_shotgun {
                 bullets.add(bullet);
                 damages.add(damage);
                 degrees.add((random.nextFloat() - 0.5f) * spread);
+                explosionQueue.add(false);
+                remove_Bullet.add(false);
 
                 ParticleEffect fire = new ParticleEffect();
                 fire.load(Gdx.files.internal("particles/bullet_trail_left.p"), Gdx.files.internal("particles"));
@@ -116,49 +116,6 @@ public class EnemyBullet_shotgun {
             if (!is_paused){
                 bullet.x -= 300 * Gdx.graphics.getDeltaTime();
                 bullet.y -= 70 * angle * Gdx.graphics.getDeltaTime();
-
-                if(bullet.x < -32){
-                    removeBullet(i, false);
-                }
-
-                if(bullet.overlaps(bounds.getBoundingRectangle())){
-                    if (GameUi.Shield >= damages.get(i)) {
-                        GameUi.Shield -= damages.get(i);
-                        SpaceShip.set_color(1, 0, 1, true);
-                    } else {
-                        GameUi.Health = GameUi.Health - (damages.get(i) - GameUi.Shield) / 5;
-                        GameUi.Shield = 0;
-                        SpaceShip.set_color(1, 0, 0, false);
-                    }
-                    removeBullet(i, true);
-                }
-
-                for (int i2 = 0; i2 < Meteorite.meteorites.size; i2++) {
-                    if (Meteorite.meteorites.get(i2).overlaps(bullet)) {
-
-                        Meteorite.healths.set(i2, Meteorite.healths.get(i2) - damages.get(i));
-
-                        removeBullet(i, true);
-
-                        if(Meteorite.healths.get(i2) <= 0) {
-                            Meteorite.removeMeteorite(i2, true);
-                            if(sound) {
-                                explosion.play(MenuScreen.SoundVolume/100);
-                            }
-
-                        }
-                    }
-                }
-                for (int i2 = 0; i2 < Bullet.bullets.size; i2 ++) {
-
-                    if (bullet.overlaps(Bullet.bullets.get(i2))) {
-                        removeBullet(i, true);
-                        Bullet.removeBullet(i2, true);
-                        GameUi.Score += 20;
-                    }
-
-                }
-
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
@@ -173,6 +130,30 @@ public class EnemyBullet_shotgun {
                 explosions.removeIndex(i3);
             }
         }
+        for(int i4 = 0; i4 < bullets.size; i4++){
+            if(explosionQueue.get(i4)) {
+                ParticleEffect explosionEffect = new ParticleEffect();
+                explosionEffect.load(Gdx.files.internal("particles/explosion3.p"), Gdx.files.internal("particles"));
+                explosionEffect.setPosition(bullets.get(i4).x + bullets.get(i4).width / 2, bullets.get(i4).y + bullets.get(i4).height / 2);
+                explosionEffect.start();
+                explosions.add(explosionEffect);
+                explosionQueue.removeIndex(i4);
+                bullets.removeIndex(i4);
+                degrees.removeIndex(i4);
+                damages.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Bullet.removeIndex(i4);
+            }else if (remove_Bullet.get(i4)){
+                explosionQueue.removeIndex(i4);
+                bullets.removeIndex(i4);
+                degrees.removeIndex(i4);
+                damages.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Bullet.removeIndex(i4);
+            }
+        }
     }
 
     public void dispose(){
@@ -182,30 +163,25 @@ public class EnemyBullet_shotgun {
             fires.get(i3).dispose();
             fires.removeIndex(i3);
         }
-        for(int i4 = 0; i4 < bullets.size; i4 ++){
-            bullets.removeIndex(i4);
-            damages.removeIndex(i4);
-            degrees.removeIndex(i4);
-        }
+        bullets.clear();
+        damages.clear();
+        degrees.clear();
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
+        explosionQueue.clear();
+        remove_Bullet.clear();
     }
 
     public static void removeBullet(int i, boolean explode){
         if(explode){
-            ParticleEffect explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal("particles/explosion3.p"), Gdx.files.internal("particles"));
-            explosionEffect.setPosition(bullets.get(i).x, bullets.get(i).y + bullets.get(i).height/2);
-            explosionEffect.start();
-            explosions.add(explosionEffect);
+            explosionQueue.set(i, true);
+            remove_Bullet.set(i, true);
+        }else{
+            explosionQueue.set(i, false);
+            remove_Bullet.set(i, true);
         }
-        bullets.removeIndex(i);
-        damages.removeIndex(i);
-        degrees.removeIndex(i);
-        fires.get(i).dispose();
-        fires.removeIndex(i);
     }
 
 }

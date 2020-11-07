@@ -10,15 +10,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.model.enemies.Boss_battleShip;
-import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
 
 public class Meteorite {
 
-    private Polygon bounds;
     public static Array<Rectangle> meteorites;
     public static Array<Float> radiuses;
     public static Array<Float> degrees;
@@ -36,8 +33,9 @@ public class Meteorite {
     private Bonus bonus;
     private Random random;
 
+    private static Array<Boolean> explosionQueue, remove_Meteorite;
+
     public Meteorite(AssetManager assetManager, Polygon shipBounds, Bonus bonus) {
-        bounds = shipBounds;
         meteorite = new Sprite((Texture)assetManager.get("Meteo.png"));
         meteorites = new Array<>();
         radiuses = new Array<>();
@@ -46,6 +44,8 @@ public class Meteorite {
 
         explosions = new Array<>();
         fires = new Array<>();
+        explosionQueue = new Array<>();
+        remove_Meteorite = new Array<>();
 
         meteoritesDestroyed = 0;
         random = new Random();
@@ -71,6 +71,8 @@ public class Meteorite {
             fire.start();
 
             fires.add(fire);
+            explosionQueue.add(false);
+            remove_Meteorite.add(false);
     }
 
     public void draw(SpriteBatch batch, boolean is_paused) {
@@ -97,70 +99,8 @@ public class Meteorite {
                 meteorite.x += 130 * degrees.get(i) * Gdx.graphics.getDeltaTime();
                 meteorite.y -= 130 * Gdx.graphics.getDeltaTime();
                 this.meteorite.setRotation(this.meteorite.getRotation() + 1.5f / meteorites.size);
-
-            if (meteorite.y < -radiuses.get(i) * 4 || meteorite.x > 1000 || meteorite.x < 0 - radiuses.get(i) * 4) {
-                removeMeteorite(i, false);
             }
 
-            if (meteorite.overlaps(bounds.getBoundingRectangle())) {
-
-                if (GameUi.Shield >= healths.get(i)) {
-                    GameUi.Shield -= healths.get(i);
-                    SpaceShip.set_color(1, 0, 1, true);
-                } else {
-                    GameUi.Health = GameUi.Health - (healths.get(i) - GameUi.Shield) / 5;
-                    GameUi.Shield = 0;
-                    SpaceShip.set_color(1, 0, 1, false);
-                }
-
-                GameUi.Score = (int)(GameUi.Score + radiuses.get(i) / 2);
-
-                if(random.nextBoolean()) {
-                    bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, meteorite);
-                    if(random.nextBoolean()) {
-                        bonus.Spawn(5, 1, meteorite);
-                    }
-                }
-
-                removeMeteorite(i, true);
-
-                meteoritesDestroyed++;
-
-                if(sound) {
-                    explosion.play(MenuScreen.SoundVolume/100);
-                }
-
-            }
-
-            for (int i2 = 0; i2 < Bullet.bullets.size; i2++) {
-                if (meteorite.overlaps(Bullet.bullets.get(i2))) {
-
-                    GameUi.Score = (int) (GameUi.Score + radiuses.get(i) / 2);
-
-                    healths.set(i, healths.get(i) - Bullet.damages.get(i2));
-
-                    Bullet.removeBullet(i2, true);
-
-                    if(healths.get(i) <= 0) {
-
-                        if(random.nextBoolean()) {
-                            bonus.Spawn((int) (random.nextFloat() + 0.4) + 1, 1, meteorite);
-                            if(random.nextBoolean()) {
-                                bonus.Spawn(5, 1, meteorite);
-                            }
-                        }
-
-                        removeMeteorite(i, true);
-
-                        meteoritesDestroyed++;
-
-                        if(sound) {
-                            explosion.play(MenuScreen.SoundVolume/100);
-                        }
-                        }
-                    }
-                }
-            }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).draw(batch);
@@ -172,6 +112,41 @@ public class Meteorite {
             if(explosions.get(i3).isComplete()){
                 explosions.get(i3).dispose();
                 explosions.removeIndex(i3);
+            }
+        }
+        for(int i4 = 0; i4 < meteorites.size; i4++){
+            if(explosionQueue.get(i4)) {
+                ParticleEffect explosionEffect = new ParticleEffect();
+                explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
+                explosionEffect.setPosition(meteorites.get(i4).x + meteorites.get(i4).width / 2, meteorites.get(i4).y + meteorites.get(i4).height / 2);
+                explosionEffect.start();
+                if(random.nextBoolean()) {
+                    bonus.Spawn((int) (random.nextFloat() + 0.4) + 2, 1, meteorites.get(i4));
+                    if(random.nextBoolean()) {
+                        bonus.Spawn(5, 1, meteorites.get(i4));
+                    }
+                }
+                explosions.add(explosionEffect);
+                explosionQueue.removeIndex(i4);
+                meteorites.removeIndex(i4);
+                healths.removeIndex(i4);
+                radiuses.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                remove_Meteorite.removeIndex(i4);
+                degrees.removeIndex(i4);
+                if(sound) {
+                    explosion.play(MenuScreen.SoundVolume/100);
+                }
+            }else if (remove_Meteorite.get(i4)){
+                explosionQueue.removeIndex(i4);
+                meteorites.removeIndex(i4);
+                healths.removeIndex(i4);
+                radiuses.removeIndex(i4);
+                fires.get(i4).dispose();
+                fires.removeIndex(i4);
+                degrees.removeIndex(i4);
+                remove_Meteorite.removeIndex(i4);
             }
         }
 
@@ -187,29 +162,22 @@ public class Meteorite {
             fires.get(i2).dispose();
             fires.removeIndex(i2);
         }
-        for(int i3 = 0; i3 < meteorites.size; i3 ++){
-            meteorites.removeIndex(i3);
-            degrees.removeIndex(i3);
-            healths.removeIndex(i3);
-            radiuses.removeIndex(i3);
-        }
-        bonus.dispose();
+        meteorites.clear();
+        degrees.clear();
+        healths.clear();
+        radiuses.clear();
+        explosionQueue.clear();
+        remove_Meteorite.clear();
     }
 
     public static void removeMeteorite(int i, boolean explode){
         if(explode){
-            ParticleEffect explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal("particles/explosion.p"), Gdx.files.internal("particles"));
-            explosionEffect.setPosition(meteorites.get(i).x + meteorites.get(i).width/2, meteorites.get(i).y + meteorites.get(i).height/2);
-            explosionEffect.start();
-            explosions.add(explosionEffect);
+            explosionQueue.set(i, true);
+            remove_Meteorite.set(i, true);
+        }else{
+            explosionQueue.set(i, false);
+            remove_Meteorite.set(i, true);
         }
-        meteorites.removeIndex(i);
-        degrees.removeIndex(i);
-        radiuses.removeIndex(i);
-        healths.removeIndex(i);
-        fires.get(i).dispose();
-        fires.removeIndex(i);
     }
 
 }

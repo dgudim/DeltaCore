@@ -10,8 +10,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.model.enemies.EnemyBullet;
-import com.deo.flapd.view.GameUi;
 import com.deo.flapd.view.MenuScreen;
 
 import java.util.Random;
@@ -35,6 +33,8 @@ public class Bullet {
 
     private float spread;
 
+    private static Array<Boolean> explosionQueue, remove_Bullet;
+
     public Bullet(Texture bulletTexture, float spread, Polygon shipBounds) {
         bounds = shipBounds;
         this.spread = spread;
@@ -46,6 +46,8 @@ public class Bullet {
         damages = new Array<>();
         degrees = new Array<>();
         explosions = new Array<>();
+        explosionQueue = new Array<>();
+        remove_Bullet = new Array<>();
 
         bulletsShot = 0;
 
@@ -64,6 +66,8 @@ public class Bullet {
 
             bullets.add(bullet);
             damages.add(damage);
+            explosionQueue.add(false);
+            remove_Bullet.add(false);
 
             degrees.add((random.nextFloat()-0.5f)*spread+bounds.getRotation()/20);
 
@@ -91,10 +95,6 @@ public class Bullet {
             if (!is_paused){
                 bullet.x += 1500 * Gdx.graphics.getDeltaTime();
                 bullet.y += 300 * angle * Gdx.graphics.getDeltaTime();
-
-                if(bullet.x > 800){
-                    removeBullet(i, false);
-                }
             }
         }
         for(int i3 = 0; i3 < explosions.size; i3 ++){
@@ -109,32 +109,49 @@ public class Bullet {
                 explosions.removeIndex(i3);
             }
         }
+        for(int i4 = 0; i4 < bullets.size; i4++){
+            if(explosionQueue.get(i4)) {
+                ParticleEffect explosionEffect = new ParticleEffect();
+                explosionEffect.load(Gdx.files.internal("particles/explosion3_2.p"), Gdx.files.internal("particles"));
+                explosionEffect.setPosition(bullets.get(i4).x + bullets.get(i4).width / 2, bullets.get(i4).y + bullets.get(i4).height / 2);
+                explosionEffect.start();
+                explosions.add(explosionEffect);
+                explosionQueue.removeIndex(i4);
+                bullets.removeIndex(i4);
+                degrees.removeIndex(i4);
+                damages.removeIndex(i4);
+                remove_Bullet.removeIndex(i4);
+            }else if (remove_Bullet.get(i4)){
+                explosionQueue.removeIndex(i4);
+                bullets.removeIndex(i4);
+                degrees.removeIndex(i4);
+                damages.removeIndex(i4);
+                remove_Bullet.removeIndex(i4);
+            }
+        }
     }
 
     public void dispose(){
         shot.dispose();
-        for(int i3 = 0; i3 < bullets.size; i3 ++){
-            bullets.removeIndex(i3);
-            damages.removeIndex(i3);
-            degrees.removeIndex(i3);
-        }
+        bullets.clear();
+        damages.clear();
+        degrees.clear();
         for(int i3 = 0; i3 < explosions.size; i3 ++){
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
+        explosionQueue.clear();
+        remove_Bullet.clear();
     }
 
     public static void removeBullet(int i, boolean explode){
         if(explode){
-            ParticleEffect explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal("particles/explosion3_2.p"), Gdx.files.internal("particles"));
-            explosionEffect.setPosition(bullets.get(i).x + bullets.get(i).width, bullets.get(i).y + bullets.get(i).height/2);
-            explosionEffect.start();
-            explosions.add(explosionEffect);
+            explosionQueue.set(i, true);
+            remove_Bullet.set(i, true);
+        }else{
+            explosionQueue.set(i, false);
+            remove_Bullet.set(i, true);
         }
-        bullets.removeIndex(i);
-        damages.removeIndex(i);
-        degrees.removeIndex(i);
     }
 
 }
