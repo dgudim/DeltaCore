@@ -100,7 +100,7 @@ public class GameLogic {
             }
         }
 
-        if (GameUi.Score > -1 && GameUi.Score < 93600 && !bossWave) {
+        if (GameUi.Score > 80000 && GameUi.Score < 93600 && !bossWave) {
             bossWave = true;
             boss_battleShip.Spawn();
         }
