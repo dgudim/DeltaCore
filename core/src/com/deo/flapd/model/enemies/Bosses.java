@@ -36,9 +36,9 @@ public class Bosses {
         }
     }
 
-    public void draw(SpriteBatch batch){
+    public void draw(SpriteBatch batch, float delta){
         for(int i = 0; i<bosses.size; i++){
-            bosses.get(i).draw(batch);
+            bosses.get(i).draw(batch, delta);
         }
     }
 

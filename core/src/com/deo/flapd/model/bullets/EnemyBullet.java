@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorite;
@@ -30,16 +31,32 @@ public class EnemyBullet {
 
     public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship) {
 
-        data = bulletData;
-
-        player = ship;
-        playerBullet = player.bullet;
+        initBullet(bulletData, ship);
 
         bullet = new Sprite((Texture) assetManager.get(bulletData.texture));
         bullet.setPosition(bulletData.x, bulletData.y);
         bullet.setRotation(bulletData.angle);
         bullet.setSize(bulletData.width, bulletData.height);
         bullet.setOrigin(bulletData.width / 2, bulletData.height / 2);
+    }
+
+    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship) {
+
+        initBullet(bulletData, ship);
+
+        bullet = new Sprite(bossAtlas.findRegion(bulletData.texture));
+        bullet.setPosition(bulletData.x, bulletData.y);
+        bullet.setRotation(bulletData.angle);
+        bullet.setSize(bulletData.width, bulletData.height);
+        bullet.setOrigin(bulletData.width / 2, bulletData.height / 2);
+
+    }
+
+    private void initBullet(BulletData bulletData, ShipObject ship){
+        data = bulletData;
+
+        player = ship;
+        playerBullet = player.bullet;
 
         bulletData.explosionParticleEffect = new ParticleEffect();
         bulletData.explosionParticleEffect.load(Gdx.files.internal(bulletData.explosion), Gdx.files.internal("particles"));
@@ -82,7 +99,12 @@ public class EnemyBullet {
                 data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
                 data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
             } else {
-                bullet.setRotation(DUtils.lerpAngleWithConstantSpeed(bullet.getRotation(), MathUtils.radiansToDegrees * MathUtils.atan2(data.y - player.bounds.getY(), data.x - player.bounds.getX()), data.homingSpeed, delta));
+                bullet.setRotation(DUtils.lerpAngleWithConstantSpeed(bullet.getRotation(),
+                        MathUtils.radiansToDegrees * MathUtils.atan2(
+                        data.y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight()/2f),
+                        data.x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth()/2f)),
+                        data.homingSpeed, delta));
+
                 data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * 2 * delta;
                 data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * 2 * delta;
                 data.explosionTimer -= delta;

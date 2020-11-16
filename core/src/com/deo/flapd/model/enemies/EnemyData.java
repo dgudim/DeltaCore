@@ -72,8 +72,6 @@ public class EnemyData {
     boolean onBossWave;
 
     boolean isHoming;
-    float minAngle;
-    float maxAngle;
     float homingSpeed;
     float explosionTimer;
     float idealExplosionTimer;
@@ -99,9 +97,7 @@ public class EnemyData {
     float frameDuration;
 
     public boolean canAim;
-
     public float aimMinAngle;
-
     public float aimMaxAngle;
 
     JsonValue enemyInfo;
@@ -162,8 +158,6 @@ public class EnemyData {
         if (isHoming) {
             explosionTimer = enemyBodyInfo.getFloat("explosionTimer");
             idealExplosionTimer = enemyBodyInfo.getFloat("explosionTimer");
-            minAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[0];
-            maxAngle = enemyBodyInfo.get("rotationLimit").asFloatArray()[1];
             homingSpeed = enemyBodyInfo.get("homingSpeed").asFloat();
         }
 

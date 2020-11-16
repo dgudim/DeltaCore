@@ -2,8 +2,8 @@
   "textures": "bossShip.atlas",
   "spawnAt": [850, 100],
   "spawnConditions": {
-    "score": 70000,
-    "randomness": 5000
+    "score": 0,
+    "randomness": 0
   },
   "parts": {
     "body": {
@@ -16,7 +16,23 @@
       "originY": "standard",
       "texture": "boss",
       "explosionEffect": "particles/explosion2.p",
-      "layer": 1
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 1,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [2, 5],
+          "count": [1, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [3, 7]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 100
+        }
+      }
     },
     "homingCannonBase": {
       "type": "part",
@@ -34,7 +50,23 @@
       "linked": false,
       "texture": "upperCannon_part1",
       "explosionEffect": "particles/explosion.p",
-      "layer": 2
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 2,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 2],
+          "count": [0, 1]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 3]
+        },
+        "bonuses": {
+          "type": [0, 2],
+          "chance": 100
+        }
+      }
     },
     "smallCannon1": {
       "type": "cannon",
@@ -47,13 +79,21 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "bullet": {
-        "preset": "smallBlueBossBullet",
-        "offset": {
-          "X": 0,
-          "Y": 0
-        }
+        "texture": "bullet_blue",
+        "shootSound": "sfx/gun2.ogg",
+        "speed": 180,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left_blue.p",
+        "trailScale": 0.5,
+        "explosionEffect": "particles/explosion3_3.p",
+        "explosionScale": 0.5,
+        "height": 8,
+        "width": 8,
+        "offset": [0, 0]
       },
-      "spread": 0.3,
       "offset": {
         "relativeTo": "body",
         "X": 224,
@@ -66,7 +106,23 @@
       "linked": false,
       "texture": "cannon1",
       "explosionEffect": "particles/explosion.p",
-      "layer": 2
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 2,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 3],
+          "count": [1, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [3, 5]
+        },
+        "bonuses": {
+          "type": [0, 2],
+          "chance": 50
+        }
+      }
     },
     "smallCannon2": {
       "type": "clone",
@@ -134,13 +190,21 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "bullet": {
-        "preset": "mediumRedBossBullet",
-        "offset": {
-          "X": 0,
-          "Y": 0
-        }
+        "texture": "bullet_red",
+        "shootSound": "sfx/gun1.ogg",
+        "speed": 180,
+        "spread": 0,
+        "bulletsPerShot": 2,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "explosionEffect": "particles/explosion3.p",
+        "explosionScale": 1,
+        "height": 16,
+        "width": 16,
+        "offset": [0, 0]
       },
-      "spread": 0.3,
       "offset": {
         "relativeTo": "body",
         "X": 66,
@@ -153,7 +217,23 @@
       "linked": false,
       "texture": "cannon2",
       "explosionEffect": "particles/explosion.p",
-      "layer": 2
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 2,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 2],
+          "count": [0, 1]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 4]
+        },
+        "bonuses": {
+          "type": [0, 2],
+          "chance": 100
+        }
+      }
     },
     "cannon2ndStage": {
       "type": "cannon",
@@ -166,13 +246,21 @@
       "canAim": true,
       "aimAngleLimit": [-20, 20],
       "bullet": {
-        "preset": "homingRedBossBullet",
-        "offset": {
-          "X": 0,
-          "Y": 0
-        }
+        "texture": "bullet_red",
+        "shootSound": "sfx/gun3.ogg",
+        "speed": 180,
+        "spread": 0,
+        "bulletsPerShot": 2,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "explosionEffect": "particles/explosion3.p",
+        "explosionScale": 1,
+        "height": 16,
+        "width": 16,
+        "offset": [0, 0]
       },
-      "spread": 0,
       "offset": {
         "relativeTo": "body",
         "X": 40,
@@ -180,12 +268,28 @@
       },
       "fireRate":{
         "baseRate": 0.5,
-        "randomness": 0.3
+        "randomness": 0.1
       },
       "linked": false,
       "texture": "bigCannon",
       "explosionEffect": "particles/explosion.p",
-      "layer": 0
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 0,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 2],
+          "count": [1, 2]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 5]
+        },
+        "bonuses": {
+          "type": [1, 2],
+          "chance": 90
+        }
+      }
     },
     "homingCannon": {
       "type": "cannon",
@@ -200,13 +304,24 @@
       "linked": "homingCannonBase",
       "texture": "upperCannon_part2",
       "bullet": {
-        "preset": "homingRedBossBulletLong",
-        "offset": {
-          "X": 0,
-          "Y": 0
-        }
+        "texture": "bullet_red",
+        "shootSound": "sfx/gun3.ogg",
+        "speed": 180,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 7,
+        "homing": true,
+        "explosionTimer": 3,
+        "homingSpeed": 90,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 0.3,
+        "explosionEffect": "particles/explosion3.p",
+        "explosionScale": 0.3,
+        "height": 3,
+        "width": 16,
+        "offset": [-110, 0]
       },
-      "spread": 0,
+      "layer": 0,
       "offset": {
         "relativeTo": "body",
         "X": 66,
@@ -216,7 +331,21 @@
         "baseRate": 0.3,
         "randomness": 0.1
       },
-      "layer": 0
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [0, 0],
+          "count": [0, 0]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [0, 2]
+        },
+        "bonuses": {
+          "type": [0, 0],
+          "chance": 0
+        }
+      }
     }
   },
 
@@ -458,7 +587,7 @@
         }
       }
     },
-    "deathPhase": {
+    "deathAnimationPhase": {
       "bodyDie": {
         "target": "body",
         "enableCollisions": false,
@@ -468,21 +597,50 @@
         "changeTexture": "boss_dead",
         "move": {
           "rotate": {
-            "moveBy": 90,
-            "speed": 0.5,
+            "moveBy": 150,
+            "speed": 1,
             "stopPreviousAnimations": true
           },
           "moveLinearX": {
-            "moveBy": -100,
-            "speed": 2,
+            "moveBy": -350,
+            "speed": 4,
             "stopPreviousAnimations": false
           },
           "moveLinearY": {
-            "moveBy": -500,
-            "speed": 2,
+            "moveBy": -650,
+            "speed": 4,
             "stopPreviousAnimations": false
           }
         }
+      },
+      "homingCannonDisable": {
+        "target": "homingCannon",
+        "enableCollisions": false,
+        "showHealthBar": true,
+        "visible": false,
+        "active": false,
+        "changeTexture": false,
+        "move": false
+      },
+      "cannon2ndStageDisable": {
+        "target": "cannon2ndStage",
+        "enableCollisions": false,
+        "showHealthBar": true,
+        "visible": false,
+        "active": false,
+        "changeTexture": false,
+        "move": false
+      }
+    },
+    "RESET": {
+      "bodyReset": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": false,
+        "active": false,
+        "changeTexture": "boss",
+        "move": false
       }
     }
   },
@@ -560,7 +718,7 @@
           "triggerType": "positionY",
           "triggerModifier": "<",
           "target": "body",
-          "value": -400
+          "value": -370
         }
       }
     }

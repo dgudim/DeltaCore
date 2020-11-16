@@ -196,12 +196,7 @@ public class Bonus {
                 }
                 if (type == 5) {
                     removeBonus(i, true);
-                    if (random.nextBoolean()) {
-                        boss_battleShip.Spawn();
-                    } else {
-                        boss_evilEye.Spawn();
-                    }
-                    GameLogic.bossWave = true;
+                    //TODO: transfer to new boss system
                 }
             }
         }

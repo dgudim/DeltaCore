@@ -239,7 +239,6 @@
         "spawnsDrones": false,
         "spawnsBullets": false,
         "explosionTimer": 4,
-        "rotationLimit": [-360, 360],
         "hitColor": "#FF0000",
         "height": 28.8,
         "width": 52.2
@@ -266,7 +265,6 @@
         "spawnsDrones": false,
         "spawnsBullets": false,
         "explosionTimer": 4,
-        "rotationLimit": [-360, 360],
         "hitColor": "#FF0000",
         "height": 28.8,
         "width": 52.2

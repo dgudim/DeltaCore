@@ -7,11 +7,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -32,6 +30,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
@@ -228,38 +227,16 @@ public class GameUi {
         shieldBarStyle = new ProgressBar.ProgressBarStyle();
         chargeBarStyle = new ProgressBar.ProgressBarStyle();
 
-        Pixmap pixmap = new Pixmap(0, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.BLACK);
-        pixmap.fill();
-        TextureRegionDrawable BarBackgroundBlank = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-        pixmap.dispose();
-
-        Pixmap pixmap3 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
-        pixmap3.setColor(Color.GREEN);
-        pixmap3.fill();
-        TextureRegionDrawable BarForegroundGreen = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap3)));
-        pixmap3.dispose();
-
-        Pixmap pixmap5 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
-        pixmap5.setColor(Color.CYAN);
-        pixmap5.fill();
-        TextureRegionDrawable BarForegroundCyan = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap5)));
-        pixmap5.dispose();
-
-        Pixmap pixmap6 = new Pixmap(100, (int) (12 * uiScale), Pixmap.Format.RGBA8888);
-        pixmap6.setColor(Color.YELLOW);
-        pixmap6.fill();
-        TextureRegionDrawable BarForegroundYellow = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap6)));
-        pixmap6.dispose();
+        TextureRegionDrawable BarBackgroundBlank = constructFilledImageWithColor(0, (int) (12 * uiScale), Color.BLACK);
 
         healthBarStyle.knob = BarBackgroundBlank;
-        healthBarStyle.knobBefore = BarForegroundGreen;
+        healthBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.GREEN);
 
         shieldBarStyle.knob = BarBackgroundBlank;
-        shieldBarStyle.knobBefore = BarForegroundCyan;
+        shieldBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.CYAN);
 
         chargeBarStyle.knob = BarBackgroundBlank;
-        chargeBarStyle.knobBefore = BarForegroundYellow;
+        chargeBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.YELLOW);
 
         health = new ProgressBar(0, player.healthCapacity * player.healthMultiplier, 0.01f, false, healthBarStyle);
         shield = new ProgressBar(0, player.shieldStrength * player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
@@ -427,24 +404,24 @@ public class GameUi {
             game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor, player));
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
-            cam.zoom*=1.01;
+        if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
+            cam.zoom *= 1.01;
             cam.update();
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.EQUALS)){
-            cam.zoom*=0.99;
+        if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
+            cam.zoom *= 0.99;
             cam.update();
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             cam.translate(3, 0);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             cam.translate(-3, 0);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             cam.translate(0, 3);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             cam.translate(0, -3);
         }
     }

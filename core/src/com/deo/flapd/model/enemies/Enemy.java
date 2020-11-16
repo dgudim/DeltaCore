@@ -136,7 +136,12 @@ public class Enemy {
             if (!data.isHoming) {
                 data.x -= data.speed * delta;
             } else {
-                data.rotation = MathUtils.clamp(DUtils.lerpAngleWithConstantSpeed(data.rotation, MathUtils.radiansToDegrees * MathUtils.atan2(data.y - playerBounds.getY(), data.x - playerBounds.getX()), data.homingSpeed, delta), data.minAngle, data.maxAngle);
+
+                data.rotation = DUtils.lerpAngleWithConstantSpeed(data.rotation,
+                        MathUtils.radiansToDegrees * MathUtils.atan2(
+                                data.y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight()/2f),
+                                data.x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth()/2f)),
+                        data.homingSpeed, delta);
                 data.x -= MathUtils.cosDeg(data.rotation) * data.speed * 2 * delta;
                 data.y -= MathUtils.sinDeg(data.rotation) * data.speed * 2 * delta;
                 data.explosionTimer -= delta;
@@ -263,15 +268,15 @@ public class Enemy {
             kill();
         }
 
-        queuedForDeletion = isDead && !(bullets.size > 0) && (data.explosionParticleEffect.isComplete() || explosionFinished);
+        queuedForDeletion = isDead && bullets.size == 0 && (data.explosionParticleEffect.isComplete() || explosionFinished);
     }
 
     private void shoot() {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
 
-            newBulletData.x = data.x + data.width / 2 + MathUtils.cosDeg(data.rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
-            newBulletData.y = data.y + data.height / 2 + MathUtils.sinDeg(data.rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            newBulletData.x = data.x + data.width / 2 + MathUtils.cosDeg(data.rotation) * newBulletData.bulletDistance;
+            newBulletData.y = data.y + data.height / 2 + MathUtils.sinDeg(data.rotation) * newBulletData.bulletDistance;
 
             newBulletData.angle = getRandomInRange(-10, 10) * newBulletData.spread + data.rotation;
             if (data.canAim) {

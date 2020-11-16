@@ -3,12 +3,10 @@ package com.deo.flapd.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -23,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -31,6 +28,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
 
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
@@ -90,12 +88,7 @@ public class Tree {
 
         targetWidth += 5;
 
-        Pixmap pixmap0 = new Pixmap(targetWidth, 1, Pixmap.Format.RGBA8888);
-        pixmap0.setColor(Color.CLEAR);
-        pixmap0.fill();
-        TextureRegionDrawable branchBg = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap0)));
-        pixmap0.dispose();
-        treeTable.add(new Image(branchBg));
+        treeTable.add(new Image(constructFilledImageWithColor(targetWidth, 1, Color.CLEAR)));
 
         for (int i = 0; i < nodes.get(0).get(0).children.size; i++) {
             nodes.get(0).get(0).children.get(i).setVisible(false, false);
@@ -117,12 +110,7 @@ public class Tree {
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         scrollPaneStyle.background = new NinePatchDrawable(new NinePatch((Texture) assetManager.get("9bg.png"), 5, 5, 5, 5));
 
-        Pixmap pixmap = new Pixmap(4, 5, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.DARK_GRAY);
-        pixmap.fill();
-        TextureRegionDrawable scrollBar = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-        pixmap.dispose();
-        scrollPaneStyle.hScrollKnob = scrollBar;
+        scrollPaneStyle.hScrollKnob = constructFilledImageWithColor(4, 5, Color.DARK_GRAY);
 
         treeScrollView = new ScrollPane(treeTable, scrollPaneStyle);
         treeScrollView.setupOverscroll(10, 10, 30);
@@ -276,13 +264,8 @@ class Node {
     }
 
     private void connectBranch(float x, float y, float x2, float y2) {
-        Pixmap pixmap0 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap0.setColor(Color.GREEN);
-        pixmap0.fill();
-        TextureRegionDrawable branchBg = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap0)));
-        pixmap0.dispose();
 
-        Image branch = new Image(branchBg);
+        Image branch = new Image(constructFilledImageWithColor(1, 1, Color.GREEN));
         float len1, len2, thickness;
         thickness = 4f;
         len1 = x2 - x;

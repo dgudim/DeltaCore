@@ -172,11 +172,7 @@ public class GameScreen implements Screen {
         batch.draw(bg2, 0, 0, (int) (movement / 2), -240, 800, 720);
         batch.draw(bg3, 0, 0, (int) movement, -240, 800, 720);
 
-        bonus.draw(batch, delta);
-        drops.draw(batch, delta);
-        uraniumCell.draw(batch, delta);
-
-        bosses.draw(batch);
+        bosses.draw(batch, delta);
         bosses.update(delta);
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
@@ -198,6 +194,10 @@ public class GameScreen implements Screen {
         checkpoint.drawBase(batch);
 
         ship.DrawShield(batch, delta);
+
+        bonus.draw(batch, delta);
+        drops.draw(batch, delta);
+        uraniumCell.draw(batch, delta);
 
         gameUi.draw();
 

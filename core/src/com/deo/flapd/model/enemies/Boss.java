@@ -2,14 +2,12 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -18,9 +16,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.Bonus;
+import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.UraniumCell;
+import com.deo.flapd.model.bullets.BulletData;
+import com.deo.flapd.model.bullets.EnemyBullet;
 
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 
@@ -48,7 +53,7 @@ public class Boss {
         bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
         parts = new Array<>();
         animations = new Array<>();
-        hasAlreadySpawned = getBoolean("boss_spawned_"+bossConfig.name);
+        hasAlreadySpawned = getBoolean("boss_spawned_" + bossConfig.name);
         spawnScore = bossConfig.get("spawnConditions").getInt("score") + getRandomInRange(-bossConfig.get("spawnConditions").getInt("randomness"), bossConfig.get("spawnConditions").getInt("randomness"));
         spawnAt = bossConfig.get("spawnAt").asIntArray();
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
@@ -62,7 +67,7 @@ public class Boss {
                     parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts, body));
                     break;
                 case ("cannon"):
-                    parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body));
+                    parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("clone"):
                     String cloneType = bossConfig.get("parts").get(i).getString("copyFrom");
@@ -72,7 +77,7 @@ public class Boss {
                             parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts, body));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body));
+                            parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body, assetManager));
                             break;
                     }
                     break;
@@ -113,14 +118,12 @@ public class Boss {
             Phase phase = new Phase(bossConfig.get("phases").get(i), parts, animations, this);
             phases.add(phase);
         }
-
-        spawn();
     }
 
-    void draw(SpriteBatch batch) {
+    void draw(SpriteBatch batch, float delta) {
         if (visible) {
             for (int i = 0; i < parts.size; i++) {
-                parts.get(i).draw(batch);
+                parts.get(i).draw(batch, delta);
             }
         }
     }
@@ -169,25 +172,24 @@ public class Boss {
     }
 
     void reset() {
-        new Runnable() {
-            @Override
-            public void run() {
-                visible = false;
-                body.x = 1500;
-                body.y = 1500;
-                GameLogic.bossWave = false;
-                for(int i = 0; i<animations.size; i++){
-                    animations.get(i).reset();
-                }
-                for(int i = 0; i<parts.size; i++){
-                    parts.get(i).reset();
-                }
-                for(int i = 0; i<phases.size; i++){
-                    phases.get(i).reset();
-                }
-                System.out.println("boss reset success!");
-            }
-        }.run();
+        visible = false;
+        body.x = 1500;
+        body.y = 1500;
+        GameLogic.bossWave = false;
+
+        for (int i = 0; i < animations.size; i++) {
+            animations.get(i).reset();
+        }
+        for (int i = 0; i < parts.size; i++) {
+            parts.get(i).reset();
+        }
+        for (int i = 0; i < phases.size; i++) {
+            phases.get(i).reset();
+        }
+
+        spawn();
+
+        //TODO fix boss reset
     }
 }
 
@@ -227,6 +229,13 @@ class BasePart {
 
     Array<BasePart> links;
 
+    int[] bonusType, itemRarity, itemCount, moneyCount;
+    float itemTimer, moneyTimer;
+    int bonusChance;
+
+    Sound explosionSound;
+    float soundVolume;
+
     BasePart(JsonValue config, TextureAtlas textures) {
 
         log("\n loading boss part, name: " + config.name);
@@ -246,7 +255,24 @@ class BasePart {
         height = this.config.getFloat("height");
         layer = this.config.getInt("layer");
         hasCollision = this.config.getBoolean("hasCollision");
+
+        itemRarity = this.config.get("drops").get("items").get("rarity").asIntArray();
+        itemCount = this.config.get("drops").get("items").get("count").asIntArray();
+        itemTimer = this.config.get("drops").get("items").getFloat("timer");
+
+        bonusChance = this.config.get("drops").get("bonuses").getInt("chance");
+        bonusType = this.config.get("drops").get("bonuses").get("type").asIntArray();
+
+        moneyCount = this.config.get("drops").get("money").get("count").asIntArray();
+        moneyTimer = this.config.get("drops").get("items").getFloat("timer");
+
+        if (hasCollision) {
+            explosionSound = Gdx.audio.newSound(Gdx.files.internal(this.config.getString("explosionSound")));
+        }
+        soundVolume = getFloat("soundVolume");
+
         part = new Sprite(textures.findRegion(this.config.getString("texture")));
+
         part.setSize(width, height);
         originX = width / 2f;
         originY = height / 2;
@@ -261,23 +287,9 @@ class BasePart {
         }
         part.setOrigin(originX, originY);
 
-        Pixmap pixmap2 = new Pixmap(0, 6, Pixmap.Format.RGBA8888);
-        pixmap2.setColor(Color.RED);
-        pixmap2.fill();
-        TextureRegionDrawable BarForeground1 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap2)));
-        pixmap2.dispose();
-
-        Pixmap pixmap3 = new Pixmap(100, 6, Pixmap.Format.RGBA8888);
-        pixmap3.setColor(Color.RED);
-        pixmap3.fill();
-        TextureRegionDrawable BarForeground2 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap3)));
-        pixmap3.dispose();
-
-        Pixmap pixmap = new Pixmap(100, 6, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        TextureRegionDrawable BarBackground = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-        pixmap.dispose();
+        TextureRegionDrawable BarForeground1 = constructFilledImageWithColor(0, 6, Color.RED);
+        TextureRegionDrawable BarForeground2 = constructFilledImageWithColor(100, 6, Color.RED);
+        TextureRegionDrawable BarBackground = constructFilledImageWithColor(100, 6, Color.WHITE);
 
         ProgressBar.ProgressBarStyle healthBarStyle = new ProgressBar.ProgressBarStyle();
 
@@ -298,7 +310,7 @@ class BasePart {
 
     }
 
-    void draw(SpriteBatch batch) {
+    void draw(SpriteBatch batch, float delta) {
         if (visible) {
             part.draw(batch);
             if (showHealthBar) {
@@ -331,6 +343,8 @@ class BasePart {
             for (int i = 0; i < links.size; i++) {
                 if (!links.get(i).exploded && links.get(i).explosionEffect != null) {
                     links.get(i).explode();
+                }else{
+                    links.get(i).active = false;
                 }
             }
         }
@@ -346,6 +360,7 @@ class BasePart {
     void dispose() {
         if (hasCollision) {
             explosionEffect.dispose();
+            explosionSound.dispose();
         }
     }
 
@@ -354,9 +369,22 @@ class BasePart {
     }
 
     void explode() {
-        explosionEffect.start();
+        UraniumCell.Spawn(part.getBoundingRectangle(), getRandomInRange(moneyCount[0], moneyCount[1]), 1, moneyTimer);
+
+        if (getRandomInRange(0, 100) <= bonusChance) {
+            Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), part.getBoundingRectangle());
+        }
+
+        Drops.drop(part.getBoundingRectangle(), getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
+
         explosionEffect.setPosition(x + width / 2, y + height / 2);
+        explosionEffect.start();
+        if (soundVolume > 0) {
+            explosionSound.play(soundVolume);
+        }
         exploded = true;
+        active = false;
+
     }
 
     void reset() {
@@ -368,6 +396,7 @@ class BasePart {
         active = false;
         collisionEnabled = false;
         exploded = false;
+        rotation = 0;
     }
 }
 
@@ -438,7 +467,7 @@ class Part extends BasePart {
     }
 
     @Override
-    void draw(SpriteBatch batch) {
+    void draw(SpriteBatch batch, float delta) {
         if (visible && health > 0 && link.health > 0 && body.health > 0) {
             part.draw(batch);
             if (showHealthBar) {
@@ -455,38 +484,92 @@ class Cannon extends Part {
 
     boolean canAim;
     int[] aimAngleLimit;
-    float spread;
     float fireRate;
-    float fireRateRandomness;
     float timer;
-    JsonValue bulletData;
+    BulletData bulletData;
+    Array<EnemyBullet> bullets;
+    AssetManager assetManager;
+    TextureAtlas textures;
 
-    Cannon(JsonValue partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
+    Sound shootingSound;
+
+    Cannon(JsonValue partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
         super(partConfig, textures, parts, body);
+
+        this.assetManager = assetManager;
+        this.textures = textures;
+
+        bullets = new Array<>();
 
         canAim = this.config.getBoolean("canAim");
         aimAngleLimit = this.config.get("aimAngleLimit").asIntArray();
-        spread = this.config.getFloat("spread");
 
-        fireRate = this.config.get("fireRate").getFloat("baseRate");
-        fireRateRandomness = this.config.get("fireRate").getFloat("randomness");
+        float fireRateRandomness = this.config.get("fireRate").getFloat("randomness");
+        fireRate = this.config.get("fireRate").getFloat("baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
+
+        bulletData = new BulletData(this.config.get("bullet"));
+
+        shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
 
     }
 
     @Override
     void update(float delta) {
         super.update(delta);
-        if (canAim && active) {
-            rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - player.bounds.getY() - 30, x - player.bounds.getX() - 30), aimAngleLimit[0], aimAngleLimit[1]);
-        }
-        timer += delta;
-        if (timer > fireRate + MathUtils.random() * fireRateRandomness && health > 0) {
-            shoot();
+        if (active) {
+            if (canAim) {
+                rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2), x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+            }
+            timer += delta * fireRate;
+            if (timer > 1 && health > 0 && visible) {
+                shoot();
+                timer = 0;
+            }
         }
     }
 
-    void shoot() {
+    @Override
+    void draw(SpriteBatch batch, float delta) {
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).draw(batch, delta);
+            bullets.get(i).update(delta);
+            if (bullets.get(i).queuedForDeletion) {
+                bullets.get(i).dispose();
+                bullets.removeIndex(i);
+            }
+        }
+        super.draw(batch, delta);
+    }
 
+    void shoot() {
+        for (int i = 0; i < bulletData.bulletsPerShot; i++) {
+            BulletData newBulletData = new BulletData(this.config.get("bullet"));
+
+            newBulletData.x = x + width / 2f + MathUtils.cosDeg(rotation) * newBulletData.bulletDistance;
+            newBulletData.y = y + height / 2f + MathUtils.sinDeg(rotation) * newBulletData.bulletDistance;
+
+            if (canAim) {
+                newBulletData.angle = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2), x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+            }
+
+            newBulletData.angle += getRandomInRange(-10, 10) * bulletData.spread;
+
+            bullets.add(new EnemyBullet(textures, newBulletData, player));
+
+        }
+
+        if (soundVolume > 0) {
+            shootingSound.play();
+        }
+
+    }
+
+    @Override
+    void dispose() {
+        super.dispose();
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).dispose();
+        }
     }
 }
 
@@ -654,6 +737,7 @@ class Movement {
     void reset() {
         stop();
         progress = 0;
+        currentAddPosition = 0;
     }
 }
 
@@ -681,9 +765,13 @@ class Phase {
     JsonValue config;
     Array<PhaseTrigger> phaseTriggers;
 
+    Boss boss;
+
     Phase(JsonValue phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
 
         log("\n loading boss phase, name: " + phaseData.name);
+
+        this.boss = boss;
 
         actions = new Array<>();
         phaseTriggers = new Array<>();
@@ -701,7 +789,7 @@ class Phase {
         }
         if (triggers != null) {
             for (int i = 0; i < triggers.size; i++) {
-                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts, boss);
+                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts);
                 phaseTriggers.add(trigger);
             }
         }
@@ -719,18 +807,26 @@ class Phase {
             phaseTriggers.get(i).update();
         }
         if (!activated) {
-            boolean activate = true;
+            boolean activate = phaseTriggers.size > 0;
+            boolean reset = false;
             for (int i = 0; i < phaseTriggers.size; i++) {
                 activate = activate && phaseTriggers.get(i).conditionsMet;
+                reset = reset || (phaseTriggers.get(i).conditionsMet && phaseTriggers.get(i).isResetPhase);
             }
             if (activate) {
                 activate();
+            }
+            if (reset) {
+                boss.reset();
             }
         }
     }
 
     void reset() {
         activated = false;
+        for (int i = 0; i < phaseTriggers.size; i++) {
+            phaseTriggers.get(i).reset();
+        }
     }
 }
 
@@ -809,15 +905,12 @@ class PhaseTrigger {
     String triggerType;
     String triggerModifier;
     BasePart triggerTarget;
-    Boss boss;
 
-    PhaseTrigger(JsonValue triggerData, Array<BasePart> parts, Boss boss) {
+    PhaseTrigger(JsonValue triggerData, Array<BasePart> parts) {
 
         log("\n loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent.parent.name);
 
-        isResetPhase = triggerData.name.equals("RESET");
-
-        this.boss = boss;
+        isResetPhase = triggerData.parent.parent.name.equals("RESET");
 
         conditionsMet = false;
         triggerType = triggerData.getString("triggerType");
@@ -833,6 +926,10 @@ class PhaseTrigger {
             log("\n error setting up trigger for part " + targetPart);
         }
         triggerModifier = triggerData.getString("triggerModifier");
+    }
+
+    void reset() {
+        conditionsMet = false;
     }
 
     void update() {
@@ -872,10 +969,6 @@ class PhaseTrigger {
                     conditionsMet = true;
                 }
                 break;
-        }
-        if(conditionsMet && isResetPhase){
-            boss.reset();
-            System.out.println("boss reset");
         }
     }
 

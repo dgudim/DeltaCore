@@ -3,13 +3,10 @@ package com.deo.flapd.view.dialogues;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -33,6 +29,7 @@ import com.deo.flapd.view.UIComposer;
 
 import java.util.Arrays;
 
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
@@ -183,13 +180,7 @@ public class ColorCustomizationDialogue extends Dialogue{
             colorChannels.add(channel);
             Table setHolder = new Table();
 
-            Pixmap pixmap0 = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
-            pixmap0.setColor(Color.WHITE);
-            pixmap0.fill();
-            TextureRegionDrawable squarePixmap = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap0)));
-            pixmap0.dispose();
-
-            final Image colorSquare = new Image(squarePixmap);
+            final Image colorSquare = new Image(constructFilledImageWithColor(10 ,10, Color.WHITE));
             colorSquare.setColor(new Color().add(colors[3*i], colors[3*i+1], colors[3*i+2], 1));
 
             final Slider redSlider, greenSlider, blueSlider;

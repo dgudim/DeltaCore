@@ -7,16 +7,13 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -25,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.clearPrefs;
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
@@ -95,27 +93,9 @@ public class LoadingScreen implements Screen {
 
         loadingBarStyle = new ProgressBar.ProgressBarStyle();
 
-        Pixmap pixmap4 = new Pixmap(0, 24, Pixmap.Format.RGBA8888);
-        pixmap4.setColor(Color.valueOf("1979b5"));
-        pixmap4.fill();
-        TextureRegionDrawable BarForeground = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap4)));
-        pixmap4.dispose();
-
-        Pixmap pixmap5 = new Pixmap(100, 24, Pixmap.Format.RGBA8888);
-        pixmap5.setColor(Color.valueOf("1979b5"));
-        pixmap5.fill();
-        TextureRegionDrawable BarForeground2 = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap5)));
-        pixmap5.dispose();
-
-        Pixmap pixmap6 = new Pixmap(800, 40, Pixmap.Format.RGBA8888);
-        pixmap6.setColor(Color.BLACK);
-        pixmap6.fill();
-        TextureRegionDrawable BarBackground = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap6)));
-        pixmap6.dispose();
-
-        loadingBarStyle.knob = BarForeground;
-        loadingBarStyle.knobBefore = BarForeground2;
-        loadingBarStyle.background = BarBackground;
+        loadingBarStyle.knob = constructFilledImageWithColor(0, 24, Color.valueOf("1979b5"));
+        loadingBarStyle.knobBefore = constructFilledImageWithColor(100, 24, Color.valueOf("1979b5"));
+        loadingBarStyle.background = constructFilledImageWithColor(800, 40, Color.BLACK);
 
         loadingBar = new ProgressBar(0, 100, 0.01f, false, loadingBarStyle);
         loadingBar.setSize(800, 24);

@@ -30,6 +30,8 @@ import java.util.Random;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
 
+//TODO delete this class
+
 public class Boss_evilEye {
     private Sprite body;
     private Rectangle bodyBounds;

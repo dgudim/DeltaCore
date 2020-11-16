@@ -22,9 +22,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.deo.flapd.utils.postprocessing.PostProcessorEffect;
 import com.deo.flapd.utils.postprocessing.filters.CameraBlur;
 
-/** FIXME this effect is INCOMPLETE!
- * 
- * @author bmanuel */
 public final class CameraMotion extends PostProcessorEffect {
 	private CameraBlur camblur;
 	private Matrix4 ctp = new Matrix4();
