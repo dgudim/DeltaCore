@@ -14,8 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.enemies.Boss_battleShip;
-import com.deo.flapd.model.enemies.Boss_evilEye;
+import com.deo.flapd.model.enemies.Bosses;
 
 import java.util.Random;
 
@@ -41,10 +40,12 @@ public class Bonus {
     private Image bonus_bullets_t;
     private static Random random;
 
-    private Boss_battleShip boss_battleShip;
-    private Boss_evilEye boss_evilEye;
+    private Bosses bosses;
 
-    public Bonus(AssetManager assetManager, float width, float height, ShipObject ship, Boss_battleShip boss_battleShip, Boss_evilEye boss_evilEye) {
+    public Bonus(AssetManager assetManager, float width, float height, ShipObject ship, Bosses bosses) {
+
+        this.bosses = bosses;
+
         player = ship;
         playerBounds = player.bounds;
 
@@ -86,9 +87,6 @@ public class Bonus {
         anglesY = new Array<>();
 
         font_text = assetManager.get("fonts/font2(old).fnt");
-
-        this.boss_battleShip = boss_battleShip;
-        this.boss_evilEye = boss_evilEye;
     }
 
     public static void Spawn(int type, Rectangle enemy) {
@@ -196,7 +194,7 @@ public class Bonus {
                 }
                 if (type == 5) {
                     removeBonus(i, true);
-                    //TODO: transfer to new boss system
+                    bosses.spawnRandomBoss();
                 }
             }
         }

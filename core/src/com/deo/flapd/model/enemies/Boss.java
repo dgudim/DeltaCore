@@ -28,6 +28,7 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.putBoolean;
 
 public class Boss {
 
@@ -45,15 +46,19 @@ public class Boss {
     private int spawnScore;
     private BasePart body;
 
+    public String bossName;
+
     Boss(String bossName, AssetManager assetManager) {
 
         log("\n\n loading boss config, name: " + bossName);
+
+        this.bossName = bossName;
 
         bossConfig = new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json"));
         bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
         parts = new Array<>();
         animations = new Array<>();
-        hasAlreadySpawned = getBoolean("boss_spawned_" + bossConfig.name);
+        hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
         spawnScore = bossConfig.get("spawnConditions").getInt("score") + getRandomInRange(-bossConfig.get("spawnConditions").getInt("randomness"), bossConfig.get("spawnConditions").getInt("randomness"));
         spawnAt = bossConfig.get("spawnAt").asIntArray();
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
@@ -154,6 +159,7 @@ public class Boss {
         body.y = spawnAt[1];
         visible = true;
         hasAlreadySpawned = true;
+        putBoolean("boss_spawned_"+bossName, true);
         GameLogic.bossWave = true;
         phases.get(0).activate();
     }
@@ -186,10 +192,6 @@ public class Boss {
         for (int i = 0; i < phases.size; i++) {
             phases.get(i).reset();
         }
-
-        spawn();
-
-        //TODO fix boss reset
     }
 }
 
@@ -343,7 +345,7 @@ class BasePart {
             for (int i = 0; i < links.size; i++) {
                 if (!links.get(i).exploded && links.get(i).explosionEffect != null) {
                     links.get(i).explode();
-                }else{
+                } else {
                     links.get(i).active = false;
                 }
             }
@@ -545,8 +547,8 @@ class Cannon extends Part {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(this.config.get("bullet"));
 
-            newBulletData.x = x + width / 2f + MathUtils.cosDeg(rotation) * newBulletData.bulletDistance;
-            newBulletData.y = y + height / 2f + MathUtils.sinDeg(rotation) * newBulletData.bulletDistance;
+            newBulletData.x = x + width / 2f - bulletData.width/2f + MathUtils.cosDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
+            newBulletData.y = y + height / 2f - bulletData.height/2f + MathUtils.sinDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
 
             if (canAim) {
                 newBulletData.angle = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2), x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);

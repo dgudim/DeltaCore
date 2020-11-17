@@ -5,12 +5,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.ShipObject;
 
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+
 public class Bosses {
 
     private AssetManager assetManager;
     public static Array<Boss> bosses;
     private final String[] bossNames = new String[]{"boss_ship"};
-    private ShipObject player;
 
     public Bosses(AssetManager assetManager){
         this.assetManager = assetManager;
@@ -24,7 +25,6 @@ public class Bosses {
     }
 
     public void setTargetPlayer(ShipObject player) {
-        this.player = player;
         for(int i = 0; i<bosses.size; i++){
             bosses.get(i).setTargetPlayer(player);
         }
@@ -40,6 +40,10 @@ public class Bosses {
         for(int i = 0; i<bosses.size; i++){
             bosses.get(i).draw(batch, delta);
         }
+    }
+
+    public void spawnRandomBoss(){
+        bosses.get(getRandomInRange(0, bosses.size-1)).spawn();
     }
 
     public void dispose(){

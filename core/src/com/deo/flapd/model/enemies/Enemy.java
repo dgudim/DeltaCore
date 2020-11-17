@@ -88,7 +88,7 @@ public class Enemy {
         }
         enemy.setSize(data.width, data.height);
         enemy.setPosition(data.x, data.y);
-        enemy.setOrigin(data.width / 2, data.height / 2);
+        enemy.setOrigin(data.width / 2f, data.height / 2f);
         for (int i = 0; i < data.fireEffects.length; i++) {
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal(data.fireEffects[i]), Gdx.files.internal("particles"));
@@ -139,8 +139,8 @@ public class Enemy {
 
                 data.rotation = DUtils.lerpAngleWithConstantSpeed(data.rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
-                                data.y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight()/2f),
-                                data.x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth()/2f)),
+                                data.y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2f),
+                                data.x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2f)),
                         data.homingSpeed, delta);
                 data.x -= MathUtils.cosDeg(data.rotation) * data.speed * 2 * delta;
                 data.y -= MathUtils.sinDeg(data.rotation) * data.speed * 2 * delta;
@@ -149,7 +149,11 @@ public class Enemy {
             }
 
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
-                data.fireParticleEffects.get(i).setPosition(data.x + data.width / 2 + MathUtils.cosDeg(data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i), data.y + data.height / 2 + MathUtils.sinDeg(data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
+                data.fireParticleEffects.get(i).setPosition(
+                        data.x + data.width / 2f + MathUtils.cosDeg(
+                                data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
+                        data.y + data.height / 2f + MathUtils.sinDeg(
+                                data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             }
 
             if (data.currentColor.r < 1) {
@@ -240,16 +244,16 @@ public class Enemy {
             float shipHeight = playerBounds.getBoundingRectangle().getWidth();
             float shipX = playerBounds.getBoundingRectangle().getX();
             float shipY = playerBounds.getBoundingRectangle().getY();
-            if (data.x > shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
+            if (data.x > shipX + shipWidth / 2f && data.y > shipY + shipHeight / 2f) {
                 data.x += 50 * delta;
                 data.y += 50 * delta;
-            } else if (data.x > shipX + shipWidth / 2 && data.y + data.height < shipY + shipHeight / 2) {
+            } else if (data.x > shipX + shipWidth / 2f && data.y + data.height < shipY + shipHeight / 2f) {
                 data.x += 50 * delta;
                 data.y -= 50 * delta;
-            } else if (data.x + data.width < shipX + shipWidth / 2 && data.y + data.height < shipY + shipHeight / 2) {
+            } else if (data.x + data.width < shipX + shipWidth / 2f && data.y + data.height < shipY + shipHeight / 2f) {
                 data.x -= 50 * delta;
                 data.y -= 50 * delta;
-            } else if (data.x + data.width < shipX + shipWidth / 2 && data.y > shipY + shipHeight / 2) {
+            } else if (data.x + data.width < shipX + shipWidth / 2f && data.y > shipY + shipHeight / 2f) {
                 data.x -= 50 * delta;
                 data.y += 50 * delta;
             } else if (data.x > shipX + shipWidth) {
@@ -275,8 +279,8 @@ public class Enemy {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
 
-            newBulletData.x = data.x + data.width / 2 + MathUtils.cosDeg(data.rotation) * newBulletData.bulletDistance;
-            newBulletData.y = data.y + data.height / 2 + MathUtils.sinDeg(data.rotation) * newBulletData.bulletDistance;
+            newBulletData.x = data.x + data.width / 2f + MathUtils.cosDeg(data.rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            newBulletData.y = data.y + data.height / 2f + MathUtils.sinDeg(data.rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
 
             newBulletData.angle = getRandomInRange(-10, 10) * newBulletData.spread + data.rotation;
             if (data.canAim) {
@@ -289,8 +293,8 @@ public class Enemy {
     }
 
     private void spawnDrone() {
-        float x = data.x + data.width / 2 + MathUtils.cosDeg(data.rotation + data.droneAngle) * data.droneDistance;
-        float y = data.y + data.height / 2 + MathUtils.sinDeg(data.rotation + data.droneAngle) * data.droneDistance;
+        float x = data.x + data.width / 2f + MathUtils.cosDeg(data.rotation + data.droneAngle) * data.droneDistance;
+        float y = data.y + data.height / 2f + MathUtils.sinDeg(data.rotation + data.droneAngle) * data.droneDistance;
         for (int i = 0; i < data.dronesPerSpawn; i++) {
             EnemyData droneData = new EnemyData(enemies.enemiesJson.get(data.droneType), data.type).setNewPosition(x, y);
             droneData.health *= difficulty;
@@ -323,7 +327,7 @@ public class Enemy {
             enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
-        data.explosionParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
+        data.explosionParticleEffect.setPosition(data.x + data.width / 2f, data.y + data.height / 2f);
         data.explosionParticleEffect.start();
         isDead = true;
 

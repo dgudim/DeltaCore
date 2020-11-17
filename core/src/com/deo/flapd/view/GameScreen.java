@@ -19,7 +19,6 @@ import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Meteorite;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
-import com.deo.flapd.model.enemies.Boss_battleShip;
 import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
@@ -42,7 +41,6 @@ public class GameScreen implements Screen {
     private int verticalFillingThreshold;
 
     private Meteorite meteorite;
-    private Boss_battleShip boss_battleShip;
     private Boss_evilEye boss_evilEye;
     private UraniumCell uraniumCell;
     private Checkpoint checkpoint;
@@ -110,11 +108,9 @@ public class GameScreen implements Screen {
 
         uraniumCell = new UraniumCell(assetManager);
 
-        boss_battleShip = new Boss_battleShip(assetManager, 1100, 150, ship);
-
         boss_evilEye = new Boss_evilEye(assetManager, ship);
 
-        bonus = new Bonus(assetManager, 50, 50, ship, boss_battleShip, boss_evilEye);
+        bonus = new Bonus(assetManager, 50, 50, ship, boss_evilEye);
 
         drops = new Drops(assetManager, 48, getFloat("ui"));
 
@@ -176,7 +172,6 @@ public class GameScreen implements Screen {
         bosses.update(delta);
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
-        boss_battleShip.draw(batch, delta);
         boss_evilEye.draw(batch, delta);
         meteorite.drawEffects(batch, delta);
         checkpoint.drawEffects(batch, delta);
@@ -325,7 +320,6 @@ public class GameScreen implements Screen {
 
         ship.dispose();
 
-        boss_battleShip.dispose();
         boss_evilEye.dispose();
 
         music.dispose();

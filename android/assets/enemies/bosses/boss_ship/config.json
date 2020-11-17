@@ -2,7 +2,7 @@
   "textures": "bossShip.atlas",
   "spawnAt": [850, 100],
   "spawnConditions": {
-    "score": 0,
+    "score": 10000,
     "randomness": 0
   },
   "parts": {
@@ -194,7 +194,7 @@
         "shootSound": "sfx/gun1.ogg",
         "speed": 180,
         "spread": 0,
-        "bulletsPerShot": 2,
+        "bulletsPerShot": 1,
         "damage": 7,
         "homing": false,
         "trail": "particles/bullet_trail_left.p",
@@ -249,17 +249,19 @@
         "texture": "bullet_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 180,
-        "spread": 0,
-        "bulletsPerShot": 2,
+        "spread": 5,
+        "bulletsPerShot": 3,
         "damage": 7,
-        "homing": false,
+        "homing": true,
+        "explosionTimer": 4,
+        "homingSpeed": 190,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 1,
         "explosionEffect": "particles/explosion3.p",
         "explosionScale": 1,
-        "height": 16,
-        "width": 16,
-        "offset": [0, 0]
+        "height": 8,
+        "width": 8,
+        "offset": [-35, 5]
       },
       "offset": {
         "relativeTo": "body",
@@ -267,7 +269,7 @@
         "Y": 48
       },
       "fireRate":{
-        "baseRate": 0.5,
+        "baseRate": 0.7,
         "randomness": 0.1
       },
       "linked": false,
@@ -319,7 +321,7 @@
         "explosionScale": 0.3,
         "height": 3,
         "width": 16,
-        "offset": [-110, 0]
+        "offset": [0, 0]
       },
       "layer": 0,
       "offset": {

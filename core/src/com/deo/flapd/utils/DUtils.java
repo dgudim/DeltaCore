@@ -350,15 +350,15 @@ public abstract class DUtils {
         log("\n\n" + fullStackTrace + "\n");
     }
 
-    public static void initNewGame(){
+    public static void initNewGame() {
         putInteger("enemiesKilled", 0);
         putInteger("moneyEarned", 0);
         putInteger("Score", 0);
         putFloat("Health", 1000);
         putFloat("Shield", 1000);
         putFloat("Charge", 1000);
-        for(int i = 0; i< Bosses.bosses.size; i++){
-            putBoolean("boss_spawned_"+Bosses.bosses.get(i).bossConfig.name, false);
+        for (int i = 0; i < Bosses.bosses.size; i++) {
+            putBoolean("boss_spawned_" + Bosses.bosses.get(i).bossName, false);
         }
         putInteger("bonuses_collected", 0);
         putInteger("lastCheckpoint", 0);
@@ -406,12 +406,29 @@ public abstract class DUtils {
     }
 
     public static float lerpAngleWithConstantSpeed(float from, float to, float speed, float delta) {
-        float variant1 = Math.abs(from - to - 360);
-        float variant2 = Math.abs(to - from - 360);
-        if(variant2 >= variant1){
-            return lerpWithConstantSpeed(from, to, speed, delta);
-        }else{
+
+        if (to < 0) {
+            to += 360;
+        }
+        if (to > 360) {
+            to -= 360;
+        }
+        if (from < 0) {
+            from += 360;
+        }
+        if (from > 360) {
+            from -= 360;
+        }
+
+        // TODO fixme
+
+        float distance1 = Math.abs(from - to);
+        float distance2 = 360 - distance1;
+
+        if (distance1 <= distance2) {
             return from + speed * delta;
+        } else {
+            return from - speed * delta;
         }
     }
 
@@ -430,7 +447,7 @@ public abstract class DUtils {
         enemyBulletTrailDisposes = 0;
     }
 
-    public static TextureRegionDrawable constructFilledImageWithColor(int width, int height, Color color){
+    public static TextureRegionDrawable constructFilledImageWithColor(int width, int height, Color color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
         pixmap.fill();
