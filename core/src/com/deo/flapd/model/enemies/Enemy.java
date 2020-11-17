@@ -28,18 +28,17 @@ import static com.deo.flapd.utils.DUtils.enemyDisposes;
 import static com.deo.flapd.utils.DUtils.enemyFireDisposes;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.lerpToColor;
 
-public class Enemy {
+public class Enemy extends Entity{
 
     public EnemyData data;
-    public Sprite enemy;
 
     private BulletData bulletData;
     private Array<EnemyBullet> bullets;
 
     private AssetManager assetManager;
 
-    public boolean isDead = false;
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
 
@@ -81,14 +80,14 @@ public class Enemy {
 
         bullets = new Array<>();
         if (data.hasAnimation) {
-            enemy = new Sprite();
+            entitySprite = new Sprite();
             enemyAnimation = new Animation<TextureRegion>(data.frameDuration, assetManager.get(data.texture, TextureAtlas.class).findRegions(data.name), Animation.PlayMode.LOOP);
         } else {
-            enemy = new Sprite(assetManager.get("enemies/enemies.atlas", TextureAtlas.class).findRegion(data.texture));
+            entitySprite = new Sprite(assetManager.get("enemies/enemies.atlas", TextureAtlas.class).findRegion(data.texture));
         }
-        enemy.setSize(data.width, data.height);
-        enemy.setPosition(data.x, data.y);
-        enemy.setOrigin(data.width / 2f, data.height / 2f);
+        originX = data.width / 2f;
+        originY = data.health / 2f;
+        super.init();
         for (int i = 0; i < data.fireEffects.length; i++) {
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal(data.fireEffects[i]), Gdx.files.internal("particles"));
@@ -103,10 +102,10 @@ public class Enemy {
 
     void draw(SpriteBatch batch) {
         if (!isDead && !data.hasAnimation) {
-            enemy.draw(batch);
+            entitySprite.draw(batch);
         } else if (data.hasAnimation && !isDead) {
-            enemy.setRegion(enemyAnimation.getKeyFrame(animationPosition));
-            enemy.draw(batch);
+            entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            entitySprite.draw(batch);
         }
     }
 
@@ -129,9 +128,7 @@ public class Enemy {
                 data.x = MathUtils.clamp(data.x, -data.width - 500, 800);
                 data.y = MathUtils.clamp(data.y, 0, 480 - data.height);
             }
-            enemy.setPosition(data.x, data.y);
-            enemy.setColor(data.currentColor);
-            enemy.setRotation(data.rotation);
+            super.update();
 
             if (!data.isHoming) {
                 data.x -= data.speed * delta;
@@ -145,7 +142,7 @@ public class Enemy {
                 data.x -= MathUtils.cosDeg(data.rotation) * data.speed * 2 * delta;
                 data.y -= MathUtils.sinDeg(data.rotation) * data.speed * 2 * delta;
                 data.explosionTimer -= delta;
-                enemy.setColor(1, MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), 1);
+                entitySprite.setColor(1, MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), 1);
             }
 
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
@@ -156,15 +153,7 @@ public class Enemy {
                                 data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             }
 
-            if (data.currentColor.r < 1) {
-                data.currentColor.r = MathUtils.clamp(data.currentColor.r + delta * 2.5f, 0, 1);
-            }
-            if (data.currentColor.g < 1) {
-                data.currentColor.g = MathUtils.clamp(data.currentColor.g + delta * 2.5f, 0, 1);
-            }
-            if (data.currentColor.b < 1) {
-                data.currentColor.b = MathUtils.clamp(data.currentColor.b + delta * 2.5f, 0, 1);
-            }
+            lerpToColor(color, Color.WHITE, 2.5f, delta);
 
             if (data.spawnsBullets) {
                 if (data.millis > data.shootingDelay * 100) {
@@ -202,16 +191,16 @@ public class Enemy {
         }
 
         for (int i = 0; i < playerBullet.bullets.size; i++) {
-            if (playerBullet.bullets.get(i).overlaps(enemy.getBoundingRectangle())) {
-                data.currentColor = Color.valueOf(data.hitColor);
+            if (playerBullet.bullets.get(i).overlaps(entityHitBox)) {
+                color = Color.valueOf(data.hitColor);
                 data.health -= playerBullet.damages.get(i);
                 GameLogic.Score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
                 playerBullet.removeBullet(i, true);
             }
         }
 
-        if (playerBullet.laser.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
-            data.currentColor = Color.valueOf(data.hitColor);
+        if (playerBullet.laser.getBoundingRectangle().overlaps(entityHitBox)) {
+            color = Color.valueOf(data.hitColor);
             if (data.health > 0) {
                 GameLogic.Score += 10;
             }
@@ -219,8 +208,8 @@ public class Enemy {
         }
 
         for (int i = 0; i < Meteorite.meteorites.size; i++) {
-            if (Meteorite.meteorites.get(i).overlaps(enemy.getBoundingRectangle())) {
-                data.currentColor = Color.valueOf(data.hitColor);
+            if (Meteorite.meteorites.get(i).overlaps(entityHitBox)) {
+                color = Color.valueOf(data.hitColor);
                 if (data.health > Meteorite.healths.get(i)) {
                     data.health -= Meteorite.healths.get(i);
                     Meteorite.removeMeteorite(i, true);
@@ -234,12 +223,12 @@ public class Enemy {
             }
         }
 
-        if (playerBounds.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
+        if (playerBounds.getBoundingRectangle().overlaps(entityHitBox)) {
             kill();
             player.takeDamage(data.health / 3f);
         }
 
-        if (player.repellentField.getBoundingRectangle().overlaps(enemy.getBoundingRectangle()) && player.Charge >= player.bonusPowerConsumption * delta) {
+        if (player.repellentField.getBoundingRectangle().overlaps(entityHitBox) && player.Charge >= player.bonusPowerConsumption * delta) {
             float shipWidth = playerBounds.getBoundingRectangle().getWidth();
             float shipHeight = playerBounds.getBoundingRectangle().getWidth();
             float shipX = playerBounds.getBoundingRectangle().getX();
@@ -333,14 +322,14 @@ public class Enemy {
 
         GameLogic.enemiesKilled++;
 
-        UraniumCell.Spawn(enemy.getBoundingRectangle(), (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), 1, data.moneyTimer);
+        UraniumCell.Spawn(entityHitBox, (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), 1, data.moneyTimer);
         if (getRandomInRange(0, 100) <= data.bonusChance) {
-            Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), enemy.getBoundingRectangle());
+            Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), entityHitBox);
         }
 
-        Drops.drop(enemy.getBoundingRectangle(), (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
+        Drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
 
-        enemy.setPosition(-data.width - 100, -data.height - 100);
+        entitySprite.setPosition(-data.width - 100, -data.height - 100);
         data.x = -data.width - 100;
         data.y = -data.height - 100;
 

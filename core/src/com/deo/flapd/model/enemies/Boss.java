@@ -35,7 +35,6 @@ public class Boss {
     public JsonValue bossConfig;
     private Array<BasePart> parts;
     private Array<Phase> phases;
-    private TextureAtlas bossAtlas;
     private float x = 1500;
     private float y = 1500;
     private int[] spawnAt;
@@ -55,7 +54,7 @@ public class Boss {
         this.bossName = bossName;
 
         bossConfig = new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json"));
-        bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
+        TextureAtlas bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
         parts = new Array<>();
         animations = new Array<>();
         hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
@@ -195,22 +194,11 @@ public class Boss {
     }
 }
 
-class BasePart {
+class BasePart extends Entity{
 
-    float health;
     float originalHealth;
-    float height;
-    float width;
-    float offsetX = 0;
-    float offsetY = 0;
     float originalOffsetX = 0;
     float originalOffsetY = 0;
-    float originX;
-    float originY;
-    float rotation;
-    Sprite part;
-    float x;
-    float y;
     String name;
     String type;
     JsonValue config;
@@ -273,9 +261,8 @@ class BasePart {
         }
         soundVolume = getFloat("soundVolume");
 
-        part = new Sprite(textures.findRegion(this.config.getString("texture")));
+        entitySprite = new Sprite(textures.findRegion(this.config.getString("texture")));
 
-        part.setSize(width, height);
         originX = width / 2f;
         originY = height / 2;
         if (!this.config.getString("originX").equals("standard")) {
@@ -287,7 +274,7 @@ class BasePart {
         if (!hasCollision) {
             collisionEnabled = false;
         }
-        part.setOrigin(originX, originY);
+        super.init();
 
         TextureRegionDrawable BarForeground1 = constructFilledImageWithColor(0, 6, Color.RED);
         TextureRegionDrawable BarForeground2 = constructFilledImageWithColor(100, 6, Color.RED);
@@ -314,7 +301,7 @@ class BasePart {
 
     void draw(SpriteBatch batch, float delta) {
         if (visible) {
-            part.draw(batch);
+            entitySprite.draw(batch);
             if (showHealthBar) {
                 healthBar.draw(batch, 1);
             }
@@ -325,8 +312,7 @@ class BasePart {
     }
 
     void update(float delta) {
-        part.setPosition(x, y);
-        part.setRotation(rotation);
+        super.update();
         if (showHealthBar) {
             healthBar.setValue(health);
             healthBar.setPosition(width / 2 + x - 12.5f, y - 7);
@@ -334,7 +320,7 @@ class BasePart {
         }
         if (hasCollision && collisionEnabled && health > 0) {
             for (int i = 0; i < player.bullet.bullets.size; i++) {
-                if (player.bullet.bullets.get(i).overlaps(part.getBoundingRectangle())) {
+                if (player.bullet.bullets.get(i).overlaps(entitySprite.getBoundingRectangle())) {
                     health -= player.bullet.damages.get(i);
                     player.bullet.removeBullet(i, true);
                 }
@@ -371,13 +357,13 @@ class BasePart {
     }
 
     void explode() {
-        UraniumCell.Spawn(part.getBoundingRectangle(), getRandomInRange(moneyCount[0], moneyCount[1]), 1, moneyTimer);
+        UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), 1, moneyTimer);
 
         if (getRandomInRange(0, 100) <= bonusChance) {
-            Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), part.getBoundingRectangle());
+            Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
         }
 
-        Drops.drop(part.getBoundingRectangle(), getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
+        Drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
 
         explosionEffect.setPosition(x + width / 2, y + height / 2);
         explosionEffect.start();
@@ -471,7 +457,7 @@ class Part extends BasePart {
     @Override
     void draw(SpriteBatch batch, float delta) {
         if (visible && health > 0 && link.health > 0 && body.health > 0) {
-            part.draw(batch);
+            entitySprite.draw(batch);
             if (showHealthBar) {
                 healthBar.draw(batch, 1);
             }
@@ -485,6 +471,7 @@ class Part extends BasePart {
 class Cannon extends Part {
 
     boolean canAim;
+    boolean isLaser;
     int[] aimAngleLimit;
     float fireRate;
     float timer;
@@ -891,7 +878,7 @@ class Action {
             target.collisionEnabled = enableCollisions;
         }
         if (!changeTexture.equals("false")) {
-            target.part.setRegion(target.textures.findRegion(changeTexture));
+            target.entitySprite.setRegion(target.textures.findRegion(changeTexture));
         }
         target.visible = visible;
         target.active = enabled;

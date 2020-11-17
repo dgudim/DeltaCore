@@ -1,6 +1,5 @@
 package com.deo.flapd.model.enemies;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -42,8 +41,6 @@ public class EnemyData {
     float millis;
 
     String hitColor;
-
-    Color currentColor = Color.WHITE;
 
     String type;
 

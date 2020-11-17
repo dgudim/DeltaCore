@@ -455,4 +455,16 @@ public abstract class DUtils {
         pixmap.dispose();
         return image;
     }
+
+    public static void lerpToColor(Color from, Color to, float speed, float delta){
+        if (from.r < to.r) {
+            from.r = MathUtils.clamp(from.r + delta * speed, 0, 1);
+        }
+        if (from.g < to.g) {
+            from.g = MathUtils.clamp(from.g + delta * speed, 0, 1);
+        }
+        if (from.b < to.b) {
+            from.b = MathUtils.clamp(from.b + delta * speed, 0, 1);
+        }
+    }
 }
