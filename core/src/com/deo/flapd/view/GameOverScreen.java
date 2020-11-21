@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
@@ -91,7 +91,7 @@ public class GameOverScreen implements Screen {
 
         bulletsShot = player.bulletsShot;
 
-        meteoritesDestroyed = Meteorite.meteoritesDestroyed;
+        meteoritesDestroyed = Meteorites.meteoritesDestroyed;
 
         moneyEarned = GameLogic.moneyEarned;
 

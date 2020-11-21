@@ -5,19 +5,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
-import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.enemies.Meteorite;
 
 import java.util.Random;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomBoolean;
 import static com.deo.flapd.utils.DUtils.getString;
 
 
@@ -45,10 +46,10 @@ public class GameLogic {
 
     private Bullet playerBullet;
     private Polygon playerBounds;
-    private Meteorite meteorite;
+    private Meteorites meteorites;
     private Checkpoint checkpoint;
 
-    public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorite meteorite, Checkpoint checkpoint) {
+    public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorites meteorites, Checkpoint checkpoint) {
         player = ship;
         random = new Random();
 
@@ -56,7 +57,7 @@ public class GameLogic {
 
         playerBullet = player.bullet;
         playerBounds = player.bounds;
-        this.meteorite = meteorite;
+        this.meteorites = meteorites;
         this.checkpoint = checkpoint;
 
         difficulty = getFloat("difficulty");
@@ -144,8 +145,8 @@ public class GameLogic {
 
         if (!bossWave) {
 
-            if (random.nextInt(6000) == 5770) {
-                meteorite.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30 * difficulty);
+            if (getRandomBoolean(1)) {
+                meteorites.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30 * difficulty);
             }
 
             if (Score > lastCheckpoint + 9000 && !bossWave) {
@@ -170,48 +171,33 @@ public class GameLogic {
 
     public void detectCollisions(boolean is_paused) {
 
-        for (int i = 0; i < Meteorite.meteorites.size; i++) {
+        for (int i = 0; i < Meteorites.meteorites.size; i++) {
 
-            Rectangle meteorite = Meteorite.meteorites.get(i);
-            Float radius = Meteorite.radiuses.get(i);
+            Meteorite meteorite = Meteorites.meteorites.get(i);
+            float radius = meteorite.radius;
 
             if (!is_paused) {
 
-                if (meteorite.overlaps(playerBounds.getBoundingRectangle())) {
+                if (meteorite.entityHitBox.overlaps(playerBounds.getBoundingRectangle())) {
 
-                    player.takeDamage(Meteorite.healths.get(i));
+                    player.takeDamage(meteorite.health);
 
-                    Score = (int) (Score + Meteorite.radiuses.get(i) / 2);
+                    Score = (int) (Score + radius / 2);
 
-                    Meteorite.removeMeteorite(i, true);
+                    meteorite.health = 0;
+                }else {
+                    for (int i2 = 0; i2 < playerBullet.bullets.size; i2++) {
+                        if (meteorite.entityHitBox.overlaps(playerBullet.bullets.get(i2))) {
 
-                    Meteorite.meteoritesDestroyed++;
+                            Score = (int) (Score + radius / 2);
 
-                }
+                            meteorite.health -= playerBullet.damages.get(i2);
 
-                for (int i2 = 0; i2 < playerBullet.bullets.size; i2++) {
-                    if (meteorite.overlaps(playerBullet.bullets.get(i2))) {
-
-                        Score = (int) (Score + radius / 2);
-
-                        Meteorite.healths.set(i, Meteorite.healths.get(i) - playerBullet.damages.get(i2));
-
-                        playerBullet.removeBullet(i2, true);
-
-                        if (Meteorite.healths.get(i) <= 0) {
-
-                            Meteorite.removeMeteorite(i, true);
-
-                            Meteorite.meteoritesDestroyed++;
-
+                            playerBullet.removeBullet(i2, true);
                         }
                     }
-                }
-                if (playerBullet.laser.getBoundingRectangle().overlaps(Meteorite.meteorites.get(i))) {
-                    Meteorite.healths.set(i, Meteorite.healths.get(i) - playerBullet.damage / 10);
-                    if (Meteorite.healths.get(i) <= 0) {
-                        Meteorite.removeMeteorite(i, true);
-                        Meteorite.meteoritesDestroyed++;
+                    if (playerBullet.laser.getBoundingRectangle().overlaps(meteorite.entityHitBox)) {
+                        meteorite.health -= playerBullet.damage;
                     }
                 }
             }

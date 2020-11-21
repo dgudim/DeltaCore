@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.model.Bullet;
-import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.utils.DUtils;
 
@@ -88,9 +88,9 @@ public class EnemyBullet {
             explode();
             player.takeDamage(data.damage);
         }
-        for (int i = 0; i < Meteorite.meteorites.size; i++) {
-            if (Meteorite.meteorites.get(i).overlaps(bullet.getBoundingRectangle())) {
-                Meteorite.healths.set(i, Meteorite.healths.get(i) - data.damage);
+        for (int i = 0; i < Meteorites.meteorites.size; i++) {
+            if (Meteorites.meteorites.get(i).entityHitBox.overlaps(bullet.getBoundingRectangle())) {
+                Meteorites.meteorites.get(i).health -= data.damage;
                 explode();
             }
         }
@@ -144,3 +144,4 @@ public class EnemyBullet {
     }
 
 }
+

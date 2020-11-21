@@ -13,11 +13,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
@@ -85,8 +86,18 @@ public class Enemy extends Entity{
         } else {
             entitySprite = new Sprite(assetManager.get("enemies/enemies.atlas", TextureAtlas.class).findRegion(data.texture));
         }
-        originX = data.width / 2f;
-        originY = data.health / 2f;
+
+        health = data.health;
+
+        width = data.width;
+        height = data.height;
+        x = data.x;
+        y = data.y;
+        speed = data.speed;
+        rotation = data.rotation;
+        originX = width / 2f;
+        originY = height / 2f;
+
         super.init();
         for (int i = 0; i < data.fireEffects.length; i++) {
             ParticleEffect fire = new ParticleEffect();
@@ -125,32 +136,33 @@ public class Enemy extends Entity{
     void update(float delta) {
         if (!isDead) {
             if (!data.isHoming) {
-                data.x = MathUtils.clamp(data.x, -data.width - 500, 800);
-                data.y = MathUtils.clamp(data.y, 0, 480 - data.height);
+                x = MathUtils.clamp(x, -width - 500, 800);
+                y = MathUtils.clamp(y, 0, 480 - height);
             }
+
             super.update();
 
             if (!data.isHoming) {
-                data.x -= data.speed * delta;
+                x -= speed * delta;
             } else {
 
-                data.rotation = DUtils.lerpAngleWithConstantSpeed(data.rotation,
+                rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
-                                data.y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2f),
-                                data.x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2f)),
+                                y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2f),
+                                x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2f)),
                         data.homingSpeed, delta);
-                data.x -= MathUtils.cosDeg(data.rotation) * data.speed * 2 * delta;
-                data.y -= MathUtils.sinDeg(data.rotation) * data.speed * 2 * delta;
+                x -= MathUtils.cosDeg(rotation) * speed * 2 * delta;
+                y -= MathUtils.sinDeg(rotation) * speed * 2 * delta;
                 data.explosionTimer -= delta;
                 entitySprite.setColor(1, MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), MathUtils.clamp(data.explosionTimer / data.idealExplosionTimer, 0, 1), 1);
             }
 
             for (int i = 0; i < data.fireParticleEffects.size; i++) {
                 data.fireParticleEffects.get(i).setPosition(
-                        data.x + data.width / 2f + MathUtils.cosDeg(
-                                data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
-                        data.y + data.height / 2f + MathUtils.sinDeg(
-                                data.rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
+                        x + width / 2f + MathUtils.cosDeg(
+                                rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
+                        y + height / 2f + MathUtils.sinDeg(
+                                rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             }
 
             lerpToColor(color, Color.WHITE, 2.5f, delta);
@@ -169,7 +181,7 @@ public class Enemy extends Entity{
 
             data.millis += delta * 20;
 
-            if (data.x < -data.width - data.fireParticleEffects.get(0).getBoundingBox().getWidth() - 20) {
+            if (x < -width - data.fireParticleEffects.get(0).getBoundingBox().getWidth() - 20) {
                 isDead = true;
                 explosionFinished = true;
             }
@@ -193,7 +205,7 @@ public class Enemy extends Entity{
         for (int i = 0; i < playerBullet.bullets.size; i++) {
             if (playerBullet.bullets.get(i).overlaps(entityHitBox)) {
                 color = Color.valueOf(data.hitColor);
-                data.health -= playerBullet.damages.get(i);
+                health -= playerBullet.damages.get(i);
                 GameLogic.Score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
                 playerBullet.removeBullet(i, true);
             }
@@ -201,31 +213,20 @@ public class Enemy extends Entity{
 
         if (playerBullet.laser.getBoundingRectangle().overlaps(entityHitBox)) {
             color = Color.valueOf(data.hitColor);
-            if (data.health > 0) {
+            if (health > 0) {
                 GameLogic.Score += 10;
             }
-            data.health -= playerBullet.damage / 10;
+            health -= playerBullet.damage / 10f;
         }
 
-        for (int i = 0; i < Meteorite.meteorites.size; i++) {
-            if (Meteorite.meteorites.get(i).overlaps(entityHitBox)) {
-                color = Color.valueOf(data.hitColor);
-                if (data.health > Meteorite.healths.get(i)) {
-                    data.health -= Meteorite.healths.get(i);
-                    Meteorite.removeMeteorite(i, true);
-                } else if (data.health == Meteorite.healths.get(i)) {
-                    data.health = 0;
-                    Meteorite.removeMeteorite(i, true);
-                } else if (data.health < Meteorite.healths.get(i)) {
-                    Meteorite.healths.set(i, Meteorite.healths.get(i) - data.health);
-                    data.health = 0;
-                }
-            }
+        for (int i = 0; i < Meteorites.meteorites.size; i++) {
+            health -= Meteorites.meteorites.get(i).health;
+            Meteorites.meteorites.get(i).health = -health;
         }
 
         if (playerBounds.getBoundingRectangle().overlaps(entityHitBox)) {
             kill();
-            player.takeDamage(data.health / 3f);
+            player.takeDamage(health / 3f);
         }
 
         if (player.repellentField.getBoundingRectangle().overlaps(entityHitBox) && player.Charge >= player.bonusPowerConsumption * delta) {
@@ -233,31 +234,31 @@ public class Enemy extends Entity{
             float shipHeight = playerBounds.getBoundingRectangle().getWidth();
             float shipX = playerBounds.getBoundingRectangle().getX();
             float shipY = playerBounds.getBoundingRectangle().getY();
-            if (data.x > shipX + shipWidth / 2f && data.y > shipY + shipHeight / 2f) {
-                data.x += 50 * delta;
-                data.y += 50 * delta;
-            } else if (data.x > shipX + shipWidth / 2f && data.y + data.height < shipY + shipHeight / 2f) {
-                data.x += 50 * delta;
-                data.y -= 50 * delta;
-            } else if (data.x + data.width < shipX + shipWidth / 2f && data.y + data.height < shipY + shipHeight / 2f) {
-                data.x -= 50 * delta;
-                data.y -= 50 * delta;
-            } else if (data.x + data.width < shipX + shipWidth / 2f && data.y > shipY + shipHeight / 2f) {
-                data.x -= 50 * delta;
-                data.y += 50 * delta;
-            } else if (data.x > shipX + shipWidth) {
-                data.x += 50 * delta;
-            } else if (data.x + data.width < shipX) {
-                data.x -= 50 * delta;
-            } else if (data.y > shipY + shipHeight) {
-                data.y += 50 * delta;
-            } else if (data.y + data.height < shipY) {
-                data.y -= 50 * delta;
+            if (x > shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
+                x += 50 * delta;
+                y += 50 * delta;
+            } else if (x > shipX + shipWidth / 2f && y + height < shipY + shipHeight / 2f) {
+                x += 50 * delta;
+                y -= 50 * delta;
+            } else if (x + width < shipX + shipWidth / 2f && y + height < shipY + shipHeight / 2f) {
+                x -= 50 * delta;
+                y -= 50 * delta;
+            } else if (x + width < shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
+                x -= 50 * delta;
+                y += 50 * delta;
+            } else if (x > shipX + shipWidth) {
+                x += 50 * delta;
+            } else if (x + width < shipX) {
+                x -= 50 * delta;
+            } else if (y > shipY + shipHeight) {
+                y += 50 * delta;
+            } else if (y + height < shipY) {
+                y -= 50 * delta;
             }
             player.Charge -= player.bonusPowerConsumption * delta;
         }
 
-        if (data.health <= 0 && !isDead) {
+        if (health <= 0 && !isDead) {
             kill();
         }
 
@@ -268,10 +269,10 @@ public class Enemy extends Entity{
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
 
-            newBulletData.x = data.x + data.width / 2f + MathUtils.cosDeg(data.rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
-            newBulletData.y = data.y + data.height / 2f + MathUtils.sinDeg(data.rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            newBulletData.x = x + width / 2f + MathUtils.cosDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            newBulletData.y = y + height / 2f + MathUtils.sinDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
 
-            newBulletData.angle = getRandomInRange(-10, 10) * newBulletData.spread + data.rotation;
+            newBulletData.angle = getRandomInRange(-10, 10) * newBulletData.spread + rotation;
             if (data.canAim) {
                 newBulletData.angle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newBulletData.y - playerBounds.getY(), newBulletData.x - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
@@ -282,8 +283,8 @@ public class Enemy extends Entity{
     }
 
     private void spawnDrone() {
-        float x = data.x + data.width / 2f + MathUtils.cosDeg(data.rotation + data.droneAngle) * data.droneDistance;
-        float y = data.y + data.height / 2f + MathUtils.sinDeg(data.rotation + data.droneAngle) * data.droneDistance;
+        float x = this.x + width / 2f + MathUtils.cosDeg(rotation + data.droneAngle) * data.droneDistance;
+        float y = this.y + height / 2f + MathUtils.sinDeg(rotation + data.droneAngle) * data.droneDistance;
         for (int i = 0; i < data.dronesPerSpawn; i++) {
             EnemyData droneData = new EnemyData(enemies.enemiesJson.get(data.droneType), data.type).setNewPosition(x, y);
             droneData.health *= difficulty;
@@ -316,7 +317,7 @@ public class Enemy extends Entity{
             enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
-        data.explosionParticleEffect.setPosition(data.x + data.width / 2f, data.y + data.height / 2f);
+        data.explosionParticleEffect.setPosition(x + width / 2f, y + height / 2f);
         data.explosionParticleEffect.start();
         isDead = true;
 
@@ -329,11 +330,218 @@ public class Enemy extends Entity{
 
         Drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
 
-        entitySprite.setPosition(-data.width - 100, -data.height - 100);
-        data.x = -data.width - 100;
-        data.y = -data.height - 100;
+        entitySprite.setPosition(-width - 100, -height - 100);
+        x = -width - 100;
+        y = -height - 100;
 
         explosionSound.play(volume);
     }
+}
 
+class EnemyData {
+
+    String name;
+    String texture;
+    String explosionSound;
+    String explosion;
+    ParticleEffect explosionParticleEffect;
+    float explosionScale;
+
+    float x;
+    float y;
+    float rotation;
+
+    float width;
+    float height;
+
+    int fireEffectCount;
+    int[] fireOffsetsX;
+    int[] fireOffsetsY;
+    String[] fireEffects;
+    float[] fireScales;
+    Array<ParticleEffect> fireParticleEffects;
+    Array<Float> fireParticleEffectAngles;
+    Array<Float> fireParticleEffectDistances;
+
+    int health;
+
+    int speed;
+
+    float shootingDelay;
+
+    float millis;
+
+    String hitColor;
+
+    String type;
+
+    int[] spawnHeight;
+
+    int[] scoreSpawnConditions;
+
+    float spawnDelay;
+
+    int[] enemyCountSpawnConditions;
+
+    int dropTimer;
+
+    int moneyTimer;
+
+    int[] dropRarity;
+
+    int[] dropCount;
+
+    int[] moneyCount;
+
+    int bonusChance;
+
+    int[] bonusType;
+
+    boolean onBossWave;
+
+    boolean isHoming;
+    float homingSpeed;
+    float explosionTimer;
+    float idealExplosionTimer;
+
+    boolean spawnsDrones;
+
+    int dronesPerSpawn;
+
+    float droneSpawnDelay;
+
+    String droneType;
+
+    String droneSpawnSound;
+
+    int[] droneSpawnOffset;
+    float droneAngle;
+    float droneDistance;
+
+    boolean spawnsBullets;
+
+    boolean hasAnimation;
+
+    float frameDuration;
+
+    public boolean canAim;
+    public float aimMinAngle;
+    public float aimMaxAngle;
+
+    JsonValue enemyInfo;
+
+    EnemyData(JsonValue enemyInfo, String type) {
+
+        JsonValue enemyBodyInfo = enemyInfo.get(type).get("body");
+        fireParticleEffects = new Array<>();
+        fireParticleEffectAngles = new Array<>();
+        fireParticleEffectDistances = new Array<>();
+        this.type = type;
+        this.enemyInfo = enemyInfo;
+
+        name = enemyInfo.name;
+        texture = enemyBodyInfo.getString("texture");
+        explosionSound = enemyBodyInfo.getString("explosionSound");
+        explosion = enemyBodyInfo.getString("explosionEffect");
+        explosionScale = enemyBodyInfo.getFloat("explosionScale");
+
+        width = enemyBodyInfo.getFloat("width");
+        height = enemyBodyInfo.getFloat("height");
+
+        x = 805;
+        y = 0;
+
+        fireEffectCount = enemyInfo.get(type).get("body").get("fire").getInt("count");
+
+        fireOffsetsX = new int[fireEffectCount];
+        fireOffsetsY = new int[fireEffectCount];
+        fireEffects = new String[fireEffectCount];
+        fireScales = new float[fireEffectCount];
+        fireParticleEffects.setSize(fireEffectCount);
+        fireParticleEffectDistances.setSize(fireEffectCount);
+        fireParticleEffectAngles.setSize(fireEffectCount);
+
+        spawnHeight = enemyInfo.get("spawnHeight").asIntArray();
+        spawnDelay = enemyInfo.getFloat("spawnDelay");
+        enemyCountSpawnConditions = enemyInfo.get("spawnConditions").get("enemiesKilled").asIntArray();
+        scoreSpawnConditions = enemyInfo.get("spawnConditions").get("score").asIntArray();
+        onBossWave = enemyInfo.get("spawnConditions").getBoolean("bossWave");
+
+        for (int i = 0; i < fireEffectCount; i++) {
+            fireOffsetsX[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[0];
+            fireOffsetsY[i] = enemyBodyInfo.get("fire").get("offset" + i).asIntArray()[1];
+            fireEffects[i] = enemyBodyInfo.get("fire").getString("effect" + i);
+            fireScales[i] = enemyBodyInfo.get("fire").getFloat("scale" + i);
+            fireParticleEffectAngles.set(i, MathUtils.atan2(fireOffsetsY[i], fireOffsetsX[i]) * MathUtils.radiansToDegrees);
+            fireParticleEffectDistances.set(i, (float) Math.sqrt(fireOffsetsY[i] * fireOffsetsY[i] + fireOffsetsX[i] * fireOffsetsX[i]));
+        }
+
+        hasAnimation = enemyBodyInfo.getBoolean("hasAnimation");
+        if(hasAnimation){
+            frameDuration = enemyBodyInfo.getFloat("frameDuration");
+        }
+
+        isHoming = enemyBodyInfo.get("homing").asBoolean();
+
+        if (isHoming) {
+            explosionTimer = enemyBodyInfo.getFloat("explosionTimer");
+            idealExplosionTimer = enemyBodyInfo.getFloat("explosionTimer");
+            homingSpeed = enemyBodyInfo.get("homingSpeed").asFloat();
+        }
+
+        spawnsDrones = enemyBodyInfo.getBoolean("spawnsDrones");
+
+        spawnsBullets = enemyBodyInfo.getBoolean("spawnsBullets");
+
+        health = enemyBodyInfo.getInt("health");
+
+        speed = enemyBodyInfo.getInt("speed");
+
+        if(spawnsBullets) {
+            shootingDelay = enemyBodyInfo.getFloat("shootingDelay");
+            canAim = enemyBodyInfo.getBoolean("canAim");
+            if(canAim){
+                aimMinAngle = enemyBodyInfo.get("aimAngleLimit").asFloatArray()[0];
+                aimMaxAngle = enemyBodyInfo.get("aimAngleLimit").asFloatArray()[1];
+            }
+        }
+
+        if(spawnsDrones){
+            droneSpawnDelay = enemyBodyInfo.getFloat("droneSpawnDelay");
+            dronesPerSpawn = enemyBodyInfo.getInt("dronesPerSpawn");
+            droneType = enemyBodyInfo.getString("droneType");
+            droneSpawnSound = enemyBodyInfo.getString("droneSpawnSound");
+            droneSpawnOffset = enemyBodyInfo.get("droneSpawnOffset").asIntArray();
+            droneAngle = MathUtils.atan2(droneSpawnOffset[1], droneSpawnOffset[0]) * MathUtils.radiansToDegrees;
+            droneDistance = (float) Math.sqrt(droneSpawnOffset[1] * droneSpawnOffset[1] + droneSpawnOffset[0] * droneSpawnOffset[0]);
+        }
+
+        hitColor = enemyBodyInfo.getString("hitColor");
+
+        dropTimer = enemyInfo.get("drops").getInt("timer");
+        dropCount = enemyInfo.get("drops").get("count").asIntArray();
+        dropRarity = enemyInfo.get("drops").get("rarity").asIntArray();
+
+        moneyCount = enemyInfo.get("money").get("count").asIntArray();
+        moneyTimer = enemyInfo.get("money").getInt("timer");
+
+        bonusChance = enemyInfo.get("bonuses").getInt("chance");
+        bonusType = enemyInfo.get("bonuses").get("type").asIntArray();
+
+        millis = 0;
+    }
+
+    protected EnemyData clone() {
+        EnemyData copy = new EnemyData(enemyInfo, type);
+        copy.y = getRandomInRange(copy.spawnHeight[0], copy.spawnHeight[1]);
+        copy.shootingDelay += getRandomInRange(-7, 7) / 100f;
+        return copy;
+    }
+
+    protected EnemyData setNewPosition(float x, float y){
+        this.x = x;
+        this.y = y;
+        shootingDelay += getRandomInRange(-10, 10) / 100f;
+        return this;
+    }
 }

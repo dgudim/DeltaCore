@@ -254,8 +254,8 @@ public class Bullet {
 
                     boolean aim = false;
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (enemies.enemyEntities.get(i2).enemy.getBoundingRectangle().overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i2).isDead) {
-                            Rectangle enemy = enemies.enemyEntities.get(i2).enemy.getBoundingRectangle();
+                        if (enemies.enemyEntities.get(i2).entityHitBox.overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i2).isDead) {
+                            Rectangle enemy = enemies.enemyEntities.get(i2).entityHitBox;
                             float degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight() / 2, enemy.getX() - bullet.x + enemy.getWidth() / 2);
 
                             if (degree > 45 || degree < -45) {
@@ -339,9 +339,9 @@ public class Bullet {
                     float posX = playerBounds.getX() + 1000;
                     float posY = playerBounds.getY();
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (!enemies.enemyEntities.get(i2).isDead && enemies.enemyEntities.get(i2).data.x < posX) {
-                            posX = enemies.enemyEntities.get(i2).data.x + enemies.enemyEntities.get(i2).data.width / 2;
-                            posY = enemies.enemyEntities.get(i2).data.y + enemies.enemyEntities.get(i2).data.height / 2;
+                        if (!enemies.enemyEntities.get(i2).isDead && enemies.enemyEntities.get(i2).x < posX) {
+                            posX = enemies.enemyEntities.get(i2).x + enemies.enemyEntities.get(i2).width / 2f;
+                            posY = enemies.enemyEntities.get(i2).y + enemies.enemyEntities.get(i2).height / 2f;
                         }
                     }
                     degrees.set(i, MathUtils.lerpAngleDeg(angle, MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - posY, bullet.x - posX), homingSpeed/700f));

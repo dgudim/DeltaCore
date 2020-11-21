@@ -16,10 +16,9 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.Meteorite;
+import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
-import com.deo.flapd.model.enemies.Boss_evilEye;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -40,8 +39,7 @@ public class GameScreen implements Screen {
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
 
-    private Meteorite meteorite;
-    private Boss_evilEye boss_evilEye;
+    private Meteorites meteorites;
     private UraniumCell uraniumCell;
     private Checkpoint checkpoint;
 
@@ -108,19 +106,17 @@ public class GameScreen implements Screen {
 
         uraniumCell = new UraniumCell(assetManager);
 
-        boss_evilEye = new Boss_evilEye(assetManager, ship);
-
-        bonus = new Bonus(assetManager, 50, 50, ship, boss_evilEye);
+        bonus = new Bonus(assetManager, 50, 50, ship, bosses);
 
         drops = new Drops(assetManager, 48, getFloat("ui"));
 
         gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship);
 
-        meteorite = new Meteorite(assetManager, newGame, getBoolean("easterEgg"));
+        meteorites = new Meteorites(assetManager, newGame, getBoolean("easterEgg"));
 
         checkpoint = new Checkpoint(assetManager, ship);
 
-        gameLogic = new GameLogic(ship, newGame, game, meteorite, checkpoint);
+        gameLogic = new GameLogic(ship, newGame, game, meteorites, checkpoint);
 
         musicVolume = getFloat("musicVolume");
 
@@ -172,8 +168,8 @@ public class GameScreen implements Screen {
         bosses.update(delta);
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
-        boss_evilEye.draw(batch, delta);
-        meteorite.drawEffects(batch, delta);
+        meteorites.update(delta);
+        meteorites.drawEffects(batch);
         checkpoint.drawEffects(batch, delta);
 
         if (enableShader) {
@@ -185,7 +181,7 @@ public class GameScreen implements Screen {
         ship.drawBase(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
-        meteorite.drawBase(batch, delta);
+        meteorites.drawBase(batch);
         checkpoint.drawBase(batch);
 
         ship.DrawShield(batch, delta);
@@ -316,12 +312,10 @@ public class GameScreen implements Screen {
     public void dispose() {
 
         gameUi.dispose();
-        meteorite.dispose();
+        meteorites.dispose();
 
         ship.dispose();
-
-        boss_evilEye.dispose();
-
+        
         music.dispose();
 
         bonus.dispose();

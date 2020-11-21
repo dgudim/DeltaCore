@@ -31,8 +31,6 @@ public class Bonus {
     private Array<ParticleEffect> explosions;
     private Sprite bonus_health, bonus_charge, bonus_shield, bonus_part, bonus_bullets, boss;
 
-    private static float width, height;
-
     private BitmapFont font_text;
 
     private float uiScale;
@@ -41,6 +39,8 @@ public class Bonus {
     private static Random random;
 
     private Bosses bosses;
+
+    private static float height, width;
 
     public Bonus(AssetManager assetManager, float width, float height, ShipObject ship, Bosses bosses) {
 

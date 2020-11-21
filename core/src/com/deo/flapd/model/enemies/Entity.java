@@ -6,22 +6,24 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Entity {
 
-    float x;
-    float y;
-    float width;
-    float height;
+    public float x;
+    public float y;
+    public float width;
+    public float height;
     float offsetX = 0;
     float offsetY = 0;
     float originX;
     float originY;
     float rotation = 0;
-    float health;
-    boolean isDead = false;
+    public float health;
+    public float speed;
+    public boolean isDead = false;
+    public boolean isExploded = false;
     boolean canAimAt = false;
     Color color;
 
-    Sprite entitySprite;
-    Rectangle entityHitBox;
+    public Sprite entitySprite;
+    public Rectangle entityHitBox;
 
     public void init(){
         entitySprite.setSize(width, height);
@@ -31,10 +33,14 @@ public class Entity {
         color = Color.WHITE;
     }
 
-    public void update(){
+    protected void update(){
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         entitySprite.setColor(color);
+    }
+
+    void collideWith(String entityName){
+
     }
 
 }

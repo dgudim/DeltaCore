@@ -125,7 +125,7 @@ public class Checkpoint {
             putInteger("bonuses_collected", GameLogic.bonuses_collected);
             putInteger("lastCheckpoint", GameLogic.lastCheckpoint);
             putInteger("bulletsShot", player.bulletsShot);
-            putInteger("meteoritesDestroyed", Meteorite.meteoritesDestroyed);
+            putInteger("meteoritesDestroyed", Meteorites.meteoritesDestroyed);
             putFloat("ShipX", shipBounds.getX());
             putFloat("ShipY", shipBounds.getY());
             putInteger("money", GameLogic.money);
