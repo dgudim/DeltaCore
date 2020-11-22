@@ -26,6 +26,9 @@ import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.util.Map;
 
+import static java.lang.Math.floor;
+import static java.lang.Math.min;
+
 public abstract class DUtils {
 
     private static Preferences prefs = Gdx.app.getPreferences("Preferences");
@@ -80,7 +83,7 @@ public abstract class DUtils {
         return (MathUtils.random(max - min) + min);
     }
 
-    public static boolean getRandomBoolean(float positiveChance){
+    public static boolean getRandomBoolean(float positiveChance) {
         int intPositiveChance = (int) (positiveChance * 100);
         return getRandomInRange(intPositiveChance - 10000, intPositiveChance) >= 0;
     }
@@ -343,7 +346,7 @@ public abstract class DUtils {
         camera.position.set(400, 240, 0);
         float tempScaleH = height / 480.0f;
         float tempScaleW = width / 800.0f;
-        float zoom = Math.min(tempScaleH, tempScaleW);
+        float zoom = min(tempScaleH, tempScaleW);
         camera.zoom = 1 / zoom;
         camera.update();
     }
@@ -410,31 +413,27 @@ public abstract class DUtils {
         }
     }
 
+    public static float normaliseAngle(float angle, float start, float end) {
+        final float width = end - start;
+        final float offsetValue = angle - start;   // value relative to 0
+
+        return (float) ((offsetValue - (floor(offsetValue / width) * width)) + start);
+        // + start to reset back to start of original range
+    }
+
     public static float lerpAngleWithConstantSpeed(float from, float to, float speed, float delta) {
-
-        if (to < 0) {
-            to += 360;
-        }
-        if (to > 360) {
-            to -= 360;
-        }
-        if (from < 0) {
-            from += 360;
-        }
-        if (from > 360) {
-            from -= 360;
-        }
-
-        // TODO fixme
+        from = normaliseAngle(from, 0, 360);
+        to = normaliseAngle(to, 0, 360);
 
         float distance1 = Math.abs(from - to);
         float distance2 = 360 - distance1;
 
-        if (distance1 <= distance2) {
+        if ((distance1 < distance2 && to > from) || (distance1 > distance2 && to < from)) {
             return from + speed * delta;
         } else {
             return from - speed * delta;
         }
+
     }
 
     public static void logVariables() {
@@ -461,7 +460,7 @@ public abstract class DUtils {
         return image;
     }
 
-    public static void lerpToColor(Color from, Color to, float speed, float delta){
+    public static void lerpToColor(Color from, Color to, float speed, float delta) {
         if (from.r < to.r) {
             from.r = MathUtils.clamp(from.r + delta * speed, 0, 1);
         }

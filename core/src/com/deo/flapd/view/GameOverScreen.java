@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
@@ -32,7 +31,7 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameOverScreen implements Screen {
 
-    private int Score, enemiesKilled, bulletsShot, meteoritesDestroyed, highScore, moneyEarned;
+    private int Score, enemiesKilled, bulletsShot, highScore, moneyEarned;
 
     private float difficulty;
 
@@ -61,7 +60,7 @@ public class GameOverScreen implements Screen {
 
     private AssetManager assetManager;
 
-    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject player){
+    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject player) {
 
         this.batch = batch;
 
@@ -79,19 +78,17 @@ public class GameOverScreen implements Screen {
 
         difficulty = getFloat("difficulty");
 
-        if(Score > highScore){
+        if (Score > highScore) {
             putInteger("highScore", Score);
             highScore = Score;
             isNewHighScore = true;
-        }else{
+        } else {
             isNewHighScore = false;
         }
 
         enemiesKilled = GameLogic.enemiesKilled;
 
         bulletsShot = player.bulletsShot;
-
-        meteoritesDestroyed = Meteorites.meteoritesDestroyed;
 
         moneyEarned = GameLogic.moneyEarned;
 
@@ -107,7 +104,7 @@ public class GameOverScreen implements Screen {
         stage = new Stage(viewport, batch);
 
         buttonSkin = new Skin();
-        buttonSkin.addRegions((TextureAtlas)assetManager.get("GameOverScreenButtons/GameOverButtons.atlas"));
+        buttonSkin.addRegions((TextureAtlas) assetManager.get("GameOverScreenButtons/GameOverButtons.atlas"));
 
         buttonStyle = new Button.ButtonStyle();
         buttonStyle.down = buttonSkin.getDrawable("restart_e");
@@ -131,19 +128,19 @@ public class GameOverScreen implements Screen {
         stage.addActor(Menu);
         stage.addActor(Restart);
 
-        Menu.addListener(new ClickListener(){
+        Menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }
         });
 
-        Restart.addListener(new ClickListener(){
+        Restart.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(getFloat("Health")>0) {
+                if (getFloat("Health") > 0) {
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, false));
-                }else{
+                } else {
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
                 }
                 GameScreen.is_paused = false;
@@ -162,14 +159,14 @@ public class GameOverScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
         }
 
-        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(enableShader){
+        if (enableShader) {
             blurProcessor.capture();
         }
 
@@ -185,18 +182,18 @@ public class GameOverScreen implements Screen {
         font_main.setColor(Color.valueOf("#ff3300"));
         font_main.draw(batch, "Bullets Shot: " + bulletsShot, 305, 305, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff5500"));
-        font_main.draw(batch, "Enemies Killed: " + enemiesKilled,  305, 210, 200, 1, false);
+        font_main.draw(batch, "Enemies Killed: " + enemiesKilled, 305, 210, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff4400"));
-        font_main.draw(batch, "Meteorites Destroyed: " + meteoritesDestroyed, 305, 255, 200, 1, false);
+        font_main.draw(batch, "Cells Collected: " + moneyEarned, 305, 255, 200, 1, false);
         font_main.setColor(Color.valueOf("#ff6600"));
-        font_main.draw(batch, "Cells Collected: "+moneyEarned,  305, 165, 200, 1, false);
-        font_main.setColor(new Color().fromHsv(Math.abs(120-difficulty*20), 1.5f, 1).add(0,0,0,1));
+        font_main.draw(batch, "", 305, 165, 200, 1, false);
+        font_main.setColor(new Color().fromHsv(Math.abs(120 - difficulty * 20), 1.5f, 1).add(0, 0, 0, 1));
         font_main.getData().setScale(0.6f);
-        font_main.draw(batch, "Difficulty: " + difficulty+"X", 51, 455, 200, 1, false);
+        font_main.draw(batch, "Difficulty: " + difficulty + "X", 51, 455, 200, 1, false);
         font_main.getData().setScale(0.7f);
 
 
-        if(isNewHighScore) {
+        if (isNewHighScore) {
             font_main.getData().setScale(0.65f);
             font_main.setColor(Color.valueOf("#33ffaa"));
             font_main.draw(batch, "New High Score !", 555, 455, 200, 1, false);
@@ -204,7 +201,7 @@ public class GameOverScreen implements Screen {
 
         batch.end();
 
-        if(enableShader){
+        if (enableShader) {
             blurProcessor.render();
         }
     }

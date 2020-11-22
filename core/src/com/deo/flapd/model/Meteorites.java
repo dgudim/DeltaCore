@@ -5,12 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.enemies.Meteorite;
 
-import static com.deo.flapd.utils.DUtils.getInteger;
-
 public class Meteorites{
 
     public static Array<Meteorite> meteorites;
-    public static int meteoritesDestroyed;
     private AssetManager assetManager;
     private boolean easterEgg;
 
@@ -20,13 +17,6 @@ public class Meteorites{
         this.easterEgg = easterEgg;
 
         meteorites = new Array<>();
-
-        if (!newGame) {
-            meteoritesDestroyed = getInteger("meteoritesDestroyed");
-        } else {
-            meteoritesDestroyed = 0;
-        }
-
     }
 
     public void Spawn(float x, float flyingDirection, float radius) {
