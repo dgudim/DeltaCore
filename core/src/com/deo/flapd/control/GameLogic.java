@@ -11,7 +11,6 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
-import com.deo.flapd.model.enemies.Meteorite;
 
 import java.util.Random;
 
@@ -143,13 +142,12 @@ public class GameLogic {
             playerBullet.updateLaser(is_firing || is_firing_secondary);
         }
 
+        if (getRandomBoolean(0.05f)) {
+            meteorites.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(10) + 5);
+        }
+
         if (!bossWave) {
-
-            if (getRandomBoolean(1)) {
-                meteorites.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(40) + 30 * difficulty);
-            }
-
-            if (Score > lastCheckpoint + 9000 && !bossWave) {
+            if (Score > lastCheckpoint + 9000) {
                 lastCheckpoint = Score;
                 checkpoint.Spawn(random.nextInt(300) + 150, random.nextInt(201) + 100, 1);
             }
@@ -169,39 +167,4 @@ public class GameLogic {
         }
     }
 
-    public void detectCollisions(boolean is_paused) {
-
-        for (int i = 0; i < Meteorites.meteorites.size; i++) {
-
-            Meteorite meteorite = Meteorites.meteorites.get(i);
-            float radius = meteorite.radius;
-
-            if (!is_paused) {
-
-                if (meteorite.entityHitBox.overlaps(playerBounds.getBoundingRectangle())) {
-
-                    player.takeDamage(meteorite.health);
-
-                    Score = (int) (Score + radius / 2);
-
-                    meteorite.health = 0;
-                }else {
-                    for (int i2 = 0; i2 < playerBullet.bullets.size; i2++) {
-                        if (meteorite.entityHitBox.overlaps(playerBullet.bullets.get(i2))) {
-
-                            Score = (int) (Score + radius / 2);
-
-                            meteorite.health -= playerBullet.damages.get(i2);
-
-                            playerBullet.removeBullet(i2, true);
-                        }
-                    }
-                    if (playerBullet.laser.getBoundingRectangle().overlaps(meteorite.entityHitBox)) {
-                        meteorite.health -= playerBullet.damage;
-                    }
-                }
-            }
-        }
-
-    }
 }

@@ -80,8 +80,9 @@ public abstract class DUtils {
         return (MathUtils.random(max - min) + min);
     }
 
-    public static boolean getRandomBoolean(int positiveChance){
-        return getRandomInRange(positiveChance - 100, positiveChance) > 0;
+    public static boolean getRandomBoolean(float positiveChance){
+        int intPositiveChance = (int) (positiveChance * 100);
+        return getRandomInRange(intPositiveChance - 10000, intPositiveChance) >= 0;
     }
 
     public static void putInteger(String key, int val) {

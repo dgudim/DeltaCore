@@ -25,7 +25,7 @@ public class Entity {
     public Sprite entitySprite;
     public Rectangle entityHitBox;
 
-    public void init(){
+    public void init() {
         entitySprite.setSize(width, height);
         entitySprite.setOrigin(originX, originY);
         entitySprite.setPosition(x, y);
@@ -33,13 +33,18 @@ public class Entity {
         color = Color.WHITE;
     }
 
-    protected void update(){
+    protected void update() {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         entitySprite.setColor(color);
+        if (health > 0) {
+            entityHitBox = entitySprite.getBoundingRectangle();
+        } else {
+            entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
+        }
     }
 
-    void collideWith(String entityName){
+    void collideWith(String entityName) {
 
     }
 

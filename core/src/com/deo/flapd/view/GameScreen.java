@@ -26,7 +26,6 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.logVariables;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
@@ -149,18 +148,15 @@ public class GameScreen implements Screen {
 
         gameLogic.handleInput(delta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
 
-        try {
-            gameLogic.detectCollisions(is_paused);
-        } catch (Exception e) {
-            logException(e);
-        }
-
         if (enableShader) {
             postProcessor.capture();
         }
         batch.begin();
 
         batch.draw(bg1, 0, 0, (int) (movement / 4), -240, 800, 720);
+        meteorites.update(delta);
+        meteorites.drawEffects(batch);
+        meteorites.drawBase(batch);
         batch.draw(bg2, 0, 0, (int) (movement / 2), -240, 800, 720);
         batch.draw(bg3, 0, 0, (int) movement, -240, 800, 720);
 
@@ -168,8 +164,6 @@ public class GameScreen implements Screen {
         bosses.update(delta);
         ship.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
-        meteorites.update(delta);
-        meteorites.drawEffects(batch);
         checkpoint.drawEffects(batch, delta);
 
         if (enableShader) {
@@ -181,7 +175,6 @@ public class GameScreen implements Screen {
         ship.drawBase(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
-        meteorites.drawBase(batch);
         checkpoint.drawBase(batch);
 
         ship.DrawShield(batch, delta);

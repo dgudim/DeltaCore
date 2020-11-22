@@ -18,7 +18,6 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
@@ -134,13 +133,15 @@ public class Enemy extends Entity{
     }
 
     void update(float delta) {
+
+        super.update();
+
         if (!isDead) {
+
             if (!data.isHoming) {
                 x = MathUtils.clamp(x, -width - 500, 800);
                 y = MathUtils.clamp(y, 0, 480 - height);
             }
-
-            super.update();
 
             if (!data.isHoming) {
                 x -= speed * delta;
@@ -192,6 +193,61 @@ public class Enemy extends Entity{
 
             animationPosition += delta;
 
+            for (int i = 0; i < playerBullet.bullets.size; i++) {
+                if (playerBullet.bullets.get(i).overlaps(entityHitBox)) {
+                    color = Color.valueOf(data.hitColor);
+                    health -= playerBullet.damages.get(i);
+                    GameLogic.Score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
+                    playerBullet.removeBullet(i, true);
+                }
+            }
+
+            if (playerBullet.laser.getBoundingRectangle().overlaps(entityHitBox)) {
+                color = Color.valueOf(data.hitColor);
+                if (health > 0) {
+                    GameLogic.Score += 10;
+                }
+                health -= playerBullet.damage / 10f;
+            }
+
+            if (playerBounds.getBoundingRectangle().overlaps(entityHitBox)) {
+                kill();
+                player.takeDamage(health / 3f);
+            }
+
+            if (health <= 0) {
+                kill();
+            }
+
+            if (player.repellentField.getBoundingRectangle().overlaps(entityHitBox) && player.Charge >= player.bonusPowerConsumption * delta) {
+                float shipWidth = playerBounds.getBoundingRectangle().getWidth();
+                float shipHeight = playerBounds.getBoundingRectangle().getWidth();
+                float shipX = playerBounds.getBoundingRectangle().getX();
+                float shipY = playerBounds.getBoundingRectangle().getY();
+                if (x > shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
+                    x += 50 * delta;
+                    y += 50 * delta;
+                } else if (x > shipX + shipWidth / 2f && y + height < shipY + shipHeight / 2f) {
+                    x += 50 * delta;
+                    y -= 50 * delta;
+                } else if (x + width < shipX + shipWidth / 2f && y + height < shipY + shipHeight / 2f) {
+                    x -= 50 * delta;
+                    y -= 50 * delta;
+                } else if (x + width < shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
+                    x -= 50 * delta;
+                    y += 50 * delta;
+                } else if (x > shipX + shipWidth) {
+                    x += 50 * delta;
+                } else if (x + width < shipX) {
+                    x -= 50 * delta;
+                } else if (y > shipY + shipHeight) {
+                    y += 50 * delta;
+                } else if (y + height < shipY) {
+                    y -= 50 * delta;
+                }
+                player.Charge -= player.bonusPowerConsumption * delta;
+            }
+
         }
 
         for (int i = 0; i < bullets.size; i++) {
@@ -200,66 +256,6 @@ public class Enemy extends Entity{
                 bullets.get(i).dispose();
                 bullets.removeIndex(i);
             }
-        }
-
-        for (int i = 0; i < playerBullet.bullets.size; i++) {
-            if (playerBullet.bullets.get(i).overlaps(entityHitBox)) {
-                color = Color.valueOf(data.hitColor);
-                health -= playerBullet.damages.get(i);
-                GameLogic.Score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
-                playerBullet.removeBullet(i, true);
-            }
-        }
-
-        if (playerBullet.laser.getBoundingRectangle().overlaps(entityHitBox)) {
-            color = Color.valueOf(data.hitColor);
-            if (health > 0) {
-                GameLogic.Score += 10;
-            }
-            health -= playerBullet.damage / 10f;
-        }
-
-        for (int i = 0; i < Meteorites.meteorites.size; i++) {
-            health -= Meteorites.meteorites.get(i).health;
-            Meteorites.meteorites.get(i).health = -health;
-        }
-
-        if (playerBounds.getBoundingRectangle().overlaps(entityHitBox)) {
-            kill();
-            player.takeDamage(health / 3f);
-        }
-
-        if (player.repellentField.getBoundingRectangle().overlaps(entityHitBox) && player.Charge >= player.bonusPowerConsumption * delta) {
-            float shipWidth = playerBounds.getBoundingRectangle().getWidth();
-            float shipHeight = playerBounds.getBoundingRectangle().getWidth();
-            float shipX = playerBounds.getBoundingRectangle().getX();
-            float shipY = playerBounds.getBoundingRectangle().getY();
-            if (x > shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
-                x += 50 * delta;
-                y += 50 * delta;
-            } else if (x > shipX + shipWidth / 2f && y + height < shipY + shipHeight / 2f) {
-                x += 50 * delta;
-                y -= 50 * delta;
-            } else if (x + width < shipX + shipWidth / 2f && y + height < shipY + shipHeight / 2f) {
-                x -= 50 * delta;
-                y -= 50 * delta;
-            } else if (x + width < shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
-                x -= 50 * delta;
-                y += 50 * delta;
-            } else if (x > shipX + shipWidth) {
-                x += 50 * delta;
-            } else if (x + width < shipX) {
-                x -= 50 * delta;
-            } else if (y > shipY + shipHeight) {
-                y += 50 * delta;
-            } else if (y + height < shipY) {
-                y -= 50 * delta;
-            }
-            player.Charge -= player.bonusPowerConsumption * delta;
-        }
-
-        if (health <= 0 && !isDead) {
-            kill();
         }
 
         queuedForDeletion = isDead && bullets.size == 0 && (data.explosionParticleEffect.isComplete() || explosionFinished);
@@ -317,7 +313,7 @@ public class Enemy extends Entity{
             enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
-        data.explosionParticleEffect.setPosition(x + width / 2f, y + height / 2f);
+        data.explosionParticleEffect.setPosition(x + originX, y + originY);
         data.explosionParticleEffect.start();
         isDead = true;
 
@@ -329,10 +325,6 @@ public class Enemy extends Entity{
         }
 
         Drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
-
-        entitySprite.setPosition(-width - 100, -height - 100);
-        x = -width - 100;
-        y = -height - 100;
 
         explosionSound.play(volume);
     }
