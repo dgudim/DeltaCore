@@ -24,41 +24,42 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.ItemSlotManager;
 import com.deo.flapd.view.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getPrice;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class PurchaseDialogue extends Dialogue{
+public class PurchaseDialogue extends Dialogue {
 
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity){
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, null, null);
     }
 
-    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue){
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
     }
 
-    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager){
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, itemSlotManager, null);
     }
 
-    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue){
+    public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue) {
 
         requestedQuantity = MathUtils.clamp(requestedQuantity, 1, availableQuantity);
 
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
-        skin.addRegions((TextureAtlas)assetManager.get("shop/workshop.atlas"));
+        skin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
 
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
 
@@ -79,7 +80,7 @@ public class PurchaseDialogue extends Dialogue{
         yes.setBounds(86, 3, 39, 22);
         no.setBounds(3, 3, 39, 22);
 
-        no.addListener(new ClickListener(){
+        no.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dialog.hide();
@@ -90,7 +91,7 @@ public class PurchaseDialogue extends Dialogue{
         quantity.setBounds(46.5f, 6, 35, 10);
         quantity.setValue(requestedQuantity);
 
-        final Label quantityText = new Label("quantity:"+requestedQuantity, yellowLabelStyle);
+        final Label quantityText = new Label("quantity:" + requestedQuantity, yellowLabelStyle);
         quantityText.setFontScale(0.1f);
         quantityText.setPosition(49, 16);
         quantityText.setSize(30, 10);
@@ -105,29 +106,29 @@ public class PurchaseDialogue extends Dialogue{
         product.setBounds(88, 40, 35, 25);
         product.setScaling(Scaling.fit);
 
-        final Label productName = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+"+requestedQuantity, yellowLabelStyle);
+        final Label productName = new Label(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + requestedQuantity, yellowLabelStyle);
         productName.setFontScale(0.08f);
         productName.setBounds(86, 29, 39, 10);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
 
-        final int[] price = getPrice(result);
+        final int[] price = getPrice(result, treeJson, 1.7f);
         final Table requirements = new Table();
         Table holder = new Table();
-        final Label uraniumCells_text = new Label(getInteger("money")+"/"+price[0]*requestedQuantity, yellowLabelStyle);
-        final Label cogs_text = new Label(getInteger("cogs")+"/"+price[1]*requestedQuantity, yellowLabelStyle);
+        final Label uraniumCells_text = new Label(getInteger("money") + "/" + price[0] * requestedQuantity, yellowLabelStyle);
+        final Label cogs_text = new Label(getInteger("cogs") + "/" + price[1] * requestedQuantity, yellowLabelStyle);
         uraniumCells_text.setFontScale(0.13f);
         cogs_text.setFontScale(0.13f);
 
-        if (getInteger("money") < price[0]*requestedQuantity) {
+        if (getInteger("money") < price[0] * requestedQuantity) {
             uraniumCells_text.setColor(Color.valueOf("#DD0000"));
         }
 
-        if (getInteger("cogs") < price[1]*requestedQuantity) {
+        if (getInteger("cogs") < price[1] * requestedQuantity) {
             cogs_text.setColor(Color.valueOf("#DD0000"));
         }
 
-        final Image uraniumCell = new Image((Texture)assetManager.get("uraniumCell.png"));
+        final Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(10, 10);
         holder.add(uraniumCells_text).padLeft(1);
@@ -136,7 +137,7 @@ public class PurchaseDialogue extends Dialogue{
         Table holder2 = new Table();
         holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(10, 10);
         holder2.add(cogs_text).padLeft(1);
-        if(price[1]>0){
+        if (price[1] > 0) {
             requirements.add(holder2).align(Align.left).padLeft(1).padTop(1).row();
         }
         requirements.align(Align.left);
@@ -145,46 +146,46 @@ public class PurchaseDialogue extends Dialogue{
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                quantityText.setText("quantity:"+(int)quantity.getValue());
-                productName.setText(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int)(quantity.getValue()));
-                uraniumCells_text.setText(getInteger("money")+"/"+(int)(price[0]*quantity.getValue()));
-                cogs_text.setText(getInteger("cogs")+"/"+(int)(price[1]*quantity.getValue()));
-                if (getInteger("money") < price[0]*quantity.getValue()) {
+                quantityText.setText("quantity:" + (int) quantity.getValue());
+                productName.setText(result + " " + getInteger("item_" + getItemCodeNameByName(result)) + "+" + (int) (quantity.getValue()));
+                uraniumCells_text.setText(getInteger("money") + "/" + (int) (price[0] * quantity.getValue()));
+                cogs_text.setText(getInteger("cogs") + "/" + (int) (price[1] * quantity.getValue()));
+                if (getInteger("money") < price[0] * quantity.getValue()) {
                     uraniumCells_text.setColor(Color.valueOf("#DD0000"));
-                }else{
+                } else {
                     uraniumCells_text.setColor(Color.YELLOW);
                 }
 
-                if (getInteger("cogs") < price[1]*quantity.getValue()) {
+                if (getInteger("cogs") < price[1] * quantity.getValue()) {
                     cogs_text.setColor(Color.valueOf("#DD0000"));
-                }else{
+                } else {
                     cogs_text.setColor(Color.YELLOW);
                 }
             }
         });
 
-        yes.addListener(new ClickListener(){
+        yes.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getInteger("money") >= price[0]*quantity.getValue() && getInteger("cogs") >= price[1]*quantity.getValue()) {
-                    subtractInteger("money", (int)(price[0]*quantity.getValue()));
-                    subtractInteger("cogs", (int)(price[1]*quantity.getValue()));
-                    addInteger("item_"+getItemCodeNameByName(result), (int)quantity.getValue());
+                if (getInteger("money") >= price[0] * quantity.getValue() && getInteger("cogs") >= price[1] * quantity.getValue()) {
+                    subtractInteger("money", (int) (price[0] * quantity.getValue()));
+                    subtractInteger("cogs", (int) (price[1] * quantity.getValue()));
+                    addInteger("item_" + getItemCodeNameByName(result), (int) quantity.getValue());
 
-                    JsonValue slotsJson = new JsonReader().parse("{\"slots\":" + getString("savedSlots") + ","+ "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+                    JsonEntry slotsJson = (JsonEntry) new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
                     Array<String> items = new Array<>();
-                    items.addAll(slotsJson.get("slots").asStringArray());
+                    items.addAll(slotsJson.getStringArray("slots"));
                     Array<Integer> quantities = new Array<>();
 
-                    for(int i = 0; i<slotsJson.get("productQuantities").asIntArray().length; i++){
-                        quantities.add(slotsJson.get("productQuantities").asIntArray()[i]);
+                    for (int i = 0; i < slotsJson.getIntArray("productQuantities").length; i++) {
+                        quantities.add(slotsJson.getIntArray("productQuantities")[i]);
                     }
 
                     int index = items.indexOf(result, false);
 
-                    quantities.set(index, (int)(quantities.get(index)-quantity.getValue()));
+                    quantities.set(index, (int) (quantities.get(index) - quantity.getValue()));
 
-                    if(quantities.get(index)==0) {
+                    if (quantities.get(index) == 0) {
                         items.removeIndex(index);
                         quantities.removeIndex(index);
                     }
@@ -192,10 +193,10 @@ public class PurchaseDialogue extends Dialogue{
                     putString("savedSlots", items.toString());
                     putString("savedSlotQuantities", quantities.toString());
 
-                    if(itemSlotManager != null) {
+                    if (itemSlotManager != null) {
                         itemSlotManager.update();
                     }
-                    if(previousDialogue != null){
+                    if (previousDialogue != null) {
                         previousDialogue.update();
                     }
                     dialog.hide();
@@ -206,10 +207,10 @@ public class PurchaseDialogue extends Dialogue{
         Button question = uiComposer.addButton("questionButton");
         question.setBounds(119, 61, 6, 6);
 
-        question.addListener(new ClickListener(){
+        question.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result,true);
+                new CraftingDialogue(stage, assetManager, result, true);
             }
         });
 
@@ -227,23 +228,4 @@ public class PurchaseDialogue extends Dialogue{
         dialog.setPosition(15, 130);
         stage.addActor(dialog);
     }
-
-    private int[] getPrice(String result){
-        JsonValue price = treeJson.get(result).get("price");
-        int[] priceArray = new int[]{0, 0};
-        if(price.asString().equals("auto")){
-            String[] items = treeJson.get(result).get("items").asStringArray();
-            int[] itemCounts = treeJson.get(result).get("itemCounts").asIntArray();
-            for(int i = 0; i<items.length; i++){
-                int[] buffer = getPrice(items[i]);
-                priceArray[0] += Math.ceil(buffer[0]/treeJson.get(result).getFloat("resultCount")*itemCounts[i]);
-                priceArray[1] += buffer[1] + 1;
-            }
-        }else{
-            return new int[]{price.asInt(), 0};
-        }
-        priceArray[1] = (int)MathUtils.clamp((Math.ceil(priceArray[1]/2f)-1)*1.7, 0, 100);
-        return priceArray;
-    }
-
 }

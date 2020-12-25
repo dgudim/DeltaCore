@@ -23,9 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.dialogues.PurchaseDialogue;
 import com.deo.flapd.view.dialogues.SellUncraftDialogue;
@@ -57,7 +57,7 @@ public class ItemSlotManager {
     private final int SHOP = 2;
     private UIComposer uiComposer;
 
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     ItemSlotManager(AssetManager assetManager) {
 
@@ -96,15 +96,15 @@ public class ItemSlotManager {
         } else {
             slotCount = loadSlots();
         }
-        if(slotCount == 0) {
+        if (slotCount == 0) {
             final TextButton update = uiComposer.addTextButton("workshopGreen", "reset for 3500?", 0.48f);
-            update.addListener(new ClickListener(){
+            update.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new ConfirmationDialogue(assetManager, stage, "reset the shop for 3500?", new ClickListener(){
+                    new ConfirmationDialogue(assetManager, stage, "reset the shop for 3500?", new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
-                            if(getInteger("money")>=3500){
+                            if (getInteger("money") >= 3500) {
                                 subtractInteger("money", 3500);
                                 putLong("lastGenTime", 0);
                                 ItemSlotManager.this.update();
@@ -159,9 +159,9 @@ public class ItemSlotManager {
     }
 
     private int loadSlots() {
-        JsonValue slotsJson = new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
-        int[] productQuantities = slotsJson.get("productQuantities").asIntArray();
-        String[] slotNames = slotsJson.get("slots").asStringArray();
+        JsonEntry slotsJson = (JsonEntry) new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+        int[] productQuantities = slotsJson.getIntArray("productQuantities");
+        String[] slotNames = slotsJson.getStringArray("slots");
         boolean nextRow = false;
         for (int i = 0; i < productQuantities.length; i++) {
             addShopSlot(slotNames[i], productQuantities[i], nextRow);
@@ -344,14 +344,13 @@ public class ItemSlotManager {
         int complexity = 0;
         if (treeJson.get(result) == null)
             throw new IllegalArgumentException("no item declared with name " + result);
-        JsonValue price = treeJson.get(result).get("price");
-        if (price.asString().equals("auto")) {
-            String[] items = treeJson.get(result).get("items").asStringArray();
-            for (int i = 0; i < items.length; i++) {
-                int buffer = getComplexity(items[i]);
-                complexity += buffer + 1;
-            }
+
+        String[] items = treeJson.getStringArray(result, "items");
+        for (int i = 0; i < items.length; i++) {
+            int buffer = getComplexity(items[i]);
+            complexity += buffer + 1;
         }
+
         complexity = MathUtils.clamp((int) (Math.ceil(complexity / 2f) - 1) * 4, 0, 15);
         return complexity;
     }

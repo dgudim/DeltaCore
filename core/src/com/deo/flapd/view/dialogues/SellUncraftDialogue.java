@@ -26,25 +26,26 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.ItemSlotManager;
 import com.deo.flapd.view.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getPrice;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class SellUncraftDialogue extends Dialogue{
+public class SellUncraftDialogue extends Dialogue {
 
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-    public SellUncraftDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item){
+    public SellUncraftDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
 
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
-        skin.addRegions((TextureAtlas)assetManager.get("shop/workshop.atlas"));
+        skin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
 
         UIComposer uiComposer = new UIComposer(assetManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen", "workshopPurple", "sliderDefaultSmall", "arrowRightSmall", "arrowLeftSmall");
@@ -65,7 +66,7 @@ public class SellUncraftDialogue extends Dialogue{
         sell.setBounds(86, 3, 39, 22);
         cancel.setBounds(3, 3, 39, 22);
 
-        cancel.addListener(new ClickListener(){
+        cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dialog.hide();
@@ -75,19 +76,19 @@ public class SellUncraftDialogue extends Dialogue{
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
 
-        final String[] items = treeJson.get(item).get("items").asStringArray();
-        final int[] itemCounts = treeJson.get(item).get("itemCounts").asIntArray();
-        for(int i = 0; i<itemCounts.length; i++){
-            itemCounts[i] = MathUtils.clamp(itemCounts[i]/2, 1, itemCounts[i]);
+        final String[] items = treeJson.getStringArray(item, "items");
+        final int[] itemCounts = treeJson.getIntArray(item, "itemCounts");
+        for (int i = 0; i < itemCounts.length; i++) {
+            itemCounts[i] = MathUtils.clamp(itemCounts[i] / 2, 1, itemCounts[i]);
         }
 
         boolean isEndItem = false;
 
-        if (items[0].equals("")){
+        if (items[0].equals("")) {
             isEndItem = true;
         }
 
-        if(!isEndItem) {
+        if (!isEndItem) {
             for (int i = 0; i < items.length; i++) {
                 Table requirement = new Table();
                 Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "+" + itemCounts[i], yellowLabelStyle);
@@ -124,17 +125,17 @@ public class SellUncraftDialogue extends Dialogue{
         ingredients.setupOverscroll(5, 10, 30);
         ingredients.setScrollingDisabled(true, false);
 
-        final int[] price = getPrice(item);
-        price[0] = MathUtils.clamp(price[0]/3, 1, price[0]);
-        price[1] = price[1]/3;
+        final int[] price = getPrice(item, treeJson, 1.5f);
+        price[0] = MathUtils.clamp(price[0] / 3, 1, price[0]);
+        price[1] = price[1] / 3;
         final Table requirements = new Table();
         Table holder = new Table();
-        final Label uraniumCells_text = new Label(getInteger("money")+"+"+price[0], yellowLabelStyle);
-        final Label cogs_text = new Label(getInteger("cogs")+"+"+price[1], yellowLabelStyle);
+        final Label uraniumCells_text = new Label(getInteger("money") + "+" + price[0], yellowLabelStyle);
+        final Label cogs_text = new Label(getInteger("cogs") + "+" + price[1], yellowLabelStyle);
         uraniumCells_text.setFontScale(0.08f);
         cogs_text.setFontScale(0.08f);
 
-        final Image uraniumCell = new Image((Texture)assetManager.get("uraniumCell.png"));
+        final Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(7, 7);
         holder.add(uraniumCells_text).padLeft(1);
@@ -143,7 +144,7 @@ public class SellUncraftDialogue extends Dialogue{
         Table holder2 = new Table();
         holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(7, 7);
         holder2.add(cogs_text).padLeft(1);
-        if(price[1]>0){
+        if (price[1] > 0) {
             requirements.add(holder2).align(Align.left).padLeft(1).padTop(1).row();
         }
         requirements.setBounds(80, 28, 45, 39);
@@ -158,25 +159,25 @@ public class SellUncraftDialogue extends Dialogue{
         scrap.setBounds(56, 29, 10, 10);
         buy.setChecked(true);
 
-        buy.addListener(new ClickListener(){
+        buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 scrap.setChecked(!buy.isChecked());
-                if(scrap.isChecked()){
+                if (scrap.isChecked()) {
                     sell.setText("scrap");
-                }else{
+                } else {
                     sell.setText("sell");
                 }
             }
         });
 
-        scrap.addListener(new ClickListener(){
+        scrap.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 buy.setChecked(!scrap.isChecked());
-                if(buy.isChecked()){
+                if (buy.isChecked()) {
                     sell.setText("sell");
-                }else{
+                } else {
                     sell.setText("scrap");
                 }
             }
@@ -189,8 +190,8 @@ public class SellUncraftDialogue extends Dialogue{
         endItem.setAlignment(Align.center);
 
         scrap.setDisabled(isEndItem);
-        if(isEndItem){
-            buy.addListener(new ClickListener(){
+        if (isEndItem) {
+            buy.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     scrap.setChecked(false);
@@ -227,28 +228,28 @@ public class SellUncraftDialogue extends Dialogue{
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                quantityText.setText("quantity:"+(int)quantity.getValue());
-                productName.setText(item + " " + getInteger("item_" + getItemCodeNameByName(item)) + "-"+(int)quantity.getValue());
-                for(int i = 0; i<labels.size; i++){
-                    labels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "+" + (int)(itemCounts[i]*quantity.getValue()));
+                quantityText.setText("quantity:" + (int) quantity.getValue());
+                productName.setText(item + " " + getInteger("item_" + getItemCodeNameByName(item)) + "-" + (int) quantity.getValue());
+                for (int i = 0; i < labels.size; i++) {
+                    labels.get(i).setText(items[i] + " " + getInteger("item_" + getItemCodeNameByName(items[i])) + "+" + (int) (itemCounts[i] * quantity.getValue()));
                 }
-                uraniumCells_text.setText(getInteger("money")+"+"+(int)(price[0]*quantity.getValue()));
-                cogs_text.setText(getInteger("cogs")+"+"+(int)(price[1]*quantity.getValue()));
+                uraniumCells_text.setText(getInteger("money") + "+" + (int) (price[0] * quantity.getValue()));
+                cogs_text.setText(getInteger("cogs") + "+" + (int) (price[1] * quantity.getValue()));
             }
         });
 
-        sell.addListener(new ClickListener(){
+        sell.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(buy.isChecked()){
-                    addInteger("money", (int)(price[0]*quantity.getValue()));
-                    addInteger("cogs", (int)(price[1]*quantity.getValue()));
-                }else{
-                    for(int i = 0; i<labels.size; i++){
-                        addInteger("item_"+getItemCodeNameByName(items[i]), (int)(itemCounts[i]*quantity.getValue()));
+                if (buy.isChecked()) {
+                    addInteger("money", (int) (price[0] * quantity.getValue()));
+                    addInteger("cogs", (int) (price[1] * quantity.getValue()));
+                } else {
+                    for (int i = 0; i < labels.size; i++) {
+                        addInteger("item_" + getItemCodeNameByName(items[i]), (int) (itemCounts[i] * quantity.getValue()));
                     }
                 }
-                subtractInteger("item_"+getItemCodeNameByName(item), (int)quantity.getValue());
+                subtractInteger("item_" + getItemCodeNameByName(item), (int) quantity.getValue());
                 itemSlotManager.update();
                 dialog.hide();
             }
@@ -274,23 +275,4 @@ public class SellUncraftDialogue extends Dialogue{
         dialog.setPosition(15, 130);
         stage.addActor(dialog);
     }
-
-    private int[] getPrice(String result){
-        JsonValue price = treeJson.get(result).get("price");
-        int[] priceArray = new int[]{0, 0};
-        if(price.asString().equals("auto")){
-            String[] items = treeJson.get(result).get("items").asStringArray();
-            int[] itemCounts = treeJson.get(result).get("itemCounts").asIntArray();
-            for(int i = 0; i<items.length; i++){
-                int[] buffer = getPrice(items[i]);
-                priceArray[0] += Math.ceil(buffer[0]/treeJson.get(result).getFloat("resultCount")*itemCounts[i]);
-                priceArray[1] += buffer[1] + 1;
-            }
-        }else{
-            return new int[]{price.asInt(), 0};
-        }
-        priceArray[1] = (int)MathUtils.clamp((Math.ceil(priceArray[1]/2f)-1)*1.5f, 0, 100);
-        return priceArray;
-    }
-
 }

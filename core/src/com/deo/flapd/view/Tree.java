@@ -24,8 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
 
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
@@ -43,7 +43,7 @@ public class Tree {
     private float height;
     private int branchCount;
     ScrollPane treeScrollView;
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     Tree(AssetManager assetManager, float x, float y, float width, float height) {
         this.height = height;
@@ -161,7 +161,7 @@ public class Tree {
     }
 
     private String[] getRequiredItemsFromCraftingTree(String result) {
-        return treeJson.get(result).get("items").asStringArray();
+        return treeJson.getStringArray(result, "items");
     }
 
     void hide() {
@@ -195,10 +195,10 @@ class Node {
     private AssetManager assetManager;
     private int requestedQuantity = 1;
     private Label quantity;
-    private JsonValue treeJson;
+    private JsonEntry treeJson;
     private float resultCount = 1;
 
-    Node(final AssetManager assetManager, final String item, float x, float y, float width, float height, final Table holder, JsonValue treeJson) {
+    Node(final AssetManager assetManager, final String item, float x, float y, float width, float height, final Table holder, JsonEntry treeJson) {
         this.holder = holder;
         this.assetManager = assetManager;
         this.treeJson = treeJson;
@@ -381,7 +381,7 @@ class Node {
         Color color = Color.WHITE;
         switch (getType()) {
             case ("basePart"):
-                if (getString(treeJson.get(name).getString("saveTo")).equals(name)) {
+                if (getString(treeJson.getString(name, "saveTo")).equals(name)) {
                     color = Color.GREEN;
                 }
                 break;
@@ -390,7 +390,7 @@ class Node {
                 break;
             case ("part"):
                 color = Color.SKY;
-                if (getString(treeJson.get(name).getString("saveTo")).equals(name)) {
+                if (getString(treeJson.getString(name, "saveTo")).equals(name)) {
                     color = Color.GREEN;
                 }
                 break;
@@ -410,7 +410,7 @@ class Node {
     private boolean getPartLockState() {
         boolean locked = false;
         if (getType().equals("part")) {
-            String[] requiredItems = treeJson.get(name).get("requires").asStringArray();
+            String[] requiredItems = treeJson.getStringArray(name, "requires");
             for (int i = 0; i < requiredItems.length; i++) {
                 locked = !getBoolean("unlocked_" + getItemCodeNameByName(requiredItems[i]));
                 if (locked) {
@@ -427,7 +427,7 @@ class Node {
         } else {
             if (treeJson.get(name) == null)
                 throw new IllegalArgumentException("no item declared with name " + name);
-            return treeJson.get(name).getString("type");
+            return treeJson.getString(name, "type");
         }
     }
 
@@ -438,14 +438,14 @@ class Node {
     }
 
     private int[] getRequiredItems() {
-        return treeJson.get(name).get("itemCounts").asIntArray();
+        return treeJson.getIntArray(name, "itemCounts");
     }
 
     private float getResultCount(boolean parent) {
         if (parent) {
-            return treeJson.get(this.parent.name).getInt("resultCount");
+            return treeJson.getInt(this.parent.name, "resultCount");
         } else {
-            return treeJson.get(name).getInt("resultCount");
+            return treeJson.getInt(name, "resultCount");
         }
     }
 }

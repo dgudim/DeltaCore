@@ -15,10 +15,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.clearPrefs;
@@ -62,7 +62,7 @@ public class LoadingScreen implements Screen {
             putFloat("difficulty", 1);
             putBoolean("transparency", true);
             putBoolean("bloom", true);
-            JsonValue tree = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+            JsonEntry tree = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
             for(int i = 0; i<tree.size; i++){
                 if(tree.get(i).getString("type").equals("basePart")){
                     putBoolean("unlocked_"+getItemCodeNameByName(tree.get(i).name), true);

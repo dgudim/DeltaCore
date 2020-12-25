@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.enemies.Bosses;
 
@@ -28,12 +27,13 @@ import java.util.Map;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
+import static java.lang.Math.pow;
 
 public abstract class DUtils {
 
     private static Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
-    private static JsonValue itemNames = new JsonReader().parse(Gdx.files.internal("shop/itemNames.json"));
+    private static JsonEntry itemNames = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/itemNames.json"));
     public static int bulletDisposes;
     public static int bulletTrailDisposes;
     public static int enemyDisposes;
@@ -81,6 +81,13 @@ public abstract class DUtils {
 
     public static int getRandomInRange(int min, int max) {
         return (MathUtils.random(max - min) + min);
+    }
+
+    public static float getRandomInRange(int min, int max, int precision) {
+        precision = (int) pow(10, precision);
+        min *= precision * precision;
+        max *= precision * precision;
+        return (MathUtils.random(max - min) + min) / (float) precision;
     }
 
     public static boolean getRandomBoolean(float positiveChance) {
@@ -470,5 +477,23 @@ public abstract class DUtils {
         if (from.b < to.b) {
             from.b = MathUtils.clamp(from.b + delta * speed, 0, 1);
         }
+    }
+
+    public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {
+        JsonEntry price = treeJson.get(result, "price");
+        int[] priceArray = new int[]{0, 0};
+        if (price.asString().equals("auto")) {
+            String[] items = treeJson.getStringArray(result, "items");
+            int[] itemCounts = treeJson.getIntArray(result, "itemCounts");
+            for (int i = 0; i < items.length; i++) {
+                int[] buffer = getPrice(items[i], treeJson, priceCoefficient);
+                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(result, "resultCount") * itemCounts[i]);
+                priceArray[1] += buffer[1] + 1;
+            }
+        } else {
+            return new int[]{price.asInt(), 0};
+        }
+        priceArray[1] = (int) MathUtils.clamp((Math.ceil(priceArray[1] / 2f) - 1) * priceCoefficient, 0, 100);
+        return priceArray;
     }
 }

@@ -36,11 +36,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
@@ -79,7 +79,7 @@ public class MenuScreen implements Screen {
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
     private boolean hasAnimation;
-    private JsonValue shipConfigs;
+    private JsonEntry shipConfigs;
 
     private Image FillTexture;
 
@@ -120,7 +120,7 @@ public class MenuScreen implements Screen {
 
     private final Slider musicVolumeS;
 
-    private JsonValue treeJson;
+    private JsonEntry treeJson;
 
     private String lastFireEffect;
 
@@ -140,7 +140,7 @@ public class MenuScreen implements Screen {
 
         this.assetManager = assetManager;
 
-        treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
         Music = getFloat("musicVolume") > 0;
 
@@ -165,7 +165,7 @@ public class MenuScreen implements Screen {
 
         currentShipTexture = getString("currentArmour");
 
-        shipConfigs = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json"));
+        shipConfigs = (JsonEntry) new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json"));
 
         fires = new Array<>();
 
@@ -677,7 +677,7 @@ public class MenuScreen implements Screen {
     }
 
     private void loadFire() {
-        JsonValue shipConfig = shipConfigs.get(getString("currentArmour"));
+        JsonEntry shipConfig = shipConfigs.get(getString("currentArmour"));
 
         int fireCount = shipConfig.getInt("fireCount");
 
@@ -688,12 +688,12 @@ public class MenuScreen implements Screen {
 
         for (int i = 0; i < fireCount; i++) {
             ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
-            fire.setPosition(Ship.getX() + shipConfig.get("fires").getFloat("fire" + i + "OffsetX"), Ship.getY() + shipConfig.get("fires").getFloat("fire" + i + "OffsetY"));
+            fire.load(Gdx.files.internal("particles/" + treeJson.getString(getString("currentEngine"), "usesEffect") + ".p"), Gdx.files.internal("particles"));
+            fire.setPosition(Ship.getX() + shipConfig.getFloat("fires", "fire" + i + "OffsetX"), Ship.getY() + shipConfig.getFloat("fires", "fire" + i + "OffsetY"));
             fire.start();
             fires.add(fire);
         }
-        lastFireEffect = treeJson.get(getString("currentEngine")).getString("usesEffect");
+        lastFireEffect = treeJson.getString(getString("currentEngine"), "usesEffect");
     }
 
     private void updateFire() {
@@ -701,10 +701,10 @@ public class MenuScreen implements Screen {
             if (lastFireEffect.equals(" ")) {
                 loadFire();
             }
-            if (!lastFireEffect.equals(treeJson.get(getString("currentEngine")).getString("usesEffect"))) {
+            if (!lastFireEffect.equals(treeJson.getString(getString("currentEngine"), "usesEffect"))) {
                 loadFire();
             }
-            String key = treeJson.get(getString("currentEngine")).getString("usesEffect") + "_color";
+            String key = treeJson.getString(getString("currentEngine"), "usesEffect") + "_color";
             if (getString(key).equals("")) {
                 setFireToDefault(key);
             } else {
@@ -714,9 +714,9 @@ public class MenuScreen implements Screen {
                 }
             }
         } catch (Exception e) {
-            log("corrupted fire color array");
+            log("\ncorrupted fire color array");
             logException(e);
-            setFireToDefault(treeJson.get(getString("currentEngine")).getString("usesEffect") + "_color");
+            setFireToDefault(treeJson.getString(getString("currentEngine"), "usesEffect") + "_color");
         }
     }
 
@@ -729,7 +729,7 @@ public class MenuScreen implements Screen {
     }
 
     private void initializeShip() {
-        JsonValue shipConfig = shipConfigs.get(getString("currentArmour"));
+        JsonEntry shipConfig = shipConfigs.get(getString("currentArmour"));
         hasAnimation = shipConfig.getBoolean("hasAnimation");
 
         if (!hasAnimation) {

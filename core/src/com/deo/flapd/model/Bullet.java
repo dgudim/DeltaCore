@@ -15,17 +15,16 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Enemies;
-
-import java.util.Random;
+import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.bulletDisposes;
 import static com.deo.flapd.utils.DUtils.bulletTrailDisposes;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 
 public class Bullet {
@@ -47,8 +46,6 @@ public class Bullet {
     private Sound shot;
 
     private float soundVolume;
-
-    private Random random;
 
     private float spread;
 
@@ -96,9 +93,10 @@ public class Bullet {
 
         TextureAtlas bullets = assetManager.get("player/bullets.atlas");
 
-        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
-        JsonValue shipConfig = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
-        JsonValue currentCannon = treeJson.get(getString("currentCannon"));
+        JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        JsonEntry shipConfig = (JsonEntry) new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
+
+        JsonEntry currentCannon = treeJson.get(getString("currentCannon"));
 
         gunCount = shipConfig.getInt("gunCount");
         currentActiveGun = 0;
@@ -107,8 +105,8 @@ public class Bullet {
         gunOffsetsY = new float[gunCount];
 
         for (int i = 0; i < gunCount; i++) {
-            gunOffsetsX[i] = shipConfig.get("guns").getFloat("gun" + i + "OffsetX");
-            gunOffsetsY[i] = shipConfig.get("guns").getFloat("gun" + i + "OffsetY");
+            gunOffsetsX[i] = shipConfig.getFloatByPath("guns", "gun" + i + "OffsetX");
+            gunOffsetsY[i] = shipConfig.getFloatByPath("guns", "gun" + i + "OffsetY");
         }
 
         bulletExplosionEffect = currentCannon.getString("usesEffect");
@@ -123,8 +121,8 @@ public class Bullet {
             hasTrail = false;
         }
 
-        String[] params = currentCannon.get("parameters").asStringArray();
-        float[] paramValues = currentCannon.get("parameterValues").asFloatArray();
+        String[] params = currentCannon.getStringArray("parameters");
+        float[] paramValues = currentCannon.getFloatArray("parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("damage")) {
                 damage = (int) paramValues[i];
@@ -162,8 +160,8 @@ public class Bullet {
             bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         }
 
-        params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
-        paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
+        params = treeJson.getStringArrayByPath(getString("currentCore"), "parameters");
+        paramValues = treeJson.getFloatArrayByPath(getString("currentCore"), "parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("damage multiplier")) {
                 damage *= paramValues[i];
@@ -176,8 +174,6 @@ public class Bullet {
             explosionTimer = currentCannon.getFloat("explosionTimer");
             homingSpeed = currentCannon.getFloat("homingSpeed");
         }
-
-        random = new Random();
 
         this.bullets = new Array<>();
         damages = new Array<>();
@@ -273,7 +269,7 @@ public class Bullet {
                         degrees.add(0f);
                     }
 
-                    degrees.set(degrees.size - 1, degrees.get(degrees.size - 1) + playerBounds.getRotation() + (random.nextFloat() - 0.5f) * spread * 7);
+                    degrees.set(degrees.size - 1, degrees.get(degrees.size - 1) + playerBounds.getRotation() + (getRandomInRange(0, 1000, 3) - 0.5f) * spread * 7);
 
                     if (isHoming) {
                         explosionTimers.add(explosionTimer);
@@ -344,7 +340,7 @@ public class Bullet {
                             posY = enemies.enemyEntities.get(i2).y + enemies.enemyEntities.get(i2).height / 2f;
                         }
                     }
-                    degrees.set(i, MathUtils.lerpAngleDeg(angle, MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - posY, bullet.x - posX), homingSpeed/700f));
+                    degrees.set(i, MathUtils.lerpAngleDeg(angle, MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - posY, bullet.x - posX), homingSpeed / 700f));
                     this.bullet.setRotation(angle + 180);
                     bullet.x += MathUtils.cosDeg(angle + 180) * (bulletSpeed / 1.2f) * delta;
                     bullet.y += MathUtils.sinDeg(angle + 180) * (bulletSpeed / 1.2f) * delta;

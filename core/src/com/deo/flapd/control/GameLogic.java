@@ -6,11 +6,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.utils.JsonEntry;
 
 import java.util.Random;
 
@@ -61,11 +61,15 @@ public class GameLogic {
 
         difficulty = getFloat("difficulty");
 
-        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
-        speedMultiplier = treeJson.get(getString("currentEngine")).get("parameterValues").asFloatArray()[0];
+        JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
-        float[] shipParamValues = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray();
-        String[] shipParams = treeJson.get(getString("currentArmour")).get("parameters").asStringArray();
+        speedMultiplier = treeJson.getFloatArray(getString("currentEngine"), "parameterValues")[0];
+
+        float[] shipParamValues = treeJson.getFloatArray(getString("currentArmour"), "parameterValues");
+        String[] shipParams = treeJson.getStringArray(getString("currentArmour"), "parameters");
+
+        float[] coreParamValues = treeJson.getFloatArray(getString("currentCore"), "parameterValues");
+        String[] coreParams = treeJson.getStringArray(getString("currentCore"), "parameters");
 
         for (int i = 0; i < shipParamValues.length; i++) {
             if (shipParams[i].endsWith("speed multiplier")) {
@@ -73,11 +77,9 @@ public class GameLogic {
             }
         }
 
-        String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
-        float[] paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].endsWith("speed multiplier")) {
-                speedMultiplier *= paramValues[i];
+        for (int i = 0; i < coreParams.length; i++) {
+            if (coreParams[i].endsWith("speed multiplier")) {
+                speedMultiplier *= coreParamValues[i];
             }
         }
 

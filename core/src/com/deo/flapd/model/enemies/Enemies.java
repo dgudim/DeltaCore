@@ -5,9 +5,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -17,7 +17,7 @@ public class Enemies {
 
     private AssetManager assetManager;
 
-    JsonValue enemiesJson = new JsonReader().parse(Gdx.files.internal("enemies/enemies.json"));
+    JsonEntry enemiesJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("enemies/enemies.json"));
     private Array<EnemyData> enemies;
     private Array<String> enemyNames;
     public Array<Enemy> enemyEntities;

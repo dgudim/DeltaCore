@@ -1,5 +1,603 @@
 {
+  "textures": "bossEvil.atlas",
+  "spawnAt": [850, 100],
+  "spawnConditions": {
+    "score": 13000,
+    "randomness": 1000
+  },
   "parts": {
+    "body": {
+      "type": "basePart",
+      "health": 2000,
+      "width": 128,
+      "height": 128,
+      "originX": "standard",
+      "originY": "standard",
+      "texture": "evil_base",
+      "explosionEffect": "particles/explosion_evil.p",
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 0,
+      "drops": {
+        "items": {
+          "timer": 2,
+          "rarity": [4, 5],
+          "count": [3, 5]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [5, 25]
+        },
+        "bonuses": {
+          "type": [2, 4],
+          "chance": 90
+        }
+      }
+    },
 
+    "cannon1": {
+      "type": "cannon",
+      "laser": false,
+      "hasCollision": true,
+      "health": 570,
+      "width": 60,
+      "height": 60,
+      "originX": -170,
+      "originY": 0,
+      "offset": {
+        "relativeTo": "body",
+        "X": 170,
+        "Y": 0
+      },
+      "aimAngleLimit": [-360, 360],
+      "bullet": {
+        "texture": "pew2.png",
+        "shootSound": "sfx/gun3.ogg",
+        "speed": 150,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 0.7,
+        "explosionEffect": "particles/explosion_evil_small.p",
+        "explosionScale": 0.7,
+        "height": 10,
+        "width": 10,
+        "offset": [0, 0]
+      },
+      "fireRate":{
+        "baseRate": 2,
+        "randomness": 1
+      },
+      "linked": false,
+      "texture": "evil_cannon",
+      "explosionEffect": "particles/explosion_evil.p",
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 1,
+      "drops": {
+        "items": {
+          "timer": 2,
+          "rarity": [4, 5],
+          "count": [3, 5]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [5, 25]
+        },
+        "bonuses": {
+          "type": [2, 4],
+          "chance": 90
+        }
+      }
+    },
+    "cannon2": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": -141.57,
+        "originY": -102.87,
+        "offset": {
+          "relativeTo": "body",
+          "X": 141.57,
+          "Y": 102.87
+        }
+      }
+    },
+
+    "cannon3": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": -54.1,
+        "originY": -166.43,
+        "offset": {
+          "relativeTo": "body",
+          "X": 54.1,
+          "Y": 166.43
+        }
+      }
+    },
+    "cannon4": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": 54.1,
+        "originY": -166.43,
+        "offset": {
+          "relativeTo": "body",
+          "X": -54.1,
+          "Y": 166.43
+        }
+      }
+    },
+
+    "cannon5": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": 141.57,
+        "originY": -102.87,
+        "offset": {
+          "relativeTo": "body",
+          "X": -141.57,
+          "Y": 102.87
+        }
+      }
+    },
+    "cannon6": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": 175,
+        "originY": 0,
+        "offset": {
+          "relativeTo": "body",
+          "X": -175,
+          "Y": 0
+        }
+      }
+    },
+
+    "cannon7": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": 141.57,
+        "originY": 102.87,
+        "offset": {
+          "relativeTo": "body",
+          "X": -141.57,
+          "Y": -102.87
+        }
+      }
+    },
+    "cannon8": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": 54.1,
+        "originY": 166.43,
+        "offset": {
+          "relativeTo": "body",
+          "X": -54.1,
+          "Y": -166.43
+        }
+      }
+    },
+
+    "cannon9": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": -54.1,
+        "originY": 166.43,
+        "offset": {
+          "relativeTo": "body",
+          "X": 54.1,
+          "Y": -166.43
+        }
+      }
+    },
+    "cannon10": {
+      "type": "clone",
+      "copyFrom": "cannon1",
+      "override": {
+        "originX": -141.57,
+        "originY": 102.87,
+        "offset": {
+          "relativeTo": "body",
+          "X": 141.57,
+          "Y": -102.87
+        }
+      }
+    },
+
+    "laserCannon": {
+      "type": "cannon",
+      "laser": true,
+      "hasCollision": false,
+      "health": 1,
+      "width": 132,
+      "height": 132,
+      "originX": "standard",
+      "originY": "standard",
+      "offset": {
+        "relativeTo": "body",
+        "X": 0,
+        "Y": 0
+      },
+      "aimAngleLimit": [-360, 360],
+      "bullet": {
+        "texture": "pew2.png",
+        "shootSound": "sfx/gun3.ogg",
+        "speed": 150,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 7,
+        "homing": false,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 0.7,
+        "explosionEffect": "particles/explosion_evil_small.p",
+        "explosionScale": 0.7,
+        "height": 10,
+        "width": 10,
+        "offset": [0, 0]
+      },
+      "linked": false,
+      "texture": "evil_left",
+      "layer": 1,
+      "drops": false
+    }
+
+  },
+
+  "phases": {
+    "initialisingPhase": {
+      "bodyInit": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "moveLinearX": {
+            "moveBy": -250,
+            "speed": 5,
+            "stopPreviousAnimations": false
+          },
+          "moveLinearX": {
+            "moveBy": -220,
+            "speed": 5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon1Init": {
+        "target": "cannon1",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon2Init": {
+        "target": "cannon2",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon3Init": {
+        "target": "cannon3",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon4Init": {
+        "target": "cannon4",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon5Init": {
+        "target": "cannon5",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon6Init": {
+        "target": "cannon6",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon7Init": {
+        "target": "cannon7",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon8Init": {
+        "target": "cannon8",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon9Init": {
+        "target": "cannon9",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon10Init": {
+        "target": "cannon10",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 3,
+            "stopPreviousAnimations": false
+          }
+        }
+      }
+    },
+    "inPlacePhase": {
+      "bodyInPlace": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": false
+      },
+      "cannon1InPlace": {
+        "target": "cannon1",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon2InPlace": {
+        "target": "cannon2",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon3InPlace": {
+        "target": "cannon3",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon4InPlace": {
+        "target": "cannon4",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon5InPlace": {
+        "target": "cannon5",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon6InPlace": {
+        "target": "cannon6",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon7InPlace": {
+        "target": "cannon7",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon8InPlace": {
+        "target": "cannon8",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon9InPlace": {
+        "target": "cannon9",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "cannon10InPlace": {
+        "target": "cannon10",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": {
+          "rotate": {
+            "moveBy": "inf",
+            "speed": 1.5,
+            "stopPreviousAnimations": false
+          }
+        }
+      }
+    }
+  },
+
+  "phaseTriggers": {
+    "inPlacePhase": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 270
+        }
+      }
+    }
   }
+
 }

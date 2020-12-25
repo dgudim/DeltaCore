@@ -26,8 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.LoadingScreen;
 import com.deo.flapd.view.UIComposer;
 
@@ -40,7 +40,7 @@ import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class CraftingDialogue extends Dialogue{
+public class CraftingDialogue extends Dialogue {
 
     private Dialog dialog;
     private Stage stage;
@@ -56,7 +56,7 @@ public class CraftingDialogue extends Dialogue{
     private Label.LabelStyle yellowLabelStyle, defaultLabelStyle;
     private final Slider quantity;
     private TextureAtlas itemAtlas;
-    private JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
 
     public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
         this(stage, assetManager, result, 1, false, null);
@@ -138,7 +138,7 @@ public class CraftingDialogue extends Dialogue{
                         customize.addListener(new ClickListener() {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
-                                new ColorCustomizationDialogue(assetManager, treeJson.get(result).getString("usesEffect"), stage);
+                                new ColorCustomizationDialogue(assetManager, treeJson.getString(result, "usesEffect"), stage);
                             }
                         });
                         yes.setText("ok");
@@ -218,7 +218,7 @@ public class CraftingDialogue extends Dialogue{
                             customize.addListener(new ClickListener() {
                                 @Override
                                 public void clicked(InputEvent event, float x, float y) {
-                                    new ColorCustomizationDialogue(assetManager, treeJson.get(result).getString("usesEffect"), stage);
+                                    new ColorCustomizationDialogue(assetManager, treeJson.getString(result, "usesEffect"), stage);
                                 }
                             });
                             yes.setText("ok");
@@ -293,21 +293,21 @@ public class CraftingDialogue extends Dialogue{
     }
 
     private String[] getRequiredItems() {
-        if (treeJson.get(result).get("items") == null) {
+        if (treeJson.get(result, "items") == null) {
             return new String[]{};
         } else {
-            return treeJson.get(result).get("items").asStringArray();
+            return treeJson.getStringArray(result, "items");
         }
     }
 
     private String getDescription(String result) {
-        return treeJson.get(result).getString("description");
+        return treeJson.getString(result, "description");
     }
 
     private String getStats() {
         StringBuilder stats = new StringBuilder();
-        String[] statsArray = treeJson.get(result).get("parameters").asStringArray();
-        String[] statsValues = treeJson.get(result).get("parameterValues").asStringArray();
+        String[] statsArray = treeJson.getStringArray(result, "parameters");
+        String[] statsValues = treeJson.getStringArray(result, "parameterValues");
         for (int i = 0; i < statsArray.length; i++) {
             stats.append("\n").append(statsArray[i]).append(": ").append(statsValues[i]);
         }
@@ -315,15 +315,15 @@ public class CraftingDialogue extends Dialogue{
     }
 
     private int[] getRequiredItemCounts() {
-        if (treeJson.get(result).get("itemCounts") == null) {
+        if (treeJson.get(result, "itemCounts") == null) {
             return new int[]{};
         } else {
-            return treeJson.get(result).get("itemCounts").asIntArray();
+            return treeJson.getIntArray(result, "itemCounts");
         }
     }
 
     private int getResultCount() {
-        return treeJson.get(result).getInt("resultCount");
+        return treeJson.getInt(result, "resultCount");
     }
 
     @Override
@@ -336,11 +336,11 @@ public class CraftingDialogue extends Dialogue{
                 tableLabels.get(i).setColor(Color.YELLOW);
             }
         }
-        for(int i = 0; i<items.length; i++){
+        for (int i = 0; i < items.length; i++) {
             if (!getString("savedSlots").contains(items[i])) {
                 buyShortcuts.get(i).setTouchable(Touchable.disabled);
                 buyShortcuts.get(i).setColor(Color.GRAY);
-                buyShortcuts.get(i).removeListener(buyShortcuts.get(i).getListeners().get(buyShortcuts.get(i).getListeners().size-1));
+                buyShortcuts.get(i).removeListener(buyShortcuts.get(i).getListeners().get(buyShortcuts.get(i).getListeners().size - 1));
             }
         }
     }
@@ -353,11 +353,11 @@ public class CraftingDialogue extends Dialogue{
     }
 
     private String getType() {
-        return treeJson.get(result).getString("type");
+        return treeJson.getString(result, "type");
     }
 
     private String saveTo() {
-        return treeJson.get(result).getString("saveTo");
+        return treeJson.getString(result, "saveTo");
     }
 
     private void addCloseListener(TextButton... buttons) {
@@ -405,13 +405,13 @@ public class CraftingDialogue extends Dialogue{
             buyShortcut.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    JsonValue slotsJson = new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+                    JsonEntry slotsJson = (JsonEntry) new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
                     Array<String> Jitems = new Array<>();
-                    Jitems.addAll(slotsJson.get("slots").asStringArray());
+                    Jitems.addAll(slotsJson.getStringArray("slots"));
                     Array<Integer> quantities = new Array<>();
 
-                    for (int i = 0; i < slotsJson.get("productQuantities").asIntArray().length; i++) {
-                        quantities.add(slotsJson.get("productQuantities").asIntArray()[i]);
+                    for (int i = 0; i < slotsJson.getIntArray("productQuantities").length; i++) {
+                        quantities.add(slotsJson.getIntArray("productQuantities")[i]);
                     }
 
                     new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
@@ -533,7 +533,7 @@ public class CraftingDialogue extends Dialogue{
     private boolean getPartLockState() {
         boolean locked = false;
         if (getType().equals("part")) {
-            String[] requiredItems = treeJson.get(result).get("requires").asStringArray();
+            String[] requiredItems = treeJson.getStringArray(result, "requires");
             for (int i = 0; i < requiredItems.length; i++) {
                 locked = !getBoolean("unlocked_" + getItemCodeNameByName(requiredItems[i]));
                 if (locked) {
@@ -545,7 +545,7 @@ public class CraftingDialogue extends Dialogue{
     }
 
     private void addDependencies() {
-        final String[] requiredItems = treeJson.get(result).get("requires").asStringArray();
+        final String[] requiredItems = treeJson.getStringArray(result, "requires");
         Table ingredientsTable = new Table();
 
         for (int i = 0; i < requiredItems.length; i++) {

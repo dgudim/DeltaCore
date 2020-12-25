@@ -2,7 +2,7 @@ package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.JsonValue;
+import com.deo.flapd.utils.JsonEntry;
 
 public class BulletData {
 
@@ -41,12 +41,12 @@ public class BulletData {
     float explosionTimer;
     float homingSpeed;
 
-    JsonValue enemyInfo;
+    JsonEntry enemyInfo;
 
     String type;
 
-    public BulletData(JsonValue enemyInfo, String type) {
-        JsonValue bulletInfo = enemyInfo.get(type).get("bullet");
+    public BulletData(JsonEntry enemyInfo, String type) {
+        JsonEntry bulletInfo = enemyInfo.get(type, "bullet");
         texture = bulletInfo.getString("texture");
         width = bulletInfo.getFloat("width");
         height = bulletInfo.getFloat("height");
@@ -55,7 +55,7 @@ public class BulletData {
         angle = 0;
         this.enemyInfo = enemyInfo;
         this.type = type;
-        offset = bulletInfo.get("offset").asFloatArray();
+        offset = bulletInfo.getFloatArray("offset");
         bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
         bulletDistance = (float) Math.sqrt(offset[1] * offset[1] + offset[0] * offset[0]);
         damage = bulletInfo.getInt("damage");
@@ -74,14 +74,14 @@ public class BulletData {
         }
     }
 
-    public BulletData(JsonValue bulletData) {
+    public BulletData(JsonEntry bulletData) {
         texture = bulletData.getString("texture");
         width = bulletData.getFloat("width");
         height = bulletData.getFloat("height");
         x = 0;
         y = 0;
         angle = 0;
-        offset = bulletData.get("offset").asFloatArray();
+        offset = bulletData.getFloatArray("offset");
         bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
         bulletDistance = (float) Math.sqrt(offset[1] * offset[1] + offset[0] * offset[0]);
         damage = bulletData.getInt("damage");

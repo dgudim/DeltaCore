@@ -13,8 +13,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.model.enemies.Enemies;
+import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
@@ -81,9 +81,9 @@ public abstract class ShipObject {
     ShipObject(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
 
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
-        
-        JsonValue treeJson = new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
-        JsonValue shipConfig = new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
+
+        JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        JsonEntry shipConfig = (JsonEntry) new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
 
         fires = new Array<>();
 
@@ -92,14 +92,14 @@ public abstract class ShipObject {
         fireOffsetsX = new float[fireCount];
         fireOffsetsY = new float[fireCount];
 
-        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.get(getString("currentEngine")).getString("usesEffect") + "_color") + "}").get("colors").asFloatArray();
+        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.getString(getString("currentEngine"), "usesEffect") + "_color") + "}").get("colors").asFloatArray();
 
-        for (int i = 0; i< fireCount; i++){
-            fireOffsetsX[i] = shipConfig.get("fires").getFloat("fire"+i+"OffsetX");
-            fireOffsetsY[i] = shipConfig.get("fires").getFloat("fire"+i+"OffsetY");
+        for (int i = 0; i < fireCount; i++) {
+            fireOffsetsX[i] = shipConfig.getFloat("fires", "fire" + i + "OffsetX");
+            fireOffsetsY[i] = shipConfig.getFloat("fires", "fire" + i + "OffsetY");
 
             ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal("particles/" + treeJson.get(getString("currentEngine")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
+            fire.load(Gdx.files.internal("particles/" + treeJson.getString(getString("currentEngine"), "usesEffect") + ".p"), Gdx.files.internal("particles"));
             fire.start();
             fire.getEmitters().get(0).getTint().setColors(colors);
             fires.add(fire);
@@ -110,15 +110,15 @@ public abstract class ShipObject {
 
         hasAnimation = shipConfig.getBoolean("hasAnimation");
 
-        if(hasAnimation){
+        if (hasAnimation) {
             ship = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(shipConfig.getFloat("frameDuration"), assetManager.get("player/animations/"+shipConfig.getString("animation")+".atlas", TextureAtlas.class).findRegions(shipConfig.getString("animation")), Animation.PlayMode.LOOP);
-        }else{
+            enemyAnimation = new Animation<TextureRegion>(shipConfig.getFloat("frameDuration"), assetManager.get("player/animations/" + shipConfig.getString("animation") + ".atlas", TextureAtlas.class).findRegions(shipConfig.getString("animation")), Animation.PlayMode.LOOP);
+        } else {
             ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
         }
 
-        String[] params = treeJson.get(getString("currentCore")).get("parameters").asStringArray();
-        float[] paramValues = treeJson.get(getString("currentCore")).get("parameterValues").asFloatArray();
+        String[] params = treeJson.getStringArray(getString("currentCore"), "parameters");
+        float[] paramValues = treeJson.getFloatArray(getString("currentCore"), "parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("power generation")) {
                 powerGeneration = paramValues[i];
@@ -134,8 +134,8 @@ public abstract class ShipObject {
             }
         }
 
-        params = treeJson.get(getString("currentShield")).get("parameters").asStringArray();
-        paramValues = treeJson.get(getString("currentShield")).get("parameterValues").asFloatArray();
+        params = treeJson.getStringArray(getString("currentShield"), "parameters");
+        paramValues = treeJson.getFloatArray(getString("currentShield"), "parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("power consumption")) {
                 shieldPowerConsumption = paramValues[i];
@@ -158,8 +158,8 @@ public abstract class ShipObject {
         String bonus = getString("currentBonus");
 
         if (bonus.contains("magnet")) {
-            params = treeJson.get(bonus).get("parameters").asStringArray();
-            paramValues = treeJson.get(bonus).get("parameterValues").asFloatArray();
+            params = treeJson.getStringArray(bonus, "parameters");
+            paramValues = treeJson.getFloatArray(bonus, "parameterValues");
             for (int i = 0; i < params.length; i++) {
                 if (params[i].endsWith("power consumption")) {
                     bonusPowerConsumption = paramValues[i];
@@ -171,8 +171,8 @@ public abstract class ShipObject {
         }
 
         if (bonus.contains("repellent")) {
-            params = treeJson.get(bonus).get("parameters").asStringArray();
-            paramValues = treeJson.get(bonus).get("parameterValues").asFloatArray();
+            params = treeJson.getStringArray(bonus, "parameters");
+            paramValues = treeJson.getFloatArray(bonus, "parameterValues");
             for (int i = 0; i < params.length; i++) {
                 if (params[i].endsWith("power consumption")) {
                     bonusPowerConsumption = paramValues[i];
@@ -184,8 +184,8 @@ public abstract class ShipObject {
         }
 
         if (bonus.contains("radar")) {
-            params = treeJson.get(bonus).get("parameters").asStringArray();
-            paramValues = treeJson.get(bonus).get("parameterValues").asFloatArray();
+            params = treeJson.getStringArray(bonus, "parameters");
+            paramValues = treeJson.getFloatArray(bonus, "parameterValues");
             for (int i = 0; i < params.length; i++) {
                 if (params[i].endsWith("aim radius")) {
                     aimRadius.setSize(paramValues[i], paramValues[i]);
@@ -196,10 +196,10 @@ public abstract class ShipObject {
             }
         }
 
-        chargeCapacity = treeJson.get(getString("currentBattery")).get("parameterValues").asFloatArray()[0];
-        healthCapacity = treeJson.get(getString("currentArmour")).get("parameterValues").asFloatArray()[0];
+        chargeCapacity = treeJson.getFloatArray(getString("currentBattery"), "parameterValues")[0];
+        healthCapacity = treeJson.getFloatArray(getString("currentArmour"), "parameterValues")[0];
 
-        shield = new Sprite(fields.findRegion(treeJson.get(getString("currentShield")).getString("usesEffect")));
+        shield = new Sprite(fields.findRegion(treeJson.getString(getString("currentShield"), "usesEffect")));
 
         bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
 
@@ -256,7 +256,7 @@ public abstract class ShipObject {
     public void drawEffects(SpriteBatch batch, float delta) {
         if (!exploded) {
 
-            for(int i = 0; i<fires.size; i++){
+            for (int i = 0; i < fires.size; i++) {
                 fires.get(i).setPosition(bounds.getX() + fireOffsetsX[i], bounds.getY() + fireOffsetsY[i]);
                 fires.get(i).draw(batch, delta);
             }
@@ -276,7 +276,7 @@ public abstract class ShipObject {
             if (Health < 30) {
                 damage_fire3.draw(batch, delta);
             }
-        }else{
+        } else {
             explosionEffect.draw(batch, delta);
         }
         bullet.draw(batch, delta);
@@ -307,7 +307,7 @@ public abstract class ShipObject {
             repellentField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
             aimRadius.draw(batch, 1);
 
-            if(hasAnimation) {
+            if (hasAnimation) {
                 ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
                 animationPosition += delta;
             }
@@ -355,7 +355,7 @@ public abstract class ShipObject {
 
     public void dispose() {
 
-        for (int i = 0; i<fires.size; i++){
+        for (int i = 0; i < fires.size; i++) {
             fires.get(i).dispose();
         }
         fires.clear();
