@@ -105,8 +105,8 @@ public class Bullet {
         gunOffsetsY = new float[gunCount];
 
         for (int i = 0; i < gunCount; i++) {
-            gunOffsetsX[i] = shipConfig.getFloatByPath("guns", "gun" + i + "OffsetX");
-            gunOffsetsY[i] = shipConfig.getFloatByPath("guns", "gun" + i + "OffsetY");
+            gunOffsetsX[i] = shipConfig.getFloat("guns", "gun" + i + "OffsetX");
+            gunOffsetsY[i] = shipConfig.getFloat("guns", "gun" + i + "OffsetY");
         }
 
         bulletExplosionEffect = currentCannon.getString("usesEffect");
@@ -160,8 +160,8 @@ public class Bullet {
             bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         }
 
-        params = treeJson.getStringArrayByPath(getString("currentCore"), "parameters");
-        paramValues = treeJson.getFloatArrayByPath(getString("currentCore"), "parameterValues");
+        params = treeJson.getStringArray(getString("currentCore"), "parameters");
+        paramValues = treeJson.getFloatArray(getString("currentCore"), "parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("damage multiplier")) {
                 damage *= paramValues[i];

@@ -230,4 +230,26 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
     public String getString(String key, String secondKey) {
         return get(key).getString(secondKey);
     }
+
+    /**
+     * Returns the child with the specified index of the child with the specified name and returns it as a string.
+     *
+     * @param key
+     * @param index
+     * @return May be null.
+     */
+    public String getString(String key, int index) {
+        return get(key).getString(index);
+    }
+
+    /**
+     * Returns the child with the specified name of the child with the specified index and returns it as a string.
+     *
+     * @param key
+     * @param index
+     * @return May be null.
+     */
+    public String getString(int index, String key) {
+        return get(index).getString(key);
+    }
 }

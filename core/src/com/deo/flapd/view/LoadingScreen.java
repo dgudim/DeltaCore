@@ -53,9 +53,9 @@ public class LoadingScreen implements Screen {
     public static Tree craftingTree;
     private String stateName;
 
-    public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor){
+    public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor) {
 
-        if (getFloat("ui")<=0) {
+        if (getFloat("ui") <= 0) {
             putFloat("ui", 1);
             putFloat("soundVolume", 100);
             putFloat("musicVolume", 100);
@@ -63,13 +63,13 @@ public class LoadingScreen implements Screen {
             putBoolean("transparency", true);
             putBoolean("bloom", true);
             JsonEntry tree = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
-            for(int i = 0; i<tree.size; i++){
-                if(tree.get(i).getString("type").equals("basePart")){
-                    putBoolean("unlocked_"+getItemCodeNameByName(tree.get(i).name), true);
-                    putString(tree.get(i).getString("saveTo"), tree.get(i).name);
+            for (int i = 0; i < tree.size; i++) {
+                if (tree.getString(i, "type").equals("basePart")) {
+                    putBoolean("unlocked_" + getItemCodeNameByName(tree.get(i).name), true);
+                    putString(tree.getString(i, "saveTo"), tree.get(i).name);
                 }
             }
-            log("\n------------first launch------------"+"\n");
+            log("\n------------first launch------------" + "\n");
         }
 
         log("\n started loading");
@@ -176,8 +176,8 @@ public class LoadingScreen implements Screen {
     }
 
     @Override
-    public void render(float delta){
-        Gdx.gl.glClearColor(0,0.2f,0.25f,1);
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0.2f, 0.25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         checkState();
@@ -185,33 +185,33 @@ public class LoadingScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-        rotation-=200*delta;
-        halfRotation+=70*delta;
+        rotation -= 200 * delta;
+        halfRotation += 70 * delta;
 
-        millis+=200*delta;
+        millis += 200 * delta;
 
-        if(millis>0){
+        if (millis > 0) {
             state = ".";
         }
 
-        if(millis > 120){
+        if (millis > 120) {
             state = "..";
         }
 
-        if(millis > 240){
+        if (millis > 240) {
             state = "...";
         }
 
-        if(millis > 360){
+        if (millis > 360) {
             millis = 0;
         }
 
         progress = assetManager.getProgress();
 
-        color = new Color().add(0.5f/progress, progress+0.1f,0,1);
-        fillColor = new Color().add(0.0f, 0.1f,0.15f,1);
+        color = new Color().add(0.5f / progress, progress + 0.1f, 0, 1);
+        fillColor = new Color().add(0.0f, 0.1f, 0.15f, 1);
 
-        if(enableShader){
+        if (enableShader) {
             blurProcessor.capture();
         }
 
@@ -224,27 +224,27 @@ public class LoadingScreen implements Screen {
         shapeRenderer.begin();
         shapeRenderer.triangle(400 - MathUtils.cosDeg(rotation) * 150, 240 - MathUtils.sinDeg(rotation) * 150, 400 - MathUtils.cosDeg(rotation + 120) * 150, 240 - MathUtils.sinDeg(rotation + 120) * 150, 400 - MathUtils.cosDeg(rotation + 240) * 150, 240 - MathUtils.sinDeg(rotation + 240) * 150, color, color, color);
         shapeRenderer.triangle(400 - MathUtils.cosDeg(-rotation * progress) * 80 * progress, 240 - MathUtils.sinDeg(-rotation * progress) * 80 * progress, 400 - MathUtils.cosDeg(-rotation * progress + 120) * 80 * progress, 240 - MathUtils.sinDeg(-rotation * progress + 120) * 80 * progress, 400 - MathUtils.cosDeg(-rotation * progress + 240) * 80 * progress, 240 - MathUtils.sinDeg(-rotation * progress + 240) * 80 * progress, Color.GREEN, Color.GREEN, Color.GREEN);
-        shapeRenderer.polygon(new float[]{calculateOffsetX(halfRotation),calculateOffsetY(halfRotation),calculateOffsetX(halfRotation+60),calculateOffsetY(halfRotation+60),calculateOffsetX(halfRotation+120),calculateOffsetY(halfRotation+120),calculateOffsetX(halfRotation+180),calculateOffsetY(halfRotation+180),calculateOffsetX(halfRotation+240),calculateOffsetY(halfRotation+240),calculateOffsetX(halfRotation+300),calculateOffsetY(halfRotation+300),});
-        for(int i = 0; i < 53; i++) {
-            shapeRenderer.setColor(0.1f,0.5f, Math.abs(30*MathUtils.sin((i-rotation/20)*6.8f*MathUtils.degreesToRadians))/30, 1);
-            shapeRenderer.rect(5+15*i, 60, 10, Math.abs(30*MathUtils.sin((i+rotation/10)*6.8f*MathUtils.degreesToRadians)));
+        shapeRenderer.polygon(new float[]{calculateOffsetX(halfRotation), calculateOffsetY(halfRotation), calculateOffsetX(halfRotation + 60), calculateOffsetY(halfRotation + 60), calculateOffsetX(halfRotation + 120), calculateOffsetY(halfRotation + 120), calculateOffsetX(halfRotation + 180), calculateOffsetY(halfRotation + 180), calculateOffsetX(halfRotation + 240), calculateOffsetY(halfRotation + 240), calculateOffsetX(halfRotation + 300), calculateOffsetY(halfRotation + 300),});
+        for (int i = 0; i < 53; i++) {
+            shapeRenderer.setColor(0.1f, 0.5f, Math.abs(30 * MathUtils.sin((i - rotation / 20) * 6.8f * MathUtils.degreesToRadians)) / 30, 1);
+            shapeRenderer.rect(5 + 15 * i, 60, 10, Math.abs(30 * MathUtils.sin((i + rotation / 10) * 6.8f * MathUtils.degreesToRadians)));
         }
         shapeRenderer.end();
 
         batch.begin();
-        loadingBar.setValue(progress*100);
+        loadingBar.setValue(progress * 100);
         loadingBar.draw(batch, 1);
         loadingBar.act(delta);
         main.getData().setScale(0.8f);
         main.setColor(Color.CYAN);
-        main.draw(batch, stateName+state, 0, 440, 800, 1, false);
+        main.draw(batch, stateName + state, 0, 440, 800, 1, false);
         main.getData().setScale(0.5f);
         main.setColor(Color.ORANGE);
-        main.draw(batch, (int)(assetManager.getProgress()*100)+"%", 0, 47, 800, 1, false);
+        main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 47, 800, 1, false);
         assetManager.update();
         batch.end();
 
-        if(enableShader){
+        if (enableShader) {
             blurProcessor.render();
         }
     }
@@ -252,7 +252,7 @@ public class LoadingScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
-        Gdx.gl20.glLineWidth(10.0f/camera.zoom);
+        Gdx.gl20.glLineWidth(10.0f / camera.zoom);
     }
 
     @Override
@@ -270,49 +270,49 @@ public class LoadingScreen implements Screen {
         game.getScreen().dispose();
     }
 
-    public void dispose(){
+    public void dispose() {
         main.dispose();
     }
 
-    private float calculateOffsetX(float rotation){
+    private float calculateOffsetX(float rotation) {
         rotation = 400 - MathUtils.cosDeg(rotation) * 140;
         return rotation;
     }
 
-    private float calculateOffsetY(float rotation){
+    private float calculateOffsetY(float rotation) {
         rotation = 240 - MathUtils.sinDeg(rotation) * 140;
         return rotation;
     }
 
-    private float calculateProgressOffsetX(float rotation){
-        rotation = 400 - MathUtils.cosDeg(rotation) * 550 * (progress+0.1f);
+    private float calculateProgressOffsetX(float rotation) {
+        rotation = 400 - MathUtils.cosDeg(rotation) * 550 * (progress + 0.1f);
         return rotation;
     }
 
-    private float calculateProgressOffsetY(float rotation){
-        rotation = 240 - MathUtils.sinDeg(rotation) * 550 * (progress+0.1f);
+    private float calculateProgressOffsetY(float rotation) {
+        rotation = 240 - MathUtils.sinDeg(rotation) * 550 * (progress + 0.1f);
         return rotation;
     }
 
-    private void checkState(){
+    private void checkState() {
         try {
             if (assetManager.isFinished() && stateName.equals("Loading")) {
-                float elapsedTime = TimeUtils.timeSinceMillis(loadingTime)/1000.0f;
+                float elapsedTime = TimeUtils.timeSinceMillis(loadingTime) / 1000.0f;
                 float relativePercentage = (100 - elapsedTime * 100f / 3f);
-                if(relativePercentage>=0){
+                if (relativePercentage >= 0) {
                     log("\n loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)");
-                }else{
+                } else {
                     log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
                 }
             }
-            if(stateName.equals("Building tree")){
+            if (stateName.equals("Building tree")) {
                 craftingTree = new Tree(LoadingScreen.this.assetManager, 105, 65, 430, 410);
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }
-            if(assetManager.isFinished()){
+            if (assetManager.isFinished()) {
                 stateName = "Building tree";
             }
-        }catch (ClassCastException | NumberFormatException e){
+        } catch (ClassCastException | NumberFormatException e) {
             logException(e);
             log("\n wiping data :) \n");
             clearPrefs();

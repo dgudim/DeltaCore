@@ -61,27 +61,27 @@ public class Boss {
         spawnScore = bossConfig.getInt("spawnConditions", "score") + getRandomInRange(-bossConfig.getInt("spawnConditions", "randomness"), bossConfig.getInt("spawnConditions", "randomness"));
         spawnAt = bossConfig.getIntArray("spawnAt");
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
-            String type = bossConfig.get("parts").get(i).getString("type");
+            String type = bossConfig.get("parts", i).getString("type");
             switch (type) {
                 case ("basePart"):
-                    body = new BasePart(bossConfig.get("parts").get(i), bossAtlas);
+                    body = new BasePart(bossConfig.get("parts", i), bossAtlas);
                     parts.add(body);
                     break;
                 case ("part"):
-                    parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts, body));
+                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
                     break;
                 case ("cannon"):
-                    parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body, assetManager));
+                    parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("clone"):
-                    String cloneType = bossConfig.get("parts").get(i).getString("copyFrom");
+                    String cloneType = bossConfig.get("parts", i).getString("copyFrom");
                     cloneType = bossConfig.getString("parts", cloneType, "type");
                     switch (cloneType) {
                         case ("part"):
-                            parts.add(new Part(bossConfig.get("parts").get(i), bossAtlas, parts, body));
+                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts").get(i), bossAtlas, parts, body, assetManager));
+                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                             break;
                     }
                     break;
@@ -119,7 +119,7 @@ public class Boss {
         phases = new Array<>();
 
         for (int i = 0; i < bossConfig.get("phases").size; i++) {
-            Phase phase = new Phase(bossConfig.get("phases").get(i), parts, animations, this);
+            Phase phase = new Phase(bossConfig.get("phases", i), parts, animations, this);
             phases.add(phase);
         }
     }
@@ -409,16 +409,16 @@ class Part extends BasePart {
         relativeY = currentConfig.getFloat("offset", "Y");
         if (newConfig.getString("type").equals("clone")) {
             for (int i = 0; i < newConfig.get("override").size; i++) {
-                if (newConfig.get("override").get(i).name.equals("offset")) {
-                    relativeX = newConfig.get("override").get(i).getFloat("X");
-                    relativeY = newConfig.get("override").get(i).getFloat("Y");
-                    relativeTo = newConfig.get("override").get(i).getString("relativeTo");
+                if (newConfig.get("override", i).name.equals("offset")) {
+                    relativeX = newConfig.get("override", i).getFloat("X");
+                    relativeY = newConfig.get("override", i).getFloat("Y");
+                    relativeTo = newConfig.get("override", i).getString("relativeTo");
                 }
-                if (newConfig.get("override").get(i).name.equals("originX")) {
+                if (newConfig.get("override", i).name.equals("originX")) {
                     originX = newConfig.getFloat(i);
                     entitySprite.setOrigin(originX, originY);
                 }
-                if (newConfig.get("override").get(i).name.equals("originY")) {
+                if (newConfig.get("override", i).name.equals("originY")) {
                     originY = newConfig.getFloat(i);
                     entitySprite.setOrigin(originX, originY);
                 }
@@ -850,7 +850,7 @@ class Action {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
-                Movement movement = new Movement(actionValue.get("move").get(i), target, baseParts, animations);
+                Movement movement = new Movement(actionValue.get("move", i), target, baseParts, animations);
                 animations.add(movement);
                 movements.add(movement);
             }

@@ -62,13 +62,13 @@ public class Tree {
         long loadingTime = TimeUtils.millis();
 
         for (int i = 0; i < treeJson.size; i++) {
-            if (!categories.contains(treeJson.get(i).getString("category"), false)) {
-                categories.add(treeJson.get(i).getString("category"));
+            if (!categories.contains(treeJson.getString(i, "category"), false)) {
+                categories.add(treeJson.getString(i, "category"));
                 Array<String> items1 = new Array<>();
                 items1.add(treeJson.get(i).name);
                 items.add(items1);
             } else {
-                int index = categories.indexOf(treeJson.get(i).getString("category"), false);
+                int index = categories.indexOf(treeJson.getString(i, "category"), false);
                 items.get(index).add(treeJson.get(i).name);
             }
         }
