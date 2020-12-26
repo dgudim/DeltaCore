@@ -340,7 +340,6 @@ public class CraftingDialogue extends Dialogue {
             if (!getString("savedSlots").contains(items[i])) {
                 buyShortcuts.get(i).setTouchable(Touchable.disabled);
                 buyShortcuts.get(i).setColor(Color.GRAY);
-                buyShortcuts.get(i).removeListener(buyShortcuts.get(i).getListeners().get(buyShortcuts.get(i).getListeners().size - 1));
             }
         }
     }
