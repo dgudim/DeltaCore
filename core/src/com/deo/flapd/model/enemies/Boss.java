@@ -415,11 +415,11 @@ class Part extends BasePart {
                     relativeTo = newConfig.get("override", i).getString("relativeTo");
                 }
                 if (newConfig.get("override", i).name.equals("originX")) {
-                    originX = newConfig.getFloat(i);
+                    originX = newConfig.getFloat("override", i);
                     entitySprite.setOrigin(originX, originY);
                 }
                 if (newConfig.get("override", i).name.equals("originY")) {
-                    originY = newConfig.getFloat(i);
+                    originY = newConfig.getFloat("override", i);
                     entitySprite.setOrigin(originX, originY);
                 }
             }

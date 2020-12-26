@@ -124,6 +124,15 @@ public class JsonEntry {
     }
 
     /**
+     * Finds the child with the specified key and returns it's child with specified index as a float.
+     *
+     * @param index
+     */
+    public float getFloat(String key, int index) {
+        return get(key).get(index).jsonValue.asFloat();
+    }
+
+    /**
      * Finds the child with the specified name and returns it as an int.
      *
      * @param name

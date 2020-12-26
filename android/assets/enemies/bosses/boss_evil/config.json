@@ -8,6 +8,7 @@
   "parts": {
     "body": {
       "type": "basePart",
+      "hasCollision": true,
       "health": 2000,
       "width": 128,
       "height": 128,
@@ -48,6 +49,7 @@
         "X": 170,
         "Y": 0
       },
+      "canAim": true,
       "aimAngleLimit": [-360, 360],
       "bullet": {
         "texture": "pew2.png",
@@ -210,45 +212,7 @@
           "Y": -102.87
         }
       }
-    },
-
-    "laserCannon": {
-      "type": "cannon",
-      "laser": true,
-      "hasCollision": false,
-      "health": 1,
-      "width": 132,
-      "height": 132,
-      "originX": "standard",
-      "originY": "standard",
-      "offset": {
-        "relativeTo": "body",
-        "X": 0,
-        "Y": 0
-      },
-      "aimAngleLimit": [-360, 360],
-      "bullet": {
-        "texture": "pew2.png",
-        "shootSound": "sfx/gun3.ogg",
-        "speed": 150,
-        "spread": 0,
-        "bulletsPerShot": 1,
-        "damage": 7,
-        "homing": false,
-        "trail": "particles/bullet_trail_left.p",
-        "trailScale": 0.7,
-        "explosionEffect": "particles/explosion_evil_small.p",
-        "explosionScale": 0.7,
-        "height": 10,
-        "width": 10,
-        "offset": [0, 0]
-      },
-      "linked": false,
-      "texture": "evil_left",
-      "layer": 1,
-      "drops": false
     }
-
   },
 
   "phases": {

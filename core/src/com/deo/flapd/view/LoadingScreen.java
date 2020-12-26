@@ -120,8 +120,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("items/items.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/menuButtons.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/buttons.atlas", TextureAtlas.class);
-        assetManager.load("boss_evil/bossEvil.atlas", TextureAtlas.class);
-        assetManager.load("boss_ship/bossShip.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_evil/bossEvil.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_ship/bossShip.atlas", TextureAtlas.class);
         assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
