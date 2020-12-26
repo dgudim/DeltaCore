@@ -59,8 +59,8 @@ public class Meteorite extends Entity {
 
         super.update();
 
-        x += 130 * flyingDirection * delta;
-        y -= 130 * delta;
+        x += 53 * flyingDirection * delta;
+        y -= 53 * delta;
 
         rotation += rotationSpeed * delta;
 

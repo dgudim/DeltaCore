@@ -43,7 +43,7 @@ public class Tree {
     private float height;
     private int branchCount;
     ScrollPane treeScrollView;
-    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     Tree(AssetManager assetManager, float x, float y, float width, float height) {
         this.height = height;

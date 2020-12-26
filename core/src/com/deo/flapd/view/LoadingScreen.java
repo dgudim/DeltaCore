@@ -62,7 +62,7 @@ public class LoadingScreen implements Screen {
             putFloat("difficulty", 1);
             putBoolean("transparency", true);
             putBoolean("bloom", true);
-            JsonEntry tree = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+            JsonEntry tree = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
             for (int i = 0; i < tree.size; i++) {
                 if (tree.getString(i, "type").equals("basePart")) {
                     putBoolean("unlocked_" + getItemCodeNameByName(tree.get(i).name), true);

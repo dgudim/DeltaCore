@@ -17,7 +17,7 @@ public class Enemies {
 
     private AssetManager assetManager;
 
-    JsonEntry enemiesJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("enemies/enemies.json"));
+    JsonEntry enemiesJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/enemies.json")));
     private Array<EnemyData> enemies;
     private Array<String> enemyNames;
     public Array<Enemy> enemyEntities;

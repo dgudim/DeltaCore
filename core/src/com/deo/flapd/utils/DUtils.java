@@ -33,7 +33,7 @@ public abstract class DUtils {
 
     private static Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
-    private static JsonEntry itemNames = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/itemNames.json"));
+    private static JsonEntry itemNames = new JsonEntry( new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
     public static int bulletDisposes;
     public static int bulletTrailDisposes;
     public static int enemyDisposes;

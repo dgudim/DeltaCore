@@ -61,7 +61,7 @@ public class GameLogic {
 
         difficulty = getFloat("difficulty");
 
-        JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
         speedMultiplier = treeJson.getFloatArray(getString("currentEngine"), "parameterValues")[0];
 

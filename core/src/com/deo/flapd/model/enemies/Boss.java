@@ -53,7 +53,7 @@ public class Boss {
 
         this.bossName = bossName;
 
-        bossConfig = (JsonEntry) new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json"));
+        bossConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json")));
         TextureAtlas bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
         parts = new Array<>();
         animations = new Array<>();
@@ -502,7 +502,7 @@ class Cannon extends Part {
 
         bullets = new Array<>();
 
-        isLaser = currentConfig.getBoolean("isLaser");
+        isLaser = currentConfig.getBoolean("laser");
 
         canAim = currentConfig.getBoolean("canAim");
         aimAngleLimit = currentConfig.getIntArray("aimAngleLimit");
@@ -886,9 +886,9 @@ class PhaseTrigger {
 
     PhaseTrigger(JsonEntry triggerData, Array<BasePart> parts) {
 
-        log("\n loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent.parent.name);
+        log("\n loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent().parent().name);
 
-        isResetPhase = triggerData.parent.parent.name.equals("RESET");
+        isResetPhase = triggerData.parent().parent().name.equals("RESET");
 
         conditionsMet = false;
         triggerType = triggerData.getString("triggerType");

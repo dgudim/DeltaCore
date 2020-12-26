@@ -37,11 +37,11 @@ import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getPrice;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class SellUncraftDialogue extends Dialogue {
+public class SellScrapDialogue extends Dialogue {
 
-    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
-    public SellUncraftDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
+    public SellScrapDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
 
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
@@ -106,7 +106,7 @@ public class SellUncraftDialogue extends Dialogue {
                 requirement.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new SellUncraftDialogue(assetManager, stage, itemSlotManager, getInteger("item_" + getItemCodeNameByName(item)), items[finalI]);
+                        new SellScrapDialogue(assetManager, stage, itemSlotManager, getInteger("item_" + getItemCodeNameByName(item)), items[finalI]);
                     }
                 });
 

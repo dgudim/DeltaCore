@@ -362,7 +362,7 @@
               "stopPreviousAnimations": false
             },
             "moveSinY": {
-              "amplitude": 0.5,
+              "moveBy": 0.5,
               "speed": 0.15,
               "stopPreviousAnimations": false
             }

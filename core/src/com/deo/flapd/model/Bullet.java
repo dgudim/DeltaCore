@@ -93,8 +93,8 @@ public class Bullet {
 
         TextureAtlas bullets = assetManager.get("player/bullets.atlas");
 
-        JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
-        JsonEntry shipConfig = (JsonEntry) new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
+        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour")));
 
         JsonEntry currentCannon = treeJson.get(getString("currentCannon"));
 

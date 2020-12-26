@@ -82,8 +82,8 @@ public abstract class ShipObject {
 
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
 
-        JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
-        JsonEntry shipConfig = (JsonEntry) new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour"));
+        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour")));
 
         fires = new Array<>();
 

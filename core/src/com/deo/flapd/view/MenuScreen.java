@@ -140,7 +140,7 @@ public class MenuScreen implements Screen {
 
         this.assetManager = assetManager;
 
-        treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+        treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
         Music = getFloat("musicVolume") > 0;
 
@@ -165,7 +165,7 @@ public class MenuScreen implements Screen {
 
         currentShipTexture = getString("currentArmour");
 
-        shipConfigs = (JsonEntry) new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json"));
+        shipConfigs = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")));
 
         fires = new Array<>();
 

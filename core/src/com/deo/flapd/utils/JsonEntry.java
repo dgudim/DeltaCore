@@ -1,40 +1,19 @@
 package com.deo.flapd.utils;
 
+import com.badlogic.gdx.utils.JsonValue;
+
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.logException;
 
-public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
+public class JsonEntry {
 
+    private JsonValue jsonValue;
+    public String name;
+    public int size;
 
-    public JsonEntry(ValueType type) {
-        super(type);
-    }
-
-    /**
-     * @param value May be null.
-     */
-    public JsonEntry(String value) {
-        super(value);
-    }
-
-    public JsonEntry(double value) {
-        super(value);
-    }
-
-    public JsonEntry(long value) {
-        super(value);
-    }
-
-    public JsonEntry(double value, String stringValue) {
-        super(value, stringValue);
-    }
-
-    public JsonEntry(long value, String stringValue) {
-        super(value, stringValue);
-    }
-
-    public JsonEntry(boolean value) {
-        super(value);
+    public JsonEntry(JsonValue value) {
+        jsonValue = value;
+        name = value.name;
+        size = value.size;
     }
 
     /**
@@ -44,15 +23,12 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param index
      * @return May be null.
      */
-    @Override
     public JsonEntry get(int index) {
-        try {
-            return (JsonEntry) super.get(index);
-        } catch (Exception e) {
-            log("\n No key named " + name + ", trace info: " + trace());
-            logException(e);
+        if (jsonValue.get(index) == null) {
+            log("\n No key with index " + index + ", trace info: " + jsonValue.trace());
+            return null;
         }
-        return this;
+        return new JsonEntry(jsonValue.get(index));
     }
 
     /**
@@ -61,15 +37,15 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param name
      * @return May be null.
      */
-    @Override
+
     public JsonEntry get(String name) {
-        try {
-            return (JsonEntry) super.get(name);
-        } catch (Exception e) {
-            log("\n No key named " + name + ", trace info: " + trace());
-            logException(e);
+
+        if (jsonValue.get(name) == null) {
+            log("\n No key named " + name + ", trace info: " + jsonValue.trace());
+            return null;
         }
-        return this;
+        return new JsonEntry(jsonValue.get(name));
+
     }
 
     /**
@@ -102,14 +78,22 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      *
      * @return May be null.
      */
-    @Override
     public JsonEntry parent() {
-        if (!super.parent().isNull()) {
-            return (JsonEntry) super.parent();
+        if (!jsonValue.parent().isNull()) {
+            return new JsonEntry(jsonValue.parent());
         } else {
-            log("\n Json entry " + name + " has no parent, first child: " + child());
-            return this;
+            log("\n Json entry " + jsonValue.name + " has no parent, first child: " + jsonValue.child());
+            return null;
         }
+    }
+
+    /**
+     * Finds the child with the specified index and returns it as a string.
+     *
+     * @param index
+     */
+    public String getString(int index) {
+        return get(index).jsonValue.asString();
     }
 
     /**
@@ -117,9 +101,8 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      *
      * @param name
      */
-    @Override
     public String getString(String name) {
-        return get(name).asString();
+        return get(name).jsonValue.asString();
     }
 
     /**
@@ -127,9 +110,17 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      *
      * @param name
      */
-    @Override
     public float getFloat(String name) {
-        return get(name).asFloat();
+        return get(name).jsonValue.asFloat();
+    }
+
+    /**
+     * Finds the child with the specified index and returns it as a float.
+     *
+     * @param index
+     */
+    public float getFloat(int index) {
+        return get(index).jsonValue.asFloat();
     }
 
     /**
@@ -137,9 +128,8 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      *
      * @param name
      */
-    @Override
     public int getInt(String name) {
-        return get(name).asInt();
+        return get(name).jsonValue.asInt();
     }
 
     /**
@@ -147,9 +137,8 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      *
      * @param name
      */
-    @Override
     public boolean getBoolean(String name) {
-        return get(name).asBoolean();
+        return get(name).jsonValue.asBoolean();
     }
 
     /**
@@ -158,7 +147,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public boolean getBoolean(String... keys) {
-        return get(keys).asBoolean();
+        return get(keys).jsonValue.asBoolean();
     }
 
     /**
@@ -167,7 +156,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public int getInt(String... keys) {
-        return get(keys).asInt();
+        return get(keys).jsonValue.asInt();
     }
 
     /**
@@ -176,7 +165,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public float getFloat(String... keys) {
-        return get(keys).asFloat();
+        return get(keys).jsonValue.asFloat();
     }
 
     /**
@@ -185,7 +174,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public String getString(String... keys) {
-        return get(keys).asString();
+        return get(keys).jsonValue.asString();
     }
 
     /**
@@ -194,7 +183,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public boolean[] getBooleanArray(String... keys) {
-        return get(keys).asBooleanArray();
+        return get(keys).jsonValue.asBooleanArray();
     }
 
     /**
@@ -203,7 +192,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public int[] getIntArray(String... keys) {
-        return get(keys).asIntArray();
+        return get(keys).jsonValue.asIntArray();
     }
 
     /**
@@ -212,7 +201,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public float[] getFloatArray(String... keys) {
-        return get(keys).asFloatArray();
+        return get(keys).jsonValue.asFloatArray();
     }
 
     /**
@@ -221,14 +210,7 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
      * @param keys
      */
     public String[] getStringArray(String... keys) {
-        return get(keys).asStringArray();
-    }
-
-    // overriding useless default value method so it doesn't interfere with getString(String... keys)
-
-    @Override
-    public String getString(String key, String secondKey) {
-        return get(key).getString(secondKey);
+        return get(keys).jsonValue.asStringArray();
     }
 
     /**
@@ -252,4 +234,17 @@ public class JsonEntry extends com.badlogic.gdx.utils.JsonValue {
     public String getString(int index, String key) {
         return get(index).getString(key);
     }
+
+    public String asString() {
+        return jsonValue.asString();
+    }
+
+    public int asInt() {
+        return jsonValue.asInt();
+    }
+
+    public boolean isBoolean() {
+        return jsonValue.isBoolean();
+    }
+
 }

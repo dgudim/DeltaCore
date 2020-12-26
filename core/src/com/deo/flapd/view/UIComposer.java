@@ -51,7 +51,7 @@ public class UIComposer {
 
     public void loadStyles(String... styleNames) {
 
-        JsonEntry styles = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/styles.json"));
+        JsonEntry styles = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/styles.json")));
 
         Array<BitmapFont> fonts = new Array<>();
         String[] fontNames = styles.getStringArray("fonts");

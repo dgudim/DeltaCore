@@ -39,7 +39,7 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue extends Dialogue {
 
-    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, null, null);
@@ -172,7 +172,7 @@ public class PurchaseDialogue extends Dialogue {
                     subtractInteger("cogs", (int) (price[1] * quantity.getValue()));
                     addInteger("item_" + getItemCodeNameByName(result), (int) quantity.getValue());
 
-                    JsonEntry slotsJson = (JsonEntry) new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+                    JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
                     Array<String> items = new Array<>();
                     items.addAll(slotsJson.getStringArray("slots"));
                     Array<Integer> quantities = new Array<>();

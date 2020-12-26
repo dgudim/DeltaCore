@@ -56,7 +56,7 @@ public class CraftingDialogue extends Dialogue {
     private Label.LabelStyle yellowLabelStyle, defaultLabelStyle;
     private final Slider quantity;
     private TextureAtlas itemAtlas;
-    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = new JsonEntry( new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
         this(stage, assetManager, result, 1, false, null);
@@ -405,7 +405,7 @@ public class CraftingDialogue extends Dialogue {
             buyShortcut.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    JsonEntry slotsJson = (JsonEntry) new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+                    JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
                     Array<String> Jitems = new Array<>();
                     Jitems.addAll(slotsJson.getStringArray("slots"));
                     Array<Integer> quantities = new Array<>();

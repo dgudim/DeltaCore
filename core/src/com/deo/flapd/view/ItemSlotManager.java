@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.dialogues.PurchaseDialogue;
-import com.deo.flapd.view.dialogues.SellUncraftDialogue;
+import com.deo.flapd.view.dialogues.SellScrapDialogue;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,7 +57,7 @@ public class ItemSlotManager {
     private final int SHOP = 2;
     private UIComposer uiComposer;
 
-    private JsonEntry treeJson = (JsonEntry) new JsonReader().parse(Gdx.files.internal("shop/tree.json"));
+    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     ItemSlotManager(AssetManager assetManager) {
 
@@ -159,7 +159,7 @@ public class ItemSlotManager {
     }
 
     private int loadSlots() {
-        JsonEntry slotsJson = (JsonEntry) new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}");
+        JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
         int[] productQuantities = slotsJson.getIntArray("productQuantities");
         String[] slotNames = slotsJson.getStringArray("slots");
         boolean nextRow = false;
@@ -253,7 +253,7 @@ public class ItemSlotManager {
         addSlot(result, quantity, nextRow).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new SellUncraftDialogue(assetManager, stage, ItemSlotManager.this, quantity, result);
+                new SellScrapDialogue(assetManager, stage, ItemSlotManager.this, quantity, result);
             }
         });
     }
