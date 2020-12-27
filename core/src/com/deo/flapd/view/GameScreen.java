@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,11 +20,11 @@ import com.deo.flapd.model.SpaceShip;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
+import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.logVariables;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
@@ -57,9 +56,7 @@ public class GameScreen implements Screen {
 
     private Game game;
 
-    private Music music;
-    private boolean Music;
-    private float millis, millis2, musicVolume;
+    private MusicManager musicManager;
 
     private Bonus bonus;
 
@@ -117,13 +114,8 @@ public class GameScreen implements Screen {
 
         gameLogic = new GameLogic(ship, newGame, game, meteorites, checkpoint);
 
-        musicVolume = getFloat("musicVolume");
-
-        if (musicVolume > 0) {
-            Music = true;
-        }
-
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/main" + getRandomInRange(1, 5) + ".ogg"));
+        musicManager = new MusicManager("music/main", 1, 5, 5);
+        musicManager.setVolume(getFloat("musicVolume") / 100f);
 
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
@@ -132,8 +124,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        millis2 = 101;
-        music.setVolume(0);
+
     }
 
     @Override
@@ -208,31 +199,8 @@ public class GameScreen implements Screen {
 
         batch.end();
 
-        if (Music) {
+        musicManager.update(delta);
 
-            if (millis > 10) {
-                if (music.getPosition() > 65 && music.getPosition() < 69 && music.getVolume() > 0) {
-                    music.setVolume(music.getVolume() - 0.05f);
-                }
-                if (music.getPosition() > 0 && music.getPosition() < 4 && music.getVolume() < musicVolume) {
-                    music.setVolume(music.getVolume() + 0.05f);
-                }
-                millis = 0;
-            }
-
-            millis = millis + 50 * delta;
-            millis2 = millis2 + 0.5f * delta;
-
-            if (millis2 > 100) {
-                music.dispose();
-                music = Gdx.audio.newMusic(Gdx.files.internal("music/main" + getRandomInRange(1, 5) + ".ogg"));
-                music.setPosition(1);
-                music.setVolume(0);
-                music.play();
-                millis2 = 0;
-            }
-
-        }
         if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
             camera.zoom *= 1.01;
             camera.update();
@@ -297,19 +265,18 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-        music.stop();
         game.getScreen().dispose();
     }
 
     @Override
     public void dispose() {
 
+        musicManager.dispose();
+
         gameUi.dispose();
         meteorites.dispose();
 
         ship.dispose();
-        
-        music.dispose();
 
         bonus.dispose();
         drops.dispose();

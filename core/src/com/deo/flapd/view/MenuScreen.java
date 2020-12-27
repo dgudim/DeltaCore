@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -41,6 +39,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
@@ -49,7 +48,6 @@ import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.initNewGame;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
@@ -87,17 +85,13 @@ public class MenuScreen implements Screen {
 
     private BitmapFont font_main;
 
-    private boolean Music;
-
     private Stage Menu, ShopStage;
 
     private float movement;
 
     private InputMultiplexer multiplexer;
 
-    private Music music;
-    private float millis;
-    private float millis2;
+    private MusicManager musicManager;
 
     private Game game;
 
@@ -141,8 +135,6 @@ public class MenuScreen implements Screen {
         this.assetManager = assetManager;
 
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-
-        Music = getFloat("musicVolume") > 0;
 
         easterEgg = getBoolean("easterEgg");
 
@@ -365,39 +357,6 @@ public class MenuScreen implements Screen {
         multiplexer.addProcessor(Menu);
         multiplexer.addProcessor(ShopStage);
 
-        musicVolumeS.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                putFloat("musicVolume", musicVolumeS.getValue());
-
-                Music = musicVolumeS.getValue() > 0;
-
-                if (Music && !music.isPlaying()) {
-                    music.play();
-                    music.setVolume(0);
-                    music.setPosition(1);
-                } else {
-                    if (!Music) {
-                        music.stop();
-                    }
-                }
-            }
-        });
-
-        musicVolumeS.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (music.isPlaying()) {
-                    music.setVolume(musicVolumeS.getValue() / 100f);
-                }
-            }
-        });
-
         difficultyControl.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -470,7 +429,15 @@ public class MenuScreen implements Screen {
             }
         });
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/ambient" + getRandomInRange(1, 5) + ".ogg"));
+        musicManager = new MusicManager("music/ambient", 1, 5, 5);
+        musicManager.setVolume(getFloat("musicVolume") / 100f);
+        musicVolumeS.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                putFloat("musicVolume", musicVolumeS.getValue());
+                musicManager.setVolume(musicVolumeS.getValue() / 100f);
+            }
+        });
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
 
@@ -482,8 +449,6 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
-        millis2 = 101;
-        music.setVolume(0);
     }
 
     @Override
@@ -547,31 +512,7 @@ public class MenuScreen implements Screen {
 
         MenuBg.draw(batch, 1);
 
-        if (Music) {
-
-            if (millis > 10) {
-                if (music.getPosition() > 65 && music.getPosition() < 69 && music.getVolume() > 0) {
-                    music.setVolume(music.getVolume() - 0.05f);
-                }
-                if (music.getPosition() > 0 && music.getPosition() < 4 && music.getVolume() < musicVolumeS.getValue() / 100f) {
-                    music.setVolume(music.getVolume() + 0.05f);
-                }
-                millis = 0;
-            }
-
-            millis = millis + 50 * delta;
-            millis2 = millis2 + 0.5f * delta;
-
-            if (millis2 > 100) {
-                music.dispose();
-                music = Gdx.audio.newMusic(Gdx.files.internal("music/ambient" + getRandomInRange(1, 5) + ".ogg"));
-                music.setPosition(0);
-                music.setVolume(0);
-                music.play();
-                millis2 = 0;
-            }
-
-        }
+        musicManager.update(delta);
 
         if (lamp_animation) {
             number = number + 0.01f;
@@ -661,15 +602,14 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
-        music.stop();
         game.getScreen().dispose();
     }
 
     @Override
     public void dispose() {
+        musicManager.dispose();
         Menu.dispose();
         ShopStage.dispose();
-        music.dispose();
         for (int i = 0; i < fires.size; i++) {
             fires.get(i).dispose();
         }

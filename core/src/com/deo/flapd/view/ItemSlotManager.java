@@ -342,16 +342,19 @@ public class ItemSlotManager {
 
     private int getComplexity(String result) {
         int complexity = 0;
-        if (treeJson.get(result) == null)
-            throw new IllegalArgumentException("no item declared with name " + result);
+        if (treeJson.get(result) == null) {
+            log("no item declared with name " + result);
+            return 100;
+        }else {
 
-        String[] items = treeJson.getStringArray(result, "items");
-        for (int i = 0; i < items.length; i++) {
-            int buffer = getComplexity(items[i]);
-            complexity += buffer + 1;
+            String[] items = treeJson.getStringArray(result, "items");
+            for (int i = 0; i < items.length; i++) {
+                int buffer = getComplexity(items[i]);
+                complexity += buffer + 1;
+            }
+
+            complexity = MathUtils.clamp((int) (Math.ceil(complexity / 2f) - 1) * 4, 0, 15);
+            return complexity;
         }
-
-        complexity = MathUtils.clamp((int) (Math.ceil(complexity / 2f) - 1) * 4, 0, 15);
-        return complexity;
     }
 }
