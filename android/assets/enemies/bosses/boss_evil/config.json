@@ -51,7 +51,7 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "bullet": {
-        "texture": "pew2.png",
+        "texture": "pew2",
         "shootSound": "sfx/gun3.ogg",
         "speed": 150,
         "spread": 0,

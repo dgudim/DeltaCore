@@ -29,72 +29,66 @@ import static java.lang.Math.floor;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
 
-public abstract class DUtils {
-
+public class DUtils {
+    
     private static final Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
-    private static final JsonEntry itemNames = new JsonEntry( new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
+    private static final JsonEntry itemNames = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
     public static int bulletDisposes;
     public static int bulletTrailDisposes;
     public static int enemyDisposes;
     public static int enemyFireDisposes;
     public static int enemyBulletDisposes;
     public static int enemyBulletTrailDisposes;
-
+    
+    private static final String androidRootDir = "GameData/!DeltaCore/";
+    private static final String pcRootDir = "!DeltaCore/";
+    
+    private static final String currentRootDir = initRootDir();
+    
+    private static String initRootDir() {
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            return androidRootDir;
+        } else {
+            return pcRootDir;
+        }
+    }
+    
     public static void log(String contents) {
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            FileHandle file = Gdx.files.external("Android/data/!DeltaCore/logFull.txt");
-            file.writeString(contents, true);
-            FileHandle file2 = Gdx.files.external("Android/data/!DeltaCore/log.txt");
-            file2.writeString(contents, true);
-        } else {
-            FileHandle file = Gdx.files.external("!DeltaCore/logFull.txt");
-            file.writeString(contents, true);
-            FileHandle file2 = Gdx.files.external("!DeltaCore/log.txt");
-            file2.writeString(contents, true);
-        }
+        FileHandle file = Gdx.files.external(currentRootDir + "logFull.txt");
+        file.writeString(contents, true);
+        FileHandle file2 = Gdx.files.external(currentRootDir + "log.txt");
+        file2.writeString(contents, true);
     }
-
+    
     public static void clearLog() {
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            FileHandle file = Gdx.files.external("Android/data/!DeltaCore/log.txt");
-            FileHandle file2 = Gdx.files.external("Android/data/!DeltaCore/logFull.txt");
-            file.writeString("", false);
-            if (file2.file().length() > 3145728) {
-                FileHandle file3 = Gdx.files.external("Android/data/!DeltaCore/logFull(old).txt");
-                file3.writeString(file2.readString(), false);
-                file2.writeString("", false);
-                log("\n log too big, creating second file");
-            }
-        } else {
-            FileHandle file = Gdx.files.external("!DeltaCore/log.txt");
-            FileHandle file2 = Gdx.files.external("!DeltaCore/logFull.txt");
-            file.writeString("", false);
-            if (file2.file().length() > 3145728) {
-                FileHandle file3 = Gdx.files.external("!DeltaCore/logFull(old).txt");
-                file3.writeString(file2.readString(), false);
-                file2.writeString("", false);
-                log("\n log too big, creating second file");
-            }
+        FileHandle file = Gdx.files.external(currentRootDir + "log.txt");
+        FileHandle file2 = Gdx.files.external(currentRootDir + "logFull.txt");
+        file.writeString("", false);
+        if (file2.file().length() > 3145728) {
+            FileHandle file3 = Gdx.files.external(currentRootDir + "logFull(old).txt");
+            file3.writeString(file2.readString(), false);
+            file2.writeString("", false);
+            log("\n log too big, creating second file");
         }
     }
-
+    
     public static int getRandomInRange(int min, int max) {
         return (MathUtils.random(max - min) + min);
     }
-
+    
     public static float getRandomInRange(int min, int max, int precision) {
         precision = (int) pow(10, precision);
         min *= precision * precision;
         max *= precision * precision;
         return (MathUtils.random(max - min) + min) / (float) precision;
     }
-
+    
     public static boolean getRandomBoolean(float positiveChance) {
         int intPositiveChance = (int) (positiveChance * 100);
         return getRandomInRange(intPositiveChance - 10000, intPositiveChance) >= 0;
     }
-
+    
     public static void putInteger(String key, int val) {
         prefs.putInteger(key, val);
         prefs.flush();
@@ -102,7 +96,7 @@ public abstract class DUtils {
             log("\n put integer " + val + " with key " + key);
         }
     }
-
+    
     public static void putString(String key, String val) {
         prefs.putString(key, val);
         prefs.flush();
@@ -110,7 +104,7 @@ public abstract class DUtils {
             log("\n put string " + val + " with key " + key);
         }
     }
-
+    
     public static void putFloat(String key, float val) {
         prefs.putFloat(key, val);
         prefs.flush();
@@ -118,7 +112,7 @@ public abstract class DUtils {
             log("\n put float " + val + " with key " + key);
         }
     }
-
+    
     public static void putBoolean(String key, boolean val) {
         prefs.putBoolean(key, val);
         prefs.flush();
@@ -126,7 +120,7 @@ public abstract class DUtils {
             log("\n put boolean " + val + " with key " + key);
         }
     }
-
+    
     public static void putLong(String key, long val) {
         prefs.putLong(key, val);
         prefs.flush();
@@ -134,7 +128,7 @@ public abstract class DUtils {
             log("\n put long " + val + " with key " + key);
         }
     }
-
+    
     public static void addInteger(String key, int val) {
         int before = prefs.getInteger(key);
         int after = before + val;
@@ -144,7 +138,7 @@ public abstract class DUtils {
             log("\n added integer " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static void addFloat(String key, float val) {
         float before = prefs.getFloat(key);
         float after = before + val;
@@ -154,7 +148,7 @@ public abstract class DUtils {
             log("\n added float " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static void addString(String key, String val) {
         String before = prefs.getString(key);
         String after = before + val;
@@ -164,7 +158,7 @@ public abstract class DUtils {
             log("\n added string " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static void addLong(String key, long val) {
         long before = prefs.getLong(key);
         long after = before + val;
@@ -174,13 +168,13 @@ public abstract class DUtils {
             log("\n added long " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static String getPrefs() {
-
+        
         StringBuilder prefsString = new StringBuilder();
-
+        
         int size = prefs.get().size();
-
+        
         Object[] keys = prefs.get().keySet().toArray();
         Object[] values = prefs.get().values().toArray();
         for (int i = 0; i < size; i++) {
@@ -194,19 +188,12 @@ public abstract class DUtils {
         }
         return prefsString.toString();
     }
-
+    
     public static String savePrefsToFile() {
-        String path;
-
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            path = "Android/data/!DeltaCore/saveGame.save";
-        } else {
-            path = "!DeltaCore/saveGame.save";
-        }
-
-        FileHandle file = Gdx.files.external(path);
+        
+        FileHandle file = Gdx.files.external(currentRootDir + "saveGame.save");
         file.writeString("", false);
-
+        
         try {
             FileOutputStream f = new FileOutputStream(file.file());
             ObjectOutputStream s = new ObjectOutputStream(f);
@@ -216,22 +203,14 @@ public abstract class DUtils {
         } catch (Exception e) {
             logException(e);
         }
-
+        
         return "error";
     }
     
     public static void loadPrefsFromFile() throws FileNotFoundException {
-
-        String path;
-
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            path = "Android/data/!DeltaCore/saveGame.save";
-        } else {
-            path = "!DeltaCore/saveGame.save";
-        }
-
-        FileHandle file = Gdx.files.external(path);
-
+        
+        FileHandle file = Gdx.files.external(currentRootDir + "saveGame.save");
+        
         try {
             FileInputStream f = new FileInputStream(file.file());
             ObjectInputStream s = new ObjectInputStream(f);
@@ -242,44 +221,44 @@ public abstract class DUtils {
             logException(e);
             throw new FileNotFoundException("no save file found in " + file.file().getPath());
         }
-
+        
     }
-
+    
     public static int getInteger(String key) {
         if (logging) {
             log("\n got integer " + prefs.getInteger(key) + " with key " + key);
         }
         return (prefs.getInteger(key));
     }
-
+    
     public static float getFloat(String key) {
         if (logging) {
             log("\n got float " + prefs.getFloat(key) + " with key " + key);
         }
         return (prefs.getFloat(key));
     }
-
+    
     public static boolean getBoolean(String key) {
         if (logging) {
             log("\n got boolean " + prefs.getBoolean(key) + " with key " + key);
         }
         return (prefs.getBoolean(key));
     }
-
+    
     public static String getString(String key) {
         if (logging) {
             log("\n got string " + prefs.getString(key) + " with key " + key);
         }
         return (prefs.getString(key));
     }
-
+    
     public static long getLong(String key) {
         if (logging) {
             log("\n got long " + prefs.getLong(key) + " with key " + key);
         }
         return (prefs.getLong(key));
     }
-
+    
     public static void removeKey(String key) {
         prefs.remove(key);
         prefs.flush();
@@ -287,7 +266,7 @@ public abstract class DUtils {
             log("\n removed key " + key);
         }
     }
-
+    
     public static boolean containsKey(String key) {
         if (logging) {
             if (prefs.contains(key)) {
@@ -298,7 +277,7 @@ public abstract class DUtils {
         }
         return (prefs.contains(key));
     }
-
+    
     public static void subtractInteger(String key, int val) {
         int before = prefs.getInteger(key);
         int after = before - val;
@@ -308,7 +287,7 @@ public abstract class DUtils {
             log("\n subtracted integer " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static void subtractFloat(String key, float val) {
         float before = prefs.getFloat(key);
         float after = before - val;
@@ -318,7 +297,7 @@ public abstract class DUtils {
             log("\n subtracted float " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static void subtractLong(String key, long val) {
         long before = prefs.getLong(key);
         long after = before - val;
@@ -328,7 +307,7 @@ public abstract class DUtils {
             log("\n subtracted long " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
         }
     }
-
+    
     public static void clearPrefs() {
         prefs.clear();
         prefs.flush();
@@ -336,7 +315,7 @@ public abstract class DUtils {
             log("\n cleared preferences");
         }
     }
-
+    
     public static String getItemCodeNameByName(String name) {
         String item;
         try {
@@ -347,7 +326,7 @@ public abstract class DUtils {
         }
         return item;
     }
-
+    
     public static void updateCamera(OrthographicCamera camera, Viewport viewport, int width, int height) {
         viewport.update(width, height);
         camera.position.set(400, 240, 0);
@@ -357,14 +336,14 @@ public abstract class DUtils {
         camera.zoom = 1 / zoom;
         camera.update();
     }
-
+    
     public static void logException(Exception e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         String fullStackTrace = sw.toString();
         log("\n\n" + fullStackTrace + "\n");
     }
-
+    
     public static void initNewGame() {
         putInteger("enemiesKilled", 0);
         putInteger("moneyEarned", 0);
@@ -387,11 +366,11 @@ public abstract class DUtils {
         if (!a.getClass().isArray() || !b.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
-
+        
         Class<?> resCompType;
         Class<?> aCompType = a.getClass().getComponentType();
         Class<?> bCompType = b.getClass().getComponentType();
-
+        
         if (aCompType.isAssignableFrom(bCompType)) {
             resCompType = aCompType;
         } else if (bCompType.isAssignableFrom(aCompType)) {
@@ -399,17 +378,17 @@ public abstract class DUtils {
         } else {
             throw new IllegalArgumentException();
         }
-
+        
         int aLen = Array.getLength(a);
         int bLen = Array.getLength(b);
-
+        
         T result = (T) Array.newInstance(resCompType, aLen + bLen);
         System.arraycopy(a, 0, result, 0, aLen);
         System.arraycopy(b, 0, result, aLen, bLen);
-
+        
         return result;
     }
-
+    
     public static float lerpWithConstantSpeed(float from, float to, float speed, float delta) {
         if (from + speed * delta < to) {
             return from + speed * delta;
@@ -419,30 +398,30 @@ public abstract class DUtils {
             return to;
         }
     }
-
+    
     public static float normaliseAngle(float angle, float start, float end) {
         final float width = end - start;
         final float offsetValue = angle - start;   // value relative to 0
-
+        
         return (float) ((offsetValue - (floor(offsetValue / width) * width)) + start);
         // + start to reset back to start of original range
     }
-
+    
     public static float lerpAngleWithConstantSpeed(float from, float to, float speed, float delta) {
         from = normaliseAngle(from, 0, 360);
         to = normaliseAngle(to, 0, 360);
-
+        
         float distance1 = Math.abs(from - to);
         float distance2 = 360 - distance1;
-
+        
         if ((distance1 < distance2 && to > from) || (distance1 > distance2 && to < from)) {
             return from + speed * delta;
         } else {
             return from - speed * delta;
         }
-
+        
     }
-
+    
     public static void logVariables() {
         log("\n total bullet dispose calls: " + bulletDisposes);
         log("\n total bullet trail particle effects dispose calls: " + bulletTrailDisposes);
@@ -457,7 +436,7 @@ public abstract class DUtils {
         enemyBulletDisposes = 0;
         enemyBulletTrailDisposes = 0;
     }
-
+    
     public static TextureRegionDrawable constructFilledImageWithColor(int width, int height, Color color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
@@ -466,7 +445,7 @@ public abstract class DUtils {
         pixmap.dispose();
         return image;
     }
-
+    
     public static void lerpToColor(Color from, Color to, float speed, float delta) {
         if (from.r < to.r) {
             from.r = MathUtils.clamp(from.r + delta * speed, 0, 1);
@@ -478,7 +457,7 @@ public abstract class DUtils {
             from.b = MathUtils.clamp(from.b + delta * speed, 0, 1);
         }
     }
-
+    
     public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {
         JsonEntry price = treeJson.get(result, "price");
         int[] priceArray = new int[]{0, 0};

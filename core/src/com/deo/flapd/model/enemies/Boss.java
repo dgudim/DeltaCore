@@ -71,8 +71,8 @@ public class Boss {
                     parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("clone"):
-                    String cloneType = bossConfig.get("parts", i).getString("copyFrom");
-                    cloneType = bossConfig.getString("parts", cloneType, "type");
+                    String copyFrom = bossConfig.get("parts", i).getString("copyFrom");
+                    String cloneType = bossConfig.getString("parts", copyFrom, "type");
                     switch (cloneType) {
                         case ("part"):
                             parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
@@ -568,6 +568,7 @@ class Cannon extends Part {
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
+        shootingSound.dispose();
     }
 }
 

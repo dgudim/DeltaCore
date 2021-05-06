@@ -5,77 +5,84 @@ filter: Nearest,Nearest
 repeat: none
 evil_base
   rotate: false
-  xy: 1, 521
+  xy: 1, 325
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_center
   rotate: false
-  xy: 1, 391
+  xy: 1, 195
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_down
   rotate: false
-  xy: 131, 521
+  xy: 131, 325
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_down_left
   rotate: false
-  xy: 1, 261
+  xy: 1, 65
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_down_right
   rotate: false
-  xy: 131, 391
+  xy: 131, 195
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_left
   rotate: false
-  xy: 261, 521
+  xy: 261, 325
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_right
   rotate: false
-  xy: 1, 131
+  xy: 131, 65
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_up
   rotate: false
-  xy: 131, 261
+  xy: 261, 195
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_up_left
   rotate: false
-  xy: 261, 391
+  xy: 391, 325
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_up_right
   rotate: false
-  xy: 1, 1
+  xy: 261, 65
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+evil_cannon
+  rotate: false
+  xy: 1, 1
+  size: 62, 62
+  orig: 62, 62
+  offset: 0, 0
+  index: -1
 pew2
   rotate: false
-  xy: 391, 601
+  xy: 391, 275
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
