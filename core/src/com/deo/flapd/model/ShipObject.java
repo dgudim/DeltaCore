@@ -23,15 +23,15 @@ import static com.deo.flapd.utils.DUtils.getString;
 public abstract class ShipObject {
 
     public Polygon bounds;
-    private Sprite ship;
-    private Sprite shield;
+    private final Sprite ship;
+    private final Sprite shield;
     Sprite magnetField;
     public Sprite repellentField;
     Sprite aimRadius;
 
-    private ParticleEffect damage_fire;
-    private ParticleEffect damage_fire2;
-    private ParticleEffect damage_fire3;
+    private final ParticleEffect damage_fire;
+    private final ParticleEffect damage_fire2;
+    private final ParticleEffect damage_fire3;
     public ParticleEffect explosionEffect;
 
     private float red;
@@ -43,9 +43,9 @@ public abstract class ShipObject {
 
     public boolean exploded;
 
-    private Sound explosion;
+    private final Sound explosion;
 
-    private float soundVolume;
+    private final float soundVolume;
 
     public float Health, Shield, Charge;
 
@@ -65,16 +65,13 @@ public abstract class ShipObject {
 
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
-    private boolean hasAnimation;
+    private final boolean hasAnimation;
 
-    private float[] fireOffsetsX;
-    private float[] fireOffsetsY;
+    private final float[] fireOffsetsX;
+    private final float[] fireOffsetsY;
 
-    private Array<ParticleEffect> fires;
-
-    private float width;
-    private float height;
-
+    private final Array<ParticleEffect> fires;
+    
     public Bullet bullet;
     public int bulletsShot;
 
@@ -104,9 +101,9 @@ public abstract class ShipObject {
             fire.getEmitters().get(0).getTint().setColors(colors);
             fires.add(fire);
         }
-
-        height = shipConfig.getFloat("height");
-        width = shipConfig.getFloat("width");
+    
+        float height = shipConfig.getFloat("height");
+        float width = shipConfig.getFloat("width");
 
         hasAnimation = shipConfig.getBoolean("hasAnimation");
 

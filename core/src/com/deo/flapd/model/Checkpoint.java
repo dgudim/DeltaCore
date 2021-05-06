@@ -18,16 +18,18 @@ import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class Checkpoint {
 
-    private Sprite checkpoint_blue, checkpoint_green;
+    private final Sprite checkpoint_blue;
+    private final Sprite checkpoint_green;
     private boolean checkpointState, effects;
-    private Polygon bounds, shipBounds;
-    private ShipObject player;
+    private final Polygon bounds;
+    private final Polygon shipBounds;
+    private final ShipObject player;
     private ParticleEffect fire;
     private ParticleEffect fire2;
     private float speed;
     private float destination_posX;
     private float destination_posY;
-    private Random random;
+    private final Random random;
 
     public Checkpoint(AssetManager assetManager, ShipObject ship) {
         checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
@@ -40,9 +42,7 @@ public class Checkpoint {
         shipBounds = player.bounds;
 
         random = new Random();
-
-        this.shipBounds = shipBounds;
-
+    
         bounds.setPosition(-200, -200);
 
         checkpoint_blue.setSize(0, 0);
@@ -120,7 +120,7 @@ public class Checkpoint {
             putFloat("Shield", player.Shield);
             putFloat("Charge", player.Charge);
             for(int i = 0; i< Bosses.bosses.size; i++){
-                putBoolean("boss_spawned_"+Bosses.bosses.get(i).bossConfig.name, Bosses.bosses.get(i).hasAlreadySpawned);
+                putBoolean("boss_spawned_"+Bosses.bossNames[i], Bosses.bosses.get(i).hasAlreadySpawned);
             }
             putInteger("bonuses_collected", GameLogic.bonuses_collected);
             putInteger("lastCheckpoint", GameLogic.lastCheckpoint);

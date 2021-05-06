@@ -22,6 +22,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.utils.JsonEntry;
 
+import java.util.Locale;
+
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putBoolean;
@@ -37,7 +39,7 @@ public class UIComposer {
     Array<String> sliderStyleNames;
     Array<String> checkBoxStyleNames;
 
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
 
     public UIComposer(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -325,11 +327,11 @@ public class UIComposer {
         Table cell = new Table();
         final Slider slider = addSlider(style, min, max, step);
         slider.setValue(getFloat(valueKey));
-        final Label textLabel = addText(text + String.format("%.1f", getFloat(valueKey)) + postText, (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.48f);
+        final Label textLabel = addText(text + String.format(Locale.ROOT, "%.1f", getFloat(valueKey)) + postText, (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.48f);
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                textLabel.setText(text + String.format("%.1f", slider.getValue()) + postText);
+                textLabel.setText(text + String.format(Locale.ROOT, "%.1f", slider.getValue()) + postText);
                 putFloat(valueKey, slider.getValue());
             }
         });

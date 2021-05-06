@@ -8,10 +8,10 @@ import com.deo.flapd.model.enemies.Meteorite;
 public class Meteorites{
 
     public static Array<Meteorite> meteorites;
-    private AssetManager assetManager;
-    private boolean easterEgg;
+    private final AssetManager assetManager;
+    private final boolean easterEgg;
 
-    public Meteorites(AssetManager assetManager, boolean newGame, boolean easterEgg) {
+    public Meteorites(AssetManager assetManager, boolean easterEgg) {
 
         this.assetManager = assetManager;
         this.easterEgg = easterEgg;

@@ -16,13 +16,13 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class UraniumCell {
 
-    private Sprite cell;
+    private final Sprite cell;
     private static Array<Float> timers;
     private static Array<Rectangle> cells;
     private static Array<Float> degrees;
     private static Array<Integer> values;
     private static Random random;
-    private float uiScaling;
+    private final float uiScaling;
 
     public UraniumCell(AssetManager assetManager) {
 

@@ -16,14 +16,31 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Drops {
 
-    private Sprite ironPlate, bolt, ore, glassShard, coloringCrystal, cog, warpShard, warpShardMK2, warpShardMK3, wire, energyCell, coreShard, redCrystal, ironShard, plastic, rubber;
+    private final Sprite ironPlate;
+    private final Sprite bolt;
+    private final Sprite ore;
+    private final Sprite glassShard;
+    private final Sprite coloringCrystal;
+    private final Sprite cog;
+    private final Sprite warpShard;
+    private final Sprite warpShardMK2;
+    private final Sprite warpShardMK3;
+    private final Sprite wire;
+    private final Sprite energyCell;
+    private final Sprite coreShard;
+    private final Sprite redCrystal;
+    private final Sprite ironShard;
+    private final Sprite plastic;
+    private final Sprite rubber;
+    
     private static Array<Float> timers;
     private static Array<Rectangle> drops;
     private static Array<Float> degrees;
     private static Array<Integer> types;
+    
     private static float maxSize;
     private static Random random;
-    private float uiScaling;
+    private final float uiScaling;
 
     public Drops(AssetManager assetManager, float maxSize, float uiScaling) {
 

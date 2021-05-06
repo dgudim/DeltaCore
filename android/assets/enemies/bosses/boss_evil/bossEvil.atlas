@@ -5,78 +5,78 @@ filter: Nearest,Nearest
 repeat: none
 evil_base
   rotate: false
-  xy: 1, 323
+  xy: 1, 521
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_center
   rotate: false
-  xy: 1, 193
+  xy: 1, 391
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_down
   rotate: false
-  xy: 131, 323
+  xy: 131, 521
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_down_left
   rotate: false
-  xy: 1, 63
+  xy: 1, 261
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_down_right
   rotate: false
-  xy: 131, 193
+  xy: 131, 391
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_left
   rotate: false
-  xy: 261, 323
+  xy: 261, 521
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_right
   rotate: false
-  xy: 131, 63
+  xy: 1, 131
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_up
   rotate: false
-  xy: 261, 193
+  xy: 131, 261
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_up_left
   rotate: false
-  xy: 391, 323
+  xy: 261, 391
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 evil_up_right
   rotate: false
-  xy: 261, 63
+  xy: 1, 1
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-evil_cannon
+pew2
   rotate: false
-  xy: 1, 1
-  size: 60, 60
-  orig: 60, 60
+  xy: 391, 601
+  size: 48, 48
+  orig: 48, 48
   offset: 0, 0
   index: -1

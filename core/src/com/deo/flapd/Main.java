@@ -65,7 +65,7 @@ public class Main extends Game {
             super.render();
         }catch (Exception e){
             logException(e);
-            log("global error occurred, dump pf preferences\n"+getPrefs()+"\n");
+            log("global error occurred, dump of preferences\n"+getPrefs()+"\n");
             log("force exiting");
             Gdx.app.exit();
         }

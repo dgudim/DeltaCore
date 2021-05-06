@@ -43,12 +43,12 @@ public final class PostProcessor implements Disposable {
 	private final PingPongBuffer composite;
 	private TextureWrap compositeWrapU;
 	private TextureWrap compositeWrapV;
-	public final ItemsManager<PostProcessorEffect> effectsManager = new ItemsManager<PostProcessorEffect>();
-	private static final Array<PingPongBuffer> buffers = new Array<PingPongBuffer>(5);
+	public final ItemsManager<PostProcessorEffect> effectsManager = new ItemsManager<>();
+	private static final Array<PingPongBuffer> buffers = new Array<>(5);
 	private final Color clearColor = Color.CLEAR;
 	private int clearBits = GL20.GL_COLOR_BUFFER_BIT;
 	private float clearDepth = 1f;
-	private static Rectangle viewport = new Rectangle();
+	private static final Rectangle viewport = new Rectangle();
 	private static boolean hasViewport = false;
 
 	private boolean enabled = true;
@@ -59,7 +59,7 @@ public final class PostProcessor implements Disposable {
 	private PostProcessorListener listener = null;
 
 	// maintains a per-frame updated list of enabled effects
-	private Array<PostProcessorEffect> enabledEffects = new Array<PostProcessorEffect>(5);
+	private final Array<PostProcessorEffect> enabledEffects = new Array<PostProcessorEffect>(5);
 
 	/** Construct a new PostProcessor with FBO dimensions set to the size of the screen */
 	public PostProcessor (boolean useDepth, boolean useAlphaChannel, boolean use32Bits) {

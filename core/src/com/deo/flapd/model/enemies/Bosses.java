@@ -9,9 +9,9 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Bosses {
 
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
     public static Array<Boss> bosses;
-    private final String[] bossNames = new String[]{"boss_ship", "boss_evil"};
+    public static final String[] bossNames = new String[]{"boss_ship", "boss_evil"};
 
     public Bosses(AssetManager assetManager){
         this.assetManager = assetManager;
@@ -19,8 +19,8 @@ public class Bosses {
     }
 
     public void loadBosses(){
-        for(int i = 0;i < bossNames.length; i++){
-            bosses.add(new Boss(bossNames[i], assetManager));
+        for (String bossName : bossNames) {
+            bosses.add(new Boss(bossName, assetManager));
         }
     }
 

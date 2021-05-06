@@ -29,36 +29,38 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class Bullet {
 
-    private ShipObject player;
-    private Enemies enemies;
-    private Polygon playerBounds;
+    private final ShipObject player;
+    private final Enemies enemies;
+    private final Polygon playerBounds;
     public Array<Rectangle> bullets;
     public Array<Integer> damages;
-    private Array<ParticleEffect> trails, disposedTrails;
-    private Array<Float> trailCountDownTimers;
-    private Array<Float> degrees;
-    private Array<Float> explosionTimers;
-    private Array<ParticleEffect> explosions;
-    private Array<Boolean> types;
-    private Sprite bullet;
+    private final Array<ParticleEffect> trails;
+    private final Array<ParticleEffect> disposedTrails;
+    private final Array<Float> trailCountDownTimers;
+    private final Array<Float> degrees;
+    private final Array<Float> explosionTimers;
+    private final Array<ParticleEffect> explosions;
+    private final Array<Boolean> types;
+    private final Sprite bullet;
 
     private Music laserSaw;
     private Sound shot;
 
-    private float soundVolume;
+    private final float soundVolume;
 
     private float spread;
 
-    private Array<Boolean> explosionQueue, remove_Bullet;
+    private final Array<Boolean> explosionQueue;
+    private final Array<Boolean> remove_Bullet;
 
     private float shootingSpeedMultiplier;
     private float powerConsumption;
 
     public Sprite laser;
 
-    private String bulletExplosionEffect;
-    private String bulletTrailEffect;
-    private boolean hasTrail;
+    private final String bulletExplosionEffect;
+    private final String bulletTrailEffect;
+    private final boolean hasTrail;
 
     private float width, height;
 
@@ -66,7 +68,7 @@ public class Bullet {
     private int baseDamage;
     private int bulletSpeed;
     private int bulletsPerShot;
-    private float bulletTrailTimer;
+    private final float bulletTrailTimer;
 
     private float millis;
 
@@ -75,14 +77,14 @@ public class Bullet {
     private String laserColor;
     private boolean isLaserActive;
     public boolean isLaser;
-    private boolean isHoming;
+    private final boolean isHoming;
     private float homingSpeed;
     private float explosionTimer;
 
-    private int gunCount;
+    private final int gunCount;
     private int currentActiveGun;
-    private float[] gunOffsetsX;
-    private float[] gunOffsetsY;
+    private final float[] gunOffsetsX;
+    private final float[] gunOffsetsY;
 
     public Bullet(AssetManager assetManager, ShipObject ship, Enemies enemies, boolean newGame) {
 
@@ -479,12 +481,7 @@ public class Bullet {
     }
 
     public void removeBullet(int i, boolean explode) {
-        if (explode) {
-            explosionQueue.set(i, true);
-            remove_Bullet.set(i, true);
-        } else {
-            explosionQueue.set(i, false);
-            remove_Bullet.set(i, true);
-        }
+        explosionQueue.set(i, explode);
+        remove_Bullet.set(i, true);
     }
 }

@@ -18,8 +18,6 @@ public class Entity {
     public float health;
     public float speed;
     public boolean isDead = false;
-    public boolean isExploded = false;
-    boolean canAimAt = false;
     Color color;
 
     public Sprite entitySprite;
@@ -42,10 +40,6 @@ public class Entity {
         } else {
             entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
         }
-    }
-
-    void collideWith(String entityName) {
-
     }
 
 }

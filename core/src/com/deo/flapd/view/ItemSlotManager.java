@@ -41,23 +41,26 @@ import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
+import static com.deo.flapd.view.SlotManagerMode.INVENTORY;
+import static com.deo.flapd.view.SlotManagerMode.SHOP;
+
+enum SlotManagerMode{INVENTORY, SHOP}
 
 public class ItemSlotManager {
 
-    private BitmapFont font;
-    private Table table, inventory;
+    private final BitmapFont font;
+    private final Table table;
+    private final Table inventory;
     Group holderGroup;
-    private Skin slotSkin;
-    private TextureAtlas items;
-    private ScrollPane scrollPane;
+    private final Skin slotSkin;
+    private final TextureAtlas items;
+    private final ScrollPane scrollPane;
     private Stage stage;
-    private AssetManager assetManager;
-    private int type;
-    private final int INVENTORY = 1;
-    private final int SHOP = 2;
-    private UIComposer uiComposer;
+    private final AssetManager assetManager;
+    private SlotManagerMode slotManagerMode;
+    private final UIComposer uiComposer;
 
-    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+    private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     ItemSlotManager(AssetManager assetManager) {
 
@@ -87,7 +90,7 @@ public class ItemSlotManager {
     }
 
     void addShopSlots() {
-        type = SHOP;
+        slotManagerMode = SHOP;
         int slotCount;
         long lastGenerationTime = getLong("lastGenTime");
         if (TimeUtils.timeSinceMillis(lastGenerationTime) > 18000000) {
@@ -119,7 +122,7 @@ public class ItemSlotManager {
     }
 
     void addInventorySlots() {
-        type = INVENTORY;
+        slotManagerMode = INVENTORY;
         boolean nextRow = false;
         for (int i = 0; i < treeJson.size; i++) {
             if (treeJson.getString(i, "category").equals("recepies") && getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)) > 0) {
@@ -309,7 +312,7 @@ public class ItemSlotManager {
 
         inventory.add(moneyAndCogs);
 
-        if (type == SHOP) {
+        if (slotManagerMode == SHOP) {
             inventory.add(resetTime).padLeft(10).align(Align.center).width(160).expand();
         } else {
             Label name = new Label("Inventory", yellowLabelStyle);
@@ -333,7 +336,7 @@ public class ItemSlotManager {
     public void update() {
         inventory.clearChildren();
         table.clearChildren();
-        if (type == SHOP) {
+        if (slotManagerMode == SHOP) {
             addShopSlots();
         } else {
             addInventorySlots();
@@ -348,8 +351,8 @@ public class ItemSlotManager {
         }else {
 
             String[] items = treeJson.getStringArray(result, "items");
-            for (int i = 0; i < items.length; i++) {
-                int buffer = getComplexity(items[i]);
+            for (String item : items) {
+                int buffer = getComplexity(item);
                 complexity += buffer + 1;
             }
 

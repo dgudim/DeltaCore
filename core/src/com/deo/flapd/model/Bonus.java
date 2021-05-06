@@ -23,22 +23,27 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class Bonus {
 
-    private Polygon playerBounds;
-    private ShipObject player;
+    private final Polygon playerBounds;
+    private final ShipObject player;
     private static Array<Rectangle> bonuses;
     private static Array<Integer> types;
     private static Array<Float> anglesY;
-    private Array<ParticleEffect> explosions;
-    private Sprite bonus_health, bonus_charge, bonus_shield, bonus_part, bonus_bullets, boss;
+    private final Array<ParticleEffect> explosions;
+    private final Sprite bonus_health;
+    private final Sprite bonus_charge;
+    private final Sprite bonus_shield;
+    private final Sprite bonus_part;
+    private final Sprite bonus_bullets;
+    private final Sprite boss;
 
-    private BitmapFont font_text;
+    private final BitmapFont font_text;
 
-    private float uiScale;
+    private final float uiScale;
 
-    private Image bonus_bullets_t;
+    private final Image bonus_bullets_t;
     private static Random random;
 
-    private Bosses bosses;
+    private final Bosses bosses;
 
     private static float height, width;
 

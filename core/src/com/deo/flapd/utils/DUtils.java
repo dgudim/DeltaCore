@@ -31,9 +31,9 @@ import static java.lang.Math.pow;
 
 public abstract class DUtils {
 
-    private static Preferences prefs = Gdx.app.getPreferences("Preferences");
+    private static final Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
-    private static JsonEntry itemNames = new JsonEntry( new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
+    private static final JsonEntry itemNames = new JsonEntry( new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
     public static int bulletDisposes;
     public static int bulletTrailDisposes;
     public static int enemyDisposes;
@@ -219,7 +219,7 @@ public abstract class DUtils {
 
         return "error";
     }
-
+    
     public static void loadPrefsFromFile() throws FileNotFoundException {
 
         String path;
@@ -372,8 +372,8 @@ public abstract class DUtils {
         putFloat("Health", 1000);
         putFloat("Shield", 1000);
         putFloat("Charge", 1000);
-        for (int i = 0; i < Bosses.bosses.size; i++) {
-            putBoolean("boss_spawned_" + Bosses.bosses.get(i).bossName, false);
+        for (int i = 0; i < Bosses.bossNames.length; i++) {
+            putBoolean("boss_spawned_" + Bosses.bossNames[i], false);
         }
         putInteger("bonuses_collected", 0);
         putInteger("lastCheckpoint", 0);
@@ -382,7 +382,7 @@ public abstract class DUtils {
         putFloat("ShipX", 0);
         putFloat("ShipY", 220);
     }
-
+    
     public static <T> T concatArray(T a, T b) {
         if (!a.getClass().isArray() || !b.getClass().isArray()) {
             throw new IllegalArgumentException();

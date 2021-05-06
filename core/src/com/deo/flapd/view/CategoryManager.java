@@ -19,17 +19,21 @@ import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class CategoryManager extends Actor{
 
-    private Table buttons;
-    private float buttonWidth, buttonHeight, pad, fontScale;
-    private Array<Actor> targets, overrideActors;
+    private final Table buttons;
+    private final float buttonWidth;
+    private final float buttonHeight;
+    private final float pad;
+    private final float fontScale;
+    private final Array<Actor> targets;
+    private final Array<Actor> overrideActors;
     private int categoryCounter;
     private Image background, Tbackground;
-    private boolean useBg;
-    private boolean closeAtSecondClick;
-    private String key;
-    private UIComposer uiComposer;
-    private String style;
-    private boolean useTbg;
+    private final boolean useBg;
+    private final boolean closeAtSecondClick;
+    private final String key;
+    private final UIComposer uiComposer;
+    private final String style;
+    private final boolean useTbg;
 
     CategoryManager(AssetManager assetManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey){
 

@@ -15,16 +15,16 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemies {
 
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
 
     JsonEntry enemiesJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/enemies.json")));
-    private Array<EnemyData> enemies;
-    private Array<String> enemyNames;
+    private final Array<EnemyData> enemies;
+    private final Array<String> enemyNames;
     public Array<Enemy> enemyEntities;
 
-    private String type;
+    private final String type;
 
-    private float difficulty;
+    private final float difficulty;
 
     private ShipObject player;
 

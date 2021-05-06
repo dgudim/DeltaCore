@@ -35,21 +35,19 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
 
-    private AssetManager assetManager;
-    private SpriteBatch batch;
-    private BitmapFont main;
-    private Game game;
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private ProgressBar loadingBar;
-    private ProgressBar.ProgressBarStyle loadingBarStyle;
-    private ShapeRenderer shapeRenderer;
+    private final AssetManager assetManager;
+    private final SpriteBatch batch;
+    private final BitmapFont main;
+    private final Game game;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
+    private final ProgressBar loadingBar;
+    private final ShapeRenderer shapeRenderer;
     private float rotation, halfRotation, progress, millis;
-    private Color color, fillColor;
     private String state;
-    private PostProcessor blurProcessor;
-    private boolean enableShader;
-    private long loadingTime;
+    private final PostProcessor blurProcessor;
+    private final boolean enableShader;
+    private final long loadingTime;
     public static Tree craftingTree;
     private String stateName;
 
@@ -90,8 +88,8 @@ public class LoadingScreen implements Screen {
 
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
-
-        loadingBarStyle = new ProgressBar.ProgressBarStyle();
+    
+        ProgressBar.ProgressBarStyle loadingBarStyle = new ProgressBar.ProgressBarStyle();
 
         loadingBarStyle.knob = constructFilledImageWithColor(0, 24, Color.valueOf("1979b5"));
         loadingBarStyle.knobBefore = constructFilledImageWithColor(100, 24, Color.valueOf("1979b5"));
@@ -205,9 +203,9 @@ public class LoadingScreen implements Screen {
         }
 
         progress = assetManager.getProgress();
-
-        color = new Color().add(0.5f / progress, progress + 0.1f, 0, 1);
-        fillColor = new Color().add(0.0f, 0.1f, 0.15f, 1);
+    
+        Color color = new Color().add(0.5f / progress, progress + 0.1f, 0, 1);
+        Color fillColor = new Color().add(0.0f, 0.1f, 0.15f, 1);
 
         if (enableShader) {
             blurProcessor.capture();

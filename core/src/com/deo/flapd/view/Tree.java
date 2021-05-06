@@ -37,13 +37,13 @@ import static com.deo.flapd.utils.DUtils.log;
 
 public class Tree {
 
-    private AssetManager assetManager;
-    private Table treeTable;
-    private Array<Array<Node>> nodes;
-    private float height;
+    private final AssetManager assetManager;
+    private final Table treeTable;
+    private final Array<Array<Node>> nodes;
+    private final float height;
     private int branchCount;
     ScrollPane treeScrollView;
-    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+    private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     Tree(AssetManager assetManager, float x, float y, float width, float height) {
         this.height = height;
@@ -186,16 +186,16 @@ public class Tree {
 class Node {
 
     ImageButton node;
-    private Table holder;
-    private Vector2 bounds;
-    private Array<Image> branches;
+    private final Table holder;
+    private final Vector2 bounds;
+    private final Array<Image> branches;
     Array<Node> children;
     private Node parent;
     String name;
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
     private int requestedQuantity = 1;
     private Label quantity;
-    private JsonEntry treeJson;
+    private final JsonEntry treeJson;
     private float resultCount = 1;
 
     Node(final AssetManager assetManager, final String item, float x, float y, float width, float height, final Table holder, JsonEntry treeJson) {
@@ -411,8 +411,8 @@ class Node {
         boolean locked = false;
         if (getType().equals("part")) {
             String[] requiredItems = treeJson.getStringArray(name, "requires");
-            for (int i = 0; i < requiredItems.length; i++) {
-                locked = !getBoolean("unlocked_" + getItemCodeNameByName(requiredItems[i]));
+            for (String requiredItem : requiredItems) {
+                locked = !getBoolean("unlocked_" + getItemCodeNameByName(requiredItem));
                 if (locked) {
                     break;
                 }

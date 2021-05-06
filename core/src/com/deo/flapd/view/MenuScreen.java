@@ -65,37 +65,38 @@ public class MenuScreen implements Screen {
     private float number;
     private boolean lamp_animation;
 
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
 
-    private Image MenuBg;
-    private Texture Bg;
+    private final Image MenuBg;
+    private final Texture Bg;
     private Sprite Ship;
 
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
     private boolean hasAnimation;
-    private JsonEntry shipConfigs;
+    private final JsonEntry shipConfigs;
 
-    private Image FillTexture;
+    private final Image FillTexture;
 
-    private Image Lamp;
+    private final Image Lamp;
 
-    private BitmapFont font_main;
+    private final BitmapFont font_main;
 
-    private Stage Menu, ShopStage;
+    private final Stage Menu;
+    private final Stage ShopStage;
 
     private float movement;
 
-    private InputMultiplexer multiplexer;
+    private final InputMultiplexer multiplexer;
 
-    private MusicManager musicManager;
+    private final MusicManager musicManager;
 
-    private Game game;
+    private final Game game;
 
-    private Array<ParticleEffect> fires;
+    private final Array<ParticleEffect> fires;
 
     private boolean easterEgg;
 
@@ -104,25 +105,23 @@ public class MenuScreen implements Screen {
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
 
-    private PostProcessor blurProcessor;
+    private final PostProcessor blurProcessor;
 
     private boolean enableShader;
-
-    private Tree craftingTree;
-
-    private CategoryManager menuCategoryManager, workshopCategoryManager;
+    
+    private final CategoryManager workshopCategoryManager;
 
     private final Slider musicVolumeS;
 
-    private JsonEntry treeJson;
+    private final JsonEntry treeJson;
 
     private String lastFireEffect;
 
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
 
     private boolean isConfirmationDialogActive = false;
 
-    private String currentShipTexture;
+    private final String currentShipTexture;
 
     public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor) {
         long genTime = TimeUtils.millis();
@@ -274,8 +273,8 @@ public class MenuScreen implements Screen {
                         "[#CAE500]Deltacore\n" +
                         "® All right reserved",
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
-
-        craftingTree = LoadingScreen.craftingTree;
+    
+        Tree craftingTree = LoadingScreen.craftingTree;
         craftingTree.hide();
         craftingTree.update();
 
@@ -316,8 +315,8 @@ public class MenuScreen implements Screen {
         workshopCategoryManager.setBackgroundBounds(5, 65, 531, 410);
         workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
         workshopCategoryManager.setVisible(false);
-
-        menuCategoryManager = new CategoryManager(assetManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
+    
+        CategoryManager menuCategoryManager = new CategoryManager(assetManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
         menuCategoryManager.addCategory(playScreenTable, "play").addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

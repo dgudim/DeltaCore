@@ -35,27 +35,27 @@ public class Enemy extends Entity {
     public EnemyData data;
 
     private BulletData bulletData;
-    private Array<EnemyBullet> bullets;
+    private final Array<EnemyBullet> bullets;
 
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
 
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
 
-    private Sound explosionSound;
+    private final Sound explosionSound;
     private Sound shootingSound;
-    private float volume;
+    private final float volume;
 
-    private float difficulty;
+    private final float difficulty;
 
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
 
-    private Enemies enemies;
+    private final Enemies enemies;
 
-    private ShipObject player;
-    private Polygon playerBounds;
-    private Bullet playerBullet;
+    private final ShipObject player;
+    private final Polygon playerBounds;
+    private final Bullet playerBullet;
 
     Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, ShipObject ship) {
         this.assetManager = assetManager;

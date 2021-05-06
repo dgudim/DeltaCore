@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Meteorite extends Entity {
 
-    private float flyingDirection;
-    private float rotationSpeed;
+    private final float flyingDirection;
+    private final float rotationSpeed;
     public float radius;
-    private ParticleEffect trail;
+    private final ParticleEffect trail;
 
     public boolean remove;
 

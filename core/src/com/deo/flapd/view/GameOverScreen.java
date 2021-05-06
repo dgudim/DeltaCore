@@ -31,34 +31,32 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameOverScreen implements Screen {
 
-    private int Score, enemiesKilled, bulletsShot, highScore, moneyEarned;
+    private final int Score;
+    private final int enemiesKilled;
+    private final int bulletsShot;
+    private int highScore;
+    private final int moneyEarned;
 
-    private float difficulty;
+    private final float difficulty;
 
-    private Stage stage;
+    private final Stage stage;
+    
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
 
-    private Image GameOver;
-    private Button Menu;
-    private Button Restart;
-    private Skin buttonSkin;
-    private Button.ButtonStyle buttonStyle, buttonStyle2;
+    private final SpriteBatch batch;
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private final BitmapFont font_main;
 
-    private SpriteBatch batch;
+    private final Game game;
 
-    private BitmapFont font_main;
+    private final Boolean isNewHighScore;
 
-    private Game game;
+    private final PostProcessor blurProcessor;
 
-    private Boolean isNewHighScore;
+    private final boolean enableShader;
 
-    private PostProcessor blurProcessor;
-
-    private boolean enableShader;
-
-    private AssetManager assetManager;
+    private final AssetManager assetManager;
 
     GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject player) {
 
@@ -102,40 +100,40 @@ public class GameOverScreen implements Screen {
         font_main = assetManager.get("fonts/font2(old).fnt");
 
         stage = new Stage(viewport, batch);
-
-        buttonSkin = new Skin();
+    
+        Skin buttonSkin = new Skin();
         buttonSkin.addRegions((TextureAtlas) assetManager.get("GameOverScreenButtons/GameOverButtons.atlas"));
-
-        buttonStyle = new Button.ButtonStyle();
+    
+        Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
         buttonStyle.down = buttonSkin.getDrawable("restart_e");
         buttonStyle.up = buttonSkin.getDrawable("restart_d");
         buttonStyle.over = buttonSkin.getDrawable("restart_o");
-
-        buttonStyle2 = new Button.ButtonStyle();
+    
+        Button.ButtonStyle buttonStyle2 = new Button.ButtonStyle();
         buttonStyle2.down = buttonSkin.getDrawable("menu_e");
         buttonStyle2.up = buttonSkin.getDrawable("menu_d");
         buttonStyle2.over = buttonSkin.getDrawable("menu_o");
+    
+        Image gameOver = new Image(((TextureAtlas) assetManager.get("GameOverScreenButtons/GameOverButtons.atlas")).findRegion("game_over"));
+        Button menu = new Button(buttonStyle2);
+        Button restart = new Button(buttonStyle);
 
-        GameOver = new Image(((TextureAtlas) assetManager.get("GameOverScreenButtons/GameOverButtons.atlas")).findRegion("game_over"));
-        Menu = new Button(buttonStyle2);
-        Restart = new Button(buttonStyle);
+        gameOver.setBounds(78, 235, 640, 384);
+        menu.setBounds(296, 73, 208, 44);
+        restart.setBounds(296, 13, 208, 44);
 
-        GameOver.setBounds(78, 235, 640, 384);
-        Menu.setBounds(296, 73, 208, 44);
-        Restart.setBounds(296, 13, 208, 44);
+        stage.addActor(gameOver);
+        stage.addActor(menu);
+        stage.addActor(restart);
 
-        stage.addActor(GameOver);
-        stage.addActor(Menu);
-        stage.addActor(Restart);
-
-        Menu.addListener(new ClickListener() {
+        menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
             }
         });
 
-        Restart.addListener(new ClickListener() {
+        restart.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (getFloat("Health") > 0) {

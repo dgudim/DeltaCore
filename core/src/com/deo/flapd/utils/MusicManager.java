@@ -10,20 +10,22 @@ import static com.deo.flapd.utils.DUtils.log;
 public class MusicManager {
 
     private Music music;
-    private String musicPath;
-    private int minMusicIndex, maxMusicIndex;
-    private float delayBetweenSongs;
+    private final String musicPath;
+    private final int minMusicIndex;
+    private final int maxMusicIndex;
+    private final float delayBetweenSongs;
     private float currentDelay;
     private boolean isWaitingForNewSong;
     private float currentVolume;
 
     public float targetVolume;
 
-    public MusicManager(String musicPath, int minMusicIndex, int maxMusicIndex, float delayBetweenSongs) {
+    public MusicManager(final String musicPath, int minMusicIndex, int maxMusicIndex, float delayBetweenSongs) {
         this.musicPath = musicPath;
         this.minMusicIndex = minMusicIndex;
         this.maxMusicIndex = maxMusicIndex;
         this.delayBetweenSongs = delayBetweenSongs;
+
         loadNextMusic();
     }
 
@@ -89,5 +91,4 @@ public class MusicManager {
             music.dispose();
         }
     }
-
 }

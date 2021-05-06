@@ -23,11 +23,11 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class GameLogic {
 
-    private ShipObject player;
+    private final ShipObject player;
 
-    private Random random;
+    private final Random random;
 
-    private float difficulty;
+    private final float difficulty;
 
     public static int bonuses_collected;
 
@@ -41,12 +41,12 @@ public class GameLogic {
 
     private float speedMultiplier;
 
-    private Game game;
+    private final Game game;
 
-    private Bullet playerBullet;
-    private Polygon playerBounds;
-    private Meteorites meteorites;
-    private Checkpoint checkpoint;
+    private final Bullet playerBullet;
+    private final Polygon playerBounds;
+    private final Meteorites meteorites;
+    private final Checkpoint checkpoint;
 
     public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorites meteorites, Checkpoint checkpoint) {
         player = ship;
@@ -60,6 +60,7 @@ public class GameLogic {
         this.checkpoint = checkpoint;
 
         difficulty = getFloat("difficulty");
+        // TODO: 5/6/2021 implement difficulty
 
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 

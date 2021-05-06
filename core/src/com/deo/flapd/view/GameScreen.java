@@ -30,44 +30,44 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
 
-    private Texture bg1;
-    private Texture bg2;
-    private Texture bg3;
-    private Texture FillTexture;
+    private final Texture bg1;
+    private final Texture bg2;
+    private final Texture bg3;
+    private final Texture FillTexture;
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
 
-    private Meteorites meteorites;
-    private UraniumCell uraniumCell;
-    private Checkpoint checkpoint;
+    private final Meteorites meteorites;
+    private final UraniumCell uraniumCell;
+    private final Checkpoint checkpoint;
 
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
 
-    private SpaceShip ship;
-    private GameUi gameUi;
-    private GameLogic gameLogic;
+    private final SpaceShip ship;
+    private final GameUi gameUi;
+    private final GameLogic gameLogic;
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
 
     static boolean is_paused;
 
     private float movement;
 
-    private Game game;
+    private final Game game;
 
-    private MusicManager musicManager;
+    private final MusicManager musicManager;
 
-    private Bonus bonus;
+    private final Bonus bonus;
 
-    private Drops drops;
+    private final Drops drops;
 
-    private PostProcessor postProcessor;
+    private final PostProcessor postProcessor;
 
-    private boolean enableShader;
+    private final boolean enableShader;
 
-    private Enemies enemies;
-    private Bosses bosses;
+    private final Enemies enemies;
+    private final Bosses bosses;
 
     private boolean drawScreenExtenders = true;
 
@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
 
         gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship);
 
-        meteorites = new Meteorites(assetManager, newGame, getBoolean("easterEgg"));
+        meteorites = new Meteorites(assetManager, getBoolean("easterEgg"));
 
         checkpoint = new Checkpoint(assetManager, ship);
 

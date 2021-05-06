@@ -6,7 +6,7 @@ import static com.deo.flapd.utils.DUtils.log;
 
 public class JsonEntry {
 
-    private JsonValue jsonValue;
+    private final JsonValue jsonValue;
     public String name;
     public int size;
 
@@ -19,8 +19,6 @@ public class JsonEntry {
     /**
      * Returns the child at the specified index. This requires walking the linked list to the specified entry, see
      * {@link JsonEntry} for how to iterate efficiently.
-     *
-     * @param index
      * @return May be null.
      */
     public JsonEntry get(int index) {
@@ -33,8 +31,6 @@ public class JsonEntry {
 
     /**
      * Returns the child with the specified name.
-     *
-     * @param name
      * @return May be null.
      */
 
@@ -50,23 +46,18 @@ public class JsonEntry {
 
     /**
      * Returns the child with the specified name and path.
-     *
-     * @param keys
      * @return May be null.
      */
     public JsonEntry get(String... keys) {
         JsonEntry entry = this;
-        for (int i = 0; i < keys.length; i++) {
-            entry = entry.get(keys[i]);
+        for (String key : keys) {
+            entry = entry.get(key);
         }
         return entry;
     }
 
     /**
      * Returns the child with the specified index of the child with the specified name.
-     *
-     * @param key
-     * @param index
      * @return May be null.
      */
     public JsonEntry get(String key, int index) {
@@ -89,8 +80,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified index and returns it as a string.
-     *
-     * @param index
      */
     public String getString(int index) {
         return get(index).jsonValue.asString();
@@ -98,8 +87,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and returns it as a string.
-     *
-     * @param name
      */
     public String getString(String name) {
         return get(name).jsonValue.asString();
@@ -107,8 +94,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and returns it as a float.
-     *
-     * @param name
      */
     public float getFloat(String name) {
         return get(name).jsonValue.asFloat();
@@ -116,8 +101,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified index and returns it as a float.
-     *
-     * @param index
      */
     public float getFloat(int index) {
         return get(index).jsonValue.asFloat();
@@ -125,8 +108,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified key and returns it's child with specified index as a float.
-     *
-     * @param index
      */
     public float getFloat(String key, int index) {
         return get(key).get(index).jsonValue.asFloat();
@@ -134,8 +115,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and returns it as an int.
-     *
-     * @param name
      */
     public int getInt(String name) {
         return get(name).jsonValue.asInt();
@@ -143,8 +122,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and returns it as a boolean.
-     *
-     * @param name
      */
     public boolean getBoolean(String name) {
         return get(name).jsonValue.asBoolean();
@@ -152,8 +129,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as a boolean.
-     *
-     * @param keys
      */
     public boolean getBoolean(String... keys) {
         return get(keys).jsonValue.asBoolean();
@@ -161,8 +136,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as an integer.
-     *
-     * @param keys
      */
     public int getInt(String... keys) {
         return get(keys).jsonValue.asInt();
@@ -170,8 +143,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as a float.
-     *
-     * @param keys
      */
     public float getFloat(String... keys) {
         return get(keys).jsonValue.asFloat();
@@ -179,8 +150,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as a string.
-     *
-     * @param keys
      */
     public String getString(String... keys) {
         return get(keys).jsonValue.asString();
@@ -188,8 +157,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as a boolean array.
-     *
-     * @param keys
      */
     public boolean[] getBooleanArray(String... keys) {
         return get(keys).jsonValue.asBooleanArray();
@@ -197,8 +164,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as an integer array.
-     *
-     * @param keys
      */
     public int[] getIntArray(String... keys) {
         return get(keys).jsonValue.asIntArray();
@@ -206,8 +171,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as a float array.
-     *
-     * @param keys
      */
     public float[] getFloatArray(String... keys) {
         return get(keys).jsonValue.asFloatArray();
@@ -215,8 +178,6 @@ public class JsonEntry {
 
     /**
      * Finds the child with the specified name and path and returns it as a string array.
-     *
-     * @param keys
      */
     public String[] getStringArray(String... keys) {
         return get(keys).jsonValue.asStringArray();
@@ -224,9 +185,6 @@ public class JsonEntry {
 
     /**
      * Returns the child with the specified index of the child with the specified name and returns it as a string.
-     *
-     * @param key
-     * @param index
      * @return May be null.
      */
     public String getString(String key, int index) {
@@ -235,9 +193,6 @@ public class JsonEntry {
 
     /**
      * Returns the child with the specified name of the child with the specified index and returns it as a string.
-     *
-     * @param key
-     * @param index
      * @return May be null.
      */
     public String getString(int index, String key) {
