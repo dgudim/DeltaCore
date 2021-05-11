@@ -10,8 +10,6 @@ public class BulletData {
 
     public float width;
     public float height;
-    public float x;
-    public float y;
 
     public float[] offset;
     public float bulletAngle;
@@ -20,9 +18,7 @@ public class BulletData {
     int damage;
 
     int speed;
-
-    public float angle;
-
+    
     public float spread;
 
     String trail;
@@ -50,9 +46,6 @@ public class BulletData {
         texture = bulletInfo.getString("texture");
         width = bulletInfo.getFloat("width");
         height = bulletInfo.getFloat("height");
-        x = 0;
-        y = 0;
-        angle = 0;
         this.enemyInfo = enemyInfo;
         this.type = type;
         offset = bulletInfo.getFloatArray("offset");
@@ -78,9 +71,6 @@ public class BulletData {
         texture = bulletData.getString("texture");
         width = bulletData.getFloat("width");
         height = bulletData.getFloat("height");
-        x = 0;
-        y = 0;
-        angle = 0;
         offset = bulletData.getFloatArray("offset");
         bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
         bulletDistance = (float) Math.sqrt(offset[1] * offset[1] + offset[0] * offset[0]);

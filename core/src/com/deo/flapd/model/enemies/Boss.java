@@ -261,7 +261,7 @@ class BasePart extends Entity {
         entitySprite = new Sprite(textures.findRegion(currentConfig.getString("texture")));
         
         originX = width / 2f;
-        originY = height / 2;
+        originY = height / 2f;
         if (!currentConfig.getString("originX").equals("standard")) {
             originX = currentConfig.getFloat("originX");
         }
@@ -479,9 +479,14 @@ class Cannon extends Part {
     
     boolean canAim;
     boolean isLaser;
+    float maxLaserDistance;
+    float aimingSpeed;
+    float laserLifetime;
+    boolean lockOntoTarget;
     int[] aimAngleLimit;
     float fireRate;
     float timer;
+    
     BulletData bulletData;
     Array<EnemyBullet> bullets;
     AssetManager assetManager;
@@ -516,7 +521,7 @@ class Cannon extends Part {
         super.update(delta);
         if (active) {
             if (canAim) {
-                rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2), x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             timer += delta * fireRate;
             if (timer > 1 && health > 0 && visible) {
@@ -529,8 +534,8 @@ class Cannon extends Part {
     @Override
     void draw(SpriteBatch batch, float delta) {
         for (int i = 0; i < bullets.size; i++) {
-            bullets.get(i).draw(batch, delta);
             bullets.get(i).update(delta);
+            bullets.get(i).draw(batch, delta);
             if (bullets.get(i).queuedForDeletion) {
                 bullets.get(i).dispose();
                 bullets.removeIndex(i);
@@ -543,16 +548,21 @@ class Cannon extends Part {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(currentConfig.get("bullet"));
             
-            newBulletData.x = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
-            newBulletData.y = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
-            
+            float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newRot = 0;
             if (canAim) {
-                newBulletData.angle = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2), x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                newRot= MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             
-            newBulletData.angle += getRandomInRange(-10, 10) * bulletData.spread;
+            newRot += getRandomInRange(-10, 10) * bulletData.spread;
             
-            bullets.add(new EnemyBullet(textures, newBulletData, player));
+            EnemyBullet bullet = new EnemyBullet(textures, newBulletData, player);
+            bullet.x = newX;
+            bullet.y = newY;
+            bullet.rotation = newRot;
+            
+            bullets.add(bullet);
             
         }
         

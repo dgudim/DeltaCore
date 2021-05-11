@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -28,10 +27,10 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 
 public class Bullet {
-
+    
     private final ShipObject player;
     private final Enemies enemies;
-    private final Polygon playerBounds;
+    private final Rectangle playerBounds;
     public Array<Rectangle> bullets;
     public Array<Integer> damages;
     private final Array<ParticleEffect> trails;
@@ -42,36 +41,36 @@ public class Bullet {
     private final Array<ParticleEffect> explosions;
     private final Array<Boolean> types;
     private final Sprite bullet;
-
+    
     private Music laserSaw;
     private Sound shot;
-
+    
     private final float soundVolume;
-
+    
     private float spread;
-
+    
     private final Array<Boolean> explosionQueue;
     private final Array<Boolean> remove_Bullet;
-
+    
     private float shootingSpeedMultiplier;
     private float powerConsumption;
-
+    
     public Sprite laser;
-
+    
     private final String bulletExplosionEffect;
     private final String bulletTrailEffect;
     private final boolean hasTrail;
-
+    
     private float width, height;
-
+    
     public int damage;
     private int baseDamage;
     private int bulletSpeed;
     private int bulletsPerShot;
     private final float bulletTrailTimer;
-
+    
     private float millis;
-
+    
     private float laserHeight;
     private float laserDuration, currentDuration;
     private String laserColor;
@@ -80,39 +79,39 @@ public class Bullet {
     private final boolean isHoming;
     private float homingSpeed;
     private float explosionTimer;
-
+    
     private final int gunCount;
     private int currentActiveGun;
     private final float[] gunOffsetsX;
     private final float[] gunOffsetsY;
-
+    
     public Bullet(AssetManager assetManager, ShipObject ship, Enemies enemies, boolean newGame) {
-
+        
         player = ship;
         playerBounds = player.bounds;
-
+        
         this.enemies = enemies;
-
+        
         TextureAtlas bullets = assetManager.get("player/bullets.atlas");
-
+        
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour")));
-
+        
         JsonEntry currentCannon = treeJson.get(getString("currentCannon"));
-
+        
         gunCount = shipConfig.getInt("gunCount");
         currentActiveGun = 0;
-
+        
         gunOffsetsX = new float[gunCount];
         gunOffsetsY = new float[gunCount];
-
+        
         for (int i = 0; i < gunCount; i++) {
             gunOffsetsX[i] = shipConfig.getFloat("guns", "gun" + i + "OffsetX");
             gunOffsetsY[i] = shipConfig.getFloat("guns", "gun" + i + "OffsetY");
         }
-
+        
         bulletExplosionEffect = currentCannon.getString("usesEffect");
-
+        
         if (currentCannon.getBoolean("usesTrail")) {
             bulletTrailEffect = currentCannon.getString("trailEffect");
             bulletTrailTimer = currentCannon.getFloat("trailFadeOutTimer");
@@ -122,7 +121,7 @@ public class Bullet {
             bulletTrailTimer = 0;
             hasTrail = false;
         }
-
+        
         String[] params = currentCannon.getStringArray("parameters");
         float[] paramValues = currentCannon.getFloatArray("parameterValues");
         for (int i = 0; i < params.length; i++) {
@@ -154,14 +153,14 @@ public class Bullet {
                 currentDuration = paramValues[i];
             }
         }
-
+        
         if (isLaser) {
             bullet = new Sprite();
             laserColor = currentCannon.getString("laserBeamColor");
         } else {
             bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         }
-
+        
         params = treeJson.getStringArray(getString("currentCore"), "parameters");
         paramValues = treeJson.getFloatArray(getString("currentCore"), "parameterValues");
         for (int i = 0; i < params.length; i++) {
@@ -170,13 +169,13 @@ public class Bullet {
                 baseDamage *= paramValues[i];
             }
         }
-
+        
         isHoming = currentCannon.getBoolean("homing");
         if (isHoming) {
             explosionTimer = currentCannon.getFloat("explosionTimer");
             homingSpeed = currentCannon.getFloat("homingSpeed");
         }
-
+        
         this.bullets = new Array<>();
         damages = new Array<>();
         degrees = new Array<>();
@@ -188,17 +187,17 @@ public class Bullet {
         disposedTrails = new Array<>();
         trailCountDownTimers = new Array<>();
         explosionTimers = new Array<>();
-
+        
         if (!newGame) {
             player.bulletsShot = getInteger("bulletsShot");
         } else {
             player.bulletsShot = 0;
         }
-
+        
         laser = new Sprite((Texture) assetManager.get("laser.png"));
         laser.setSize(3, laserHeight);
         laser.setPosition(-100, -100);
-
+        
         soundVolume = getFloat("soundVolume");
         if (isLaser) {
             laserSaw = Gdx.audio.newMusic(Gdx.files.internal("sfx/laserSaw.ogg"));
@@ -208,35 +207,35 @@ public class Bullet {
         } else {
             shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun4.ogg"));
         }
-
+        
         width = bullet.getWidth();
         height = bullet.getHeight();
-
+        
         float scale = 10 / height;
         width = width * scale;
         height = 10;
-
+        
         bullet.setOrigin(0, 5);
     }
-
+    
     public void Spawn(float damageMultiplier, boolean is_charged) {
-
+        
         if (!isLaser) {
             if (player.Charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {
                 for (int i = 0; i < bulletsPerShot; i++) {
                     Rectangle bullet = new Rectangle();
-
+                    
                     bullet.setSize(width, height);
-
+                    
                     bullet.x = playerBounds.getX() + gunOffsetsX[currentActiveGun];
                     bullet.y = playerBounds.getY() + gunOffsetsY[currentActiveGun];
-
+                    
                     if (currentActiveGun + 1 < gunCount) {
                         currentActiveGun++;
                     } else {
                         currentActiveGun = 0;
                     }
-
+                    
                     bullets.add(bullet);
                     explosionQueue.add(false);
                     remove_Bullet.add(false);
@@ -249,38 +248,32 @@ public class Bullet {
                         damages.add(damage);
                         player.Charge -= powerConsumption / bulletsPerShot;
                     }
-
-                    boolean aim = false;
+                    
+                    float degree = player.rotation;
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
                         if (enemies.enemyEntities.get(i2).entityHitBox.overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i2).isDead) {
                             Rectangle enemy = enemies.enemyEntities.get(i2).entityHitBox;
-                            float degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight() / 2, enemy.getX() - bullet.x + enemy.getWidth() / 2);
-
-                            if (degree > 45 || degree < -45) {
-                                degrees.add(0f);
-                            } else {
-                                degrees.add(degree);
+                            degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight() / 2, enemy.getX() - bullet.x + enemy.getWidth() / 2);
+                            
+                            if (degree < 45 && degree > -45) {
+                                degree = 0;
+                                break;
                             }
-
-                            aim = true;
-                            break;
                         }
                     }
-
-                    if (!aim) {
-                        degrees.add(0f);
-                    }
-
-                    degrees.set(degrees.size - 1, degrees.get(degrees.size - 1) + playerBounds.getRotation() + (getRandomInRange(0, 1000, 3) - 0.5f) * spread * 7);
-
+                    
+                    degree += getRandomInRange(-10, 10) * spread;
+                    
                     if (isHoming) {
                         explosionTimers.add(explosionTimer);
-                        degrees.set(degrees.size - 1, degrees.get(degrees.size - 1) + 180);
+                        degree += 180;
                     }
-
-                    bullet.x += MathUtils.cosDeg(playerBounds.getRotation()) * 6;
-                    bullet.y += MathUtils.cosDeg(playerBounds.getRotation());
-
+                    
+                    degrees.add(degree);
+                    
+                    bullet.x += MathUtils.cosDeg(player.rotation) * 6;
+                    bullet.y += MathUtils.cosDeg(player.rotation);
+                    
                     if (hasTrail) {
                         ParticleEffect trail = new ParticleEffect();
                         trail.load(Gdx.files.internal("particles/" + bulletTrailEffect + ".p"), Gdx.files.internal("particles"));
@@ -289,34 +282,34 @@ public class Bullet {
                     }
                     player.bulletsShot++;
                 }
-
+                
                 if (soundVolume > 0) {
                     shot.play(soundVolume / 100);
                 }
-
+                
                 millis = 0;
             }
         } else {
             damage = baseDamage * (GameLogic.bonuses_collected + 1) / 10;
         }
     }
-
+    
     public void updateLaser(boolean active) {
         isLaserActive = active;
     }
-
+    
     public void draw(SpriteBatch batch, float delta) {
-
+        
         if (!isLaser) {
             for (int i = 0; i < bullets.size; i++) {
-
+                
                 Rectangle bullet = bullets.get(i);
                 float angle = degrees.get(i);
-
+                
                 if (hasTrail) {
                     trails.get(i).setPosition(bullet.x + bullet.width / 2, bullet.y + bullet.height / 2);
                 }
-
+                
                 this.bullet.setPosition(bullet.x, bullet.y);
                 this.bullet.setSize(bullet.width, bullet.height);
                 if (types.get(i)) {
@@ -324,35 +317,35 @@ public class Bullet {
                 } else {
                     this.bullet.setColor(Color.WHITE);
                 }
-                this.bullet.draw(batch);
-
+                
                 if (!isHoming) {
-
+                    
                     bullet.x += MathUtils.cosDeg(angle) * bulletSpeed * delta;
                     bullet.y += MathUtils.sinDeg(angle) * bulletSpeed * delta;
-
+                    
                     this.bullet.setRotation(angle);
                 } else {
-
+                    
                     float posX = playerBounds.getX() + 1000;
                     float posY = playerBounds.getY();
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (!enemies.enemyEntities.get(i2).isDead && enemies.enemyEntities.get(i2).x < posX) {
+                        if (!enemies.enemyEntities.get(i2).isDead && enemies.enemyEntities.get(i2).x < posX && enemies.enemyEntities.get(i2).x > playerBounds.getX() + 150) {
                             posX = enemies.enemyEntities.get(i2).x + enemies.enemyEntities.get(i2).width / 2f;
                             posY = enemies.enemyEntities.get(i2).y + enemies.enemyEntities.get(i2).height / 2f;
                         }
                     }
                     degrees.set(i, MathUtils.lerpAngleDeg(angle, MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - posY, bullet.x - posX), homingSpeed / 700f));
                     this.bullet.setRotation(angle + 180);
-                    bullet.x += MathUtils.cosDeg(angle + 180) * (bulletSpeed / 1.2f) * delta;
-                    bullet.y += MathUtils.sinDeg(angle + 180) * (bulletSpeed / 1.2f) * delta;
+                    bullet.x += MathUtils.cosDeg(angle + 180) * bulletSpeed * delta;
+                    bullet.y += MathUtils.sinDeg(angle + 180) * bulletSpeed * delta;
                     explosionTimers.set(i, explosionTimers.get(i) - delta);
-
+                    
                     if (explosionTimers.get(i) <= 0) {
                         removeBullet(i, true);
                     }
                 }
-
+                this.bullet.draw(batch);
+                
                 if (bullet.x > 800 || bullet.x < Math.max(bullet.height, bullet.width) || bullet.y > 480 || bullet.y < Math.max(bullet.height, bullet.width)) {
                     removeBullet(i, false);
                 }
@@ -422,7 +415,7 @@ public class Bullet {
                 trails.get(i).draw(batch, delta);
             }
         } else if (isLaserActive && currentDuration >= 10) {
-            laser.setRotation(playerBounds.getRotation());
+            laser.setRotation(player.rotation);
             laser.setPosition(playerBounds.getX() + MathUtils.cosDeg(laser.getRotation()) * 75, playerBounds.getY() + 16 / MathUtils.cosDeg(laser.getRotation()) + MathUtils.sinDeg(laser.getRotation()) * 80);
             laser.setSize(800, laserHeight);
             laser.setColor(Color.valueOf(laserColor));
@@ -441,11 +434,11 @@ public class Bullet {
             laser.setPosition(-100, -100);
             laserSaw.setVolume(0);
         }
-
+        
         millis = millis + 50 * (GameLogic.bonuses_collected / 100.0f + 1) * delta * gunCount;
-
+        
     }
-
+    
     public void dispose() {
         if (isLaser) {
             laserSaw.dispose();
@@ -459,19 +452,19 @@ public class Bullet {
             explosions.get(i3).dispose();
             explosions.removeIndex(i3);
         }
-
+        
         for (int i3 = 0; i3 < trails.size; i3++) {
             trails.get(i3).dispose();
             trails.removeIndex(i3);
             bulletTrailDisposes++;
         }
-
+        
         for (int i3 = 0; i3 < disposedTrails.size; i3++) {
             disposedTrails.get(i3).dispose();
             disposedTrails.removeIndex(i3);
             bulletTrailDisposes++;
         }
-
+        
         trailCountDownTimers.clear();
         explosionTimers.clear();
         explosionQueue.clear();
@@ -479,7 +472,7 @@ public class Bullet {
         remove_Bullet.clear();
         types.clear();
     }
-
+    
     public void removeBullet(int i, boolean explode) {
         explosionQueue.set(i, explode);
         remove_Bullet.set(i, true);

@@ -11,17 +11,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.enemies.Entity;
 import com.deo.flapd.utils.DUtils;
 
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
 import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
 
-public class EnemyBullet {
-
-    public Sprite bullet;
+public class EnemyBullet extends Entity {
+    
     private BulletData data;
-
-    private boolean isDead = false;
+    
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
     private boolean explosionStarted;
@@ -30,31 +29,18 @@ public class EnemyBullet {
     private Bullet playerBullet;
 
     public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship) {
-
+        entitySprite = new Sprite((Texture) assetManager.get(bulletData.texture));
         initBullet(bulletData, ship);
-
-        bullet = new Sprite((Texture) assetManager.get(bulletData.texture));
-        bullet.setPosition(bulletData.x, bulletData.y);
-        bullet.setRotation(bulletData.angle);
-        bullet.setSize(bulletData.width, bulletData.height);
-        bullet.setOrigin(bulletData.width / 2, bulletData.height / 2);
     }
 
     public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship) {
-
+        entitySprite = new Sprite(bossAtlas.findRegion(bulletData.texture));
         initBullet(bulletData, ship);
-
-        bullet = new Sprite(bossAtlas.findRegion(bulletData.texture));
-        bullet.setPosition(bulletData.x, bulletData.y);
-        bullet.setRotation(bulletData.angle);
-        bullet.setSize(bulletData.width, bulletData.height);
-        bullet.setOrigin(bulletData.width / 2, bulletData.height / 2);
-
     }
 
     private void initBullet(BulletData bulletData, ShipObject ship){
         data = bulletData;
-
+        
         player = ship;
         playerBullet = player.bullet;
 
@@ -66,11 +52,17 @@ public class EnemyBullet {
         bulletData.trailParticleEffect.load(Gdx.files.internal(bulletData.trail), Gdx.files.internal("particles"));
         bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
         bulletData.trailParticleEffect.start();
+    
+        setSize(bulletData.width, bulletData.height);
+        width = bulletData.width;
+        height = bulletData.height;
+        health = bulletData.damage;
+        init();
     }
 
     public void draw(SpriteBatch batch, float delta) {
         if (!isDead) {
-            bullet.draw(batch);
+            entitySprite.draw(batch);
             data.trailParticleEffect.draw(batch, delta);
         } else {
             data.explosionParticleEffect.draw(batch, delta);
@@ -79,40 +71,41 @@ public class EnemyBullet {
 
     public void update(float delta) {
         for (int i = 0; i < playerBullet.bullets.size; i++) {
-            if (playerBullet.bullets.get(i).overlaps(bullet.getBoundingRectangle())) {
+            if (playerBullet.bullets.get(i).overlaps(entityHitBox)) {
                 explode();
                 playerBullet.removeBullet(i, true);
             }
         }
-        if (bullet.getBoundingRectangle().overlaps(player.bounds.getBoundingRectangle())) {
+        if (entityHitBox.overlaps(player.bounds)) {
             explode();
-            player.takeDamage(data.damage);
+            player.takeDamage(health);
         }
         for (int i = 0; i < Meteorites.meteorites.size; i++) {
-            if (Meteorites.meteorites.get(i).entityHitBox.overlaps(bullet.getBoundingRectangle())) {
-                Meteorites.meteorites.get(i).health -= data.damage;
+            if (Meteorites.meteorites.get(i).entityHitBox.overlaps(entityHitBox)) {
+                Meteorites.meteorites.get(i).health -= health;
                 explode();
             }
         }
         if (!isDead) {
             if (!data.isHoming) {
-                data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * delta;
-                data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * delta;
+                x -= MathUtils.cosDeg(rotation) * data.speed * delta;
+                y -= MathUtils.sinDeg(rotation) * data.speed * delta;
             } else {
-                bullet.setRotation(DUtils.lerpAngleWithConstantSpeed(bullet.getRotation(),
+                rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
-                        data.y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight()/2f),
-                        data.x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth()/2f)),
-                        data.homingSpeed, delta));
-
-                data.x -= MathUtils.cosDeg(bullet.getRotation()) * data.speed * 2 * delta;
-                data.y -= MathUtils.sinDeg(bullet.getRotation()) * data.speed * 2 * delta;
+                                y - (player.bounds.getY() + player.bounds.getHeight()/2f),
+                                x - (player.bounds.getX() + player.bounds.getWidth()/2f)),
+                        data.homingSpeed, delta);
+                
+                x -= MathUtils.cosDeg(rotation) * data.speed * 2 * delta;
+                y -= MathUtils.sinDeg(rotation) * data.speed * 2 * delta;
                 data.explosionTimer -= delta;
             }
-            bullet.setPosition(data.x, data.y);
-            data.trailParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
+            update();
+            
+            data.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
 
-            if (data.x < -data.width - 30 || data.x > 800 + data.width + 30 || data.y > 480 + 30 || data.y < -data.width - 30) {
+            if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
                 isDead = true;
                 explosionFinished = true;
             }
@@ -136,11 +129,12 @@ public class EnemyBullet {
     private void explode() {
         data.trailParticleEffect.dispose();
         enemyBulletTrailDisposes++;
-        data.explosionParticleEffect.setPosition(data.x + data.width / 2, data.y + data.height / 2);
+        data.explosionParticleEffect.setPosition(x + originX, y + originY);
         data.explosionParticleEffect.start();
         explosionStarted = true;
-        bullet.setPosition(-100, -100);
+        entitySprite.setPosition(-100, -100);
         isDead = true;
+        health = 0;
     }
 
 }

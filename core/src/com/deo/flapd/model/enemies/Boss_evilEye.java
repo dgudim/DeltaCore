@@ -33,48 +33,61 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 //TODO delete this class
 
 public class Boss_evilEye {
-    private Sprite body;
-    private Rectangle bodyBounds;
+    private final Sprite body;
+    private final Rectangle bodyBounds;
 
-    private Sprite cannon;
-    private Array<Rectangle> cannonBounds;
+    private final Sprite cannon;
+    private final Array<Rectangle> cannonBounds;
 
-    private Sprite bullet;
-    private Array<Rectangle> bullets;
+    private final Sprite bullet;
+    private final Array<Rectangle> bullets;
 
-    private Sprite shield, laser;
+    private final Sprite shield;
+    private final Sprite laser;
 
-    private Image up_right, up_left, down_right, down_left, left, right, down, up, center;
+    private final Image up_right;
+    private final Image up_left;
+    private final Image down_right;
+    private final Image down_left;
+    private final Image left;
+    private final Image right;
+    private final Image down;
+    private final Image up;
+    private final Image center;
 
-    private Array<Float> degrees, degrees2, health;
+    private final Array<Float> degrees;
+    private final Array<Float> degrees2;
+    private final Array<Float> health;
 
-    private Array<Boolean> is_Dead;
+    private final Array<Boolean> is_Dead;
 
-    private Array<ParticleEffect> explosions;
+    private final Array<ParticleEffect> explosions;
 
     private float rotation, posX, millis, shieldSize;
 
     private Polygon shipBounds;
-    private ShipObject player;
-    private Bullet playerBullet;
+    private final ShipObject player;
+    private final Bullet playerBullet;
 
-    private Random random;
+    private final Random random;
 
     private boolean is_spawned, is_in_position, stage2, is_laserFire, animation;
 
-    private Array<ProgressBar> healthBars;
+    private final Array<ProgressBar> healthBars;
 
-    private ProgressBar.ProgressBarStyle healthBarStyle, healthBarStyle2;
+    private final ProgressBar.ProgressBarStyle healthBarStyle;
+    private final ProgressBar.ProgressBarStyle healthBarStyle2;
 
-    private Sound explosion, shot;
+    private final Sound explosion;
+    private final Sound shot;
 
-    private Music laserSaw;
+    private final Music laserSaw;
 
-    private Rectangle laserTip;
+    private final Rectangle laserTip;
 
-    private ParticleEffect fire;
+    private final ParticleEffect fire;
 
-    private float soundVolume;
+    private final float soundVolume;
 
     public Boss_evilEye(AssetManager assetManager, ShipObject ship) {
 
@@ -99,7 +112,7 @@ public class Boss_evilEye {
         shield = new Sprite((Texture) assetManager.get("HotShield.png"));
 
         player = ship;
-        shipBounds = player.bounds;
+        //shipBounds = player.bounds;
         playerBullet = player.bullet;
 
         cannonBounds = new Array<>();

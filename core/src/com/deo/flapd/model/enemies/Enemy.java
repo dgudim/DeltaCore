@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
@@ -54,7 +54,7 @@ public class Enemy extends Entity {
     private final Enemies enemies;
 
     private final ShipObject player;
-    private final Polygon playerBounds;
+    private final Rectangle playerBounds;
     private final Bullet playerBullet;
 
     Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, ShipObject ship) {
@@ -88,14 +88,11 @@ public class Enemy extends Entity {
 
         health = data.health;
 
-        width = data.width;
-        height = data.height;
+        setSize(data.width, data.height);
         x = data.x;
         y = data.y;
         speed = data.speed;
         rotation = data.rotation;
-        originX = width / 2f;
-        originY = height / 2f;
 
         super.init();
         for (int i = 0; i < data.fireEffects.length; i++) {
@@ -149,8 +146,8 @@ public class Enemy extends Entity {
 
                 rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
-                                y - (player.bounds.getY() + player.bounds.getBoundingRectangle().getHeight() / 2f),
-                                x - (player.bounds.getX() + player.bounds.getBoundingRectangle().getWidth() / 2f)),
+                                y - (player.bounds.getY() + player.bounds.getHeight() / 2f),
+                                x - (player.bounds.getX() + player.bounds.getWidth() / 2f)),
                         data.homingSpeed, delta);
                 x -= MathUtils.cosDeg(rotation) * speed * 2 * delta;
                 y -= MathUtils.sinDeg(rotation) * speed * 2 * delta;
@@ -210,7 +207,7 @@ public class Enemy extends Entity {
                 health -= playerBullet.damage / 10f;
             }
 
-            if (playerBounds.getBoundingRectangle().overlaps(entityHitBox)) {
+            if (playerBounds.overlaps(entityHitBox)) {
                 kill();
                 player.takeDamage(health / 3f);
             }
@@ -220,10 +217,10 @@ public class Enemy extends Entity {
             }
 
             if (player.repellentField.getBoundingRectangle().overlaps(entityHitBox) && player.Charge >= player.bonusPowerConsumption * delta) {
-                float shipWidth = playerBounds.getBoundingRectangle().getWidth();
-                float shipHeight = playerBounds.getBoundingRectangle().getWidth();
-                float shipX = playerBounds.getBoundingRectangle().getX();
-                float shipY = playerBounds.getBoundingRectangle().getY();
+                float shipWidth = playerBounds.getWidth();
+                float shipHeight = playerBounds.getWidth();
+                float shipX = playerBounds.getX();
+                float shipY = playerBounds.getY();
                 if (x > shipX + shipWidth / 2f && y > shipY + shipHeight / 2f) {
                     x += 50 * delta;
                     y += 50 * delta;
@@ -265,14 +262,20 @@ public class Enemy extends Entity {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
 
-            newBulletData.x = x + width / 2f + MathUtils.cosDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
-            newBulletData.y = y + height / 2f + MathUtils.sinDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newX = x + width / 2f + MathUtils.cosDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newY = y + height / 2f + MathUtils.sinDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
 
-            newBulletData.angle = getRandomInRange(-10, 10) * newBulletData.spread + rotation;
+            float newAngle = getRandomInRange(-10, 10) * newBulletData.spread + rotation;
             if (data.canAim) {
-                newBulletData.angle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newBulletData.y - playerBounds.getY(), newBulletData.x - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
+                newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
-            bullets.add(new EnemyBullet(assetManager, newBulletData, player));
+            
+            EnemyBullet bullet = new EnemyBullet(assetManager, newBulletData, player);
+            bullet.x = newX;
+            bullet.y = newY;
+            bullet.rotation = newAngle;
+            
+            bullets.add(bullet);
         }
         shootingSound.play(volume);
         data.millis = 0;

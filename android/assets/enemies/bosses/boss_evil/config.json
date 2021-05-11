@@ -2,7 +2,7 @@
   "textures": "bossEvil.atlas",
   "spawnAt": [850, 200],
   "spawnConditions": {
-    "score": -13000,
+    "score": 13000,
     "randomness": 1000
   },
   "parts": {

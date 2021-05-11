@@ -27,7 +27,6 @@ import java.util.Map;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
-import static java.lang.Math.pow;
 
 public class DUtils {
     
@@ -75,13 +74,6 @@ public class DUtils {
     
     public static int getRandomInRange(int min, int max) {
         return (MathUtils.random(max - min) + min);
-    }
-    
-    public static float getRandomInRange(int min, int max, int precision) {
-        precision = (int) pow(10, precision);
-        min *= precision * precision;
-        max *= precision * precision;
-        return (MathUtils.random(max - min) + min) / (float) precision;
     }
     
     public static boolean getRandomBoolean(float positiveChance) {

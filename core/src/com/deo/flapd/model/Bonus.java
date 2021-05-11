@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -22,8 +21,8 @@ import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class Bonus {
-
-    private final Polygon playerBounds;
+    
+    private final Rectangle playerBounds;
     private final ShipObject player;
     private static Array<Rectangle> bonuses;
     private static Array<Integer> types;
@@ -35,29 +34,29 @@ public class Bonus {
     private final Sprite bonus_part;
     private final Sprite bonus_bullets;
     private final Sprite boss;
-
+    
     private final BitmapFont font_text;
-
+    
     private final float uiScale;
-
+    
     private final Image bonus_bullets_t;
     private static Random random;
-
+    
     private final Bosses bosses;
-
+    
     private static float height, width;
-
+    
     public Bonus(AssetManager assetManager, float width, float height, ShipObject ship, Bosses bosses) {
-
+        
         this.bosses = bosses;
-
+        
         player = ship;
         playerBounds = player.bounds;
-
+        
         uiScale = getFloat("ui");
-
+        
         random = new Random();
-
+        
         TextureAtlas bonusesAtlas = assetManager.get("bonuses.atlas");
         bonus_health = new Sprite(bonusesAtlas.findRegion("bonus_health"));
         bonus_shield = new Sprite(bonusesAtlas.findRegion("bonus_shield"));
@@ -65,62 +64,62 @@ public class Bonus {
         bonus_part = new Sprite(bonusesAtlas.findRegion("bonus_part"));
         bonus_bullets = new Sprite(bonusesAtlas.findRegion("bonus_bullets"));
         boss = new Sprite(bonusesAtlas.findRegion("bonus_boss"));
-
+        
         bonus_health.setSize(width, height);
         bonus_shield.setSize(width, height);
         bonus_charge.setSize(width, height);
         bonus_part.setSize(width, height);
         bonus_bullets.setSize(width, height);
         boss.setSize(width, height);
-
+        
         bonus_health.setOrigin(bonus_health.getWidth() / 2f, bonus_health.getHeight() / 2f);
         bonus_shield.setOrigin(bonus_shield.getWidth() / 2f, bonus_shield.getHeight() / 2f);
         bonus_charge.setOrigin(bonus_charge.getWidth() / 2f, bonus_charge.getHeight() / 2f);
         bonus_part.setOrigin(bonus_part.getWidth() / 2f, bonus_part.getHeight() / 2f);
         bonus_bullets.setOrigin(bonus_bullets.getWidth() / 2f, bonus_bullets.getHeight() / 2f);
         boss.setOrigin(boss.getWidth() / 2f, boss.getHeight() / 2f);
-
+        
         bonus_bullets_t = new Image(bonusesAtlas.findRegion("bonus_bullets"));
         bonus_bullets_t.setBounds(319 - 475 * (uiScale - 1), 475 - 50 * uiScale, 50 * uiScale, 50 * uiScale);
-
+        
         Bonus.width = width;
         Bonus.height = height;
-
+        
         bonuses = new Array<>();
         types = new Array<>();
         explosions = new Array<>();
         anglesY = new Array<>();
-
+        
         font_text = assetManager.get("fonts/font2(old).fnt");
     }
-
+    
     public static void Spawn(int type, Rectangle enemy) {
         Spawn(type, enemy.getX() + enemy.width / 2 - width / 2, enemy.getY() + enemy.height / 2 - height / 2);
     }
-
+    
     public static void Spawn(int type, float x, float y) {
-
+        
         Rectangle bonus = new Rectangle();
-
+        
         bonus.x = x;
         bonus.y = y;
-
+        
         bonus.setSize(width, height);
-
+        
         bonuses.add(bonus);
         types.add(type);
         anglesY.add(random.nextFloat() * 2 - 1);
     }
-
+    
     public void draw(SpriteBatch batch, float delta) {
-
+        
         for (int i = 0; i < bonuses.size; i++) {
-
+            
             Rectangle bonus = bonuses.get(i);
             Integer type = types.get(i);
-
+            
             float angleY = anglesY.get(i);
-
+            
             switch (type) {
                 case (0):
                     this.bonus_charge.setPosition(bonus.x, bonus.y);
@@ -147,20 +146,19 @@ public class Bonus {
                     this.boss.draw(batch);
                     break;
             }
-
+            
             bonus.y -= angleY * 15 * delta;
             bonus.x -= 50 * delta;
-
+            
             if (player.magnetField.getBoundingRectangle().overlaps(bonus) && player.Charge >= player.bonusPowerConsumption * delta) {
-                bonus.x = MathUtils.lerp(bonus.x, playerBounds.getX() + playerBounds.getBoundingRectangle().getWidth() / 2, delta / 2);
-                bonus.y = MathUtils.lerp(bonus.y, playerBounds.getY() + playerBounds.getBoundingRectangle().getHeight() / 2, delta / 2);
+                bonus.x = MathUtils.lerp(bonus.x, playerBounds.getX() + playerBounds.getWidth() / 2, delta / 2);
+                bonus.y = MathUtils.lerp(bonus.y, playerBounds.getY() + playerBounds.getHeight() / 2, delta / 2);
                 player.Charge -= player.bonusPowerConsumption * delta;
             }
-
+            
             if (bonus.y < -height || bonus.y > 480 || bonus.x < -width || bonus.x > 800) {
                 removeBonus(i, false);
-            }else
-            if (bonus.overlaps(playerBounds.getBoundingRectangle())) {
+            } else if (bonus.overlaps(playerBounds)) {
                 if (type == 0) {
                     removeBonus(i, true);
                     if (player.Charge <= player.chargeCapacity * player.chargeCapacityMultiplier - 5) {
@@ -218,7 +216,7 @@ public class Bonus {
             }
         }
     }
-
+    
     public void dispose() {
         bonuses.clear();
         types.clear();
@@ -229,7 +227,7 @@ public class Bonus {
         }
         font_text.dispose();
     }
-
+    
     private void removeBonus(int i, boolean explode) {
         if (explode) {
             ParticleEffect explosionEffect = new ParticleEffect();

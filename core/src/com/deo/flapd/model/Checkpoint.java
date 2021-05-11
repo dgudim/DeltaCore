@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Bosses;
 
@@ -22,7 +23,7 @@ public class Checkpoint {
     private final Sprite checkpoint_green;
     private boolean checkpointState, effects;
     private final Polygon bounds;
-    private final Polygon shipBounds;
+    private final Rectangle shipBounds;
     private final ShipObject player;
     private ParticleEffect fire;
     private ParticleEffect fire2;
@@ -108,7 +109,7 @@ public class Checkpoint {
             checkpoint_blue.draw(batch);
         }
 
-        if (shipBounds.getBoundingRectangle().overlaps(bounds.getBoundingRectangle()) && player.Health > 0 && !checkpointState) {
+        if (shipBounds.overlaps(bounds.getBoundingRectangle()) && player.Health > 0 && !checkpointState) {
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();

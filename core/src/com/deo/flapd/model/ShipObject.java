@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.enemies.Enemies;
@@ -22,7 +22,8 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public abstract class ShipObject {
 
-    public Polygon bounds;
+    public Rectangle bounds;
+    public float rotation;
     private final Sprite ship;
     private final Sprite shield;
     Sprite magnetField;
@@ -74,7 +75,7 @@ public abstract class ShipObject {
     
     public Bullet bullet;
     public int bulletsShot;
-
+    
     ShipObject(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
 
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
@@ -198,7 +199,7 @@ public abstract class ShipObject {
 
         shield = new Sprite(fields.findRegion(treeJson.getString(getString("currentShield"), "usesEffect")));
 
-        bounds = new Polygon(new float[]{0f, 0f, width, 0f, width, height, 0f, height});
+        bounds = new Rectangle(0, 0, width, height);
 
         if (!newGame) {
             Shield = MathUtils.clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
@@ -247,7 +248,7 @@ public abstract class ShipObject {
 
         explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
 
-        bullet = new Bullet(assetManager, ShipObject.this, enemies, newGame);
+        bullet = new Bullet(assetManager, this, enemies, newGame);
     }
 
     public void drawEffects(SpriteBatch batch, float delta) {
@@ -283,11 +284,11 @@ public abstract class ShipObject {
         if (!exploded) {
             ship.setPosition(bounds.getX(), bounds.getY());
 
-            magnetField.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - magnetField.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - magnetField.getHeight() / 2);
-            repellentField.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - repellentField.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - repellentField.getHeight() / 2);
-            aimRadius.setPosition(bounds.getX() + bounds.getBoundingRectangle().getWidth() / 2 - aimRadius.getWidth() / 2, bounds.getY() + bounds.getBoundingRectangle().getHeight() / 2 - aimRadius.getHeight() / 2);
+            magnetField.setPosition(bounds.getX() + bounds.getWidth() / 2 - magnetField.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 - magnetField.getHeight() / 2);
+            repellentField.setPosition(bounds.getX() + bounds.getWidth() / 2 - repellentField.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 - repellentField.getHeight() / 2);
+            aimRadius.setPosition(bounds.getX() + bounds.getWidth() / 2 - aimRadius.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 - aimRadius.getHeight() / 2);
 
-            ship.setRotation(bounds.getRotation());
+            ship.setRotation(rotation);
             ship.setColor(red, green, blue, 1);
 
             if (red < 1) {
@@ -326,14 +327,14 @@ public abstract class ShipObject {
             }
 
         } else {
-            bounds.setScale(0, 0);
+            bounds.set(0, 0, 0, 0);
         }
     }
 
     void drawShield(SpriteBatch batch, float alpha, float delta) {
         if (!exploded) {
             shield.setPosition(bounds.getX() - 20, bounds.getY() - 15);
-            shield.setRotation(bounds.getRotation());
+            shield.setRotation(rotation);
             shield.setColor(red2, green2, blue2, alpha);
             shield.draw(batch);
 

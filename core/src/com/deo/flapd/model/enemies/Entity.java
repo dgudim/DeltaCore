@@ -5,41 +5,49 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Entity {
-
-    public float x;
-    public float y;
+    
+    public float x = 0;
+    public float y = 0;
     public float width;
     public float height;
     float offsetX = 0;
     float offsetY = 0;
-    float originX;
-    float originY;
-    float rotation = 0;
+    public float originX;
+    public float originY;
+    public float rotation = 0;
     public float health;
     public float speed;
     public boolean isDead = false;
     Color color;
-
+    
     public Sprite entitySprite;
     public Rectangle entityHitBox;
-
+    
     public void init() {
         entitySprite.setSize(width, height);
         entitySprite.setOrigin(originX, originY);
         entitySprite.setPosition(x, y);
+        entitySprite.setRotation(rotation);
         entityHitBox = entitySprite.getBoundingRectangle();
         color = Color.WHITE;
     }
-
+    
+    public void setSize(float width, float height) {
+        this.width = width;
+        this.height = height;
+        originX = width / 2f;
+        originY = height / 2f;
+    }
+    
     protected void update() {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         entitySprite.setColor(color);
         if (health > 0) {
-            entityHitBox = entitySprite.getBoundingRectangle();
+            entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
         } else {
             entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
         }
     }
-
+    
 }

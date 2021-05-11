@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
@@ -44,7 +44,7 @@ public class GameLogic {
     private final Game game;
 
     private final Bullet playerBullet;
-    private final Polygon playerBounds;
+    private final Rectangle playerBounds;
     private final Meteorites meteorites;
     private final Checkpoint checkpoint;
 
@@ -130,7 +130,7 @@ public class GameLogic {
 
         if (delta > 0 && player.Health > 0) {
             playerBounds.setPosition(playerBounds.getX() + 250 * deltaX * delta, playerBounds.getY() + 250 * deltaY * delta);
-            playerBounds.setRotation(MathUtils.clamp((deltaY - deltaX) * 7, -9, 9));
+            player.rotation = MathUtils.clamp((deltaY - deltaX) * 7, -9, 9);
         }
 
         if (is_firing) {
@@ -159,14 +159,14 @@ public class GameLogic {
         if (playerBounds.getX() < 0) {
             playerBounds.setPosition(0, playerBounds.getY());
         }
-        if (playerBounds.getX() > 800 - playerBounds.getBoundingRectangle().getWidth()) {
-            playerBounds.setPosition(800 - playerBounds.getBoundingRectangle().getWidth(), playerBounds.getY());
+        if (playerBounds.getX() > 800 - playerBounds.getWidth()) {
+            playerBounds.setPosition(800 - playerBounds.getWidth(), playerBounds.getY());
         }
         if (playerBounds.getY() < 0) {
             playerBounds.setPosition(playerBounds.getX(), 0);
         }
-        if (playerBounds.getY() > 480 - playerBounds.getBoundingRectangle().getHeight()) {
-            playerBounds.setPosition(playerBounds.getX(), 480 - playerBounds.getBoundingRectangle().getHeight());
+        if (playerBounds.getY() > 480 - playerBounds.getHeight()) {
+            playerBounds.setPosition(playerBounds.getX(), 480 - playerBounds.getHeight());
         }
     }
 
