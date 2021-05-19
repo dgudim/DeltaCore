@@ -71,17 +71,17 @@ public class EnemyBullet extends Entity {
 
     public void update(float delta) {
         for (int i = 0; i < playerBullet.bullets.size; i++) {
-            if (playerBullet.bullets.get(i).overlaps(entityHitBox)) {
+            if (overlaps(playerBullet.bullets.get(i))) {
                 explode();
                 playerBullet.removeBullet(i, true);
             }
         }
-        if (entityHitBox.overlaps(player.bounds)) {
-            explode();
+        if (overlaps(player.bounds)) {
             player.takeDamage(health);
+            explode();
         }
         for (int i = 0; i < Meteorites.meteorites.size; i++) {
-            if (Meteorites.meteorites.get(i).entityHitBox.overlaps(entityHitBox)) {
+            if (overlaps(Meteorites.meteorites.get(i))) {
                 Meteorites.meteorites.get(i).health -= health;
                 explode();
             }

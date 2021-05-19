@@ -21,7 +21,7 @@ public class Entity {
     Color color;
     
     public Sprite entitySprite;
-    public Rectangle entityHitBox;
+    Rectangle entityHitBox;
     
     public void init() {
         entitySprite.setSize(width, height);
@@ -48,6 +48,14 @@ public class Entity {
         } else {
             entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
         }
+    }
+    
+    public boolean overlaps(Entity entity) {
+        return entity.entityHitBox.overlaps(entityHitBox) && !entity.isDead && !isDead;
+    }
+    
+    public boolean overlaps(Rectangle hitBox) {
+        return hitBox.overlaps(entityHitBox) && !isDead;
     }
     
 }

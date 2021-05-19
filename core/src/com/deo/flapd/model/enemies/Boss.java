@@ -51,14 +51,14 @@ public class Boss {
         this.bossName = bossName;
         
         bossConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json")));
-        TextureAtlas bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("textures"));
+        TextureAtlas bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("noTextures", "textures"));
         parts = new Array<>();
         animations = new Array<>();
         hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
-        spawnScore = bossConfig.getInt("spawnConditions", "score") + getRandomInRange(-bossConfig.getInt("spawnConditions", "randomness"), bossConfig.getInt("spawnConditions", "randomness"));
-        spawnAt = bossConfig.getIntArray("spawnAt");
+        spawnScore = bossConfig.getInt(-1, "spawnConditions", "score") + getRandomInRange(-bossConfig.getInt(0, "spawnConditions", "randomness"), bossConfig.getInt(0, "spawnConditions", "randomness"));
+        spawnAt = bossConfig.getIntArray(new int[]{500, 500}, "spawnAt");
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
-            String type = bossConfig.get("parts", i).getString("type");
+            String type = bossConfig.get("parts", i).getString("part", "type");
             switch (type) {
                 case ("basePart"):
                     body = new BasePart(bossConfig.get("parts", i), bossAtlas);
@@ -71,8 +71,8 @@ public class Boss {
                     parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("clone"):
-                    String copyFrom = bossConfig.get("parts", i).getString("copyFrom");
-                    String cloneType = bossConfig.getString("parts", copyFrom, "type");
+                    String copyFrom = bossConfig.get("parts", i).getString(parts.get(0).name, "copyFrom");
+                    String cloneType = bossConfig.getString("part", "parts", copyFrom, "type");
                     switch (cloneType) {
                         case ("part"):
                             parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
@@ -80,7 +80,13 @@ public class Boss {
                         case ("cannon"):
                             parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                             break;
+                        default:
+                            log("\n Can't copy base part");
+                            break;
                     }
+                    break;
+                default:
+                    log("\n Unknown path type: " + type);
                     break;
             }
         }
@@ -230,43 +236,43 @@ class BasePart extends Entity {
         currentConfig = newConfig;
         this.textures = textures;
         links = new Array<>();
-        if (newConfig.getString("type").equals("clone")) {
-            currentConfig = newConfig.parent().get(newConfig.getString("copyFrom"));
+        if (newConfig.getString("part", "type").equals("clone")) {
+            currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
         }
-        type = currentConfig.getString("type");
-        health = currentConfig.getInt("health");
+        type = currentConfig.getString("part", "type");
+        health = currentConfig.getInt(1, "health");
         originalHealth = health;
-        width = currentConfig.getFloat("width");
-        height = currentConfig.getFloat("height");
-        layer = currentConfig.getInt("layer");
-        hasCollision = currentConfig.getBoolean("hasCollision");
+        width = currentConfig.getFloat(1, "width");
+        height = currentConfig.getFloat(1, "height");
+        layer = currentConfig.getInt(0, "layer");
+        hasCollision = currentConfig.getBoolean(false, "hasCollision");
         
         if (hasCollision) {
-            itemRarity = currentConfig.getIntArray("drops", "items", "rarity");
-            itemCount = currentConfig.getIntArray("drops", "items", "count");
-            itemTimer = currentConfig.getFloat("drops", "items", "timer");
+            itemRarity = currentConfig.getIntArray(new int[]{1, 2}, "drops", "items", "rarity");
+            itemCount = currentConfig.getIntArray(new int[]{1, 2}, "drops", "items", "count");
+            itemTimer = currentConfig.getFloat(1, "drops", "items", "timer");
             
-            bonusChance = currentConfig.getInt("drops", "bonuses", "chance");
-            bonusType = currentConfig.getIntArray("drops", "bonuses", "type");
+            bonusChance = currentConfig.getInt(50, "drops", "bonuses", "chance");
+            bonusType = currentConfig.getIntArray(new int[]{1, 2}, "drops", "bonuses", "type");
             
-            moneyCount = currentConfig.getIntArray("drops", "money", "count");
-            moneyTimer = currentConfig.getFloat("drops", "items", "timer");
+            moneyCount = currentConfig.getIntArray(new int[]{3, 5}, "drops", "money", "count");
+            moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
         }
         
         if (hasCollision) {
-            explosionSound = Gdx.audio.newSound(Gdx.files.internal(currentConfig.getString("explosionSound")));
+            explosionSound = Gdx.audio.newSound(Gdx.files.internal(currentConfig.getString("sfx/explosion.ogg", "explosionSound")));
         }
         soundVolume = getFloat("soundVolume");
         
-        entitySprite = new Sprite(textures.findRegion(currentConfig.getString("texture")));
+        entitySprite = new Sprite(textures.findRegion(currentConfig.getString("noTexture", "texture")));
         
         originX = width / 2f;
         originY = height / 2f;
-        if (!currentConfig.getString("originX").equals("standard")) {
-            originX = currentConfig.getFloat("originX");
+        if (!currentConfig.getString("standard", "originX").equals("standard")) {
+            originX = currentConfig.getFloat(0, "originX");
         }
-        if (!currentConfig.getString("originY").equals("standard")) {
-            originY = currentConfig.getFloat("originY");
+        if (!currentConfig.getString("standard", "originY").equals("standard")) {
+            originY = currentConfig.getFloat(0, "originY");
         }
         if (!hasCollision) {
             collisionEnabled = false;
@@ -290,7 +296,7 @@ class BasePart extends Entity {
         
         if (hasCollision) {
             explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal(currentConfig.getString("explosionEffect")), Gdx.files.internal("particles"));
+            explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
             log("\n creating explosion effect for part: " + newConfig.name);
         }
         
@@ -399,22 +405,22 @@ class Part extends BasePart {
         this.parts = parts;
         link = body;
         this.body = body;
-        String relativeTo = currentConfig.getString("offset", "relativeTo");
-        relativeX = currentConfig.getFloat("offset", "X");
-        relativeY = currentConfig.getFloat("offset", "Y");
-        if (newConfig.getString("type").equals("clone") && newConfig.get("override") != null) {
+        String relativeTo = currentConfig.getString(parts.get(0).name, "offset", "relativeTo");
+        relativeX = currentConfig.getFloat(0, "offset", "X");
+        relativeY = currentConfig.getFloat(0, "offset", "Y");
+        if (newConfig.getString("part", "type").equals("clone") && newConfig.get("override") != null) {
             for (int i = 0; i < newConfig.get("override").size; i++) {
                 if (newConfig.get("override", i).name.equals("offset")) {
-                    relativeX = newConfig.get("override", i).getFloat("X");
-                    relativeY = newConfig.get("override", i).getFloat("Y");
-                    relativeTo = newConfig.get("override", i).getString("relativeTo");
+                    relativeX = newConfig.get("override", i).getFloat(0, "X");
+                    relativeY = newConfig.get("override", i).getFloat(0, "Y");
+                    relativeTo = newConfig.get("override", i).getString(parts.get(0).name, "relativeTo");
                 }
                 if (newConfig.get("override", i).name.equals("originX")) {
-                    originX = newConfig.getFloat("override", i);
+                    originX = newConfig.getFloat(0, "override", i);
                     entitySprite.setOrigin(originX, originY);
                 }
                 if (newConfig.get("override", i).name.equals("originY")) {
-                    originY = newConfig.getFloat("override", i);
+                    originY = newConfig.getFloat(0, "override", i);
                     entitySprite.setOrigin(originX, originY);
                 }
             }
@@ -425,7 +431,7 @@ class Part extends BasePart {
         
         if (!currentConfig.get("linked").isBoolean()) {
             for (int i = 0; i < parts.size; i++) {
-                if (currentConfig.getString("linked").equals(parts.get(i).name)) {
+                if (currentConfig.getString("false", "linked").equals(parts.get(i).name)) {
                     link = parts.get(i);
                     link.addLinkedPart(this);
                     customLink = true;
@@ -453,7 +459,7 @@ class Part extends BasePart {
                 relativeX += parts.get(i).offsetX;
                 relativeY += parts.get(i).offsetY;
                 if (!parts.get(i).type.equals("basePart")) {
-                    String relativeToP = parts.get(i).currentConfig.getString("offset", "relativeTo");
+                    String relativeToP = parts.get(i).currentConfig.getString("noRelativeToTarget", "offset", "relativeTo");
                     getOffset(relativeToP);
                 }
                 break;
@@ -487,6 +493,8 @@ class Cannon extends Part {
     float fireRate;
     float timer;
     
+    boolean drawBulletsOnTop = false;
+    
     BulletData bulletData;
     Array<EnemyBullet> bullets;
     AssetManager assetManager;
@@ -502,13 +510,15 @@ class Cannon extends Part {
         
         bullets = new Array<>();
         
-        isLaser = currentConfig.getBoolean("laser");
+        isLaser = currentConfig.getBoolean(false, "laser");
         
-        canAim = currentConfig.getBoolean("canAim");
-        aimAngleLimit = currentConfig.getIntArray("aimAngleLimit");
+        drawBulletsOnTop = currentConfig.getBoolean(false, "drawBulletsOnTop");
         
-        float fireRateRandomness = currentConfig.getFloat("fireRate", "randomness");
-        fireRate = currentConfig.getFloat("fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
+        canAim = currentConfig.getBoolean(false, "canAim");
+        aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
+        
+        float fireRateRandomness = currentConfig.getFloat(0, "fireRate", "randomness");
+        fireRate = currentConfig.getFloat(1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
         
         bulletData = new BulletData(currentConfig.get("bullet"));
         
@@ -533,6 +543,9 @@ class Cannon extends Part {
     
     @Override
     void draw(SpriteBatch batch, float delta) {
+        if (drawBulletsOnTop) {
+            super.draw(batch, delta);
+        }
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update(delta);
             bullets.get(i).draw(batch, delta);
@@ -541,7 +554,9 @@ class Cannon extends Part {
                 bullets.removeIndex(i);
             }
         }
-        super.draw(batch, delta);
+        if (!drawBulletsOnTop) {
+            super.draw(batch, delta);
+        }
     }
     
     void shoot() {
@@ -552,7 +567,7 @@ class Cannon extends Part {
             float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
             float newRot = 0;
             if (canAim) {
-                newRot= MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                newRot = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             
             newRot += getRandomInRange(-10, 10) * bulletData.spread;
@@ -621,27 +636,27 @@ class Movement {
                 break;
             }
         }
-        speed = movementConfig.getFloat("speed");
+        speed = movementConfig.getFloat(100, "speed");
         
-        stopPrevAnim = movementConfig.getBoolean("stopPreviousAnimations");
+        stopPrevAnim = movementConfig.getBoolean(false, "stopPreviousAnimations");
         
-        if (movementConfig.getString("moveBy").equals("inf")) {
+        if (movementConfig.getString("inf", "moveBy").equals("inf")) {
             moveBy = 999779927;
         } else {
-            moveBy = movementConfig.getFloat("moveBy");
+            moveBy = movementConfig.getFloat(999779927, "moveBy");
         }
         
         type = movementConfig.name;
         if (type.equals("rotateRelativeTo")) {
             for (int i = 0; i < parts.size; i++) {
-                if (parts.get(i).name.equals(movementConfig.getString("relativeTo"))) {
+                if (parts.get(i).name.equals(movementConfig.getString(parts.get(0).name, "relativeTo"))) {
                     relativeTarget = parts.get(i);
                     break;
                 }
             }
-            radiusExpansionRate = movementConfig.getFloat("radiusExpansionRate");
-            targetRadius = movementConfig.getFloat("targetRadius");
-            angleOffset = movementConfig.getFloat("angleOffset");
+            radiusExpansionRate = movementConfig.getFloat(5, "radiusExpansionRate");
+            targetRadius = movementConfig.getFloat(100, "targetRadius");
+            angleOffset = movementConfig.getFloat(60, "angleOffset");
         }
         
         if (currentAddPosition < moveBy) {
@@ -851,18 +866,18 @@ class Action {
         
         config = actionValue;
         movements = new Array<>();
-        String target = actionValue.getString("target");
+        String target = actionValue.getString(baseParts.get(0).name, "target");
         for (int i = 0; i < baseParts.size; i++) {
             if (baseParts.get(i).name.equals(target)) {
                 this.target = baseParts.get(i);
                 break;
             }
         }
-        showHealthBar = actionValue.getBoolean("showHealthBar");
-        enableCollisions = actionValue.getBoolean("enableCollisions");
-        visible = actionValue.getBoolean("visible");
-        enabled = actionValue.getBoolean("active");
-        changeTexture = actionValue.getString("changeTexture");
+        showHealthBar = actionValue.getBoolean(false, "showHealthBar");
+        enableCollisions = actionValue.getBoolean(false, "enableCollisions");
+        visible = actionValue.getBoolean(true, "visible");
+        enabled = actionValue.getBoolean(false, "active");
+        changeTexture = actionValue.getString("false", "changeTexture");
         
         int movementCount;
         
@@ -914,9 +929,9 @@ class PhaseTrigger {
         isResetPhase = triggerData.parent().parent().name.equals("RESET");
         
         conditionsMet = false;
-        triggerType = triggerData.getString("triggerType");
-        value = triggerData.getFloat("value");
-        String targetPart = triggerData.getString("target");
+        triggerType = triggerData.getString("health", "triggerType");
+        value = triggerData.getFloat(1, "value");
+        String targetPart = triggerData.getString(parts.get(0).name, "target");
         for (int i2 = 0; i2 < parts.size; i2++) {
             if (parts.get(i2).name.equals(targetPart)) {
                 triggerTarget = parts.get(i2);
@@ -926,7 +941,7 @@ class PhaseTrigger {
         if (triggerTarget == null) {
             log("\n error setting up trigger for part " + targetPart);
         }
-        triggerModifier = triggerData.getString("triggerModifier");
+        triggerModifier = triggerData.getString("<=", "triggerModifier");
     }
     
     void reset() {

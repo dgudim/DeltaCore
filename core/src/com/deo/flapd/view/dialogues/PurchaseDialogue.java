@@ -39,7 +39,7 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue extends Dialogue {
 
-    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+    private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
 
     public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, null, null);
@@ -174,11 +174,11 @@ public class PurchaseDialogue extends Dialogue {
 
                     JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
                     Array<String> items = new Array<>();
-                    items.addAll(slotsJson.getStringArray("slots"));
+                    items.addAll(slotsJson.getStringArray(new String[]{},"slots"));
                     Array<Integer> quantities = new Array<>();
 
-                    for (int i = 0; i < slotsJson.getIntArray("productQuantities").length; i++) {
-                        quantities.add(slotsJson.getIntArray("productQuantities")[i]);
+                    for (int i = 0; i < slotsJson.getIntArray(new int[]{},"productQuantities").length; i++) {
+                        quantities.add(slotsJson.getIntArray(new int[]{},"productQuantities")[i]);
                     }
 
                     int index = items.indexOf(result, false);

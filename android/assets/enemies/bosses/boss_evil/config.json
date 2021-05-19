@@ -2,7 +2,7 @@
   "textures": "bossEvil.atlas",
   "spawnAt": [850, 200],
   "spawnConditions": {
-    "score": 13000,
+    "score": -13000,
     "randomness": 1000
   },
   "parts": {
@@ -37,6 +37,7 @@
     "cannon1": {
       "type": "cannon",
       "laser": false,
+      "drawBulletsOnTop": true,
       "hasCollision": true,
       "health": 570,
       "width": 60,
@@ -50,25 +51,26 @@
       },
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimAnimation": "noAnimation",
       "bullet": {
         "texture": "pew2",
         "shootSound": "sfx/gun3.ogg",
         "speed": 150,
-        "spread": 0,
+        "spread": 1.5,
         "bulletsPerShot": 1,
-        "damage": 7,
+        "damage": 5,
         "homing": false,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.7,
         "explosionEffect": "particles/explosion_evil_small.p",
-        "explosionScale": 0.7,
+        "explosionScale": 0.3,
         "height": 10,
         "width": 10,
         "offset": [0, 0]
       },
       "fireRate": {
-        "baseRate": 2,
-        "randomness": 1
+        "baseRate": 0.7,
+        "randomness": 0.1
       },
       "linked": false,
       "texture": "evil_cannon",
@@ -83,7 +85,7 @@
         },
         "money": {
           "timer": 1.3,
-          "count": [5, 25]
+          "count": [2, 5]
         },
         "bonuses": {
           "type": [2, 4],

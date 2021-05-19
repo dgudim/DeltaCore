@@ -38,56 +38,56 @@ import static com.deo.flapd.utils.DUtils.getPrice;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class SellScrapDialogue extends Dialogue {
-
-    private JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-
+    
+    private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+    
     public SellScrapDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
-
+        
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
         skin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
-
+        
         UIComposer uiComposer = new UIComposer(assetManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen", "workshopPurple", "sliderDefaultSmall", "arrowRightSmall", "arrowLeftSmall");
-
+        
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
-
+        
         Window.WindowStyle dialogStyle = new Window.WindowStyle();
         dialogStyle.titleFont = font;
         dialogStyle.background = skin.getDrawable("blankDialogue");
         final Dialog dialog = new Dialog("", dialogStyle);
-
+        
         Label.LabelStyle yellowLabelStyle = new Label.LabelStyle();
         yellowLabelStyle.font = font;
         yellowLabelStyle.fontColor = Color.YELLOW;
-
+        
         final TextButton sell = uiComposer.addTextButton("workshopGreen", "sell", 0.12f);
         TextButton cancel = uiComposer.addTextButton("workshopRed", "cancel", 0.12f);
         sell.setBounds(86, 3, 39, 22);
         cancel.setBounds(3, 3, 39, 22);
-
+        
         cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dialog.hide();
             }
         });
-
+        
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
-
-        final String[] items = treeJson.getStringArray(item, "items");
-        final int[] itemCounts = treeJson.getIntArray(item, "itemCounts");
+        
+        final String[] items = treeJson.getStringArray(new String[]{}, item, "items");
+        final int[] itemCounts = treeJson.getIntArray(new int[]{},item, "itemCounts");
         for (int i = 0; i < itemCounts.length; i++) {
             itemCounts[i] = MathUtils.clamp(itemCounts[i] / 2, 1, itemCounts[i]);
         }
-
+        
         boolean isEndItem = false;
-
+        
         if (items[0].equals("")) {
             isEndItem = true;
         }
-
+        
         if (!isEndItem) {
             for (int i = 0; i < items.length; i++) {
                 Table requirement = new Table();
@@ -102,29 +102,29 @@ public class SellScrapDialogue extends Dialogue {
                 itemButtonStyle.imageOver = new Image(itemAtlas.findRegion("over_" + getItemCodeNameByName(items[i]))).getDrawable();
                 ImageButton itemImageButton = new ImageButton(itemButtonStyle);
                 final int finalI = i;
-
+                
                 requirement.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         new SellScrapDialogue(assetManager, stage, itemSlotManager, getInteger("item_" + getItemCodeNameByName(item)), items[finalI]);
                     }
                 });
-
+                
                 float scale = 7 / Math.max(itemImageButton.getWidth(), itemImageButton.getHeight());
                 float width = itemImageButton.getWidth() * scale;
                 float height = itemImageButton.getHeight() * scale;
-
+                
                 requirement.add(itemImageButton).size(width, height);
                 requirement.add(itemText).pad(1).padLeft(2).width(37);
                 ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
                 ingredientsTable.align(Align.left).padLeft(1);
             }
         }
-
+        
         ScrollPane ingredients = new ScrollPane(ingredientsTable);
         ingredients.setupOverscroll(5, 10, 30);
         ingredients.setScrollingDisabled(true, false);
-
+        
         final int[] price = getPrice(item, treeJson, 1.5f);
         price[0] = MathUtils.clamp(price[0] / 3, 1, price[0]);
         price[1] = price[1] / 3;
@@ -134,13 +134,13 @@ public class SellScrapDialogue extends Dialogue {
         final Label cogs_text = new Label(getInteger("cogs") + "+" + price[1], yellowLabelStyle);
         uraniumCells_text.setFontScale(0.08f);
         cogs_text.setFontScale(0.08f);
-
+        
         final Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(7, 7);
         holder.add(uraniumCells_text).padLeft(1);
         requirements.add(holder).align(Align.left).padLeft(1).row();
-
+        
         Table holder2 = new Table();
         holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(7, 7);
         holder2.add(cogs_text).padLeft(1);
@@ -149,16 +149,16 @@ public class SellScrapDialogue extends Dialogue {
         }
         requirements.setBounds(80, 28, 45, 39);
         requirements.align(Align.right).padRight(1);
-
+        
         ingredients.setBounds(3, 28, 45, 39);
-
+        
         final CheckBox buy = uiComposer.addCheckBox("arrowRightSmall", "");
         final CheckBox scrap = uiComposer.addCheckBox("arrowLeftSmall", "");
-
+        
         buy.setBounds(66, 29, 10, 10);
         scrap.setBounds(56, 29, 10, 10);
         buy.setChecked(true);
-
+        
         buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -170,7 +170,7 @@ public class SellScrapDialogue extends Dialogue {
                 }
             }
         });
-
+        
         scrap.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -182,13 +182,13 @@ public class SellScrapDialogue extends Dialogue {
                 }
             }
         });
-
+        
         Label endItem = new Label("", yellowLabelStyle);
         endItem.setBounds(3, 28, 50, 39);
         endItem.setFontScale(0.07f);
         endItem.setWrap(true);
         endItem.setAlignment(Align.center);
-
+        
         scrap.setDisabled(isEndItem);
         if (isEndItem) {
             buy.addListener(new ClickListener() {
@@ -201,30 +201,30 @@ public class SellScrapDialogue extends Dialogue {
             });
             endItem.setText("this item can't be scrapped");
         }
-
+        
         Label or = new Label("or", yellowLabelStyle);
         or.setPosition(61.5f, 23);
         or.setFontScale(0.1f);
-
+        
         Image product = new Image(itemAtlas.findRegion(getItemCodeNameByName(item)));
         product.setScaling(Scaling.fit);
         product.setBounds(56.5f, 51, 15, 15);
-
+        
         final Label productName = new Label(item + " " + getInteger("item_" + getItemCodeNameByName(item)) + "-1", yellowLabelStyle);
         productName.setFontScale(0.08f);
         productName.setBounds(49, 41, 30, 8);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
-
+        
         final Slider quantity = uiComposer.addSlider("sliderDefaultSmall", 1, MathUtils.clamp(availableQuantity, 1, 9999), 1);
         quantity.setBounds(46.5f, 6, 35, 10);
-
+        
         final Label quantityText = new Label("quantity:1", yellowLabelStyle);
         quantityText.setFontScale(0.1f);
         quantityText.setPosition(49, 16);
         quantityText.setSize(30, 10);
         quantityText.setAlignment(Align.center);
-
+        
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -237,7 +237,7 @@ public class SellScrapDialogue extends Dialogue {
                 cogs_text.setText(getInteger("cogs") + "+" + (int) (price[1] * quantity.getValue()));
             }
         });
-
+        
         sell.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -254,18 +254,18 @@ public class SellScrapDialogue extends Dialogue {
                 dialog.hide();
             }
         });
-
+        
         dialog.addActor(endItem);
-
+        
         dialog.addActor(ingredients);
         dialog.addActor(requirements);
-
+        
         dialog.addActor(product);
         dialog.addActor(productName);
         dialog.addActor(or);
         dialog.addActor(buy);
         dialog.addActor(scrap);
-
+        
         dialog.addActor(sell);
         dialog.addActor(cancel);
         dialog.addActor(quantityText);

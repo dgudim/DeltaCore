@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Enemies;
+import com.deo.flapd.model.enemies.Entity;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.bulletDisposes;
@@ -99,22 +100,22 @@ public class Bullet {
         
         JsonEntry currentCannon = treeJson.get(getString("currentCannon"));
         
-        gunCount = shipConfig.getInt("gunCount");
+        gunCount = shipConfig.getInt(1, "gunCount");
         currentActiveGun = 0;
         
         gunOffsetsX = new float[gunCount];
         gunOffsetsY = new float[gunCount];
         
         for (int i = 0; i < gunCount; i++) {
-            gunOffsetsX[i] = shipConfig.getFloat("guns", "gun" + i + "OffsetX");
-            gunOffsetsY[i] = shipConfig.getFloat("guns", "gun" + i + "OffsetY");
+            gunOffsetsX[i] = shipConfig.getFloat(0, "guns", "gun" + i + "OffsetX");
+            gunOffsetsY[i] = shipConfig.getFloat(0, "guns", "gun" + i + "OffsetY");
         }
         
-        bulletExplosionEffect = currentCannon.getString("usesEffect");
+        bulletExplosionEffect = currentCannon.getString("particles/explosion3.p", "usesEffect");
         
-        if (currentCannon.getBoolean("usesTrail")) {
-            bulletTrailEffect = currentCannon.getString("trailEffect");
-            bulletTrailTimer = currentCannon.getFloat("trailFadeOutTimer");
+        if (currentCannon.getBoolean(false, "usesTrail")) {
+            bulletTrailEffect = currentCannon.getString("particles/bullet_trail_left.p", "trailEffect");
+            bulletTrailTimer = currentCannon.getFloat(5, "trailFadeOutTimer");
             hasTrail = true;
         } else {
             bulletTrailEffect = "";
@@ -122,8 +123,8 @@ public class Bullet {
             hasTrail = false;
         }
         
-        String[] params = currentCannon.getStringArray("parameters");
-        float[] paramValues = currentCannon.getFloatArray("parameterValues");
+        String[] params = currentCannon.getStringArray(new String[]{}, "parameters");
+        float[] paramValues = currentCannon.getFloatArray(new float[]{}, "parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("damage")) {
                 damage = (int) paramValues[i];
@@ -156,13 +157,13 @@ public class Bullet {
         
         if (isLaser) {
             bullet = new Sprite();
-            laserColor = currentCannon.getString("laserBeamColor");
+            laserColor = currentCannon.getString("#00FFFF", "laserBeamColor");
         } else {
             bullet = new Sprite(bullets.findRegion("bullet_" + getItemCodeNameByName(getString("currentCannon"))));
         }
         
-        params = treeJson.getStringArray(getString("currentCore"), "parameters");
-        paramValues = treeJson.getFloatArray(getString("currentCore"), "parameterValues");
+        params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");
+        paramValues = treeJson.getFloatArray(new float[]{}, getString("currentCore"), "parameterValues");
         for (int i = 0; i < params.length; i++) {
             if (params[i].endsWith("damage multiplier")) {
                 damage *= paramValues[i];
@@ -170,10 +171,10 @@ public class Bullet {
             }
         }
         
-        isHoming = currentCannon.getBoolean("homing");
+        isHoming = currentCannon.getBoolean(false, "homing");
         if (isHoming) {
-            explosionTimer = currentCannon.getFloat("explosionTimer");
-            homingSpeed = currentCannon.getFloat("homingSpeed");
+            explosionTimer = currentCannon.getFloat(3, "explosionTimer");
+            homingSpeed = currentCannon.getFloat(9, "homingSpeed");
         }
         
         this.bullets = new Array<>();
@@ -251,9 +252,9 @@ public class Bullet {
                     
                     float degree = player.rotation;
                     for (int i2 = 0; i2 < enemies.enemyEntities.size; i2++) {
-                        if (enemies.enemyEntities.get(i2).entityHitBox.overlaps(player.aimRadius.getBoundingRectangle()) && !enemies.enemyEntities.get(i2).isDead) {
-                            Rectangle enemy = enemies.enemyEntities.get(i2).entityHitBox;
-                            degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.getY() - bullet.y + enemy.getHeight() / 2, enemy.getX() - bullet.x + enemy.getWidth() / 2);
+                        if (enemies.enemyEntities.get(i2).overlaps(player.aimRadius.getBoundingRectangle())) {
+                            Entity enemy = enemies.enemyEntities.get(i2);
+                            degree = MathUtils.radiansToDegrees * MathUtils.atan2(enemy.y - bullet.y + enemy.height / 2, enemy.x - bullet.x + enemy.width / 2);
                             
                             if (degree < 45 && degree > -45) {
                                 degree = 0;

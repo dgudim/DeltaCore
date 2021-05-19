@@ -22,7 +22,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Array;
 import java.util.Map;
 
 import static java.lang.Math.floor;
@@ -309,14 +308,7 @@ public class DUtils {
     }
     
     public static String getItemCodeNameByName(String name) {
-        String item;
-        try {
-            item = itemNames.getString(name);
-        } catch (Exception e) {
-            item = "ohno";
-            log("\n no texture for item " + name);
-        }
-        return item;
+        return itemNames.getString("ohno", name);
     }
     
     public static void updateCamera(OrthographicCamera camera, Viewport viewport, int width, int height) {
@@ -352,33 +344,6 @@ public class DUtils {
         putInteger("meteoritesDestroyed", 0);
         putFloat("ShipX", 0);
         putFloat("ShipY", 220);
-    }
-    
-    public static <T> T concatArray(T a, T b) {
-        if (!a.getClass().isArray() || !b.getClass().isArray()) {
-            throw new IllegalArgumentException();
-        }
-        
-        Class<?> resCompType;
-        Class<?> aCompType = a.getClass().getComponentType();
-        Class<?> bCompType = b.getClass().getComponentType();
-        
-        if (aCompType.isAssignableFrom(bCompType)) {
-            resCompType = aCompType;
-        } else if (bCompType.isAssignableFrom(aCompType)) {
-            resCompType = bCompType;
-        } else {
-            throw new IllegalArgumentException();
-        }
-        
-        int aLen = Array.getLength(a);
-        int bLen = Array.getLength(b);
-        
-        T result = (T) Array.newInstance(resCompType, aLen + bLen);
-        System.arraycopy(a, 0, result, 0, aLen);
-        System.arraycopy(b, 0, result, aLen, bLen);
-        
-        return result;
     }
     
     public static float lerpWithConstantSpeed(float from, float to, float speed, float delta) {
@@ -454,11 +419,11 @@ public class DUtils {
         JsonEntry price = treeJson.get(result, "price");
         int[] priceArray = new int[]{0, 0};
         if (price.asString().equals("auto")) {
-            String[] items = treeJson.getStringArray(result, "items");
-            int[] itemCounts = treeJson.getIntArray(result, "itemCounts");
+            String[] items = treeJson.getStringArray(new String[]{}, result, "items");
+            int[] itemCounts = treeJson.getIntArray(new int[]{}, result, "itemCounts");
             for (int i = 0; i < items.length; i++) {
                 int[] buffer = getPrice(items[i], treeJson, priceCoefficient);
-                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(result, "resultCount") * itemCounts[i]);
+                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(1, result, "resultCount") * itemCounts[i]);
                 priceArray[1] += buffer[1] + 1;
             }
         } else {

@@ -71,6 +71,7 @@
     "smallCannon1": {
       "type": "cannon",
       "laser": false,
+      "drawBulletsOnTop": false,
       "health": 333,
       "width": 30.8,
       "height": 22.4,
@@ -183,6 +184,7 @@
     "mediumCannon1": {
       "type": "cannon",
       "laser": false,
+      "drawBulletsOnTop": false,
       "health": 1000,
       "hasCollision": true,
       "width": 38,
@@ -240,6 +242,7 @@
     "cannon2ndStage": {
       "type": "cannon",
       "laser": false,
+      "drawBulletsOnTop": false,
       "health": 1333,
       "hasCollision": true,
       "width": 80,
@@ -299,6 +302,7 @@
     "homingCannon": {
       "type": "cannon",
       "laser": false,
+      "drawBulletsOnTop": false,
       "health": 1,
       "hasCollision": false,
       "width": 36,
