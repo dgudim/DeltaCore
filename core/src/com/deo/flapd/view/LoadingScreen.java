@@ -105,8 +105,6 @@ public class LoadingScreen implements Screen {
         loadingBar.setPosition(0, 30);
         loadingBar.setAnimateDuration(0.01f);
         
-        Gdx.gl20.glLineWidth(10);
-        
         enableShader = getBoolean("bloom");
         
         stateName = "Loading";
@@ -211,15 +209,17 @@ public class LoadingScreen implements Screen {
         shapeRenderer.triangle(calculateProgressOffsetX(180), calculateProgressOffsetY(180), calculateProgressOffsetX(240), calculateProgressOffsetY(240), calculateProgressOffsetX(300), calculateProgressOffsetY(300), fillColor, fillColor, fillColor);
         shapeRenderer.triangle(calculateProgressOffsetX(0), calculateProgressOffsetY(0), calculateProgressOffsetX(120), calculateProgressOffsetY(120), calculateProgressOffsetX(300), calculateProgressOffsetY(300), fillColor, fillColor, fillColor);
         shapeRenderer.triangle(calculateProgressOffsetX(180), calculateProgressOffsetY(180), calculateProgressOffsetX(120), calculateProgressOffsetY(120), calculateProgressOffsetX(300), calculateProgressOffsetY(300), fillColor, fillColor, fillColor);
+    
+        for (int i = 0; i < 53; i++) {
+            shapeRenderer.setColor(0.1f, 0.5f, Math.abs(30 * MathUtils.sin((i - rotation / 20) * 6.8f * MathUtils.degreesToRadians)) / 30, 1);
+            shapeRenderer.rect(5 + 15 * i, 60, 10, Math.abs(30 * MathUtils.sin((i + rotation / 10) * 6.8f * MathUtils.degreesToRadians)));
+        }
+        
         shapeRenderer.end();
         shapeRenderer.begin();
         shapeRenderer.triangle(400 - MathUtils.cosDeg(rotation) * 150, 240 - MathUtils.sinDeg(rotation) * 150, 400 - MathUtils.cosDeg(rotation + 120) * 150, 240 - MathUtils.sinDeg(rotation + 120) * 150, 400 - MathUtils.cosDeg(rotation + 240) * 150, 240 - MathUtils.sinDeg(rotation + 240) * 150, color, color, color);
         shapeRenderer.triangle(400 - MathUtils.cosDeg(-rotation * progress) * 80 * progress, 240 - MathUtils.sinDeg(-rotation * progress) * 80 * progress, 400 - MathUtils.cosDeg(-rotation * progress + 120) * 80 * progress, 240 - MathUtils.sinDeg(-rotation * progress + 120) * 80 * progress, 400 - MathUtils.cosDeg(-rotation * progress + 240) * 80 * progress, 240 - MathUtils.sinDeg(-rotation * progress + 240) * 80 * progress, Color.GREEN, Color.GREEN, Color.GREEN);
         shapeRenderer.polygon(new float[]{calculateOffsetX(halfRotation), calculateOffsetY(halfRotation), calculateOffsetX(halfRotation + 60), calculateOffsetY(halfRotation + 60), calculateOffsetX(halfRotation + 120), calculateOffsetY(halfRotation + 120), calculateOffsetX(halfRotation + 180), calculateOffsetY(halfRotation + 180), calculateOffsetX(halfRotation + 240), calculateOffsetY(halfRotation + 240), calculateOffsetX(halfRotation + 300), calculateOffsetY(halfRotation + 300),});
-        for (int i = 0; i < 53; i++) {
-            shapeRenderer.setColor(0.1f, 0.5f, Math.abs(30 * MathUtils.sin((i - rotation / 20) * 6.8f * MathUtils.degreesToRadians)) / 30, 1);
-            shapeRenderer.rect(5 + 15 * i, 60, 10, Math.abs(30 * MathUtils.sin((i + rotation / 10) * 6.8f * MathUtils.degreesToRadians)));
-        }
         shapeRenderer.end();
         
         batch.begin();
