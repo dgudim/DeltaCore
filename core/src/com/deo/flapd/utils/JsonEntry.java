@@ -35,10 +35,9 @@ public class JsonEntry {
      *
      * @return May be null.
      */
-    
     public JsonEntry get(String name) {
         if (jsonValue.get(name) == null) {
-            log("\n No key named " + name + ", trace info: " + jsonValue.trace());
+            log("\n No key named " + name + " (path: " + jsonValue.trace() + ")");
             return null;
         }
         return new JsonEntry(jsonValue.get(name));
@@ -53,7 +52,6 @@ public class JsonEntry {
         JsonEntry entry = this;
         for (String key : keys) {
             if (entry.get(key) == null) {
-                log("\n No key named" + key + " (path: " + entry.jsonValue.trace() + ")");
                 return null;
             }
             entry = entry.get(key);

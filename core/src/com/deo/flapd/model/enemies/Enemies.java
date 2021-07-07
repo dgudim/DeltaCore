@@ -14,90 +14,86 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemies {
-
+    
     private final AssetManager assetManager;
-
+    
     JsonEntry enemiesJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/enemies.json")));
     private final Array<EnemyData> enemies;
     private final Array<String> enemyNames;
     public Array<Enemy> enemyEntities;
-
+    
     private final String type;
-
+    
     private final float difficulty;
-
+    
     private ShipObject player;
-
-    public Enemies(AssetManager assetManager){
-
+    
+    public Enemies(AssetManager assetManager) {
+        
         this.assetManager = assetManager;
-
+        
         enemies = new Array<>();
         enemyNames = new Array<>();
         enemyEntities = new Array<>();
-
-        if(getBoolean("easterEgg")){
-            type = "easterEgg";
-        }else{
-            type = "normal";
-        }
+        
+        type = getBoolean("easterEgg") ? "easterEgg" : "normal";
         difficulty = getFloat("difficulty");
     }
-
-    public void loadEnemies(){
+    
+    public void loadEnemies() {
         int enemyTypeCount = enemiesJson.size;
-
-        for(int i = 0; i<enemyTypeCount; i++){
+        
+        for (int i = 0; i < enemyTypeCount; i++) {
             EnemyData enemyData = new EnemyData(enemiesJson.get(i), type);
             enemies.add(enemyData);
             enemyNames.add(enemyData.name);
         }
     }
-
-    private void SpawnEnemy(EnemyData data){
+    
+    private void SpawnEnemy(EnemyData data) {
         data = data.clone();
         data.health *= difficulty;
         enemyEntities.add(new Enemy(assetManager, data, this, player));
     }
-
-    public void draw(SpriteBatch batch){
-        for(int i = 0; i<enemyEntities.size; i++){
+    
+    public void draw(SpriteBatch batch) {
+        for (int i = 0; i < enemyEntities.size; i++) {
             enemyEntities.get(i).draw(batch);
         }
     }
-
-    public void drawEffects(SpriteBatch batch, float delta){
-        for(int i = 0; i<enemyEntities.size; i++){
+    
+    public void drawEffects(SpriteBatch batch, float delta) {
+        for (int i = 0; i < enemyEntities.size; i++) {
             enemyEntities.get(i).drawEffects(batch, delta);
         }
     }
-
-    public void update(float delta){
-        for(int i = 0; i<enemies.size; i++){
+    
+    public void update(float delta) {
+        for (int i = 0; i < enemies.size; i++) {
             EnemyData currentData = enemies.get(i);
-            if(currentData.millis>currentData.spawnDelay*100 && getRandomInRange(0, 45)>=15 && currentData.onBossWave == GameLogic.bossWave && GameLogic.Score >= currentData.scoreSpawnConditions[0] && GameLogic.Score <= currentData.scoreSpawnConditions[1] && GameLogic.enemiesKilled >= currentData.enemyCountSpawnConditions[0] && GameLogic.enemiesKilled <= currentData.enemyCountSpawnConditions[1]){
+            if (currentData.millis > currentData.spawnDelay * 100 && getRandomInRange(0, 45) >= 15 && currentData.onBossWave == GameLogic.bossWave && GameLogic.score >= currentData.scoreSpawnConditions[0] && GameLogic.score <= currentData.scoreSpawnConditions[1] && GameLogic.enemiesKilled >= currentData.enemyCountSpawnConditions[0] && GameLogic.enemiesKilled <= currentData.enemyCountSpawnConditions[1]) {
                 SpawnEnemy(currentData);
                 currentData.millis = 0;
             }
-            currentData.millis += delta*20;
+            currentData.millis += delta * 20;
         }
-        for(int i = 0; i<enemyEntities.size; i++){
+        for (int i = 0; i < enemyEntities.size; i++) {
             enemyEntities.get(i).update(delta);
-            if(enemyEntities.get(i).queuedForDeletion){
+            if (enemyEntities.get(i).queuedForDeletion) {
                 enemyEntities.get(i).dispose();
                 enemyEntities.removeIndex(i);
             }
         }
     }
-
-    public void dispose(){
-        for(int i = 0; i<enemyEntities.size; i++){
+    
+    public void dispose() {
+        for (int i = 0; i < enemyEntities.size; i++) {
             enemyEntities.get(i).dispose();
             enemyEntities.removeIndex(i);
         }
     }
-
-    public void setTargetPlayer(ShipObject targetPlayer){
+    
+    public void setTargetPlayer(ShipObject targetPlayer) {
         player = targetPlayer;
     }
 }

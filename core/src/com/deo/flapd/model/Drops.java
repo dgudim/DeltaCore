@@ -95,7 +95,6 @@ public class Drops {
     }
 
     public static void drop(float x, float y, int count, float timer, int rarity) {
-
         for (int i = 0; i < count; i++) {
             Rectangle drop = new Rectangle();
 

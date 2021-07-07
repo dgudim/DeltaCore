@@ -18,10 +18,10 @@ public class Entity {
     public float health;
     public float speed;
     public boolean isDead = false;
-    Color color;
+    public Color color = Color.WHITE;
     
     public Sprite entitySprite;
-    Rectangle entityHitBox;
+    public Rectangle entityHitBox;
     
     public void init() {
         entitySprite.setSize(width, height);
@@ -29,7 +29,12 @@ public class Entity {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         entityHitBox = entitySprite.getBoundingRectangle();
-        color = Color.WHITE;
+    }
+    
+    public void setPositionAndRotation(float x, float y, float rotation){
+        this.x = x;
+        this.y = y;
+        this.rotation = rotation;
     }
     
     public void setSize(float width, float height) {

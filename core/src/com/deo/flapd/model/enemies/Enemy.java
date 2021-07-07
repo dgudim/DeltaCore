@@ -26,6 +26,7 @@ import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.enemyDisposes;
 import static com.deo.flapd.utils.DUtils.enemyFireDisposes;
+import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.lerpToColor;
@@ -194,7 +195,7 @@ public class Enemy extends Entity {
                 if (overlaps(playerBullet.bullets.get(i))) {
                     color = Color.valueOf(data.hitColor);
                     health -= playerBullet.damages.get(i);
-                    GameLogic.Score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
+                    GameLogic.score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
                     playerBullet.removeBullet(i, true);
                 }
             }
@@ -202,7 +203,7 @@ public class Enemy extends Entity {
             if (overlaps(playerBullet.laser.getBoundingRectangle())) {
                 color = Color.valueOf(data.hitColor);
                 if (health > 0) {
-                    GameLogic.Score += 10;
+                    GameLogic.score += 10;
                 }
                 health -= playerBullet.damage / 10f;
             }
@@ -270,12 +271,7 @@ public class Enemy extends Entity {
                 newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
             
-            EnemyBullet bullet = new EnemyBullet(assetManager, newBulletData, player);
-            bullet.x = newX;
-            bullet.y = newY;
-            bullet.rotation = newAngle;
-            
-            bullets.add(bullet);
+            bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newAngle));
         }
         shootingSound.play(volume);
         data.millis = 0;
@@ -468,7 +464,7 @@ class EnemyData {
             fireEffects[i] = enemyBodyInfo.getString("particles/fire_engine_left_blue.p", "fire", "effect" + i);
             fireScales[i] = enemyBodyInfo.getFloat(1, "fire", "scale" + i);
             fireParticleEffectAngles.set(i, MathUtils.atan2(fireOffsetsY[i], fireOffsetsX[i]) * MathUtils.radiansToDegrees);
-            fireParticleEffectDistances.set(i, (float) Math.sqrt(fireOffsetsY[i] * fireOffsetsY[i] + fireOffsetsX[i] * fireOffsetsX[i]));
+            fireParticleEffectDistances.set(i, getDistanceBetweenTwoPoints(0, 0, fireOffsetsX[i], fireOffsetsY[i]));
         }
         
         hasAnimation = enemyBodyInfo.getBoolean(false, "hasAnimation");
@@ -508,7 +504,7 @@ class EnemyData {
             droneSpawnSound = enemyBodyInfo.getString("sfx/gun3.ogg", "droneSpawnSound");
             droneSpawnOffset = enemyBodyInfo.getIntArray(new int[]{0, 0}, "droneSpawnOffset");
             droneAngle = MathUtils.atan2(droneSpawnOffset[1], droneSpawnOffset[0]) * MathUtils.radiansToDegrees;
-            droneDistance = (float) Math.sqrt(droneSpawnOffset[1] * droneSpawnOffset[1] + droneSpawnOffset[0] * droneSpawnOffset[0]);
+            droneDistance = getDistanceBetweenTwoPoints(0, 0, droneSpawnOffset[0], droneSpawnOffset[1]);
         }
         
         hitColor = enemyBodyInfo.getString("#FF0000", "hitColor");

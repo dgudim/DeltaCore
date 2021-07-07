@@ -116,7 +116,7 @@ public class Checkpoint {
             speed = 5;
             putInteger("enemiesKilled", GameLogic.enemiesKilled);
             putInteger("moneyEarned", GameLogic.moneyEarned);
-            putInteger("Score", GameLogic.Score);
+            putInteger("Score", GameLogic.score);
             putFloat("Health", player.Health);
             putFloat("Shield", player.Shield);
             putFloat("Charge", player.Charge);

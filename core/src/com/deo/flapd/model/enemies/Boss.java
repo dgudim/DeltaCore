@@ -136,7 +136,7 @@ public class Boss {
     }
     
     void update(float delta) {
-        if (GameLogic.Score >= spawnScore && !hasAlreadySpawned) {
+        if (GameLogic.score >= spawnScore && !hasAlreadySpawned) {
             spawn();
         }
         if (visible) {
@@ -427,22 +427,16 @@ class Part extends BasePart {
             
         }
         
-        boolean customLink = false;
-        
         if (!currentConfig.get("linked").isBoolean()) {
             for (int i = 0; i < parts.size; i++) {
                 if (currentConfig.getString("false", "linked").equals(parts.get(i).name)) {
                     link = parts.get(i);
-                    link.addLinkedPart(this);
-                    customLink = true;
                     break;
                 }
             }
         }
         
-        if (!customLink) {
-            link.addLinkedPart(this);
-        }
+        link.addLinkedPart(this);
         
         getOffset(relativeTo);
         offsetX = relativeX;
@@ -484,16 +478,13 @@ class Part extends BasePart {
 class Cannon extends Part {
     
     boolean canAim;
-    boolean isLaser;
-    float maxLaserDistance;
-    float aimingSpeed;
-    float laserLifetime;
-    boolean lockOntoTarget;
+    String aimAnimationType;
+    String[] aimTextures;
     int[] aimAngleLimit;
     float fireRate;
     float timer;
     
-    boolean drawBulletsOnTop = false;
+    boolean drawBulletsOnTop;
     
     BulletData bulletData;
     Array<EnemyBullet> bullets;
@@ -510,9 +501,22 @@ class Cannon extends Part {
         
         bullets = new Array<>();
         
-        isLaser = currentConfig.getBoolean(false, "laser");
-        
         drawBulletsOnTop = currentConfig.getBoolean(false, "drawBulletsOnTop");
+        
+        aimAnimationType = currentConfig.getString("noAnimation", "aimAnimation");
+        if (aimAnimationType.equals("textureChange")) {
+            aimTextures = new String[8];
+            JsonEntry aimTexturesJsonValue = currentConfig.get("aimAnimationTextures");
+            aimTextures[0] = aimTexturesJsonValue.getString("right", "right");
+            aimTextures[1] = aimTexturesJsonValue.getString("left", "left");
+            aimTextures[2] = aimTexturesJsonValue.getString("up", "up");
+            aimTextures[3] = aimTexturesJsonValue.getString("down", "down");
+            
+            aimTextures[4] = aimTexturesJsonValue.getString("up_right", "up_right");
+            aimTextures[5] = aimTexturesJsonValue.getString("up_left", "up_left");
+            aimTextures[6] = aimTexturesJsonValue.getString("down_right", "down_right");
+            aimTextures[7] = aimTexturesJsonValue.getString("down_left", "down_left");
+        }
         
         canAim = currentConfig.getBoolean(false, "canAim");
         aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
@@ -531,7 +535,33 @@ class Cannon extends Part {
         super.update(delta);
         if (active) {
             if (canAim) {
-                rotation = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                float angleToThePlayer = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                switch (aimAnimationType) {
+                    case ("textureChange"):
+                        String texture;
+                        if (angleToThePlayer >= -22.5 && angleToThePlayer <= 22.5) {
+                            texture = aimTextures[1];
+                        } else if (angleToThePlayer >= 22.5 && angleToThePlayer <= 67.5) {
+                            texture = aimTextures[7];
+                        } else if (angleToThePlayer >= 67.5 && angleToThePlayer <= 112.5) {
+                            texture = aimTextures[3];
+                        } else if (angleToThePlayer >= 112.5 && angleToThePlayer <= 157.5) {
+                            texture = aimTextures[6];
+                        } else if ((angleToThePlayer >= 157.5 && angleToThePlayer <= 180) || (angleToThePlayer >= -180 && angleToThePlayer <= -157.5)) {
+                            texture = aimTextures[0];
+                        } else if (angleToThePlayer >= -157.5 && angleToThePlayer <= -112.5) {
+                            texture = aimTextures[4];
+                        } else if (angleToThePlayer >= -112.5 && angleToThePlayer <= -67.5) {
+                            texture = aimTextures[2];
+                        } else {
+                            texture = aimTextures[5];
+                        }
+                        entitySprite.setRegion(textures.findRegion(texture));
+                        break;
+                    case ("rotate"):
+                        rotation = angleToThePlayer;
+                        break;
+                }
             }
             timer += delta * fireRate;
             if (timer > 1 && health > 0 && visible) {
@@ -566,19 +596,14 @@ class Cannon extends Part {
             float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
             float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
             float newRot = 0;
+            
             if (canAim) {
-                newRot = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                newRot = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + height/2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             
             newRot += getRandomInRange(-10, 10) * bulletData.spread;
             
-            EnemyBullet bullet = new EnemyBullet(textures, newBulletData, player);
-            bullet.x = newX;
-            bullet.y = newY;
-            bullet.rotation = newRot;
-            
-            bullets.add(bullet);
-            
+            bullets.add(new EnemyBullet(textures, newBulletData, player, newX, newY, newRot));
         }
         
         if (soundVolume > 0) {
@@ -641,9 +666,9 @@ class Movement {
         stopPrevAnim = movementConfig.getBoolean(false, "stopPreviousAnimations");
         
         if (movementConfig.getString("inf", "moveBy").equals("inf")) {
-            moveBy = 999779927;
+            moveBy = Integer.MAX_VALUE;
         } else {
-            moveBy = movementConfig.getFloat(999779927, "moveBy");
+            moveBy = movementConfig.getFloat(Integer.MAX_VALUE, "moveBy");
         }
         
         type = movementConfig.name;

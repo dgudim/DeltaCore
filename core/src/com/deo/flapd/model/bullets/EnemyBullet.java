@@ -2,6 +2,7 @@ package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,6 +15,7 @@ import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.enemies.Entity;
 import com.deo.flapd.utils.DUtils;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
 import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
 
@@ -24,118 +26,167 @@ public class EnemyBullet extends Entity {
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
     private boolean explosionStarted;
-
+    
     private ShipObject player;
     private Bullet playerBullet;
-
-    public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship) {
+    
+    public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship, float x, float y, float rotation) {
         entitySprite = new Sprite((Texture) assetManager.get(bulletData.texture));
-        initBullet(bulletData, ship);
+        initBullet(bulletData, ship, x, y, rotation);
     }
-
-    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship) {
+    
+    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship, float x, float y, float rotation) {
         entitySprite = new Sprite(bossAtlas.findRegion(bulletData.texture));
-        initBullet(bulletData, ship);
+        initBullet(bulletData, ship, x, y, rotation);
     }
-
-    private void initBullet(BulletData bulletData, ShipObject ship){
+    
+    private void initBullet(BulletData bulletData, ShipObject ship, float x, float y, float rotation) {
         data = bulletData;
         
         player = ship;
         playerBullet = player.bullet;
-
-        bulletData.explosionParticleEffect = new ParticleEffect();
-        bulletData.explosionParticleEffect.load(Gdx.files.internal(bulletData.explosion), Gdx.files.internal("particles"));
-        bulletData.explosionParticleEffect.scaleEffect(bulletData.explosionScale);
-
-        bulletData.trailParticleEffect = new ParticleEffect();
-        bulletData.trailParticleEffect.load(Gdx.files.internal(bulletData.trail), Gdx.files.internal("particles"));
-        bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
-        bulletData.trailParticleEffect.start();
-    
+        
+        if (!data.isLaser) {
+            bulletData.explosionParticleEffect = new ParticleEffect();
+            bulletData.explosionParticleEffect.load(Gdx.files.internal(bulletData.explosion), Gdx.files.internal("particles"));
+            bulletData.explosionParticleEffect.scaleEffect(bulletData.explosionScale);
+            
+            bulletData.trailParticleEffect = new ParticleEffect();
+            bulletData.trailParticleEffect.load(Gdx.files.internal(bulletData.trail), Gdx.files.internal("particles"));
+            bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
+            bulletData.trailParticleEffect.start();
+        }
+        
+        if (bulletData.isLaser) {
+            bulletData.width = 600;
+            y += bulletData.height / 2f;
+            color = Color.valueOf(bulletData.color);
+        }
+        
+        setPositionAndRotation(x, y, rotation + (bulletData.isLaser ? 180 : 0));
         setSize(bulletData.width, bulletData.height);
-        width = bulletData.width;
-        height = bulletData.height;
         health = bulletData.damage;
         init();
     }
-
+    
+    @Override
+    public void setSize(float width, float height) {
+        this.width = width;
+        this.height = height;
+        originX = data.isLaser ? 0 : width / 2f;
+        originY = height / 2f;
+    }
+    
+    @Override
+    protected void update() {
+        if (data.isLaser) {
+            entitySprite.setColor(color);
+            float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
+            entitySprite.setSize(data.width, scaledHeight);
+            entitySprite.setOrigin(0, scaledHeight / 2f);
+            entitySprite.setOriginBasedPosition(x, y);
+            entityHitBox = entitySprite.getBoundingRectangle();
+        } else {
+            super.update();
+        }
+    }
+    
     public void draw(SpriteBatch batch, float delta) {
         if (!isDead) {
             entitySprite.draw(batch);
-            data.trailParticleEffect.draw(batch, delta);
+            if (!data.isLaser) {
+                data.trailParticleEffect.draw(batch, delta);
+            }
         } else {
-            data.explosionParticleEffect.draw(batch, delta);
+            if (!data.isLaser) {
+                data.explosionParticleEffect.draw(batch, delta);
+            }
         }
     }
-
+    
     public void update(float delta) {
-        for (int i = 0; i < playerBullet.bullets.size; i++) {
-            if (overlaps(playerBullet.bullets.get(i))) {
-                explode();
-                playerBullet.removeBullet(i, true);
+        if (!data.isLaser) {
+            for (int i = 0; i < playerBullet.bullets.size; i++) {
+                if (overlaps(playerBullet.bullets.get(i))) {
+                    explode();
+                    playerBullet.removeBullet(i, true);
+                }
             }
         }
         if (overlaps(player.bounds)) {
-            player.takeDamage(health);
+            player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1));
             explode();
         }
         for (int i = 0; i < Meteorites.meteorites.size; i++) {
             if (overlaps(Meteorites.meteorites.get(i))) {
-                Meteorites.meteorites.get(i).health -= health;
+                Meteorites.meteorites.get(i).health -= health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1);
                 explode();
             }
         }
         if (!isDead) {
-            if (!data.isHoming) {
-                x -= MathUtils.cosDeg(rotation) * data.speed * delta;
-                y -= MathUtils.sinDeg(rotation) * data.speed * delta;
+            if (data.isLaser) {
+                data.fadeOutTimer = clamp(data.fadeOutTimer - delta, 0f, data.maxFadeOutTimer);
+                update();
+                if (data.fadeOutTimer <= 0) {
+                    entityHitBox.setPosition(-1000, -1000);
+                    isDead = true;
+                    health = 0;
+                }
             } else {
-                rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
-                        MathUtils.radiansToDegrees * MathUtils.atan2(
-                                y - (player.bounds.getY() + player.bounds.getHeight()/2f),
-                                x - (player.bounds.getX() + player.bounds.getWidth()/2f)),
-                        data.homingSpeed, delta);
+                if (data.isHoming) {
+                    rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
+                            MathUtils.radiansToDegrees * MathUtils.atan2(
+                                    y - (player.bounds.getY() + player.bounds.getHeight() / 2f),
+                                    x - (player.bounds.getX() + player.bounds.getWidth() / 2f)),
+                            data.homingSpeed, delta);
+                    data.explosionTimer -= delta;
+                }
+                x -= MathUtils.cosDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
+                y -= MathUtils.sinDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
+                update();
                 
-                x -= MathUtils.cosDeg(rotation) * data.speed * 2 * delta;
-                y -= MathUtils.sinDeg(rotation) * data.speed * 2 * delta;
-                data.explosionTimer -= delta;
-            }
-            update();
-            
-            data.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
-
-            if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
-                isDead = true;
-                explosionFinished = true;
-            }
-
-            if (data.isHoming && data.explosionTimer <= 0) {
-                explode();
+                data.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
+                
+                if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
+                    isDead = true;
+                    explosionFinished = true;
+                }
+                
+                if (data.isHoming && data.explosionTimer <= 0) {
+                    explode();
+                }
             }
         }
-        queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished) && isDead;
+        if(data.isLaser){
+            queuedForDeletion = isDead;
+        }else{
+            queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished || data.isLaser) && isDead;
+        }
     }
-
+    
     public void dispose() {
-        data.explosionParticleEffect.dispose();
-        data.trailParticleEffect.dispose();
+        if (!data.isLaser) {
+            data.explosionParticleEffect.dispose();
+            data.trailParticleEffect.dispose();
+        }
         if (!explosionStarted) {
             enemyBulletTrailDisposes++;
         }
         enemyBulletDisposes++;
     }
-
+    
     private void explode() {
-        data.trailParticleEffect.dispose();
-        enemyBulletTrailDisposes++;
-        data.explosionParticleEffect.setPosition(x + originX, y + originY);
-        data.explosionParticleEffect.start();
-        explosionStarted = true;
-        entitySprite.setPosition(-100, -100);
-        isDead = true;
-        health = 0;
+        if (!data.isLaser) {
+            data.trailParticleEffect.dispose();
+            enemyBulletTrailDisposes++;
+            data.explosionParticleEffect.setPosition(x + originX, y + originY);
+            data.explosionParticleEffect.start();
+            explosionStarted = true;
+            entitySprite.setPosition(-100, -100);
+            isDead = true;
+            health = 0;
+        }
     }
-
+    
 }
 

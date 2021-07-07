@@ -35,7 +35,7 @@ public class GameLogic {
 
     public static int lastCheckpoint;
 
-    public static int Score;
+    public static int score;
     public static int enemiesKilled;
     public static int money, moneyEarned;
 
@@ -90,7 +90,7 @@ public class GameLogic {
             has1stBossSpawned = getBoolean("has1stBossSpawned");
             has2ndBossSpawned = getBoolean("has2ndBossSpawned");
 
-            Score = getInteger("Score");
+            score = getInteger("Score");
             moneyEarned = getInteger("moneyEarned");
 
             enemiesKilled = getInteger("enemiesKilled");
@@ -100,7 +100,7 @@ public class GameLogic {
             has1stBossSpawned = false;
             has2ndBossSpawned = false;
 
-            Score = 0;
+            score = 0;
             moneyEarned = 0;
 
             enemiesKilled = 0;
@@ -150,8 +150,8 @@ public class GameLogic {
         }
 
         if (!bossWave) {
-            if (Score > lastCheckpoint + 9000) {
-                lastCheckpoint = Score;
+            if (score > lastCheckpoint + 9000) {
+                lastCheckpoint = score;
                 checkpoint.Spawn(random.nextInt(300) + 150, random.nextInt(201) + 100, 1);
             }
         }

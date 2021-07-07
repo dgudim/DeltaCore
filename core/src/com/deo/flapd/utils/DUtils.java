@@ -415,6 +415,12 @@ public class DUtils {
         }
     }
     
+    public static float getDistanceBetweenTwoPoints(float x1, float y1, float x2, float y2){
+        final float x_delta = x2 - x1;
+        final float y_delta = y2 - y1;
+        return (float)Math.sqrt(x_delta * x_delta + y_delta * y_delta);
+    }
+    
     public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {
         JsonEntry price = treeJson.get(result, "price");
         int[] priceArray = new int[]{0, 0};

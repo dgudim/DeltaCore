@@ -70,7 +70,6 @@
     },
     "smallCannon1": {
       "type": "cannon",
-      "laser": false,
       "drawBulletsOnTop": false,
       "health": 333,
       "width": 30.8,
@@ -80,7 +79,9 @@
       "hasCollision": true,
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimAnimation": "rotate",
       "bullet": {
+        "isLaser": false,
         "texture": "bullet_blue",
         "shootSound": "sfx/gun2.ogg",
         "speed": 180,
@@ -183,7 +184,6 @@
     },
     "mediumCannon1": {
       "type": "cannon",
-      "laser": false,
       "drawBulletsOnTop": false,
       "health": 1000,
       "hasCollision": true,
@@ -193,7 +193,9 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimAnimation": "rotate",
       "bullet": {
+        "isLaser": false,
         "texture": "bullet_red",
         "shootSound": "sfx/gun1.ogg",
         "speed": 180,
@@ -241,7 +243,6 @@
     },
     "cannon2ndStage": {
       "type": "cannon",
-      "laser": false,
       "drawBulletsOnTop": false,
       "health": 1333,
       "hasCollision": true,
@@ -251,7 +252,9 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-20, 20],
+      "aimAnimation": "rotate",
       "bullet": {
+        "isLaser": false,
         "texture": "bullet_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 180,
@@ -301,7 +304,6 @@
     },
     "homingCannon": {
       "type": "cannon",
-      "laser": false,
       "drawBulletsOnTop": false,
       "health": 1,
       "hasCollision": false,
@@ -311,9 +313,11 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-30, 30],
+      "aimAnimation": "rotate",
       "linked": "homingCannonBase",
       "texture": "upperCannon_part2",
       "bullet": {
+        "isLaser": false,
         "texture": "bullet_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 180,

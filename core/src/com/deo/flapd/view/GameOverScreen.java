@@ -70,7 +70,7 @@ public class GameOverScreen implements Screen {
 
         enableShader = getBoolean("bloom");
 
-        Score = GameLogic.Score;
+        Score = GameLogic.score;
 
         highScore = getInteger("highScore");
 

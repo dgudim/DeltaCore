@@ -80,9 +80,16 @@ evil_cannon
   orig: 62, 62
   offset: 0, 0
   index: -1
+laser
+  rotate: false
+  xy: 391, 251
+  size: 40, 72
+  orig: 40, 72
+  offset: 0, 0
+  index: -1
 pew2
   rotate: false
-  xy: 391, 275
+  xy: 521, 405
   size: 48, 48
   orig: 48, 48
   offset: 0, 0

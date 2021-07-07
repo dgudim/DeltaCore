@@ -8,12 +8,10 @@ public class DesktopLauncher {
 
     public static void main(String[] arg) {
         final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 800;
-        config.height = 480;
+        config.width = 1200;
+        config.height = 720;
         config.title = "Deltacore";
-        config.allowSoftwareMode = true;
         config.fullscreen = false;
-        config.vSyncEnabled = true;
         new LwjglApplication(new Main(), config);
     }
 }
