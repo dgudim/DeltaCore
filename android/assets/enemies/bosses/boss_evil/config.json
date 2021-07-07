@@ -518,6 +518,44 @@
         "changeTexture": false,
         "move": false
       }
+    },
+    "deathAnimationPhase": {
+      "bodyDie": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "moveLinearY": {
+            "moveBy": -500,
+            "speed": 5,
+            "stopPreviousAnimations": false
+          },
+          "moveLinearX": {
+            "moveBy": -100,
+            "speed": 1,
+            "stopPreviousAnimations": false
+          },
+          "rotate": {
+            "moveBy": 360,
+            "speed": 1,
+            "stopPreviousAnimations": false
+          }
+        }
+      }
+    },
+    "RESET": {
+      "bodyReset": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": false,
+        "active": false,
+        "changeTexture": false,
+        "move": false
+      }
     }
   },
   "phaseTriggers": {
@@ -562,6 +600,26 @@
           "triggerModifier": "<=",
           "target": "cannon5",
           "value": 0
+        }
+      }
+    },
+    "deathAnimationPhase": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 0
+        }
+      }
+    },
+    "RESET": {
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 285
         }
       }
     }
