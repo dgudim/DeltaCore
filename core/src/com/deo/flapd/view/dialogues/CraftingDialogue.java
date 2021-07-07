@@ -379,6 +379,10 @@ public class CraftingDialogue extends Dialogue {
     private void addRequirementsTable() {
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
+    
+        final JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
+        final Array<String> Jitems = new Array<>();
+        Jitems.addAll(slotsJson.getStringArray(new String[]{}, "slots"));
         
         for (int i = 0; i < items.length; i++) {
             final Table requirement = new Table();
@@ -397,7 +401,7 @@ public class CraftingDialogue extends Dialogue {
             ImageButton item = new ImageButton(itemButtonStyle);
             
             TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", "buy", 0.07f);
-            if (!getString("savedSlots").contains(items[i])) {
+            if (Jitems.indexOf(items[i], false) == -1) {
                 buyShortcut.setTouchable(Touchable.disabled);
                 buyShortcut.setColor(Color.GRAY);
             }
@@ -405,9 +409,7 @@ public class CraftingDialogue extends Dialogue {
             buyShortcut.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
-                    Array<String> Jitems = new Array<>();
-                    Jitems.addAll(slotsJson.getStringArray(new String[]{}, "slots"));
+                    
                     Array<Integer> quantities = new Array<>();
                     
                     for (int i = 0; i < slotsJson.getIntArray(new int[]{}, "productQuantities").length; i++) {
@@ -545,7 +547,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private void addDependencies() {
-        final String[] requiredItems = treeJson.getStringArray(new String[]{},result, "requires");
+        final String[] requiredItems = treeJson.getStringArray(new String[]{}, result, "requires");
         Table ingredientsTable = new Table();
         
         for (int i = 0; i < requiredItems.length; i++) {

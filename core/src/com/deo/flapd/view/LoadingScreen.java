@@ -189,17 +189,7 @@ public class LoadingScreen implements Screen {
         
         millis += 200 * delta;
         
-        if (millis > 0) {
-            state = ".";
-        }
-        
-        if (millis > 120) {
-            state = "..";
-        }
-        
-        if (millis > 240) {
-            state = "...";
-        }
+        state = (millis > 0 ? "." : "") + (millis > 120 ? "." : "") + (millis > 240 ? "." : "");
         
         if (millis > 360) {
             millis = 0;

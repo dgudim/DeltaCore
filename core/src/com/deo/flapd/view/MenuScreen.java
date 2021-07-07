@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -43,6 +42,7 @@ import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
+import static com.badlogic.gdx.math.MathUtils.sin;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -59,11 +59,11 @@ import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
+import static java.lang.Math.abs;
 
 public class MenuScreen implements Screen {
     
-    private float number;
-    private boolean lamp_animation;
+    private float lamp_animation;
     
     private final SpriteBatch batch;
     
@@ -513,19 +513,8 @@ public class MenuScreen implements Screen {
         
         musicManager.update(delta);
         
-        if (lamp_animation) {
-            number = number + 0.01f;
-        } else {
-            number = number - 0.01f;
-        }
-        if (number >= 1) {
-            lamp_animation = false;
-        }
-        if (number <= 0) {
-            lamp_animation = true;
-        }
-        number = MathUtils.clamp(number, 0, 1);
-        Lamp.setColor(1, 1, 1, number);
+        lamp_animation += delta;
+        Lamp.setColor(1, 1, 1, abs(sin(lamp_animation)));
         Lamp.draw(batch, 1);
         
         batch.end();
