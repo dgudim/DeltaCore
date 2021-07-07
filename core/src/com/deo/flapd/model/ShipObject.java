@@ -31,8 +31,6 @@ public abstract class ShipObject {
     Sprite aimRadius;
     
     private final ParticleEffect damage_fire;
-    private final ParticleEffect damage_fire2;
-    private final ParticleEffect damage_fire3;
     public ParticleEffect explosionEffect;
     
     private float red;
@@ -228,19 +226,11 @@ public abstract class ShipObject {
         damage_fire = new ParticleEffect();
         damage_fire.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
         
-        damage_fire2 = new ParticleEffect();
-        damage_fire2.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
-        
-        damage_fire3 = new ParticleEffect();
-        damage_fire3.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
-        
         explosionEffect = new ParticleEffect();
         explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
         
         damage_fire.start();
-        damage_fire2.start();
-        damage_fire3.start();
-        
+       
         red = 1;
         green = 1;
         blue = 1;
@@ -264,20 +254,12 @@ public abstract class ShipObject {
             }
             
             damage_fire.setPosition(bounds.getX() + 10, bounds.getY() + 25);
-            damage_fire2.setPosition(bounds.getX() + 10, bounds.getY() + 25);
-            damage_fire3.setPosition(bounds.getX() + 10, bounds.getY() + 25);
             
-            if (Health < 70) {
+            int fireLevel = Health < 70 ? 1 : 0 + Health < 50 ? 1 : 0 + Health < 30 ? 1 : 0;
+            for(int i = 0; i<fireLevel; i++){
                 damage_fire.draw(batch, delta);
             }
             
-            if (Health < 50) {
-                damage_fire2.draw(batch, delta);
-            }
-            
-            if (Health < 30) {
-                damage_fire3.draw(batch, delta);
-            }
         } else {
             explosionEffect.draw(batch, delta);
         }
@@ -365,8 +347,6 @@ public abstract class ShipObject {
         explosion.dispose();
         explosionEffect.dispose();
         damage_fire.dispose();
-        damage_fire2.dispose();
-        damage_fire3.dispose();
         bullet.dispose();
     }
     
