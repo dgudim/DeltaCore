@@ -39,12 +39,12 @@ public class DUtils {
     public static int enemyBulletDisposes;
     public static int enemyBulletTrailDisposes;
     
-    private static final String androidRootDir = "GameData/!DeltaCore/";
+    private static final String androidRootDir = ".!DeltaCore/";
     private static final String pcRootDir = "!DeltaCore/";
     
-    private static final String currentRootDir = initRootDir();
+    private static final String currentRootDir = getRootDir();
     
-    private static String initRootDir() {
+    private static String getRootDir() {
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             return androidRootDir;
         } else {

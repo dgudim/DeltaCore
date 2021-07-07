@@ -255,7 +255,7 @@ public abstract class ShipObject {
             
             damage_fire.setPosition(bounds.getX() + 10, bounds.getY() + 25);
             
-            int fireLevel = Health < 70 ? 1 : 0 + Health < 50 ? 1 : 0 + Health < 30 ? 1 : 0;
+            int fireLevel = (Health < 70 ? 1 : 0) + (Health < 50 ? 1 : 0) + (Health < 30 ? 1 : 0);
             for(int i = 0; i<fireLevel; i++){
                 damage_fire.draw(batch, delta);
             }

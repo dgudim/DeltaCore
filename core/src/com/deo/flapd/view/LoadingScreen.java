@@ -140,7 +140,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("bg_layer1.png", Texture.class);
         assetManager.load("bg_layer2.png", Texture.class);
         assetManager.load("bg_layer3.png", Texture.class);
-        assetManager.load("HotShield.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
         assetManager.load("pew2.png", Texture.class);
@@ -188,7 +187,7 @@ public class LoadingScreen implements Screen {
         halfRotation += 70 * delta;
         
         millis += 200 * delta;
-    
+        
         String state = (millis > 0 ? "." : "") + (millis > 120 ? "." : "") + (millis > 240 ? "." : "");
         
         if (millis > 360) {
@@ -209,7 +208,7 @@ public class LoadingScreen implements Screen {
         shapeRenderer.triangle(calculateProgressOffsetX(180), calculateProgressOffsetY(180), calculateProgressOffsetX(240), calculateProgressOffsetY(240), calculateProgressOffsetX(300), calculateProgressOffsetY(300), fillColor, fillColor, fillColor);
         shapeRenderer.triangle(calculateProgressOffsetX(0), calculateProgressOffsetY(0), calculateProgressOffsetX(120), calculateProgressOffsetY(120), calculateProgressOffsetX(300), calculateProgressOffsetY(300), fillColor, fillColor, fillColor);
         shapeRenderer.triangle(calculateProgressOffsetX(180), calculateProgressOffsetY(180), calculateProgressOffsetX(120), calculateProgressOffsetY(120), calculateProgressOffsetX(300), calculateProgressOffsetY(300), fillColor, fillColor, fillColor);
-    
+        
         for (int i = 0; i < 53; i++) {
             shapeRenderer.setColor(0.1f, 0.5f, Math.abs(30 * MathUtils.sin((i - rotation / 20) * 6.8f * MathUtils.degreesToRadians)) / 30, 1);
             shapeRenderer.rect(5 + 15 * i, 60, 10, Math.abs(30 * MathUtils.sin((i + rotation / 10) * 6.8f * MathUtils.degreesToRadians)));

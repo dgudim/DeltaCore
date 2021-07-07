@@ -88,6 +88,7 @@ public class Enemy extends Entity {
         }
         
         health = data.health;
+        regeneration = data.regeneration;
         
         setSize(data.width, data.height);
         x = data.x;
@@ -131,8 +132,7 @@ public class Enemy extends Entity {
     }
     
     void update(float delta) {
-        
-        super.update();
+        updateEntity(delta);
         
         if (!isDead) {
             
@@ -354,7 +354,8 @@ class EnemyData {
     Array<Float> fireParticleEffectAngles;
     Array<Float> fireParticleEffectDistances;
     
-    int health;
+    float health;
+    float regeneration;
     
     int speed;
     
@@ -375,17 +376,11 @@ class EnemyData {
     int[] enemyCountSpawnConditions;
     
     int dropTimer;
-    
     int moneyTimer;
-    
     int[] dropRarity;
-    
     int[] dropCount;
-    
     int[] moneyCount;
-    
     int bonusChance;
-    
     int[] bonusType;
     
     boolean onBossWave;
@@ -484,7 +479,8 @@ class EnemyData {
         
         spawnsBullets = enemyBodyInfo.getBoolean(false, "spawnsBullets");
         
-        health = enemyBodyInfo.getInt(100, "health");
+        health = enemyBodyInfo.getFloat(100, "health");
+        regeneration = enemyBodyInfo.getFloat(0, "regeneration");
         
         speed = enemyBodyInfo.getInt(100, "speed");
         

@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+
 public class Entity {
     
     public float x = 0;
@@ -16,6 +18,8 @@ public class Entity {
     public float originY;
     public float rotation = 0;
     public float health;
+    public float maxHealth;
+    public float regeneration = 0;
     public float speed;
     public boolean isDead = false;
     public Color color = Color.WHITE;
@@ -31,7 +35,7 @@ public class Entity {
         entityHitBox = entitySprite.getBoundingRectangle();
     }
     
-    public void setPositionAndRotation(float x, float y, float rotation){
+    public void setPositionAndRotation(float x, float y, float rotation) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
@@ -44,12 +48,15 @@ public class Entity {
         originY = height / 2f;
     }
     
-    protected void update() {
+    protected void updateEntity(float delta) {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         entitySprite.setColor(color);
         if (health > 0) {
             entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
+            if (regeneration > 0 && maxHealth > 0) {
+                health = clamp(health + regeneration * delta, 0, maxHealth);
+            }
         } else {
             entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
         }

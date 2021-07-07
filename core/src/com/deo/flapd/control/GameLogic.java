@@ -145,7 +145,7 @@ public class GameLogic {
             playerBullet.updateLaser(is_firing || is_firing_secondary);
         }
 
-        if (getRandomBoolean(0.05f)) {
+        if (getRandomBoolean(0.05f) && delta > 0) {
             meteorites.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(10) + 5);
         }
 

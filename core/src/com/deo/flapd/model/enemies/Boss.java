@@ -22,6 +22,7 @@ import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.utils.JsonEntry;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -68,7 +69,10 @@ public class Boss {
                     parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
                     break;
                 case ("cannon"):
-                    parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                    parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body));
+                    break;
+                case ("shield"):
+                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body));
                     break;
                 case ("clone"):
                     String copyFrom = bossConfig.get("parts", i).getString(parts.get(0).name, "copyFrom");
@@ -78,7 +82,7 @@ public class Boss {
                             parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body));
                             break;
                         default:
                             log("\n Can't copy base part");
@@ -197,7 +201,6 @@ public class Boss {
 
 class BasePart extends Entity {
     
-    float originalHealth;
     float originalOffsetX = 0;
     float originalOffsetY = 0;
     String name;
@@ -240,14 +243,15 @@ class BasePart extends Entity {
             currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
         }
         type = currentConfig.getString("part", "type");
-        health = currentConfig.getInt(1, "health");
-        originalHealth = health;
+        health = currentConfig.getFloat(1, "health");
+        regeneration = currentConfig.getFloat(0, "regeneration");
+        maxHealth = health;
         width = currentConfig.getFloat(1, "width");
         height = currentConfig.getFloat(1, "height");
         layer = currentConfig.getInt(0, "layer");
         hasCollision = currentConfig.getBoolean(false, "hasCollision");
         
-        if (hasCollision) {
+        if (hasCollision && !type.equals("shield")) {
             itemRarity = currentConfig.getIntArray(new int[]{1, 2}, "drops", "items", "rarity");
             itemCount = currentConfig.getIntArray(new int[]{1, 2}, "drops", "items", "count");
             itemTimer = currentConfig.getFloat(1, "drops", "items", "timer");
@@ -257,11 +261,13 @@ class BasePart extends Entity {
             
             moneyCount = currentConfig.getIntArray(new int[]{3, 5}, "drops", "money", "count");
             moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
+            
+            explosionSound = Gdx.audio.newSound(Gdx.files.internal(currentConfig.getString("sfx/explosion.ogg", "explosionSound")));
+            explosionEffect = new ParticleEffect();
+            explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
+            log("\n creating explosion effect for part: " + newConfig.name);
         }
         
-        if (hasCollision) {
-            explosionSound = Gdx.audio.newSound(Gdx.files.internal(currentConfig.getString("sfx/explosion.ogg", "explosionSound")));
-        }
         soundVolume = getFloat("soundVolume");
         
         entitySprite = new Sprite(textures.findRegion(currentConfig.getString("noTexture", "texture")));
@@ -293,13 +299,6 @@ class BasePart extends Entity {
         healthBar.setAnimateDuration(0.25f);
         healthBar.setSize(25, 6);
         healthBar.setValue(health);
-        
-        if (hasCollision) {
-            explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
-            log("\n creating explosion effect for part: " + newConfig.name);
-        }
-        
     }
     
     void draw(SpriteBatch batch, float delta) {
@@ -315,7 +314,7 @@ class BasePart extends Entity {
     }
     
     void update(float delta) {
-        super.update();
+        updateEntity(delta);
         if (showHealthBar) {
             healthBar.setValue(health);
             healthBar.setPosition(width / 2 + x - 12.5f, y - 7);
@@ -349,7 +348,7 @@ class BasePart extends Entity {
     }
     
     void dispose() {
-        if (hasCollision) {
+        if (hasCollision && !type.equals("shield")) {
             explosionEffect.dispose();
             explosionSound.dispose();
         }
@@ -377,13 +376,12 @@ class BasePart extends Entity {
         }
         exploded = true;
         active = false;
-        
     }
     
     void reset() {
         offsetX = originalOffsetX;
         offsetY = originalOffsetY;
-        health = originalHealth;
+        health = maxHealth;
         showHealthBar = false;
         visible = false;
         active = false;
@@ -475,6 +473,32 @@ class Part extends BasePart {
     }
 }
 
+class Shield extends Part {
+    
+    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
+        super(newConfig, textures, parts, body);
+    }
+    
+    @Override
+    protected void update(float delta) {
+        updateEntity(delta);
+        entitySprite.setAlpha(health / maxHealth);
+        if (showHealthBar) {
+            healthBar.setValue(health);
+            healthBar.setPosition(width / 2 + x - 12.5f, y - 7);
+            healthBar.act(delta);
+        }
+        if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
+            for (int i = 0; i < player.bullet.bullets.size; i++) {
+                if (player.bullet.bullets.get(i).overlaps(entitySprite.getBoundingRectangle())) {
+                    health = clamp(health - player.bullet.damages.get(i), 1, maxHealth);
+                    player.bullet.removeBullet(i, true);
+                }
+            }
+        }
+    }
+}
+
 class Cannon extends Part {
     
     boolean canAim;
@@ -488,15 +512,13 @@ class Cannon extends Part {
     
     BulletData bulletData;
     Array<EnemyBullet> bullets;
-    AssetManager assetManager;
     TextureAtlas textures;
     
     Sound shootingSound;
     
-    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
+    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
         super(partConfig, textures, parts, body);
         
-        this.assetManager = assetManager;
         this.textures = textures;
         
         bullets = new Array<>();
@@ -531,11 +553,11 @@ class Cannon extends Part {
     }
     
     @Override
-    void update(float delta) {
+    protected void update(float delta) {
         super.update(delta);
         if (active) {
             if (canAim) {
-                float angleToThePlayer = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                float angleToThePlayer = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
                 switch (aimAnimationType) {
                     case ("textureChange"):
                         String texture;
@@ -598,7 +620,7 @@ class Cannon extends Part {
             float newRot = 0;
             
             if (canAim) {
-                newRot = MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + height/2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                newRot = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + height / 2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             
             newRot += getRandomInRange(-10, 10) * bulletData.spread;
@@ -783,10 +805,10 @@ class Movement {
                         target.offsetY = relativeTarget.offsetY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
                     }
                     if (progress < moveBy) {
-                        progress = MathUtils.clamp(progress + speed * delta * 10, 0, moveBy);
+                        progress = clamp(progress + speed * delta * 10, 0, moveBy);
                     }
                     if (currentRadius < targetRadius) {
-                        currentRadius = MathUtils.clamp(currentRadius + radiusExpansionRate * delta * 10, 0, targetRadius);
+                        currentRadius = clamp(currentRadius + radiusExpansionRate * delta * 10, 0, targetRadius);
                     }
                 }
             }

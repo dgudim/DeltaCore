@@ -53,8 +53,7 @@ public class Meteorite extends Entity {
     }
     
     public void update(float delta) {
-        
-        super.update();
+        updateEntity(delta);
         
         x += 53 * flyingDirection * delta;
         y -= 53 * delta;

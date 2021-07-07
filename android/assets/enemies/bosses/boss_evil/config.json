@@ -10,6 +10,7 @@
       "type": "basePart",
       "hasCollision": true,
       "health": 2000,
+      "regeneration": 0,
       "width": 128,
       "height": 128,
       "originX": "standard",
@@ -34,11 +35,30 @@
         }
       }
     },
+    "shield": {
+      "type": "shield",
+      "hasCollision": true,
+      "health": 1500,
+      "regeneration": 3,
+      "width": 128,
+      "height": 128,
+      "originX": "standard",
+      "originY": "standard",
+      "offset": {
+        "relativeTo": "body",
+        "X": 0,
+        "Y": 0
+      },
+      "linked": false,
+      "texture": "shield",
+      "layer": 3
+    },
     "cannon1": {
       "type": "cannon",
       "drawBulletsOnTop": true,
       "hasCollision": true,
       "health": 570,
+      "regeneration": 0.3,
       "width": 60,
       "height": 60,
       "originX": "standard",
@@ -160,7 +180,7 @@
         "texture": "laser",
         "shootSound": "sfx/laser.ogg",
         "fadeOutTimer": 1,
-        "spread": 1.5,
+        "spread": 0.7,
         "bulletsPerShot": 1,
         "damage": 0.05,
         "height": 20,
@@ -388,6 +408,15 @@
           }
         }
       },
+      "shieldInit": {
+        "target": "shield",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": false
+      },
       "middleCannonInit": {
         "target": "middleCannon",
         "enableCollisions": false,
@@ -495,6 +524,15 @@
         "showHealthBar": true,
         "visible": true,
         "active": true,
+        "changeTexture": false,
+        "move": false
+      },
+      "shieldInPlace": {
+        "target": "shield",
+        "enableCollisions": true,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
         "changeTexture": false,
         "move": false
       }

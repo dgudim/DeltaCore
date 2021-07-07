@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Bullet;
-import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.enemies.Entity;
 import com.deo.flapd.utils.DUtils;
@@ -18,6 +18,7 @@ import com.deo.flapd.utils.DUtils;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
 import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
+import static java.lang.Math.min;
 
 public class EnemyBullet extends Entity {
     
@@ -78,17 +79,41 @@ public class EnemyBullet extends Entity {
     }
     
     @Override
-    protected void update() {
+    protected void updateEntity(float delta) {
         if (data.isLaser) {
             entitySprite.setColor(color);
             float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
             entitySprite.setSize(data.width, scaledHeight);
             entitySprite.setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
-            entityHitBox = entitySprite.getBoundingRectangle();
         } else {
-            super.update();
+            super.updateEntity(delta);
         }
+    }
+    
+    @Override
+    public boolean overlaps(Rectangle hitBox) {
+        if (data.isLaser) {
+            return checkLaserIntersection(hitBox);
+        } else {
+            return super.overlaps(hitBox);
+        }
+    }
+    
+    private boolean checkLaserIntersection(Rectangle hitBox) {
+        float step = min(hitBox.width, hitBox.height) / 1.3f;
+        float X1 = hitBox.x;
+        float Y1 = hitBox.y;
+        float X2 = hitBox.x + hitBox.width;
+        float Y2 = hitBox.y + hitBox.height;
+        for (int i = 0; i < width; i += step) {
+            float pointX = x + MathUtils.cosDeg(rotation) * i;
+            float pointY = y + MathUtils.sinDeg(rotation) * i;
+            if (pointX > X1 && pointX < X2 && pointY > Y1 && pointY < Y2) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public void draw(SpriteBatch batch, float delta) {
@@ -117,16 +142,11 @@ public class EnemyBullet extends Entity {
             player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1));
             explode();
         }
-        for (int i = 0; i < Meteorites.meteorites.size; i++) {
-            if (overlaps(Meteorites.meteorites.get(i))) {
-                Meteorites.meteorites.get(i).health -= health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1);
-                explode();
-            }
-        }
+        
         if (!isDead) {
             if (data.isLaser) {
                 data.fadeOutTimer = clamp(data.fadeOutTimer - delta, 0f, data.maxFadeOutTimer);
-                update();
+                updateEntity(delta);
                 if (data.fadeOutTimer <= 0) {
                     entityHitBox.setPosition(-1000, -1000);
                     isDead = true;
@@ -143,7 +163,7 @@ public class EnemyBullet extends Entity {
                 }
                 x -= MathUtils.cosDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
                 y -= MathUtils.sinDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
-                update();
+                updateEntity(delta);
                 
                 data.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
                 
@@ -157,9 +177,9 @@ public class EnemyBullet extends Entity {
                 }
             }
         }
-        if(data.isLaser){
+        if (data.isLaser) {
             queuedForDeletion = isDead;
-        }else{
+        } else {
             queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished || data.isLaser) && isDead;
         }
     }

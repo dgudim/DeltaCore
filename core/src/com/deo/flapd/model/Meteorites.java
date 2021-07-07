@@ -7,7 +7,7 @@ import com.deo.flapd.model.enemies.Meteorite;
 
 public class Meteorites{
 
-    public static Array<Meteorite> meteorites;
+    private final Array<Meteorite> meteorites;
     private final AssetManager assetManager;
     private final boolean easterEgg;
 
