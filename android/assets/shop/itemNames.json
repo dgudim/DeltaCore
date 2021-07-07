@@ -97,5 +97,6 @@
   "root": "tree",
   "beast mode": "beastMode",
   "laser weapons": "category_laser",
+  "energy weapons": "category_energy",
   "basic ammo weapons": "category_basic"
 }

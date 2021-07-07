@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.clearPrefs;
@@ -38,20 +39,20 @@ public class LoadingScreen implements Screen {
     private final AssetManager assetManager;
     private final SpriteBatch batch;
     private final BitmapFont main;
+    private final MusicManager musicManager;
     private final Game game;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private final ProgressBar loadingBar;
     private final ShapeRenderer shapeRenderer;
     private float rotation, halfRotation, progress, millis;
-    private String state;
     private final PostProcessor blurProcessor;
     private final boolean enableShader;
     private final long loadingTime;
     public static Tree craftingTree;
     private String stateName;
     
-    public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor) {
+    public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager) {
         
         if (getFloat("ui") <= 0) {
             putFloat("ui", 1);
@@ -77,8 +78,9 @@ public class LoadingScreen implements Screen {
         loadingTime = TimeUtils.millis();
         
         this.batch = batch;
-        
         this.blurProcessor = blurProcessor;
+        
+        this.musicManager = musicManager;
         
         main = new BitmapFont(Gdx.files.internal("fonts/font2(old).fnt"), false);
         
@@ -188,8 +190,8 @@ public class LoadingScreen implements Screen {
         halfRotation += 70 * delta;
         
         millis += 200 * delta;
-        
-        state = (millis > 0 ? "." : "") + (millis > 120 ? "." : "") + (millis > 240 ? "." : "");
+    
+        String state = (millis > 0 ? "." : "") + (millis > 120 ? "." : "") + (millis > 240 ? "." : "");
         
         if (millis > 360) {
             millis = 0;
@@ -295,8 +297,8 @@ public class LoadingScreen implements Screen {
                 }
             }
             if (stateName.equals("Building tree")) {
-                craftingTree = new Tree(LoadingScreen.this.assetManager, 105, 65, 430, 410);
-                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor));
+                craftingTree = new Tree(assetManager, 105, 65, 430, 410);
+                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
             }
             if (assetManager.isFinished()) {
                 stateName = "Building tree";

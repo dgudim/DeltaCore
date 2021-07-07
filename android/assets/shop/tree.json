@@ -171,7 +171,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "energy weapons",
     "requires": ["laser gun", "warp core"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
@@ -189,7 +189,7 @@
     "resultCount": 1,
     "description": "",
     "isCraftable": true,
-    "category": "small machine gun",
+    "category": "energy weapons",
     "requires": ["machine gun", "energy core"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
@@ -270,6 +270,18 @@
     "price": "auto",
     "type": "baseCategory",
     "saveTo": "bonus3C"
+  },
+  "energy weapons":{
+    "items": [""],
+    "itemCounts": [0],
+    "resultCount": 0,
+    "description": "just a category for energy cannons",
+    "isCraftable": false,
+    "category": "small machine gun",
+    "requires": [""],
+    "price": "auto",
+    "type": "baseCategory",
+    "saveTo": "bonus4C"
   },
   "basic armour": {
     "items": [""],

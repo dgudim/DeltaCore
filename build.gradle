@@ -19,9 +19,9 @@ allprojects {
     version = '1.0'
     ext {
         appName = "Deltacore"
-        gdxVersion = '1.9.12'
+        gdxVersion = '1.10.0'
         roboVMVersion = '2.3.7'
-        box2DLightsVersion = '1.4'
+        box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
     }
@@ -29,8 +29,8 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         google()
+        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }

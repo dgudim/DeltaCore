@@ -38,9 +38,7 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue extends Dialogue {
-
-    private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-
+    
     public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, null, null);
     }
@@ -111,7 +109,8 @@ public class PurchaseDialogue extends Dialogue {
         productName.setBounds(86, 29, 39, 10);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
-
+    
+        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         final int[] price = getPrice(result, treeJson, 1.7f);
         final Table requirements = new Table();
         Table holder = new Table();

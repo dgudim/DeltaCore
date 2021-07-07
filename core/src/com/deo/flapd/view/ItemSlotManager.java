@@ -148,6 +148,7 @@ public class ItemSlotManager {
         int slotQuantity = getRandomInRange(itemsToAdd.size / 4, itemsToAdd.size / 2);
         for (int i = 0; i < slotQuantity; i++) {
             int index = getRandomInRange(0, itemsToAdd.size - 1);
+            // TODO: 7/7/2021 quantity always 1
             int quantity = MathUtils.clamp(getRandomInRange(5, 15) - getComplexity(itemsToAdd.get(index)), 1, 15);
             addedItems.add(itemsToAdd.get(index));
             quantities.add(quantity);
@@ -286,7 +287,7 @@ public class ItemSlotManager {
         int hours = (int) TimeUnit.MILLISECONDS.toHours(lastReset);
         int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(lastReset) - hours * 60;
         int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(lastReset) - hours * 3600 - minutes * 60;
-        Label resetTime = new Label("Reset in: " + hours + "h " + minutes + "m " + seconds + "s", yellowLabelStyle) {
+        Label resetTime = new Label("||Reset in: " + hours + "h " + minutes + "m " + seconds + "s||", yellowLabelStyle) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 super.draw(batch, parentAlpha);

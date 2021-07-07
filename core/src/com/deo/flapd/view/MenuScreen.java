@@ -123,7 +123,7 @@ public class MenuScreen implements Screen {
     
     private final String currentShipTexture;
     
-    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor) {
+    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, final MusicManager musicManager) {
         long genTime = TimeUtils.millis();
         log("\n time to generate menu");
         
@@ -233,7 +233,7 @@ public class MenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     loadPrefsFromFile();
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
+                    game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor, musicManager));
                 } catch (Exception e) {
                     exportMessage.setText("[#FF3300]" + e.getMessage());
                 }
@@ -244,7 +244,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clearPrefs();
-                game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor));
+                game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor, musicManager));
             }
         });
         
@@ -370,7 +370,7 @@ public class MenuScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame();
-                        game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, true));
+                        game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, true));
                     }
                 });
             }
@@ -380,7 +380,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (getFloat("Health") > 0) {
-                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, false));
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, false));
                 }
             }
         });
@@ -428,13 +428,14 @@ public class MenuScreen implements Screen {
             }
         });
         
-        musicManager = new MusicManager("music/ambient", 1, 5, 5);
-        musicManager.setVolume(getFloat("musicVolume") / 100f);
+        this.musicManager = musicManager;
+        this.musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
+        this.musicManager.setVolume(getFloat("musicVolume") / 100f);
         musicVolumeS.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 putFloat("musicVolume", musicVolumeS.getValue());
-                musicManager.setVolume(musicVolumeS.getValue() / 100f);
+                MenuScreen.this.musicManager.setVolume(musicVolumeS.getValue() / 100f);
             }
         });
         

@@ -9,6 +9,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
@@ -26,14 +27,17 @@ public class Main extends Game {
 
     private SpriteBatch batch;
     private PostProcessor blurProcessor;
-
+    
     private AssetManager assetManager;
 
+    private MusicManager musicManager;
+    
     @Override
     public void create() {
         batch = new SpriteBatch();
         assetManager = new AssetManager();
-
+        musicManager = new MusicManager();
+        
         clearLog();
         Date date = new Date();
         log("\n\n|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n");
@@ -56,7 +60,7 @@ public class Main extends Game {
             assetManager.update();
         }
 
-        this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor));
+        this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor, musicManager));
     }
 
     @Override
@@ -76,5 +80,6 @@ public class Main extends Game {
         batch.dispose();
         assetManager.dispose();
         blurProcessor.dispose();
+        musicManager.dispose();
     }
 }
