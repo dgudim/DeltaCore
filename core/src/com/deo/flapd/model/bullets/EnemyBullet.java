@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Bullet;
+import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.ShipObject;
-import com.deo.flapd.model.enemies.Entity;
 import com.deo.flapd.utils.DUtils;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
@@ -31,17 +31,19 @@ public class EnemyBullet extends Entity {
     private ShipObject player;
     private Bullet playerBullet;
     
-    public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship, float x, float y, float rotation) {
+    public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         entitySprite = new Sprite((Texture) assetManager.get(bulletData.texture));
-        initBullet(bulletData, ship, x, y, rotation);
+        initBullet(bulletData, ship, x, y, rotation, hasCollisionWithPlayerBullets);
     }
     
-    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship, float x, float y, float rotation) {
+    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         entitySprite = new Sprite(bossAtlas.findRegion(bulletData.texture));
-        initBullet(bulletData, ship, x, y, rotation);
+        initBullet(bulletData, ship, x, y, rotation, hasCollisionWithPlayerBullets);
     }
     
-    private void initBullet(BulletData bulletData, ShipObject ship, float x, float y, float rotation) {
+    private void initBullet(BulletData bulletData, ShipObject ship, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+        this.hasCollisionWithPlayerBullets = hasCollisionWithPlayerBullets;
+        
         data = bulletData;
         
         player = ship;
@@ -101,7 +103,7 @@ public class EnemyBullet extends Entity {
     }
     
     private boolean checkLaserIntersection(Rectangle hitBox) {
-        float step = min(hitBox.width, hitBox.height) / 1.3f;
+        float step = min(hitBox.width, hitBox.height) / 3f;
         float X1 = hitBox.x;
         float Y1 = hitBox.y;
         float X2 = hitBox.x + hitBox.width;
@@ -130,7 +132,7 @@ public class EnemyBullet extends Entity {
     }
     
     public void update(float delta) {
-        if (!data.isLaser) {
+        if (hasCollisionWithPlayerBullets) {
             for (int i = 0; i < playerBullet.bullets.size; i++) {
                 if (overlaps(playerBullet.bullets.get(i))) {
                     explode();
@@ -138,6 +140,7 @@ public class EnemyBullet extends Entity {
                 }
             }
         }
+        
         if (overlaps(player.bounds)) {
             player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1));
             explode();

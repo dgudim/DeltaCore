@@ -1,14 +1,15 @@
 {
   "textures": "bossShip.atlas",
-  "spawnAt": [850, 100],
+  "spawnAt": [850, 130],
   "spawnConditions": {
-    "score": 9000,
+    "score": -9000,
     "randomness": 1000
   },
   "parts": {
     "body": {
       "type": "basePart",
       "health": 2333,
+      "regeneration": 5,
       "hasCollision": true,
       "width": 556,
       "height": 172,
@@ -16,6 +17,7 @@
       "originY": "standard",
       "texture": "boss",
       "explosionEffect": "particles/explosion2.p",
+      "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 1,
       "drops": {
@@ -37,6 +39,7 @@
     "homingCannonBase": {
       "type": "part",
       "health": 666,
+      "regeneration": 0,
       "hasCollision": true,
       "width": 100,
       "height": 28,
@@ -50,6 +53,7 @@
       "linked": false,
       "texture": "upperCannon_part1",
       "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 2,
       "drops": {
@@ -72,6 +76,7 @@
       "type": "cannon",
       "drawBulletsOnTop": false,
       "health": 333,
+      "regeneration": 0,
       "width": 30.8,
       "height": 22.4,
       "originX": 19.6,
@@ -82,6 +87,7 @@
       "aimAnimation": "rotate",
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": false,
         "texture": "bullet_blue",
         "shootSound": "sfx/gun2.ogg",
         "speed": 180,
@@ -102,13 +108,14 @@
         "X": 224,
         "Y": 42.8
       },
-      "fireRate":{
-       "baseRate": 1,
-       "randomness": 0.3
+      "fireRate": {
+        "baseRate": 1,
+        "randomness": 0.3
       },
       "linked": false,
       "texture": "cannon1",
       "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 2,
       "drops": {
@@ -186,6 +193,7 @@
       "type": "cannon",
       "drawBulletsOnTop": false,
       "health": 1000,
+      "regeneration": 0,
       "hasCollision": true,
       "width": 38,
       "height": 32,
@@ -196,6 +204,7 @@
       "aimAnimation": "rotate",
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "bullet_red",
         "shootSound": "sfx/gun1.ogg",
         "speed": 180,
@@ -216,13 +225,14 @@
         "X": 66,
         "Y": 58
       },
-      "fireRate":{
+      "fireRate": {
         "baseRate": 0.8,
         "randomness": 0.2
       },
       "linked": false,
       "texture": "cannon2",
       "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 2,
       "drops": {
@@ -245,6 +255,7 @@
       "type": "cannon",
       "drawBulletsOnTop": false,
       "health": 1333,
+      "regeneration": 0,
       "hasCollision": true,
       "width": 80,
       "height": 21.333,
@@ -255,6 +266,7 @@
       "aimAnimation": "rotate",
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "bullet_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 180,
@@ -277,13 +289,14 @@
         "X": 40,
         "Y": 48
       },
-      "fireRate":{
+      "fireRate": {
         "baseRate": 0.7,
         "randomness": 0.1
       },
       "linked": false,
       "texture": "bigCannon",
       "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 0,
       "drops": {
@@ -305,7 +318,6 @@
     "homingCannon": {
       "type": "cannon",
       "drawBulletsOnTop": false,
-      "health": 1,
       "hasCollision": false,
       "width": 36,
       "height": 8,
@@ -318,9 +330,10 @@
       "texture": "upperCannon_part2",
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "bullet_red",
         "shootSound": "sfx/gun3.ogg",
-        "speed": 180,
+        "speed": 110,
         "spread": 0,
         "bulletsPerShot": 1,
         "damage": 7,
@@ -341,41 +354,34 @@
         "X": 66,
         "Y": 126
       },
-      "fireRate":{
+      "fireRate": {
         "baseRate": 0.3,
         "randomness": 0.1
-      },
-      "drops": false
+      }
     }
   },
-
   "phases": {
     "initialisingPhase": {
-        "bodyInit": {
-          "target": "body",
-          "enableCollisions": false,
-          "showHealthBar": false,
-          "visible": true,
-          "active": false,
-          "changeTexture": false,
-          "move": {
-            "moveLinearX": {
-              "moveBy": -350,
-              "speed": 5,
-              "stopPreviousAnimations": false
-            },
-            "moveLinearX": {
-              "moveBy": -320,
-              "speed": 5,
-              "stopPreviousAnimations": false
-            },
-            "moveSinY": {
-              "moveBy": 0.5,
-              "speed": 0.15,
-              "stopPreviousAnimations": false
-            }
+      "bodyInit": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "moveLinearX": {
+            "moveBy": -580,
+            "speed": 9,
+            "stopPreviousAnimations": false
+          },
+          "moveSinY": {
+            "moveBy": 35,
+            "speed": 5,
+            "stopPreviousAnimations": false
           }
-        },
+        }
+      },
       "smallCannon1Init": {
         "target": "smallCannon1",
         "enableCollisions": false,
@@ -468,6 +474,21 @@
       }
     },
     "phase1": {
+      "bodyMoveABit": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": false,
+        "changeTexture": false,
+        "move": {
+          "moveLinearX": {
+            "moveBy": -30,
+            "speed": 5,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
       "smallCannon1Activate": {
         "target": "smallCannon1",
         "enableCollisions": true,
@@ -644,7 +665,6 @@
       }
     }
   },
-
   "phaseTriggers": {
     "phase1": {
       "triggers": {
@@ -652,7 +672,7 @@
           "triggerType": "positionX",
           "triggerModifier": "<=",
           "target": "body",
-          "value": 220
+          "value": 270
         }
       }
     },
@@ -723,5 +743,4 @@
       }
     }
   }
-
 }

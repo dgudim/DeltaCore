@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Enemies;
-import com.deo.flapd.model.enemies.Entity;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.bulletDisposes;

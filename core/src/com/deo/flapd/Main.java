@@ -22,6 +22,8 @@ import static com.deo.flapd.utils.DUtils.clearLog;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.LogLevel.INFO;
 
 public class Main extends Game {
 
@@ -40,7 +42,7 @@ public class Main extends Game {
         
         clearLog();
         Date date = new Date();
-        log("\n\n|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n");
+        log("|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n", INFO);
 
         ShaderLoader.BasePath = "shaders/";
         blurProcessor = new PostProcessor( false, false, Gdx.app.getType() == Application.ApplicationType.Desktop );
@@ -69,8 +71,8 @@ public class Main extends Game {
             super.render();
         }catch (Exception e){
             logException(e);
-            log("global error occurred, dump of preferences\n"+getPrefs()+"\n");
-            log("force exiting");
+            log("global error occurred, dump of preferences\n"+getPrefs()+"\n", CRITICAL_ERROR);
+            log("force exiting", INFO);
             Gdx.app.exit();
         }
     }

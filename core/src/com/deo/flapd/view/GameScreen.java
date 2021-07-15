@@ -32,7 +32,6 @@ public class GameScreen implements Screen {
     
     private final Texture bg1;
     private final Texture bg2;
-    private final Texture bg3;
     private final Texture FillTexture;
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
@@ -83,12 +82,10 @@ public class GameScreen implements Screen {
         
         bg1 = assetManager.get("bg_layer1.png");
         bg2 = assetManager.get("bg_layer2.png");
-        bg3 = assetManager.get("bg_layer3.png");
         FillTexture = assetManager.get("menuFill.png");
         
-        bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        bg3.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         
         enemies = new Enemies(assetManager);
         enemies.loadEnemies();
@@ -142,12 +139,11 @@ public class GameScreen implements Screen {
         }
         batch.begin();
         
-        batch.draw(bg1, 0, 0, (int) (movement / 4), -240, 800, 720);
+        batch.draw(bg1, 0, 0, (int) (movement * 50), -240, 800, 720);
+        batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
         meteorites.update(delta);
         meteorites.drawEffects(batch);
         meteorites.drawBase(batch);
-        batch.draw(bg2, 0, 0, (int) (movement / 2), -240, 800, 720);
-        batch.draw(bg3, 0, 0, (int) movement, -240, 800, 720);
         
         bosses.draw(batch, delta);
         bosses.update(delta);
@@ -174,10 +170,7 @@ public class GameScreen implements Screen {
         
         gameUi.draw();
         
-        movement += (200 * delta);
-        if (movement > 2880) {
-            movement = 0;
-        }
+        movement += delta;
         
         if (drawScreenExtenders) {
             for (int i = 0; i < verticalFillingThreshold; i++) {

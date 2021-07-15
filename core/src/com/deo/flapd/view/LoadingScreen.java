@@ -33,6 +33,8 @@ import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.updateCamera;
+import static com.deo.flapd.utils.LogLevel.INFO;
+import static com.deo.flapd.utils.LogLevel.WARNING;
 
 public class LoadingScreen implements Screen {
     
@@ -66,15 +68,15 @@ public class LoadingScreen implements Screen {
                 if (tree.getString("part", i, "type").equals("basePart")) {
                     putBoolean("unlocked_" + getItemCodeNameByName(tree.get(i).name), true);
                     if (tree.getString("noSaveToLocation", i, "saveTo").equals("noSaveToLocation")) {
-                        log("\nNo save to location specified for " + tree.get(i) + " (item at index " + i + ")");
+                        log("No save to location specified for " + tree.get(i) + " (item at index " + i + ")", WARNING);
                     }
                     putString(tree.getString("noSaveToLocation", i, "saveTo"), tree.get(i).name);
                 }
             }
-            log("\n------------first launch------------" + "\n");
+            log("------------first launch------------" + "\n", INFO);
         }
         
-        log("\n started loading");
+        log("started loading", INFO);
         loadingTime = TimeUtils.millis();
         
         this.batch = batch;
@@ -139,7 +141,6 @@ public class LoadingScreen implements Screen {
         
         assetManager.load("bg_layer1.png", Texture.class);
         assetManager.load("bg_layer2.png", Texture.class);
-        assetManager.load("bg_layer3.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
         assetManager.load("pew2.png", Texture.class);
@@ -290,9 +291,9 @@ public class LoadingScreen implements Screen {
                 float elapsedTime = TimeUtils.timeSinceMillis(loadingTime) / 1000.0f;
                 float relativePercentage = (100 - elapsedTime * 100f / 3f);
                 if (relativePercentage >= 0) {
-                    log("\n loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)");
+                    log("loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)", INFO);
                 } else {
-                    log("\n loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)");
+                    log("loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)", INFO);
                 }
             }
             if (stateName.equals("Building tree")) {
@@ -304,12 +305,12 @@ public class LoadingScreen implements Screen {
             }
         } catch (ClassCastException | NumberFormatException e) {
             logException(e);
-            log("\n wiping data :) \n");
+            log("wiping data :) \n", INFO);
             clearPrefs();
-            log("...done...restarting");
+            log("...done...restarting", INFO);
         } catch (Exception e2) {
             logException(e2);
-            log("force exiting");
+            log("force exiting", INFO);
             Gdx.app.exit();
         }
     }

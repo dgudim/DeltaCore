@@ -34,6 +34,9 @@ import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.LogLevel.INFO;
+import static java.lang.StrictMath.abs;
 
 public class Tree {
     
@@ -56,7 +59,7 @@ public class Tree {
         Array<Array<String>> items = new Array<>();
         Array<String> categories = new Array<>();
         
-        log("\n parsing and building crafting tree");
+        log("parsing and building crafting tree", INFO);
         long loadingTime = TimeUtils.millis();
         
         for (int i = 0; i < treeJson.size; i++) {
@@ -96,11 +99,7 @@ public class Tree {
         
         float elapsedTime = TimeUtils.timeSinceMillis(loadingTime);
         float relativePercentage = (100 - elapsedTime / (branchCount - 1) * 100f / 0.29f);
-        if (relativePercentage >= 0) {
-            log("\n done, elapsed time " + elapsedTime + "ms(" + relativePercentage + "% better than average), total branch count " + (branchCount - 1));
-        } else {
-            log("\n done, elapsed time " + elapsedTime + "ms(" + -relativePercentage + "% worse than average), total branch count " + (branchCount - 1));
-        }
+        log("done, elapsed time " + elapsedTime + "ms(" + abs(relativePercentage) + "% " + ((relativePercentage >= 0) ? "better" : "worse") + " than average), total branch count " + (branchCount - 1), INFO);
         
         Skin buttonSkin = new Skin();
         buttonSkin.addRegions((TextureAtlas) assetManager.get("menuButtons/menuButtons.atlas"));
@@ -222,7 +221,12 @@ class Node {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    log("\n error drawing " + getItemCodeNameByName(item) + "\n" + items.findRegion(getItemCodeNameByName(item)) + "\n" + items.findRegion("over_" + getItemCodeNameByName(item)) + "\n" + items.findRegion("enabled_" + getItemCodeNameByName(item)) + "\n" + items.findRegion("disabled_" + getItemCodeNameByName(item)));
+                    log("error drawing " +
+                            getItemCodeNameByName(item) +
+                            "\n" + items.findRegion(getItemCodeNameByName(item)) +
+                            "\n" + items.findRegion("over_" + getItemCodeNameByName(item)) +
+                            "\n" + items.findRegion("enabled_" + getItemCodeNameByName(item)) +
+                            "\n" + items.findRegion("disabled_" + getItemCodeNameByName(item)), CRITICAL_ERROR);
                 }
             }
         };

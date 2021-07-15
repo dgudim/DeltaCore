@@ -11,6 +11,7 @@ public class BulletData {
     String texture;
     
     boolean isLaser;
+    public boolean hasCollisionWithPlayerBullets;
     
     public float width;
     public float height;
@@ -88,10 +89,11 @@ public class BulletData {
         
         bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
         bulletDistance = getDistanceBetweenTwoPoints(0, 0, offset[0], offset[1]);
-        
+    
+        hasCollisionWithPlayerBullets = bulletData.getBoolean(true, "hasCollisionWithPlayerBullets");
+       
         damage = bulletData.getFloat(1, "damage");
         spread = bulletData.getFloat(5, "spread");
-        
         shootSound = bulletData.getString("sfx/gun1.ogg", "shootSound");
         
         bulletsPerShot = bulletData.getInt(1, "bulletsPerShot");

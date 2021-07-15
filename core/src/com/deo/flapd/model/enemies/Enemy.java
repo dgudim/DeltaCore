@@ -17,6 +17,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
+import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
@@ -271,7 +272,7 @@ public class Enemy extends Entity {
                 newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
             
-            bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newAngle));
+            bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
         }
         shootingSound.play(volume);
         data.millis = 0;

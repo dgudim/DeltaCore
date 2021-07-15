@@ -2,7 +2,7 @@
   "textures": "bossEvil.atlas",
   "spawnAt": [850, 200],
   "spawnConditions": {
-    "score": -13000,
+    "score": 13000,
     "randomness": 1000
   },
   "parts": {
@@ -17,6 +17,7 @@
       "originY": "standard",
       "texture": "evil_base",
       "explosionEffect": "particles/explosion_evil.p",
+      "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 1,
       "drops": {
@@ -73,6 +74,7 @@
       "aimAnimation": "noAnimation",
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": false,
         "texture": "pew2",
         "shootSound": "sfx/gun3.ogg",
         "speed": 150,
@@ -95,6 +97,7 @@
       "linked": false,
       "texture": "evil_cannon",
       "explosionEffect": "particles/explosion_evil.p",
+      "explosionScale": 0.5,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 0,
       "drops": {
@@ -177,6 +180,7 @@
       },
       "bullet": {
         "isLaser": true,
+        "hasCollisionWithPlayerBullets": false,
         "texture": "laser",
         "shootSound": "sfx/laser.ogg",
         "fadeOutTimer": 1,

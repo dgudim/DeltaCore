@@ -59,6 +59,8 @@ import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
+import static com.deo.flapd.utils.LogLevel.ERROR;
+import static com.deo.flapd.utils.LogLevel.INFO;
 import static java.lang.Math.abs;
 
 public class MenuScreen implements Screen {
@@ -125,7 +127,7 @@ public class MenuScreen implements Screen {
     
     public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, final MusicManager musicManager) {
         long genTime = TimeUtils.millis();
-        log("\n time to generate menu");
+        log("time to generate menu", INFO);
         
         this.game = game;
         
@@ -443,7 +445,7 @@ public class MenuScreen implements Screen {
         
         enableShader = getBoolean("bloom");
         
-        log("\n done, elapsed time " + TimeUtils.timeSinceMillis(genTime) + "ms");
+        log("done, elapsed time " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
     }
     
     @Override
@@ -645,7 +647,7 @@ public class MenuScreen implements Screen {
                 }
             }
         } catch (Exception e) {
-            log("\ncorrupted fire color array");
+            log("corrupted fire color array", ERROR);
             logException(e);
             setFireToDefault(treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect") + "_color");
         }

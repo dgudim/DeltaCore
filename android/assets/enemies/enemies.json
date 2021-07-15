@@ -27,6 +27,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "pew2.png",
         "shootSound": "sfx/gun2.ogg",
         "speed": 300,
@@ -71,6 +72,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "whiskas.png",
         "shootSound": "sfx/mewcat.ogg",
         "speed": 300,
@@ -127,6 +129,7 @@
         },
         "speed": 70,
         "health": 200,
+        "regeneration": 0,
         "shootingDelay": 0.5,
         "canAim": false,
         "homing": false,
@@ -139,6 +142,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "pew2.png",
         "shootSound": "sfx/gun2.ogg",
         "speed": 180,
@@ -182,6 +186,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "whiskas.png",
         "shootSound": "sfx/mewcat.ogg",
         "speed": 180,
@@ -239,6 +244,7 @@
         },
         "speed": 100,
         "health": 300,
+        "regeneration": 0,
         "homing": true,
         "homingSpeed": 70,
         "hasAnimation": false,
@@ -320,6 +326,7 @@
         },
         "speed": 80,
         "health": 400,
+        "regeneration": 0,
         "shootingDelay": 0.5,
         "canAim": true,
         "aimAngleLimit": [-5, 5],
@@ -333,6 +340,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "pew.png",
         "shootSound": "sfx/gun1.ogg",
         "speed": 450,
@@ -377,6 +385,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "whiskas.png",
         "shootSound": "sfx/mewcat.ogg",
         "speed": 450,
@@ -433,6 +442,7 @@
         },
         "speed": 30,
         "health": 400,
+        "regeneration": 0,
         "canAim": false,
         "homing": false,
         "hasAnimation": true,
@@ -523,6 +533,7 @@
         },
         "speed": 45,
         "health": 70,
+        "regeneration": 0,
         "canAim": false,
         "homing": false,
         "hasAnimation": false,
@@ -535,6 +546,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "homingPew.png",
         "shootSound": "sfx/gun3.ogg",
         "speed": 120,
@@ -580,6 +592,7 @@
       },
       "bullet": {
         "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "whiskas.png",
         "shootSound": "sfx/gun3.ogg",
         "speed": 120,

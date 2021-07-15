@@ -41,6 +41,8 @@ import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
+import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.LogLevel.ERROR;
 import static com.deo.flapd.view.SlotManagerMode.INVENTORY;
 import static com.deo.flapd.view.SlotManagerMode.SHOP;
 
@@ -215,7 +217,12 @@ public class ItemSlotManager {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    log("\n error drawing " + getItemCodeNameByName(result) + "\n" + items.findRegion(getItemCodeNameByName(result)) + "\n" + items.findRegion("over_" + getItemCodeNameByName(result)) + "\n" + items.findRegion("enabled_" + getItemCodeNameByName(result)) + "\n" + items.findRegion("disabled_" + getItemCodeNameByName(result)));
+                    log("error drawing " +
+                            getItemCodeNameByName(result) +
+                            "\n" + items.findRegion(getItemCodeNameByName(result)) +
+                            "\n" + items.findRegion("over_" + getItemCodeNameByName(result)) +
+                            "\n" + items.findRegion("enabled_" + getItemCodeNameByName(result)) +
+                            "\n" + items.findRegion("disabled_" + getItemCodeNameByName(result)), CRITICAL_ERROR);
                 }
             }
         };
@@ -347,7 +354,7 @@ public class ItemSlotManager {
     private int getComplexity(String result) {
         int complexity = 0;
         if (treeJson.get(result) == null) {
-            log("\nlno item declared with name " + result);
+            log("no item declared with name " + result, ERROR);
             return 100;
         } else {
             

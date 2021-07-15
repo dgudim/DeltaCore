@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.LogLevel.INFO;
 
 public class MusicManager {
     
@@ -41,7 +42,7 @@ public class MusicManager {
             //ignore
         }
         music = Gdx.audio.newMusic(Gdx.files.internal(songName));
-        log("\n playing " + songName);
+        log("playing " + songName, INFO);
         music.setVolume(0);
         currentVolume = 0;
         music.setOnCompletionListener(new Music.OnCompletionListener() {

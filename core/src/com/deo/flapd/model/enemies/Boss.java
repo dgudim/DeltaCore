@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Drops;
+import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.ShipObject;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
@@ -29,6 +30,8 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.LogLevel.INFO;
+import static com.deo.flapd.utils.LogLevel.WARNING;
 
 public class Boss {
     
@@ -47,7 +50,7 @@ public class Boss {
     
     Boss(String bossName, AssetManager assetManager) {
         
-        log("\n\n loading boss config, name: " + bossName);
+        log("loading boss config, name: " + bossName, INFO);
         
         this.bossName = bossName;
         
@@ -85,12 +88,12 @@ public class Boss {
                             parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body));
                             break;
                         default:
-                            log("\n Can't copy base part");
+                            log("Can't copy base part", WARNING);
                             break;
                     }
                     break;
                 default:
-                    log("\n Unknown path type: " + type);
+                    log("Unknown path type: " + type, WARNING);
                     break;
             }
         }
@@ -145,8 +148,10 @@ public class Boss {
         }
         if (visible) {
             for (int i = 0; i < parts.size; i++) {
-                parts.get(i).x = body.x + parts.get(i).offsetX;
-                parts.get(i).y = body.y + parts.get(i).offsetY;
+                if (!parts.get(i).equals(body)) {
+                    parts.get(i).x = body.x + body.additionalOffsetX + parts.get(i).offsetX;
+                    parts.get(i).y = body.y + body.additionalOffsetY + parts.get(i).offsetY;
+                }
                 parts.get(i).update(delta);
             }
             for (int i = 0; i < animations.size; i++) {
@@ -203,12 +208,15 @@ class BasePart extends Entity {
     
     float originalOffsetX = 0;
     float originalOffsetY = 0;
+    float additionalOffsetX = 0;
+    float additionalOffsetY = 0;
+    float additionalRotation = 0;
     String name;
     String type;
     JsonEntry currentConfig;
     ProgressBar healthBar;
     ShipObject player;
-    boolean collisionEnabled = true;
+    boolean collisionEnabled;
     boolean hasCollision;
     boolean visible;
     boolean active;
@@ -232,7 +240,7 @@ class BasePart extends Entity {
     
     BasePart(JsonEntry newConfig, TextureAtlas textures) {
         
-        log("\n loading boss part, name: " + newConfig.name);
+        log("loading boss part, name: " + newConfig.name, INFO);
         
         exploded = false;
         name = newConfig.name;
@@ -243,13 +251,19 @@ class BasePart extends Entity {
             currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
         }
         type = currentConfig.getString("part", "type");
-        health = currentConfig.getFloat(1, "health");
-        regeneration = currentConfig.getFloat(0, "regeneration");
+    
+        hasCollision = currentConfig.getBoolean(false, "hasCollision");
+        if(hasCollision){
+            health = currentConfig.getFloat(1, "health");
+            regeneration = currentConfig.getFloat(0, "regeneration");
+        }else{
+            health = 1;
+            regeneration = 0;
+        }
         maxHealth = health;
         width = currentConfig.getFloat(1, "width");
         height = currentConfig.getFloat(1, "height");
         layer = currentConfig.getInt(0, "layer");
-        hasCollision = currentConfig.getBoolean(false, "hasCollision");
         
         if (hasCollision && !type.equals("shield")) {
             itemRarity = currentConfig.getIntArray(new int[]{1, 2}, "drops", "items", "rarity");
@@ -265,7 +279,8 @@ class BasePart extends Entity {
             explosionSound = Gdx.audio.newSound(Gdx.files.internal(currentConfig.getString("sfx/explosion.ogg", "explosionSound")));
             explosionEffect = new ParticleEffect();
             explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
-            log("\n creating explosion effect for part: " + newConfig.name);
+            explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
+            log("creating explosion effect for part: " + newConfig.name, INFO);
         }
         
         soundVolume = getFloat("soundVolume");
@@ -280,9 +295,7 @@ class BasePart extends Entity {
         if (!currentConfig.getString("standard", "originY").equals("standard")) {
             originY = currentConfig.getFloat(0, "originY");
         }
-        if (!hasCollision) {
-            collisionEnabled = false;
-        }
+        collisionEnabled = false;
         super.init();
         
         TextureRegionDrawable BarForeground1 = constructFilledImageWithColor(0, 6, Color.RED);
@@ -313,6 +326,21 @@ class BasePart extends Entity {
         }
     }
     
+    @Override
+    protected void updateEntity(float delta) {
+        entitySprite.setPosition(x + additionalOffsetX, y + additionalOffsetY);
+        entitySprite.setRotation(rotation + additionalRotation);
+        entitySprite.setColor(color);
+        if (health > 0) {
+            entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
+            if (regeneration > 0 && maxHealth > 0) {
+                health = clamp(health + regeneration * delta, 0, maxHealth);
+            }
+        } else {
+            entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
+        }
+    }
+    
     void update(float delta) {
         updateEntity(delta);
         if (showHealthBar) {
@@ -331,10 +359,8 @@ class BasePart extends Entity {
         if (health <= 0 && !exploded) {
             explode();
             for (int i = 0; i < links.size; i++) {
-                if (!links.get(i).exploded && links.get(i).explosionEffect != null) {
+                if (!links.get(i).exploded) {
                     links.get(i).explode();
-                } else {
-                    links.get(i).active = false;
                 }
             }
         }
@@ -359,7 +385,7 @@ class BasePart extends Entity {
     }
     
     void explode() {
-        if (hasCollision) {
+        if (hasCollision && !type.equals("shield")) {
             UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), 1, moneyTimer);
             
             if (getRandomInRange(0, 100) <= bonusChance) {
@@ -367,18 +393,23 @@ class BasePart extends Entity {
             }
             
             Drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
+            
+            explosionEffect.setPosition(x + additionalOffsetX + width / 2, y + additionalOffsetY + height / 2);
+            explosionEffect.start();
+            
+            if (soundVolume > 0) {
+                explosionSound.play(soundVolume);
+            }
+            
+            exploded = true;
         }
-        
-        explosionEffect.setPosition(x + width / 2, y + height / 2);
-        explosionEffect.start();
-        if (soundVolume > 0) {
-            explosionSound.play(soundVolume);
-        }
-        exploded = true;
         active = false;
     }
     
     void reset() {
+        additionalOffsetX = 0;
+        additionalOffsetY = 0;
+        additionalRotation = 0;
         offsetX = originalOffsetX;
         offsetY = originalOffsetY;
         health = maxHealth;
@@ -485,7 +516,7 @@ class Shield extends Part {
         entitySprite.setAlpha(health / maxHealth);
         if (showHealthBar) {
             healthBar.setValue(health);
-            healthBar.setPosition(width / 2 + x - 12.5f, y - 7);
+            healthBar.setPosition(width / 2 + x + additionalOffsetX - 12.5f, y + additionalOffsetY - 7);
             healthBar.act(delta);
         }
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
@@ -615,8 +646,8 @@ class Cannon extends Part {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(currentConfig.get("bullet"));
             
-            float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
-            float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
             float newRot = 0;
             
             if (canAim) {
@@ -624,8 +655,9 @@ class Cannon extends Part {
             }
             
             newRot += getRandomInRange(-10, 10) * bulletData.spread;
+            newRot += additionalRotation;
             
-            bullets.add(new EnemyBullet(textures, newBulletData, player, newX, newY, newRot));
+            bullets.add(new EnemyBullet(textures, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
         }
         
         if (soundVolume > 0) {
@@ -671,7 +703,7 @@ class Movement {
     
     Movement(JsonEntry movementConfig, String target, Array<BasePart> parts, Array<Movement> animations, BasePart body) {
         
-        log("\n loading boss movement, name: " + movementConfig.name);
+        log("loading boss movement, name: " + movementConfig.name, INFO);
         
         this.body = body;
         
@@ -703,14 +735,10 @@ class Movement {
             }
             radiusExpansionRate = movementConfig.getFloat(5, "radiusExpansionRate");
             targetRadius = movementConfig.getFloat(100, "targetRadius");
-            angleOffset = movementConfig.getFloat(60, "angleOffset");
+            angleOffset = movementConfig.getFloat(0, "angleOffset");
         }
         
-        if (currentAddPosition < moveBy) {
-            typeModifier = POSITIVE;
-        } else {
-            typeModifier = NEGATIVE;
-        }
+        typeModifier = 0 < moveBy ? POSITIVE : NEGATIVE;
     }
     
     void start() {
@@ -728,71 +756,45 @@ class Movement {
     
     void update(float delta) {
         if (active) {
-            if (currentAddPosition < moveBy && typeModifier == POSITIVE) {
-                currentAddPosition += speed * delta * 10;
-                if (currentAddPosition >= moveBy) {
-                    active = false;
+            
+            if (type.equals("moveLinearX") || type.equals("moveLinearY") || type.equals("rotate")) {
+                if (currentAddPosition < moveBy && typeModifier == POSITIVE) {
+                    currentAddPosition += speed * delta * 10;
+                    if (currentAddPosition >= moveBy) {
+                        active = false;
+                    }
                 }
-            }
-            if (currentAddPosition > moveBy && typeModifier == NEGATIVE) {
-                currentAddPosition -= speed * delta * 10;
-                if (currentAddPosition <= moveBy) {
-                    active = false;
+                
+                if (currentAddPosition > moveBy && typeModifier == NEGATIVE) {
+                    currentAddPosition -= speed * delta * 10;
+                    if (currentAddPosition <= moveBy) {
+                        active = false;
+                    }
                 }
             }
             
             switch (type) {
                 case ("moveLinearX"):
-                    if (typeModifier == POSITIVE) {
-                        target.x += speed * delta * 10;
-                        if (!target.getClass().equals(BasePart.class)) {
-                            target.offsetX += speed * delta * 10;
-                        }
-                    } else if (typeModifier == NEGATIVE) {
-                        target.x -= speed * delta * 10;
-                        if (!target.getClass().equals(BasePart.class)) {
-                            target.offsetX -= speed * delta * 10;
-                        }
-                    }
+                    target.additionalOffsetX += speed * delta * 10 * typeModifier;
                     break;
                 case ("moveLinearY"):
-                    if (typeModifier == POSITIVE) {
-                        target.y += speed * delta * 10;
-                        if (!target.getClass().equals(BasePart.class)) {
-                            target.offsetY += speed * delta * 10;
-                        }
-                    } else if (typeModifier == NEGATIVE) {
-                        target.y -= speed * delta * 10;
-                        if (!target.getClass().equals(BasePart.class)) {
-                            target.offsetY -= speed * delta * 10;
-                        }
-                    }
+                    target.additionalOffsetY += speed * delta * 10 * typeModifier;
                     break;
                 case ("rotate"):
-                    if (typeModifier == POSITIVE) {
-                        target.rotation += speed * delta * 10;
-                    } else if (typeModifier == NEGATIVE) {
-                        target.rotation -= speed * delta * 10;
-                    }
+                    target.additionalRotation += speed * delta * 10 * typeModifier;
                     break;
                 case ("moveSinX"): {
-                    target.x += MathUtils.sinDeg(progress) * moveBy * delta * 60;
-                    if (!target.getClass().equals(BasePart.class)) {
-                        target.offsetX -= MathUtils.sinDeg(progress) * moveBy * delta * 60;
-                    }
+                    target.additionalOffsetX += MathUtils.sinDeg(progress) * moveBy * typeModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("moveSinY"): {
-                    target.y += MathUtils.sinDeg(progress) * moveBy * delta * 60;
-                    if (!target.getClass().equals(BasePart.class)) {
-                        target.offsetY -= MathUtils.sinDeg(progress) * moveBy * delta * 60;
-                    }
+                    target.additionalOffsetY += MathUtils.sinDeg(progress) * moveBy * typeModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("rotateSin"): {
-                    target.rotation = MathUtils.sinDeg(progress) * moveBy * delta * 60;
+                    target.additionalRotation += MathUtils.sinDeg(progress) * moveBy * typeModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
@@ -809,6 +811,9 @@ class Movement {
                     }
                     if (currentRadius < targetRadius) {
                         currentRadius = clamp(currentRadius + radiusExpansionRate * delta * 10, 0, targetRadius);
+                    }
+                    if (progress >= moveBy && currentRadius >= targetRadius) {
+                        active = false;
                     }
                 }
             }
@@ -834,7 +839,7 @@ class Phase {
     
     Phase(JsonEntry phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
         
-        log("\n loading boss phase, name: " + phaseData.name);
+        log("loading boss phase, name: " + phaseData.name, INFO);
         
         this.boss = boss;
         
@@ -850,7 +855,7 @@ class Phase {
         try {
             triggers = phaseData.parent().parent().get("phaseTriggers", config.name, "triggers");
         } catch (Exception e) {
-            log("\n no triggers for " + phaseData.name);
+            log("no triggers for " + phaseData.name, INFO);
         }
         if (triggers != null) {
             for (int i = 0; i < triggers.size; i++) {
@@ -909,7 +914,7 @@ class Action {
     
     Action(JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, BasePart body) {
         
-        log("\n loading boss action, name: " + actionValue.name);
+        log("loading boss action, name: " + actionValue.name, INFO);
         
         config = actionValue;
         movements = new Array<>();
@@ -929,7 +934,7 @@ class Action {
         int movementCount;
         
         if (actionValue.get("move").isBoolean()) {
-            log("\n no movement for " + actionValue.name);
+            log("no movement for " + actionValue.name, INFO);
             hasMovement = false;
         } else {
             movementCount = actionValue.get("move").size;
@@ -971,7 +976,7 @@ class PhaseTrigger {
     
     PhaseTrigger(JsonEntry triggerData, Array<BasePart> parts) {
         
-        log("\n loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent().parent().name);
+        log("loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent().parent().name, INFO);
         
         isResetPhase = triggerData.parent().parent().name.equals("RESET");
         
@@ -986,7 +991,7 @@ class PhaseTrigger {
             }
         }
         if (triggerTarget == null) {
-            log("\n error setting up trigger for part " + targetPart);
+            log("error setting up trigger for part " + targetPart + ", no valid trigger target", WARNING);
         }
         triggerModifier = triggerData.getString("<=", "triggerModifier");
     }
@@ -999,13 +1004,13 @@ class PhaseTrigger {
         float partValue = 0;
         switch (triggerType) {
             case ("positionX"):
-                partValue = triggerTarget.x;
+                partValue = triggerTarget.x + triggerTarget.additionalOffsetX;
                 break;
             case ("positionY"):
-                partValue = triggerTarget.y;
+                partValue = triggerTarget.y + triggerTarget.additionalOffsetY;
                 break;
             case ("rotation"):
-                partValue = triggerTarget.rotation;
+                partValue = triggerTarget.rotation + triggerTarget.additionalRotation;
                 break;
             case ("health"):
                 partValue = triggerTarget.health;

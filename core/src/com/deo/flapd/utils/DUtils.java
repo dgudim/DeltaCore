@@ -24,6 +24,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
+import static com.deo.flapd.utils.LogLevel.DEBUG;
+import static com.deo.flapd.utils.LogLevel.ERROR;
+import static com.deo.flapd.utils.LogLevel.INFO;
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
 
@@ -45,18 +48,15 @@ public class DUtils {
     private static final String currentRootDir = getRootDir();
     
     private static String getRootDir() {
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            return androidRootDir;
-        } else {
-            return pcRootDir;
-        }
+        return (Gdx.app.getType() == Application.ApplicationType.Android) ? androidRootDir : pcRootDir;
     }
     
-    public static void log(String contents) {
+    public static void log(String contents, LogLevel logLevel) {
+        String logLevelStr = "[" + logLevel + "]: ";
         FileHandle file = Gdx.files.external(currentRootDir + "logFull.txt");
-        file.writeString(contents, true);
+        file.writeString(logLevelStr + contents + "\n", true);
         FileHandle file2 = Gdx.files.external(currentRootDir + "log.txt");
-        file2.writeString(contents, true);
+        file2.writeString(logLevelStr + contents + "\n", true);
     }
     
     public static void clearLog() {
@@ -67,7 +67,7 @@ public class DUtils {
             FileHandle file3 = Gdx.files.external(currentRootDir + "logFull(old).txt");
             file3.writeString(file2.readString(), false);
             file2.writeString("", false);
-            log("\n log too big, creating second file");
+            log("log too big, creating second file", INFO);
         }
     }
     
@@ -84,7 +84,7 @@ public class DUtils {
         prefs.putInteger(key, val);
         prefs.flush();
         if (logging) {
-            log("\n put integer " + val + " with key " + key);
+            log("put integer " + val + " with key " + key, DEBUG);
         }
     }
     
@@ -92,7 +92,7 @@ public class DUtils {
         prefs.putString(key, val);
         prefs.flush();
         if (logging) {
-            log("\n put string " + val + " with key " + key);
+            log("put string " + val + " with key " + key, DEBUG);
         }
     }
     
@@ -100,7 +100,7 @@ public class DUtils {
         prefs.putFloat(key, val);
         prefs.flush();
         if (logging) {
-            log("\n put float " + val + " with key " + key);
+            log("put float " + val + " with key " + key, DEBUG);
         }
     }
     
@@ -108,7 +108,7 @@ public class DUtils {
         prefs.putBoolean(key, val);
         prefs.flush();
         if (logging) {
-            log("\n put boolean " + val + " with key " + key);
+            log("put boolean " + val + " with key " + key, DEBUG);
         }
     }
     
@@ -116,7 +116,7 @@ public class DUtils {
         prefs.putLong(key, val);
         prefs.flush();
         if (logging) {
-            log("\n put long " + val + " with key " + key);
+            log("put long " + val + " with key " + key, DEBUG);
         }
     }
     
@@ -126,7 +126,7 @@ public class DUtils {
         prefs.putInteger(key, after);
         prefs.flush();
         if (logging) {
-            log("\n added integer " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("added integer " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -136,7 +136,7 @@ public class DUtils {
         prefs.putFloat(key, after);
         prefs.flush();
         if (logging) {
-            log("\n added float " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("added float " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -146,7 +146,7 @@ public class DUtils {
         prefs.putString(key, after);
         prefs.flush();
         if (logging) {
-            log("\n added string " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("added string " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -156,7 +156,7 @@ public class DUtils {
         prefs.putLong(key, after);
         prefs.flush();
         if (logging) {
-            log("\n added long " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("added long " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -175,7 +175,7 @@ public class DUtils {
             prefsString.append(";\n");
         }
         if (logging) {
-            log("\n dumped preferences \n");
+            log("dumped preferences \n", DEBUG);
         }
         return prefsString.toString();
     }
@@ -217,35 +217,35 @@ public class DUtils {
     
     public static int getInteger(String key) {
         if (logging) {
-            log("\n got integer " + prefs.getInteger(key) + " with key " + key);
+            log("got integer " + prefs.getInteger(key) + " with key " + key, DEBUG);
         }
         return (prefs.getInteger(key));
     }
     
     public static float getFloat(String key) {
         if (logging) {
-            log("\n got float " + prefs.getFloat(key) + " with key " + key);
+            log("got float " + prefs.getFloat(key) + " with key " + key, DEBUG);
         }
         return (prefs.getFloat(key));
     }
     
     public static boolean getBoolean(String key) {
         if (logging) {
-            log("\n got boolean " + prefs.getBoolean(key) + " with key " + key);
+            log("got boolean " + prefs.getBoolean(key) + " with key " + key, DEBUG);
         }
         return (prefs.getBoolean(key));
     }
     
     public static String getString(String key) {
         if (logging) {
-            log("\n got string " + prefs.getString(key) + " with key " + key);
+            log("got string " + prefs.getString(key) + " with key " + key, DEBUG);
         }
         return (prefs.getString(key));
     }
     
     public static long getLong(String key) {
         if (logging) {
-            log("\n got long " + prefs.getLong(key) + " with key " + key);
+            log("got long " + prefs.getLong(key) + " with key " + key, DEBUG);
         }
         return (prefs.getLong(key));
     }
@@ -254,16 +254,16 @@ public class DUtils {
         prefs.remove(key);
         prefs.flush();
         if (logging) {
-            log("\n removed key " + key);
+            log("removed key " + key, DEBUG);
         }
     }
     
     public static boolean containsKey(String key) {
         if (logging) {
             if (prefs.contains(key)) {
-                log("\n preferences contain key " + key);
+                log("preferences contain key " + key, DEBUG);
             } else {
-                log("\n preferences don't contain key " + key);
+                log("preferences don't contain key " + key, DEBUG);
             }
         }
         return (prefs.contains(key));
@@ -275,7 +275,7 @@ public class DUtils {
         prefs.putInteger(key, after);
         prefs.flush();
         if (logging) {
-            log("\n subtracted integer " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("subtracted integer " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -285,7 +285,7 @@ public class DUtils {
         prefs.putFloat(key, after);
         prefs.flush();
         if (logging) {
-            log("\n subtracted float " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("subtracted float " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -295,7 +295,7 @@ public class DUtils {
         prefs.putLong(key, after);
         prefs.flush();
         if (logging) {
-            log("\n subtracted long " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")");
+            log("subtracted long " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
     
@@ -303,7 +303,7 @@ public class DUtils {
         prefs.clear();
         prefs.flush();
         if (logging) {
-            log("\n cleared preferences");
+            log("cleared preferences", DEBUG);
         }
     }
     
@@ -325,7 +325,7 @@ public class DUtils {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         String fullStackTrace = sw.toString();
-        log("\n\n" + fullStackTrace + "\n");
+        log(fullStackTrace, ERROR);
     }
     
     public static void initNewGame() {
@@ -380,12 +380,12 @@ public class DUtils {
     }
     
     public static void logVariables() {
-        log("\n total bullet dispose calls: " + bulletDisposes);
-        log("\n total bullet trail particle effects dispose calls: " + bulletTrailDisposes);
-        log("\n total enemy bullet dispose calls: " + enemyBulletDisposes);
-        log("\n total enemy bullet trail particle effects dispose calls: " + enemyBulletTrailDisposes);
-        log("\n total enemy dispose calls: " + enemyDisposes);
-        log("\n total enemy fire particle effects dispose calls: " + enemyFireDisposes);
+        log("total bullet dispose calls: " + bulletDisposes, INFO);
+        log("total bullet trail particle effects dispose calls: " + bulletTrailDisposes, INFO);
+        log("total enemy bullet dispose calls: " + enemyBulletDisposes, INFO);
+        log("total enemy bullet trail particle effects dispose calls: " + enemyBulletTrailDisposes, INFO);
+        log("total enemy dispose calls: " + enemyDisposes, INFO);
+        log("total enemy fire particle effects dispose calls: " + enemyFireDisposes, INFO);
         bulletDisposes = 0;
         bulletTrailDisposes = 0;
         enemyDisposes = 0;
@@ -415,10 +415,10 @@ public class DUtils {
         }
     }
     
-    public static float getDistanceBetweenTwoPoints(float x1, float y1, float x2, float y2){
+    public static float getDistanceBetweenTwoPoints(float x1, float y1, float x2, float y2) {
         final float x_delta = x2 - x1;
         final float y_delta = y2 - y1;
-        return (float)Math.sqrt(x_delta * x_delta + y_delta * y_delta);
+        return (float) Math.sqrt(x_delta * x_delta + y_delta * y_delta);
     }
     
     public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {

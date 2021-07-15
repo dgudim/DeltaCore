@@ -1,4 +1,4 @@
-package com.deo.flapd.model.enemies;
+package com.deo.flapd.model;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,8 +12,8 @@ public class Entity {
     public float y = 0;
     public float width;
     public float height;
-    float offsetX = 0;
-    float offsetY = 0;
+    public float offsetX = 0;
+    public float offsetY = 0;
     public float originX;
     public float originY;
     public float rotation = 0;
@@ -22,6 +22,7 @@ public class Entity {
     public float regeneration = 0;
     public float speed;
     public boolean isDead = false;
+    public boolean hasCollisionWithPlayerBullets = true;
     public Color color = Color.WHITE;
     
     public Sprite entitySprite;

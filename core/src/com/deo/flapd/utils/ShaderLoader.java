@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.LogLevel.ERROR;
+import static com.deo.flapd.utils.LogLevel.INFO;
 
 public final class ShaderLoader {
 	public static String BasePath = "";
@@ -19,7 +21,7 @@ public final class ShaderLoader {
 			log += " w/ (" + defines.replace( "\n", ", " ) + ")";
 		}
 		log += "...";
-		log("[ShaderLoader]" + " Compiling " + log + "\n");
+		log("[ShaderLoader]" + " Compiling " + log, INFO);
 
 		String vpSrc = Gdx.files.internal( BasePath + vertexFileName + ".vertex" ).readString();
 		String fpSrc = Gdx.files.internal( BasePath + fragmentFileName + ".fragment" ).readString();
@@ -36,7 +38,7 @@ public final class ShaderLoader {
 		ShaderProgram shader = new ShaderProgram( defines + "\n" + vertex, defines + "\n" + fragment );
 
 		if( !shader.isCompiled() ) {
-			log( "Shader error:" + shader.getLog() );
+			log( "Shader error:" + shader.getLog(), ERROR);
 			Gdx.app.exit();
 		}
 
