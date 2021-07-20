@@ -2,7 +2,7 @@
   "textures": "bossShip.atlas",
   "spawnAt": [850, 130],
   "spawnConditions": {
-    "score": -9000,
+    "score": 9000,
     "randomness": 1000
   },
   "parts": {
@@ -15,6 +15,7 @@
       "height": 172,
       "originX": "standard",
       "originY": "standard",
+      "hasAnimation": false,
       "texture": "boss",
       "explosionEffect": "particles/explosion2.p",
       "explosionScale": 1,
@@ -51,6 +52,7 @@
         "Y": 116
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "upperCannon_part1",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
@@ -113,6 +115,7 @@
         "randomness": 0.3
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "cannon1",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
@@ -230,6 +233,7 @@
         "randomness": 0.2
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "cannon2",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
@@ -294,6 +298,7 @@
         "randomness": 0.1
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "bigCannon",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
@@ -327,6 +332,7 @@
       "aimAngleLimit": [-30, 30],
       "aimAnimation": "rotate",
       "linked": "homingCannonBase",
+      "hasAnimation": false,
       "texture": "upperCannon_part2",
       "bullet": {
         "isLaser": false,

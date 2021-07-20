@@ -57,6 +57,7 @@ public class EnemyBullet extends Entity {
             bulletData.trailParticleEffect = new ParticleEffect();
             bulletData.trailParticleEffect.load(Gdx.files.internal(bulletData.trail), Gdx.files.internal("particles"));
             bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
+            bulletData.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
             bulletData.trailParticleEffect.start();
         }
         

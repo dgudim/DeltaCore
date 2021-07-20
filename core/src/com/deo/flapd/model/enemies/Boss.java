@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -50,7 +52,7 @@ public class Boss {
     
     Boss(String bossName, AssetManager assetManager) {
         
-        log("loading boss config, name: " + bossName, INFO);
+        log("---------loading boss config, name: " + bossName, INFO);
         
         this.bossName = bossName;
         
@@ -65,27 +67,27 @@ public class Boss {
             String type = bossConfig.get("parts", i).getString("part", "type");
             switch (type) {
                 case ("basePart"):
-                    body = new BasePart(bossConfig.get("parts", i), bossAtlas);
+                    body = new BasePart(bossConfig.get("parts", i), bossAtlas, assetManager);
                     parts.add(body);
                     break;
                 case ("part"):
-                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
+                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("cannon"):
-                    parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body));
+                    parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("shield"):
-                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body));
+                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("clone"):
                     String copyFrom = bossConfig.get("parts", i).getString(parts.get(0).name, "copyFrom");
                     String cloneType = bossConfig.getString("part", "parts", copyFrom, "type");
                     switch (cloneType) {
                         case ("part"):
-                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body));
+                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body));
+                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                             break;
                         default:
                             log("Can't copy base part", WARNING);
@@ -206,6 +208,11 @@ public class Boss {
 
 class BasePart extends Entity {
     
+    Animation<TextureRegion> enemyAnimation;
+    private float animationPosition;
+    
+    AssetManager assetManager;
+    
     float originalOffsetX = 0;
     float originalOffsetY = 0;
     float additionalOffsetX = 0;
@@ -216,6 +223,7 @@ class BasePart extends Entity {
     JsonEntry currentConfig;
     ProgressBar healthBar;
     ShipObject player;
+    boolean hasAnimation;
     boolean collisionEnabled;
     boolean hasCollision;
     boolean visible;
@@ -238,9 +246,11 @@ class BasePart extends Entity {
     Sound explosionSound;
     float soundVolume;
     
-    BasePart(JsonEntry newConfig, TextureAtlas textures) {
+    BasePart(JsonEntry newConfig, TextureAtlas textures, AssetManager assetManager) {
         
         log("loading boss part, name: " + newConfig.name, INFO);
+        
+        this.assetManager = assetManager;
         
         exploded = false;
         name = newConfig.name;
@@ -251,12 +261,12 @@ class BasePart extends Entity {
             currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
         }
         type = currentConfig.getString("part", "type");
-    
+        
         hasCollision = currentConfig.getBoolean(false, "hasCollision");
-        if(hasCollision){
+        if (hasCollision) {
             health = currentConfig.getFloat(1, "health");
             regeneration = currentConfig.getFloat(0, "regeneration");
-        }else{
+        } else {
             health = 1;
             regeneration = 0;
         }
@@ -284,8 +294,18 @@ class BasePart extends Entity {
         }
         
         soundVolume = getFloat("soundVolume");
+        String texture = currentConfig.getString("noTexture", "texture");
+        hasAnimation = currentConfig.getBoolean(false, "hasAnimation");
         
-        entitySprite = new Sprite(textures.findRegion(currentConfig.getString("noTexture", "texture")));
+        if (hasAnimation) {
+            entitySprite = new Sprite();
+            enemyAnimation = new Animation<TextureRegion>(
+                    currentConfig.getFloat(1, "frameDuration"),
+                    textures.findRegions(name + "_" + texture),
+                    Animation.PlayMode.LOOP);
+        } else {
+            entitySprite = new Sprite(textures.findRegion(texture));
+        }
         
         originX = width / 2f;
         originY = height / 2f;
@@ -311,11 +331,14 @@ class BasePart extends Entity {
         healthBar = new ProgressBar(0, health, 0.01f, false, healthBarStyle);
         healthBar.setAnimateDuration(0.25f);
         healthBar.setSize(25, 6);
-        healthBar.setValue(health);
+        healthBar.setPosition(width / 2 + x + additionalOffsetX - 12.5f, y + additionalOffsetY - 7);
     }
     
     void draw(SpriteBatch batch, float delta) {
         if (visible) {
+            if (hasAnimation) {
+                entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            }
             entitySprite.draw(batch);
             if (showHealthBar) {
                 healthBar.draw(batch, 1);
@@ -343,9 +366,12 @@ class BasePart extends Entity {
     
     void update(float delta) {
         updateEntity(delta);
+        
+        animationPosition += delta;
+        
         if (showHealthBar) {
             healthBar.setValue(health);
-            healthBar.setPosition(width / 2 + x - 12.5f, y - 7);
+            healthBar.setPosition(width / 2 + x + additionalOffsetX - 12.5f, y + additionalOffsetY - 7);
             healthBar.act(delta);
         }
         if (hasCollision && collisionEnabled && health > 0) {
@@ -429,8 +455,8 @@ class Part extends BasePart {
     private BasePart link;
     private final BasePart body;
     
-    Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
-        super(newConfig, textures);
+    Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
+        super(newConfig, textures, assetManager);
         this.parts = parts;
         link = body;
         this.body = body;
@@ -506,8 +532,8 @@ class Part extends BasePart {
 
 class Shield extends Part {
     
-    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
-        super(newConfig, textures, parts, body);
+    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
+        super(newConfig, textures, parts, body, assetManager);
     }
     
     @Override
@@ -547,8 +573,8 @@ class Cannon extends Part {
     
     Sound shootingSound;
     
-    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body) {
-        super(partConfig, textures, parts, body);
+    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
+        super(partConfig, textures, parts, body, assetManager);
         
         this.textures = textures;
         
@@ -576,6 +602,7 @@ class Cannon extends Part {
         
         float fireRateRandomness = currentConfig.getFloat(0, "fireRate", "randomness");
         fireRate = currentConfig.getFloat(1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
+        timer = -currentConfig.getFloat(0, "fireRate", "initialDelay");
         
         bulletData = new BulletData(currentConfig.get("bullet"));
         
@@ -591,6 +618,7 @@ class Cannon extends Part {
                 float angleToThePlayer = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
                 switch (aimAnimationType) {
                     case ("textureChange"):
+                        
                         String texture;
                         if (angleToThePlayer >= -22.5 && angleToThePlayer <= 22.5) {
                             texture = aimTextures[1];
@@ -609,7 +637,16 @@ class Cannon extends Part {
                         } else {
                             texture = aimTextures[5];
                         }
-                        entitySprite.setRegion(textures.findRegion(texture));
+                        if (hasAnimation) {
+                            String atlas = texture.replace(" ", "").split(",")[0];
+                            float frameDuration = Float.parseFloat(texture.replace(" ", "").split(",")[1]);
+                            enemyAnimation = new Animation<TextureRegion>(
+                                    frameDuration,
+                                    textures.findRegions(name + "_" + atlas),
+                                    Animation.PlayMode.LOOP);
+                        } else {
+                            entitySprite.setRegion(textures.findRegion(texture));
+                        }
                         break;
                     case ("rotate"):
                         rotation = angleToThePlayer;
@@ -907,6 +944,7 @@ class Action {
     boolean visible;
     boolean enabled;
     String changeTexture;
+    float frameDuration;
     BasePart target;
     Array<Movement> movements;
     boolean hasMovement;
@@ -930,7 +968,9 @@ class Action {
         visible = actionValue.getBoolean(true, "visible");
         enabled = actionValue.getBoolean(false, "active");
         changeTexture = actionValue.getString("false", "changeTexture");
-        
+        if (this.target.hasAnimation && !changeTexture.equals("false")) {
+            frameDuration = actionValue.getFloat(1, "frameDuration");
+        }
         int movementCount;
         
         if (actionValue.get("move").isBoolean()) {
@@ -957,7 +997,14 @@ class Action {
             target.collisionEnabled = enableCollisions;
         }
         if (!changeTexture.equals("false")) {
-            target.entitySprite.setRegion(target.textures.findRegion(changeTexture));
+            if (target.hasAnimation) {
+                target.enemyAnimation = new Animation<TextureRegion>(
+                        frameDuration,
+                        target.textures.findRegions(target.name + "_" + changeTexture),
+                        Animation.PlayMode.LOOP);
+            } else {
+                target.entitySprite.setRegion(target.textures.findRegion(changeTexture));
+            }
         }
         target.visible = visible;
         target.active = enabled;

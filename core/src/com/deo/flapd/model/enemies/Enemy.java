@@ -463,7 +463,7 @@ class EnemyData {
             fireParticleEffectDistances.set(i, getDistanceBetweenTwoPoints(0, 0, fireOffsetsX[i], fireOffsetsY[i]));
         }
         
-        hasAnimation = enemyBodyInfo.getBoolean(false, "hasAnimation");
+        hasAnimation = texture.endsWith(".atlas");
         if (hasAnimation) {
             frameDuration = enemyBodyInfo.getFloat(1, "frameDuration");
         }

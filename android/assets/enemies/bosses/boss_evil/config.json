@@ -15,6 +15,7 @@
       "height": 128,
       "originX": "standard",
       "originY": "standard",
+      "hasAnimation": false,
       "texture": "evil_base",
       "explosionEffect": "particles/explosion_evil.p",
       "explosionScale": 1,
@@ -51,6 +52,7 @@
         "Y": 0
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "shield",
       "layer": 3
     },
@@ -85,7 +87,7 @@
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.7,
         "explosionEffect": "particles/explosion_evil_small.p",
-        "explosionScale": 0.3,
+        "explosionScale": 1,
         "height": 10,
         "width": 10,
         "offset": [0, 0]
@@ -95,6 +97,7 @@
         "randomness": 0.1
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "evil_cannon",
       "explosionEffect": "particles/explosion_evil.p",
       "explosionScale": 0.5,
@@ -196,6 +199,7 @@
         "randomness": 0.07
       },
       "linked": false,
+      "hasAnimation": false,
       "texture": "evil_center",
       "layer": 1
     }

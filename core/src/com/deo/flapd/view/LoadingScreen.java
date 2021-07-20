@@ -126,6 +126,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("enemies/bosses/boss_evil/bossEvil.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_ship/bossShip.atlas", TextureAtlas.class);
         assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
+        assetManager.load("enemies/bosses/boss_star_destroyer/bossStarDestroyer.atlas", TextureAtlas.class);
         assetManager.load("items/items.atlas", TextureAtlas.class);
         assetManager.load("shop/workshop.atlas", TextureAtlas.class);
         assetManager.load("shop/slots.atlas", TextureAtlas.class);

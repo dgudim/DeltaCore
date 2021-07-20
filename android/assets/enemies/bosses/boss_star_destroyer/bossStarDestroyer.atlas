@@ -1,0 +1,201 @@
+
+bossStarDestroyer.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+body_phase1
+  rotate: false
+  xy: 1, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 0
+body_phase1
+  rotate: false
+  xy: 1, 356
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 1
+body_phase1
+  rotate: false
+  xy: 130, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 2
+body_phase1
+  rotate: false
+  xy: 1, 285
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 3
+body_phase2
+  rotate: false
+  xy: 130, 356
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 0
+body_phase2
+  rotate: false
+  xy: 259, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 1
+body_phase2
+  rotate: false
+  xy: 1, 214
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 10
+body_phase2
+  rotate: false
+  xy: 130, 285
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 11
+body_phase2
+  rotate: false
+  xy: 259, 356
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 2
+body_phase2
+  rotate: false
+  xy: 388, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 3
+body_phase2
+  rotate: false
+  xy: 1, 143
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 4
+body_phase2
+  rotate: false
+  xy: 130, 214
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 5
+body_phase2
+  rotate: false
+  xy: 259, 285
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 6
+body_phase2
+  rotate: false
+  xy: 388, 356
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 7
+body_phase2
+  rotate: false
+  xy: 517, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 8
+body_phase2
+  rotate: false
+  xy: 1, 72
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 9
+body_phase3
+  rotate: false
+  xy: 130, 143
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 0
+body_phase3
+  rotate: false
+  xy: 259, 214
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 1
+body_phase3
+  rotate: false
+  xy: 388, 285
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 10
+body_phase3
+  rotate: false
+  xy: 517, 356
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 11
+body_phase3
+  rotate: false
+  xy: 646, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 2
+body_phase3
+  rotate: false
+  xy: 1, 1
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 3
+body_phase3
+  rotate: false
+  xy: 130, 72
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 4
+body_phase3
+  rotate: false
+  xy: 259, 143
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 5
+body_phase3
+  rotate: false
+  xy: 388, 214
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 6
+body_phase3
+  rotate: false
+  xy: 517, 285
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 7
+body_phase3
+  rotate: false
+  xy: 646, 356
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 8
+body_phase3
+  rotate: false
+  xy: 775, 427
+  size: 127, 69
+  orig: 127, 69
+  offset: 0, 0
+  index: 9
