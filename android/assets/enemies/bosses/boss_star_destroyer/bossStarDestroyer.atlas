@@ -199,3 +199,10 @@ body_phase3
   orig: 127, 69
   offset: 0, 0
   index: 9
+noTexture
+  rotate: false
+  xy: 1000, 500
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: 0

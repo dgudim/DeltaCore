@@ -37,9 +37,70 @@
           "chance": 100
         }
       }
+    },
+    "cannonTop": {
+      "type": "cannon",
+      "drawBulletsOnTop": false,
+      "hasCollision": false,
+      "width": 2,
+      "height": 2,
+      "originX": 1,
+      "originY": 1,
+      "canAim": true,
+      "aimAngleLimit": [-15, 15],
+      "aimAnimation": "rotate",
+      "linked": "homingCannonBase",
+      "hasAnimation": false,
+      "texture": "noTexture",
+      "bullet": {
+        "isLaser": false,
+        "hasCollisionWithPlayerBullets": true,
+        "texture": "destroyer_rocket",
+        "shootSound": "sfx/gun2.ogg",
+        "speed": 110,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 15,
+        "homing": true,
+        "explosionTimer": 3,
+        "homingSpeed": 90,
+        "trail": "particles/bullet_trail_left_yellow.p",
+        "trailScale": 0.3,
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 0.5,
+        "height": 24,
+        "width": 16,
+        "offset": [0, 0]
+      },
+      "layer": 0,
+      "offset": {
+        "relativeTo": "body",
+        "X": 0,
+        "Y": 0
+      },
+      "fireRate": {
+        "initialDelay": 0,
+        "baseRate": 1,
+        "randomness": 0
+      }
+    },
+    "cannonBottom": {
+      "type": "clone",
+      "copyFrom": "cannonTop",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 0,
+          "Y": 0
+        },
+        "fireRate": {
+          "initialDelay": 1,
+          "baseRate": 1,
+          "randomness": 0
+        }
+      }
     }
   },
-
   "phases": {
     "initialisingPhase": {
       "bodyInit": {
@@ -138,7 +199,6 @@
       }
     }
   },
-
   "phaseTriggers": {
     "inPlacePhase": {
       "triggers": {

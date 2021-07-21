@@ -93,6 +93,7 @@
         "offset": [0, 0]
       },
       "fireRate": {
+        "initialDelay": 0,
         "baseRate": 0.7,
         "randomness": 0.1
       },
@@ -195,6 +196,7 @@
         "offset": [0, 0]
       },
       "fireRate": {
+        "initialDelay": 0,
         "baseRate": 0.3,
         "randomness": 0.07
       },

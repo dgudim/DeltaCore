@@ -259,6 +259,7 @@ class BasePart extends Entity {
         links = new Array<>();
         if (newConfig.getString("part", "type").equals("clone")) {
             currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
+            currentConfig.name = name;
         }
         type = currentConfig.getString("part", "type");
         
@@ -477,6 +478,13 @@ class Part extends BasePart {
                 if (newConfig.get("override", i).name.equals("originY")) {
                     originY = newConfig.getFloat(0, "override", i);
                     entitySprite.setOrigin(originX, originY);
+                }
+                if (newConfig.get("override", i).name.equals("fireRate")) {
+                    if (this instanceof Cannon) {
+                        currentConfig.get("fireRate", "randomness").jsonValue.set(newConfig.get("override", i).getFloat(0, "randomness"), "randomness");
+                        currentConfig.get("fireRate", "baseRate").jsonValue.set(newConfig.get("override", i).getFloat(1, "baseRate"), "baseRate");
+                        currentConfig.get("fireRate", "initialDelay").jsonValue.set(newConfig.get("override", i).getFloat(0, "initialDelay"), "initialDelay");
+                    }
                 }
             }
             

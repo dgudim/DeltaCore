@@ -7,7 +7,7 @@ import static com.deo.flapd.utils.LogLevel.WARNING;
 
 public class JsonEntry {
     
-    private final JsonValue jsonValue;
+    public final JsonValue jsonValue;
     public String name;
     public int size;
     
@@ -245,4 +245,8 @@ public class JsonEntry {
         return jsonValue.isBoolean();
     }
     
+    @Override
+    public String toString() {
+        return jsonValue.toString();
+    }
 }

@@ -111,6 +111,7 @@
         "Y": 42.8
       },
       "fireRate": {
+        "initialDelay": 0,
         "baseRate": 1,
         "randomness": 0.3
       },
@@ -229,6 +230,7 @@
         "Y": 58
       },
       "fireRate": {
+        "initialDelay": 0,
         "baseRate": 0.8,
         "randomness": 0.2
       },
@@ -294,6 +296,7 @@
         "Y": 48
       },
       "fireRate": {
+        "initialDelay": 0,
         "baseRate": 0.7,
         "randomness": 0.1
       },
@@ -361,6 +364,7 @@
         "Y": 126
       },
       "fireRate": {
+        "initialDelay": 0,
         "baseRate": 0.3,
         "randomness": 0.1
       }
