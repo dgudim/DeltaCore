@@ -86,6 +86,8 @@
         "homing": false,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.7,
+        "trailOffset": [0, 0],
+        "drawTrailOnTop": true,
         "explosionEffect": "particles/explosion_evil_small.p",
         "explosionScale": 1,
         "height": 10,

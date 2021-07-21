@@ -48,8 +48,8 @@
       "originY": 1,
       "canAim": true,
       "aimAngleLimit": [-15, 15],
-      "aimAnimation": "rotate",
-      "linked": "homingCannonBase",
+      "aimAnimation": "noAnimation",
+      "linked": false,
       "hasAnimation": false,
       "texture": "noTexture",
       "bullet": {
@@ -66,21 +66,23 @@
         "homingSpeed": 90,
         "trail": "particles/bullet_trail_left_yellow.p",
         "trailScale": 0.3,
+        "trailOffset": [15, 0],
+        "drawTrailOnTop": false,
         "explosionEffect": "particles/explosion.p",
         "explosionScale": 0.5,
         "height": 24,
-        "width": 16,
+        "width": 40,
         "offset": [0, 0]
       },
       "layer": 0,
       "offset": {
         "relativeTo": "body",
         "X": 0,
-        "Y": 0
+        "Y": 90
       },
       "fireRate": {
         "initialDelay": 0,
-        "baseRate": 1,
+        "baseRate": 0.5,
         "randomness": 0
       }
     },
@@ -91,11 +93,11 @@
         "offset": {
           "relativeTo": "body",
           "X": 0,
-          "Y": 0
+          "Y": 45
         },
         "fireRate": {
-          "initialDelay": 1,
-          "baseRate": 1,
+          "initialDelay": 0.25,
+          "baseRate": 0.5,
           "randomness": 0
         }
       }
@@ -144,6 +146,24 @@
         "active": true,
         "changeTexture": "phase2",
         "frameDuration": 0.0334,
+        "move": false
+      },
+      "topCannonActivate": {
+        "target": "cannonTop",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": false
+      },
+      "bottomCannonActivate": {
+        "target": "cannonBottom",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
         "move": false
       }
     },

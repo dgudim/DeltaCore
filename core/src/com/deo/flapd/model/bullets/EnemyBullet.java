@@ -57,7 +57,11 @@ public class EnemyBullet extends Entity {
             bulletData.trailParticleEffect = new ParticleEffect();
             bulletData.trailParticleEffect.load(Gdx.files.internal(bulletData.trail), Gdx.files.internal("particles"));
             bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
-            bulletData.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
+            bulletData.trailParticleEffect.setPosition(
+                    x + width / 2f + MathUtils.cosDeg(
+                            rotation + data.trailAngle * data.trailDistance),
+                    y + height / 2f + MathUtils.sinDeg(
+                            rotation + data.trailAngle * data.trailDistance));
             bulletData.trailParticleEffect.start();
         }
         
@@ -121,8 +125,11 @@ public class EnemyBullet extends Entity {
     
     public void draw(SpriteBatch batch, float delta) {
         if (!isDead) {
+            if (data.drawTrailOnTop && !data.isLaser) {
+                data.trailParticleEffect.draw(batch, delta);
+            }
             entitySprite.draw(batch);
-            if (!data.isLaser) {
+            if (!data.drawTrailOnTop && !data.isLaser) {
                 data.trailParticleEffect.draw(batch, delta);
             }
         } else {
@@ -169,7 +176,11 @@ public class EnemyBullet extends Entity {
                 y -= MathUtils.sinDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
                 updateEntity(delta);
                 
-                data.trailParticleEffect.setPosition(x + data.width / 2, y + data.height / 2);
+                data.trailParticleEffect.setPosition(
+                        x + width / 2f + MathUtils.cosDeg(
+                                rotation + data.trailAngle) * data.trailDistance,
+                        y + height / 2f + MathUtils.sinDeg(
+                                rotation + data.trailAngle) * data.trailDistance);
                 
                 if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
                     isDead = true;

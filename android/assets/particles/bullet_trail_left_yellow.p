@@ -130,8 +130,8 @@ timeline1: 1.0
 active: false
 - Tint - 
 colorsCount: 3
-colors0: 0.5568628
-colors1: 0.5019608
+colors0: 0.6
+colors1: 0.3764706
 colors2: 0.0
 timelineCount: 1
 timeline0: 0.0

@@ -102,6 +102,11 @@ public class Enemy extends Entity {
             ParticleEffect fire = new ParticleEffect();
             fire.load(Gdx.files.internal(data.fireEffects[i]), Gdx.files.internal("particles"));
             fire.scaleEffect(data.fireScales[i]);
+            fire.setPosition(
+                    x + width / 2f + MathUtils.cosDeg(
+                            rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
+                    y + height / 2f + MathUtils.sinDeg(
+                            rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             data.fireParticleEffects.set(i, fire);
             fire.start();
         }

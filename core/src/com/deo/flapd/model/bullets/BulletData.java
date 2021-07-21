@@ -27,6 +27,9 @@ public class BulletData {
     public float spread;
     
     public String trail;
+    public float trailDistance;
+    public float trailAngle;
+    public boolean drawTrailOnTop;
     public ParticleEffect trailParticleEffect;
     
     public String explosion;
@@ -73,7 +76,11 @@ public class BulletData {
     
             trail = bulletData.getString("particles/bullet_trail_left.p", "trail");
             trailScale = bulletData.getFloat(1, "trailScale");
-    
+            drawTrailOnTop = bulletData.getBoolean(false, "drawTrailOnTop");
+            float[] trailOffset = bulletData.getFloatArray(new float[]{0, 0}, "trailOffset");
+            trailAngle = MathUtils.atan2(trailOffset[1], trailOffset[0]) * MathUtils.radiansToDegrees;
+            trailDistance = getDistanceBetweenTwoPoints(0, 0, trailOffset[0], trailOffset[1]);
+            
             explosion = bulletData.getString("particles/explosion2.p", "explosionEffect");
             explosionScale = bulletData.getFloat(1, "explosionScale");
     

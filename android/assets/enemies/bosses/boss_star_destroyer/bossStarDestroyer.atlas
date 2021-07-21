@@ -199,9 +199,16 @@ body_phase3
   orig: 127, 69
   offset: 0, 0
   index: 9
+destroyer_rocket
+  rotate: false
+  xy: 130, 46
+  size: 40, 24
+  orig: 40, 24
+  offset: 0, 0
+  index: 0
 noTexture
   rotate: false
-  xy: 1000, 500
+  xy: 1200, 500
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
