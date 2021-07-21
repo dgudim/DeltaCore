@@ -96,7 +96,7 @@
           "Y": 45
         },
         "fireRate": {
-          "initialDelay": 0.25,
+          "initialDelay": 0.5,
           "baseRate": 0.5,
           "randomness": 0
         }
