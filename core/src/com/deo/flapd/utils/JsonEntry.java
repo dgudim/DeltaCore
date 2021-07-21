@@ -3,7 +3,7 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.utils.JsonValue;
 
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.LogLevel.WARNING;
+import static com.deo.flapd.utils.LogLevel.INFO;
 
 public class JsonEntry {
     
@@ -25,7 +25,7 @@ public class JsonEntry {
      */
     public JsonEntry get(int index) {
         if (jsonValue.get(index) == null) {
-            log("No key with index " + index + ", trace info: " + jsonValue.trace(), WARNING);
+            log("No key with index " + index + ", trace info: " + jsonValue.trace(), INFO);
             return null;
         }
         return new JsonEntry(jsonValue.get(index));
@@ -38,7 +38,7 @@ public class JsonEntry {
      */
     public JsonEntry get(String name) {
         if (jsonValue.get(name) == null) {
-            log("No key named " + name + " (path: " + jsonValue.trace() + ")", WARNING);
+            log("No key named " + name + " (path: " + jsonValue.trace() + ")", INFO);
             return null;
         }
         return new JsonEntry(jsonValue.get(name));
@@ -83,7 +83,7 @@ public class JsonEntry {
         if (!jsonValue.parent().isNull()) {
             return new JsonEntry(jsonValue.parent());
         } else {
-            log("Json entry " + jsonValue.name + " has no parent, first child: " + jsonValue.child(), WARNING);
+            log("Json entry " + jsonValue.name + " has no parent, first child: " + jsonValue.child(), INFO);
             return null;
         }
     }
@@ -93,7 +93,7 @@ public class JsonEntry {
      */
     public String getString(String defaultValue, int index) {
         if (get(index) == null) {
-            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(index).jsonValue.asString();
@@ -104,7 +104,7 @@ public class JsonEntry {
      */
     public float getFloat(float defaultValue, int index) {
         if (get(index) == null) {
-            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(index).jsonValue.asFloat();
@@ -119,7 +119,7 @@ public class JsonEntry {
                 return get(key).get(index).jsonValue.asFloat();
             }
         }
-        log("No value specified for key " + key + " and index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        log("No value specified for key " + key + " and index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
         return defaultValue;
     }
     
@@ -128,7 +128,7 @@ public class JsonEntry {
      */
     public boolean getBoolean(boolean defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asBoolean();
@@ -139,7 +139,7 @@ public class JsonEntry {
      */
     public int getInt(int defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asInt();
@@ -150,7 +150,7 @@ public class JsonEntry {
      */
     public float getFloat(float defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asFloat();
@@ -161,7 +161,7 @@ public class JsonEntry {
      */
     public String getString(String defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asString();
@@ -172,7 +172,7 @@ public class JsonEntry {
      */
     public boolean[] getBooleanArray(boolean[] defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asBooleanArray();
@@ -183,7 +183,7 @@ public class JsonEntry {
      */
     public int[] getIntArray(int[] defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asIntArray();
@@ -194,7 +194,7 @@ public class JsonEntry {
      */
     public float[] getFloatArray(float[] defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asFloatArray();
@@ -205,7 +205,7 @@ public class JsonEntry {
      */
     public String[] getStringArray(String[] defaultValue, String... keys) {
         if (get(keys) == null) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", WARNING);
+            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue[0] + "..." + defaultValue[defaultValue.length - 1] + ")", INFO);
             return defaultValue;
         }
         return get(keys).jsonValue.asStringArray();
@@ -216,7 +216,7 @@ public class JsonEntry {
      */
     public String getString(String defaultValue, String key, int index) {
         if (get(key) == null) {
-            log("No value specified for key " + key + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for key " + key + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(key).getString(defaultValue, index);
@@ -227,7 +227,7 @@ public class JsonEntry {
      */
     public String getString(String defaultValue, int index, String key) {
         if (get(index) == null) {
-            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", INFO);
             return defaultValue;
         }
         return get(index).getString(defaultValue, key);
