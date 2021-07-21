@@ -11,15 +11,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.control.EnemyAi;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Entity;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
@@ -44,11 +46,14 @@ public class Boss {
     private final Array<Phase> phases;
     private final int[] spawnAt;
     boolean visible;
-    ShipObject player;
+    Player player;
     Array<Movement> animations;
     public boolean hasAlreadySpawned;
     private final int spawnScore;
     public BasePart body;
+    
+    boolean hasAi;
+    EnemyAi bossAi;
     
     public String bossName;
     
@@ -59,6 +64,7 @@ public class Boss {
         this.bossName = bossName;
         
         bossConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json")));
+        hasAi = bossConfig.getBoolean(false, "hasAi");
         TextureAtlas bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("noTextures", "textures"));
         parts = new Array<>();
         animations = new Array<>();
@@ -100,6 +106,10 @@ public class Boss {
                     log("Unknown path type: " + type, WARNING);
                     break;
             }
+        }
+        
+        if (hasAi) {
+            bossAi = new EnemyAi();
         }
         
         Array<Array<BasePart>> sortedParts = new Array<>();
@@ -147,6 +157,10 @@ public class Boss {
     }
     
     void update(float delta) {
+        body.x += body.additionalOffsetX;
+        body.y += body.additionalOffsetY;
+        body.additionalOffsetX = 0;
+        body.additionalOffsetY = 0;
         if (GameLogic.score >= spawnScore && !hasAlreadySpawned) {
             spawn();
         }
@@ -164,6 +178,7 @@ public class Boss {
             for (int i = 0; i < phases.size; i++) {
                 phases.get(i).update();
             }
+            bossAi.update(delta);
         }
     }
     
@@ -177,8 +192,11 @@ public class Boss {
         phases.get(0).activate();
     }
     
-    void setTargetPlayer(ShipObject player) {
+    void setTargetPlayer(Player player) {
         this.player = player;
+        if (hasAi) {
+            bossAi.initialize(player, body);
+        }
         for (int i = 0; i < parts.size; i++) {
             parts.get(i).setTargetPlayer(player);
         }
@@ -224,7 +242,7 @@ class BasePart extends Entity {
     String type;
     JsonEntry currentConfig;
     ProgressBar healthBar;
-    ShipObject player;
+    Player player;
     boolean hasAnimation;
     boolean collisionEnabled;
     boolean hasCollision;
@@ -398,7 +416,7 @@ class BasePart extends Entity {
         }
     }
     
-    void setTargetPlayer(ShipObject player) {
+    void setTargetPlayer(Player player) {
         this.player = player;
     }
     
@@ -911,7 +929,7 @@ class Phase {
         activated = false;
         config = phaseData;
         for (int i = 0; i < phaseData.size; i++) {
-            Action action = new Action(phaseData.get(i), parts, animations, boss.body);
+            Action action = new Action(phaseData.get(i), parts, animations, boss);
             actions.add(action);
         }
         JsonEntry triggers = null;
@@ -976,10 +994,23 @@ class Action {
     boolean hasMovement;
     JsonEntry config;
     
-    Action(JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, BasePart body) {
+    private final Boss boss;
+    boolean hasAiChange;
+    boolean dodgeBullets;
+    float bulletDodgeSpeed;
+    float[] XMovementBounds;
+    float[] YMovementBounds;
+    boolean followPlayer;
+    float playerFollowSpeed;
+    float playerNotDamagedMaxTime;
+    boolean aiActive;
+    float[] basePosition;
+    
+    Action(JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, Boss boss) {
         
         log("loading boss action, name: " + actionValue.name, INFO);
         
+        this.boss = boss;
         config = actionValue;
         movements = new Array<>();
         String target = actionValue.getString(baseParts.get(0).name, "target");
@@ -999,6 +1030,29 @@ class Action {
         }
         int movementCount;
         
+        if (boss.hasAi && this.target.equals(boss.body)) {
+            if (actionValue.get("ai").isBoolean()) {
+                log("no ai change for " + actionValue.name, INFO);
+                hasAiChange = false;
+            } else {
+                aiActive = actionValue.get("ai").getBoolean(false, "enabled");
+                if (aiActive) {
+                    dodgeBullets = actionValue.get("ai").getBoolean(false, "dodgeBullets");
+                    if (dodgeBullets) {
+                        bulletDodgeSpeed = actionValue.get("ai").getFloat(90, "bulletDodgeSpeed");
+                    }
+                    XMovementBounds = actionValue.get("ai").getFloatArray(new float[]{400, 800}, "xBounds");
+                    YMovementBounds = actionValue.get("ai").getFloatArray(new float[]{0, 480}, "yBounds");
+                    followPlayer = actionValue.get("ai").getBoolean(false, "followPlayer");
+                    if (followPlayer) {
+                        playerFollowSpeed = actionValue.get("ai").getFloat(50, "playerFollowSpeed");
+                        playerNotDamagedMaxTime = actionValue.get("ai").getFloat(10, "playerNotDamagedMaxTime");
+                    }
+                    basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
+                }
+                hasAiChange = true;
+            }
+        }
         if (actionValue.get("move").isBoolean()) {
             log("no movement for " + actionValue.name, INFO);
             hasMovement = false;
@@ -1006,7 +1060,7 @@ class Action {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
-                Movement movement = new Movement(actionValue.get("move", i), target, baseParts, animations, body);
+                Movement movement = new Movement(actionValue.get("move", i), target, baseParts, animations, boss.body);
                 animations.add(movement);
                 movements.add(movement);
             }
@@ -1035,6 +1089,13 @@ class Action {
         target.visible = visible;
         target.active = enabled;
         target.showHealthBar = showHealthBar;
+        if (hasAiChange) {
+            if (aiActive) {
+                boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
+                        XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, new Vector2(basePosition[0], basePosition[1]));
+            }
+            boss.bossAi.active = aiActive;
+        }
     }
 }
 

@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
@@ -58,7 +58,7 @@ public class GameOverScreen implements Screen {
     
     private final MusicManager musicManager;
     
-    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject player, final MusicManager musicManager) {
+    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
         
         this.game = game;
         this.musicManager = musicManager;

@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
@@ -86,11 +86,11 @@ public class GameUi {
     
     private final boolean transparency;
     
-    private final ShipObject player;
+    private final Player player;
     
     private final MusicManager musicManager;
     
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, ShipObject ship, final MusicManager musicManager) {
+    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
         
         this.game = game;
         this.musicManager = musicManager;
@@ -98,7 +98,7 @@ public class GameUi {
         this.assetManager = assetManager;
         this.blurProcessor = blurProcessor;
         
-        player = ship;
+        this.player = player;
         
         uiScale = getFloat("ui");
         
@@ -225,9 +225,9 @@ public class GameUi {
         chargeBarStyle.knob = BarBackgroundBlank;
         chargeBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.YELLOW);
         
-        health = new ProgressBar(0, player.healthCapacity * player.healthMultiplier, 0.01f, false, healthBarStyle);
-        shield = new ProgressBar(0, player.shieldStrength * player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
-        charge = new ProgressBar(0, player.chargeCapacity * player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
+        health = new ProgressBar(0, this.player.healthCapacity * this.player.healthMultiplier, 0.01f, false, healthBarStyle);
+        shield = new ProgressBar(0, this.player.shieldStrength * this.player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
+        charge = new ProgressBar(0, this.player.chargeCapacity * this.player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
         
         health.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
         shield.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);

@@ -28,7 +28,7 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class Bullet {
     
-    private final ShipObject player;
+    private final Player player;
     private final Enemies enemies;
     private final Rectangle playerBounds;
     public Array<Rectangle> bullets;
@@ -85,10 +85,10 @@ public class Bullet {
     private final float[] gunOffsetsX;
     private final float[] gunOffsetsY;
     
-    public Bullet(AssetManager assetManager, ShipObject ship, Enemies enemies, boolean newGame) {
+    public Bullet(AssetManager assetManager, Player player, Enemies enemies, boolean newGame) {
         
-        player = ship;
-        playerBounds = player.bounds;
+        this.player = player;
+        playerBounds = this.player.bounds;
         
         this.enemies = enemies;
         
@@ -189,9 +189,9 @@ public class Bullet {
         explosionTimers = new Array<>();
         
         if (!newGame) {
-            player.bulletsShot = getInteger("bulletsShot");
+            this.player.bulletsShot = getInteger("bulletsShot");
         } else {
-            player.bulletsShot = 0;
+            this.player.bulletsShot = 0;
         }
         
         laser = new Sprite((Texture) assetManager.get("laser.png"));

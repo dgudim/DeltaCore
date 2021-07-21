@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Entity;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.DUtils;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
@@ -28,26 +28,26 @@ public class EnemyBullet extends Entity {
     private boolean explosionFinished = false;
     private boolean explosionStarted;
     
-    private ShipObject player;
+    private Player player;
     private Bullet playerBullet;
     
-    public EnemyBullet(AssetManager assetManager, BulletData bulletData, ShipObject ship, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+    public EnemyBullet(AssetManager assetManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         entitySprite = new Sprite((Texture) assetManager.get(bulletData.texture));
-        initBullet(bulletData, ship, x, y, rotation, hasCollisionWithPlayerBullets);
+        initBullet(bulletData, player, x, y, rotation, hasCollisionWithPlayerBullets);
     }
     
-    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, ShipObject ship, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         entitySprite = new Sprite(bossAtlas.findRegion(bulletData.texture));
-        initBullet(bulletData, ship, x, y, rotation, hasCollisionWithPlayerBullets);
+        initBullet(bulletData, player, x, y, rotation, hasCollisionWithPlayerBullets);
     }
     
-    private void initBullet(BulletData bulletData, ShipObject ship, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+    private void initBullet(BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         this.hasCollisionWithPlayerBullets = hasCollisionWithPlayerBullets;
         
         data = bulletData;
         
-        player = ship;
-        playerBullet = player.bullet;
+        this.player = player;
+        playerBullet = this.player.bullet;
         
         if (!data.isLaser) {
             bulletData.explosionParticleEffect = new ParticleEffect();

@@ -23,7 +23,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 public class Bonus {
     
     private final Rectangle playerBounds;
-    private final ShipObject player;
+    private final Player player;
     private static Array<Rectangle> bonuses;
     private static Array<Integer> types;
     private static Array<Float> anglesY;
@@ -46,12 +46,12 @@ public class Bonus {
     
     private static float height, width;
     
-    public Bonus(AssetManager assetManager, float width, float height, ShipObject ship, Bosses bosses) {
+    public Bonus(AssetManager assetManager, float width, float height, Player player, Bosses bosses) {
         
         this.bosses = bosses;
         
-        player = ship;
-        playerBounds = player.bounds;
+        this.player = player;
+        playerBounds = this.player.bounds;
         
         uiScale = getFloat("ui");
         

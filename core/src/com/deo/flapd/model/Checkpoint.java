@@ -24,7 +24,7 @@ public class Checkpoint {
     private boolean checkpointState, effects;
     private final Polygon bounds;
     private final Rectangle shipBounds;
-    private final ShipObject player;
+    private final Player player;
     private ParticleEffect fire;
     private ParticleEffect fire2;
     private float speed;
@@ -32,15 +32,15 @@ public class Checkpoint {
     private float destination_posY;
     private final Random random;
 
-    public Checkpoint(AssetManager assetManager, ShipObject ship) {
+    public Checkpoint(AssetManager assetManager, Player player) {
         checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
         checkpoint_green = new Sprite((Texture) assetManager.get("checkpoint_green.png"));
 
         bounds = new Polygon(new float[]{0f, 0f, 102, 0f, 102, 102, 0f, 102});
 
-        player = ship;
+        this.player = player;
 
-        shipBounds = player.bounds;
+        shipBounds = this.player.bounds;
 
         random = new Random();
     

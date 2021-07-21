@@ -16,7 +16,7 @@ import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Meteorites;
-import com.deo.flapd.model.SpaceShip;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
     
     private final SpriteBatch batch;
     
-    private final SpaceShip ship;
+    private final Player player;
     private final GameUi gameUi;
     private final GameLogic gameLogic;
     
@@ -93,24 +93,24 @@ public class GameScreen implements Screen {
         bosses = new Bosses(assetManager);
         bosses.loadBosses();
         
-        ship = new SpaceShip(assetManager, 0, 204, newGame, enemies);
+        player = new Player(assetManager, 0, 204, newGame, enemies);
         
-        enemies.setTargetPlayer(ship);
-        bosses.setTargetPlayer(ship);
+        enemies.setTargetPlayer(player);
+        bosses.setTargetPlayer(player);
         
         uraniumCell = new UraniumCell(assetManager);
         
-        bonus = new Bonus(assetManager, 50, 50, ship, bosses);
+        bonus = new Bonus(assetManager, 50, 50, player, bosses);
         
         drops = new Drops(assetManager, 48, getFloat("ui"));
         
-        gameUi = new GameUi(game, batch, assetManager, blurProcessor, ship, musicManager);
+        gameUi = new GameUi(game, batch, assetManager, blurProcessor, player, musicManager);
         
         meteorites = new Meteorites(assetManager, getBoolean("easterEgg"));
         
-        checkpoint = new Checkpoint(assetManager, ship);
+        checkpoint = new Checkpoint(assetManager, player);
         
-        gameLogic = new GameLogic(ship, newGame, game, meteorites, checkpoint);
+        gameLogic = new GameLogic(player, newGame, game, meteorites, checkpoint);
         
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         this.musicManager.setVolume(getFloat("musicVolume") / 100f);
@@ -147,7 +147,7 @@ public class GameScreen implements Screen {
         
         bosses.draw(batch, delta);
         bosses.update(delta);
-        ship.drawEffects(batch, delta);
+        player.drawEffects(batch, delta);
         enemies.drawEffects(batch, delta);
         checkpoint.drawEffects(batch, delta);
         
@@ -157,12 +157,12 @@ public class GameScreen implements Screen {
             batch.begin();
         }
         
-        ship.drawBase(batch, delta);
+        player.drawSprites(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
         checkpoint.drawBase(batch);
         
-        ship.DrawShield(batch, delta);
+        player.drawShield(batch, delta);
         
         bonus.draw(batch, delta);
         drops.draw(batch, delta);
@@ -267,7 +267,7 @@ public class GameScreen implements Screen {
         gameUi.dispose();
         meteorites.dispose();
         
-        ship.dispose();
+        player.dispose();
         
         bonus.dispose();
         drops.dispose();

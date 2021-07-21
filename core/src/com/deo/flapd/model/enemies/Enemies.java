@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -26,7 +26,7 @@ public class Enemies {
     
     private final float difficulty;
     
-    private ShipObject player;
+    private Player player;
     
     public Enemies(AssetManager assetManager) {
         
@@ -93,7 +93,7 @@ public class Enemies {
         }
     }
     
-    public void setTargetPlayer(ShipObject targetPlayer) {
+    public void setTargetPlayer(Player targetPlayer) {
         player = targetPlayer;
     }
 }

@@ -3,7 +3,7 @@ package com.deo.flapd.model.enemies;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
@@ -24,7 +24,7 @@ public class Bosses {
         }
     }
     
-    public void setTargetPlayer(ShipObject player) {
+    public void setTargetPlayer(Player player) {
         for (int i = 0; i < bosses.size; i++) {
             bosses.get(i).setTargetPlayer(player);
         }

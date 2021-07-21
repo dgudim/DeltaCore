@@ -18,7 +18,7 @@ import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Entity;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
@@ -55,17 +55,17 @@ public class Enemy extends Entity {
     
     private final Enemies enemies;
     
-    private final ShipObject player;
+    private final Player player;
     private final Rectangle playerBounds;
     private final Bullet playerBullet;
     
-    Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, ShipObject ship) {
+    Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, Player player) {
         this.assetManager = assetManager;
         this.data = data;
         this.enemies = enemies;
-        player = ship;
-        playerBounds = player.bounds;
-        playerBullet = player.bullet;
+        this.player = player;
+        playerBounds = this.player.bounds;
+        playerBullet = this.player.bullet;
         difficulty = getFloat("difficulty");
         
         if (data.spawnsBullets) {

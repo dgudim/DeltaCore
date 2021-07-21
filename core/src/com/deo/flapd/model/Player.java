@@ -20,7 +20,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 
-public abstract class ShipObject {
+public class Player {
     
     public Rectangle bounds;
     public float rotation;
@@ -74,7 +74,7 @@ public abstract class ShipObject {
     public Bullet bullet;
     public int bulletsShot;
     
-    ShipObject(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
+    public Player(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
         
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
         
@@ -266,7 +266,7 @@ public abstract class ShipObject {
         bullet.draw(batch, delta);
     }
     
-    public void draw(SpriteBatch batch, float delta) {
+    public void drawSprites(SpriteBatch batch, float delta) {
         if (!exploded) {
             ship.setPosition(bounds.getX(), bounds.getY());
             
@@ -317,11 +317,11 @@ public abstract class ShipObject {
         }
     }
     
-    void drawShield(SpriteBatch batch, float alpha, float delta) {
+    public void drawShield(SpriteBatch batch, float delta) {
         if (!exploded) {
             shield.setPosition(bounds.getX() - 20, bounds.getY() - 15);
             shield.setRotation(rotation);
-            shield.setColor(red2, green2, blue2, alpha);
+            shield.setColor(red2, green2, blue2, MathUtils.clamp(Shield/100, 0, 1));
             shield.draw(batch);
             
             if (red2 < 1) {

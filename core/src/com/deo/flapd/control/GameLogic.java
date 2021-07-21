@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Meteorites;
-import com.deo.flapd.model.ShipObject;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.JsonEntry;
 
 import java.util.Random;
@@ -23,7 +23,7 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class GameLogic {
 
-    private final ShipObject player;
+    private final Player player;
 
     private final Random random;
 
@@ -48,14 +48,14 @@ public class GameLogic {
     private final Meteorites meteorites;
     private final Checkpoint checkpoint;
 
-    public GameLogic(ShipObject ship, boolean newGame, Game game, Meteorites meteorites, Checkpoint checkpoint) {
-        player = ship;
+    public GameLogic(Player player, boolean newGame, Game game, Meteorites meteorites, Checkpoint checkpoint) {
+        this.player = player;
         random = new Random();
 
         this.game = game;
 
-        playerBullet = player.bullet;
-        playerBounds = player.bounds;
+        playerBullet = this.player.bullet;
+        playerBounds = this.player.bounds;
         this.meteorites = meteorites;
         this.checkpoint = checkpoint;
 
