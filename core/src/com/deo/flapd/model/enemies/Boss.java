@@ -26,6 +26,7 @@ import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -34,6 +35,7 @@ import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.LogLevel.INFO;
 import static com.deo.flapd.utils.LogLevel.WARNING;
+import static java.lang.StrictMath.abs;
 
 public class Boss {
     
@@ -723,9 +725,14 @@ class Cannon extends Part {
 
 class Movement {
     
-    private final byte NEGATIVE = -1;
-    private final byte POSITIVE = 1;
     private final float moveBy;
+    
+    private float lastShakeXPos;
+    private float lastShakeYPos;
+    private float shakePeriod;
+    private float shakeIntensityX;
+    private float shakeIntensityY;
+    
     private float currentAddPosition;
     private final float speed;
     private float progress;
@@ -739,7 +746,7 @@ class Movement {
     private float angleOffset;
     
     private final String type;
-    private final byte typeModifier;
+    private final byte directionModifier;
     private final boolean stopPrevAnim;
     
     private final Array<Movement> animations;
@@ -782,8 +789,13 @@ class Movement {
             targetRadius = movementConfig.getFloat(100, "targetRadius");
             angleOffset = movementConfig.getFloat(0, "angleOffset");
         }
+        if (type.equals("shake")) {
+            shakeIntensityX = movementConfig.getFloat(10, "shakeIntensityX");
+            shakeIntensityY = movementConfig.getFloat(10, "shakeIntensityY");
+            shakePeriod = movementConfig.getFloat(0.3f, "shakePeriod");
+        }
         
-        typeModifier = 0 < moveBy ? POSITIVE : NEGATIVE;
+        directionModifier = 0 < moveBy ? (byte) 1 : (byte) -1;
     }
     
     void start() {
@@ -802,44 +814,36 @@ class Movement {
     void update(float delta) {
         if (active) {
             
-            if (type.equals("moveLinearX") || type.equals("moveLinearY") || type.equals("rotate")) {
-                if (currentAddPosition < moveBy && typeModifier == POSITIVE) {
-                    currentAddPosition += speed * delta * 10;
-                    if (currentAddPosition >= moveBy) {
-                        active = false;
-                    }
-                }
-                
-                if (currentAddPosition > moveBy && typeModifier == NEGATIVE) {
-                    currentAddPosition -= speed * delta * 10;
-                    if (currentAddPosition <= moveBy) {
-                        active = false;
-                    }
+            if ((type.equals("moveLinearX") || type.equals("moveLinearY") || type.equals("rotate"))) {
+                if (abs(currentAddPosition) < abs(moveBy)) {
+                    currentAddPosition += speed * delta * 10 * directionModifier;
+                } else {
+                    active = false;
                 }
             }
             
             switch (type) {
                 case ("moveLinearX"):
-                    target.additionalOffsetX += speed * delta * 10 * typeModifier;
+                    target.additionalOffsetX += speed * delta * 10 * directionModifier;
                     break;
                 case ("moveLinearY"):
-                    target.additionalOffsetY += speed * delta * 10 * typeModifier;
+                    target.additionalOffsetY += speed * delta * 10 * directionModifier;
                     break;
                 case ("rotate"):
-                    target.additionalRotation += speed * delta * 10 * typeModifier;
+                    target.additionalRotation += speed * delta * 10 * directionModifier;
                     break;
                 case ("moveSinX"): {
-                    target.additionalOffsetX += MathUtils.sinDeg(progress) * moveBy * typeModifier * delta;
+                    target.additionalOffsetX += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("moveSinY"): {
-                    target.additionalOffsetY += MathUtils.sinDeg(progress) * moveBy * typeModifier * delta;
+                    target.additionalOffsetY += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("rotateSin"): {
-                    target.additionalRotation += MathUtils.sinDeg(progress) * moveBy * typeModifier * delta;
+                    target.additionalRotation += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
@@ -860,6 +864,20 @@ class Movement {
                     if (progress >= moveBy && currentRadius >= targetRadius) {
                         active = false;
                     }
+                    break;
+                }
+                case ("shake"): {
+                    progress += delta * 10;
+                    if (progress >= shakePeriod) {
+                        progress = 0;
+                        float nextShakeXPos = (random() - 0.5f) * 2 * shakeIntensityX;
+                        float nextShakeYPos = (random() - 0.5f) * 2 * shakeIntensityY;
+                        target.additionalOffsetX = target.additionalOffsetX - lastShakeXPos + nextShakeXPos;
+                        target.additionalOffsetY = target.additionalOffsetY - lastShakeYPos + nextShakeYPos;
+                        lastShakeXPos = nextShakeXPos;
+                        lastShakeYPos = nextShakeYPos;
+                    }
+                    break;
                 }
             }
         }

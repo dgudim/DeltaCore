@@ -57,13 +57,13 @@
         "hasCollisionWithPlayerBullets": true,
         "texture": "destroyer_rocket",
         "shootSound": "sfx/gun2.ogg",
-        "speed": 110,
+        "speed": 90,
         "spread": 0,
         "bulletsPerShot": 1,
         "damage": 15,
         "homing": true,
         "explosionTimer": 3,
-        "homingSpeed": 90,
+        "homingSpeed": 130,
         "trail": "particles/bullet_trail_left_yellow.p",
         "trailScale": 0.3,
         "trailOffset": [15, 0],
@@ -176,7 +176,14 @@
         "active": true,
         "changeTexture": "phase3",
         "frameDuration": 0.0334,
-        "move": false
+        "move": {
+          "shake": {
+            "shakeIntensityX": 7,
+            "shakeIntensityY": 7,
+            "shakePeriod": 0.3,
+            "stopPreviousAnimations": false
+          }
+        }
       }
     },
     "deathAnimationPhase": {
@@ -191,7 +198,7 @@
           "moveLinearY": {
             "moveBy": -500,
             "speed": 5,
-            "stopPreviousAnimations": false
+            "stopPreviousAnimations": true
           },
           "moveLinearX": {
             "moveBy": -100,
