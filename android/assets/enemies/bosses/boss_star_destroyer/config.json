@@ -134,7 +134,7 @@
         "enableCollisions": true,
         "showHealthBar": true,
         "visible": true,
-        "active": true,
+        "active": false,
         "changeTexture": false,
         "move": false,
         "ai": false
@@ -153,13 +153,13 @@
         "ai": {
           "xBounds": [400, 800],
           "yBounds": [0, 480],
-          "basePosition": [400, 170],
+          "basePosition": [550, 170],
           "dodgeBullets": true,
           "bulletDodgeSpeed": 130,
           "followPlayer": true,
           "playerFollowSpeed": 90,
           "playerNotDamagedMaxTime": 5,
-          "enabled": true
+          "playerInsideEntityMaxTime": 3
         }
       },
       "topCannonActivate": {
@@ -201,12 +201,12 @@
         "ai": {
           "xBounds": [400, 800],
           "yBounds": [0, 480],
-          "basePosition": [400, 170],
+          "basePosition": [550, 170],
           "dodgeBullets": false,
           "followPlayer": true,
           "playerFollowSpeed": 110,
           "playerNotDamagedMaxTime": 1.3,
-          "enabled": true
+          "playerInsideEntityMaxTime": 2
         }
       },
       "topCannonDeactivate": {
@@ -229,7 +229,7 @@
         "changeTexture": false,
         "move": {
           "moveLinearY": {
-            "moveBy": -500,
+            "moveBy": -600,
             "speed": 5,
             "stopPreviousAnimations": true
           },
@@ -244,9 +244,7 @@
             "stopPreviousAnimations": false
           }
         },
-        "ai": {
-          "enabled": false
-        }
+        "ai": false
       }
     },
     "RESET": {

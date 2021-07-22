@@ -28,6 +28,7 @@ import static com.deo.flapd.utils.DUtils.getString;
 
 public class Bullet {
     
+    // TODO: 7/22/2021 rework this crap
     private final Player player;
     private final Enemies enemies;
     private final Rectangle playerBounds;
@@ -50,7 +51,7 @@ public class Bullet {
     private float spread;
     
     private final Array<Boolean> explosionQueue;
-    private final Array<Boolean> remove_Bullet;
+    public final Array<Boolean> remove_Bullet;
     
     private float shootingSpeedMultiplier;
     private float powerConsumption;

@@ -35,6 +35,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.LogLevel.ERROR;
 import static com.deo.flapd.utils.LogLevel.INFO;
 import static com.deo.flapd.utils.LogLevel.WARNING;
 import static java.lang.StrictMath.abs;
@@ -75,8 +76,12 @@ public class Boss {
             String type = bossConfig.get("parts", i).getString("part", "type");
             switch (type) {
                 case ("basePart"):
-                    body = new BasePart(bossConfig.get("parts", i), bossAtlas, assetManager);
-                    parts.add(body);
+                    if (body == null) {
+                        body = new BasePart(bossConfig.get("parts", i), bossAtlas, assetManager);
+                        parts.add(body);
+                    } else {
+                        log("can't have two or more base parts per boss, ignoring " + bossConfig.get("parts", i).name, ERROR);
+                    }
                     break;
                 case ("part"):
                     parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
@@ -986,7 +991,7 @@ class Action {
     boolean enableCollisions;
     boolean showHealthBar;
     boolean visible;
-    boolean enabled;
+    boolean active;
     String changeTexture;
     float frameDuration;
     BasePart target;
@@ -995,15 +1000,15 @@ class Action {
     JsonEntry config;
     
     private final Boss boss;
-    boolean hasAiChange;
+    boolean hasAiSettingsChange;
     boolean dodgeBullets;
     float bulletDodgeSpeed;
-    float[] XMovementBounds;
-    float[] YMovementBounds;
+    int[] XMovementBounds;
+    int[] YMovementBounds;
     boolean followPlayer;
     float playerFollowSpeed;
     float playerNotDamagedMaxTime;
-    boolean aiActive;
+    float playerInsideEntityMaxTime;
     float[] basePosition;
     
     Action(JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, Boss boss) {
@@ -1023,7 +1028,7 @@ class Action {
         showHealthBar = actionValue.getBoolean(false, "showHealthBar");
         enableCollisions = actionValue.getBoolean(false, "enableCollisions");
         visible = actionValue.getBoolean(true, "visible");
-        enabled = actionValue.getBoolean(false, "active");
+        active = actionValue.getBoolean(false, "active");
         changeTexture = actionValue.getString("false", "changeTexture");
         if (this.target.hasAnimation && !changeTexture.equals("false")) {
             frameDuration = actionValue.getFloat(1, "frameDuration");
@@ -1033,24 +1038,24 @@ class Action {
         if (boss.hasAi && this.target.equals(boss.body)) {
             if (actionValue.get("ai").isBoolean()) {
                 log("no ai change for " + actionValue.name, INFO);
-                hasAiChange = false;
+                hasAiSettingsChange = false;
             } else {
-                aiActive = actionValue.get("ai").getBoolean(false, "enabled");
-                if (aiActive) {
+                if (active) {
                     dodgeBullets = actionValue.get("ai").getBoolean(false, "dodgeBullets");
                     if (dodgeBullets) {
                         bulletDodgeSpeed = actionValue.get("ai").getFloat(90, "bulletDodgeSpeed");
                     }
-                    XMovementBounds = actionValue.get("ai").getFloatArray(new float[]{400, 800}, "xBounds");
-                    YMovementBounds = actionValue.get("ai").getFloatArray(new float[]{0, 480}, "yBounds");
+                    XMovementBounds = actionValue.get("ai").getIntArray(new int[]{400, 800}, "xBounds");
+                    YMovementBounds = actionValue.get("ai").getIntArray(new int[]{0, 480}, "yBounds");
                     followPlayer = actionValue.get("ai").getBoolean(false, "followPlayer");
                     if (followPlayer) {
                         playerFollowSpeed = actionValue.get("ai").getFloat(50, "playerFollowSpeed");
                         playerNotDamagedMaxTime = actionValue.get("ai").getFloat(10, "playerNotDamagedMaxTime");
+                        playerInsideEntityMaxTime = actionValue.get("ai").getFloat(3, "playerInsideEntityMaxTime");
                     }
                     basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
                 }
-                hasAiChange = true;
+                hasAiSettingsChange = active;
             }
         }
         if (actionValue.get("move").isBoolean()) {
@@ -1087,15 +1092,13 @@ class Action {
             }
         }
         target.visible = visible;
-        target.active = enabled;
+        target.active = active;
         target.showHealthBar = showHealthBar;
-        if (hasAiChange) {
-            if (aiActive) {
-                boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
-                        XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, new Vector2(basePosition[0], basePosition[1]));
-            }
-            boss.bossAi.active = aiActive;
+        if (hasAiSettingsChange) {
+            boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
+                    XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, playerInsideEntityMaxTime, new Vector2(basePosition[0], basePosition[1]));
         }
+        boss.bossAi.active = active;
     }
 }
 

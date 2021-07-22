@@ -7,6 +7,7 @@ import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.lerpWithConstantSpeed;
 import static java.lang.StrictMath.abs;
 
@@ -14,14 +15,16 @@ public class EnemyAi {
     
     boolean dodgeBullets;
     float bulletDodgeSpeed;
-    float[] XMovementBounds;
-    float[] YMovementBounds;
+    int[] XMovementBounds;
+    int[] YMovementBounds;
     boolean followPlayer;
     float playerFollowSpeed;
     
     boolean playerFollowActive;
     boolean dodgeFlightActive;
     public boolean active;
+    float playerInsideEntityTimer;
+    float playerInsideEntityMaxTime;
     
     Player player;
     Bullet playerBullet;
@@ -55,18 +58,29 @@ public class EnemyAi {
                 if (playerLastHealthDifference >= 0) {
                     playerNotDamagedTimer += delta;
                 }
+                playerInsideEntityTimer = clamp(playerInsideEntityTimer - delta, 0, playerInsideEntityMaxTime);
+                if (targetEntity.overlaps(playerBounds)) {
+                    playerInsideEntityTimer += delta * 2;
+                }
+                if (playerInsideEntityTimer > playerInsideEntityMaxTime) {
+                    playerNotDamagedTimer = 0;
+                    playerInsideEntityTimer = 0;
+                    setTargetPosition(
+                            getRandomInRange(XMovementBounds[0], XMovementBounds[1]),
+                            getRandomInRange(YMovementBounds[0], YMovementBounds[1]), false);
+                }
                 if (playerNotDamagedTimer > playerNotDamagedMaxTime) {
                     playerNotDamagedTimer = 0;
-                    float targetX = playerBounds.getX() + playerBounds.getWidth() / 2f - targetEntity.width / 2f;
+                    float targetX = playerBounds.getX() + playerBounds.getWidth() + 15;
                     float targetY = playerBounds.getY() + playerBounds.getHeight() / 2f - targetEntity.height / 2f;
                     setTargetPosition(targetX, targetY, false);
                 }
             }
-            if (dodgeBullets) {
+            if (dodgeBullets && playerInsideEntityTimer <= playerInsideEntityMaxTime / 2f) {
                 Rectangle nearestBullet = null;
                 float nearestX = 0;
                 for (int i = 0; i < playerBullet.bullets.size; i++) {
-                    if (playerBullet.bullets.get(i).getX() > nearestX && playerBullet.bullets.get(i).getX() < targetEntity.x + targetEntity.width) {
+                    if (playerBullet.bullets.get(i).getX() > nearestX && playerBullet.bullets.get(i).getX() < targetEntity.x + targetEntity.width && !playerBullet.remove_Bullet.get(i)) {
                         nearestX = playerBullet.bullets.get(i).getX();
                         nearestBullet = playerBullet.bullets.get(i);
                     }
@@ -118,14 +132,15 @@ public class EnemyAi {
     }
     
     public void setSettings(boolean dodgeBullets, float bulletDodgeSpeed,
-                            float[] XMovementBounds, float[] YMovementBounds,
-                            boolean followPlayer, float playerFollowSpeed, float playerNotDamagedMaxTime, Vector2 basePosition) {
+                            int[] XMovementBounds, int[] YMovementBounds,
+                            boolean followPlayer, float playerFollowSpeed, float playerNotDamagedMaxTime, float playerInsideEntityMaxTime, Vector2 basePosition) {
         this.dodgeBullets = dodgeBullets;
         this.bulletDodgeSpeed = bulletDodgeSpeed;
         this.XMovementBounds = XMovementBounds;
         this.YMovementBounds = YMovementBounds;
         this.followPlayer = followPlayer;
         this.playerNotDamagedMaxTime = playerNotDamagedMaxTime;
+        this.playerInsideEntityMaxTime = playerInsideEntityMaxTime;
         this.playerFollowSpeed = playerFollowSpeed;
         this.basePosition = basePosition;
         playerFollowTargetPosition = basePosition;
