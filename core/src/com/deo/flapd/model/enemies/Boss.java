@@ -125,7 +125,7 @@ public class Boss {
             maxLayer = Math.max(maxLayer, parts.get(i).layer);
         }
         
-        maxLayer += 1;
+        maxLayer++;
         
         sortedParts.setSize(maxLayer);
         
@@ -183,7 +183,9 @@ public class Boss {
             for (int i = 0; i < phases.size; i++) {
                 phases.get(i).update();
             }
-            bossAi.update(delta);
+            if (hasAi) {
+                bossAi.update(delta);
+            }
         }
     }
     
@@ -511,6 +513,11 @@ class Part extends BasePart {
                         currentConfig.get("fireRate", "initialDelay").jsonValue.set(newConfig.get("override", i).getFloat(0, "initialDelay"), "initialDelay");
                     }
                 }
+                if (newConfig.get("override", i).name.equals("aimAngleLimit")) {
+                    if (this instanceof Cannon) {
+                        ((Cannon)this).aimAngleLimit = newConfig.get("override", i).asIntArray();
+                    }
+                }
             }
             
         }
@@ -631,7 +638,9 @@ class Cannon extends Part {
         }
         
         canAim = currentConfig.getBoolean(false, "canAim");
-        aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
+        if (canAim && aimAngleLimit == null) {
+            aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
+        }
         
         float fireRateRandomness = currentConfig.getFloat(0, "fireRate", "randomness");
         fireRate = currentConfig.getFloat(1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
@@ -1098,7 +1107,9 @@ class Action {
             boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
                     XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, playerInsideEntityMaxTime, new Vector2(basePosition[0], basePosition[1]));
         }
-        boss.bossAi.active = active;
+        if (boss.hasAi) {
+            boss.bossAi.active = active;
+        }
     }
 }
 

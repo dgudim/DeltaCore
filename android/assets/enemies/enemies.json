@@ -37,7 +37,7 @@
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 1,
         "trailOffset": [0, 0],
-        "drawTrailOnTop": false,
+        "drawTrailOnTop": true,
         "explosionEffect": "particles/explosion3.p",
         "explosionScale": 1,
         "height": 16,

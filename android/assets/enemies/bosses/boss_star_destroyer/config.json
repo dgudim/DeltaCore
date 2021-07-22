@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": -9000,
+    "score": -19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -10,7 +10,7 @@
     "body": {
       "type": "basePart",
       "health": 10000,
-      "regeneration": 9,
+      "regeneration": 50,
       "hasCollision": true,
       "width": 254,
       "height": 138,
@@ -41,49 +41,48 @@
     },
     "cannonTop": {
       "type": "cannon",
-      "drawBulletsOnTop": false,
+      "drawBulletsOnTop": true,
       "hasCollision": false,
       "width": 2,
       "height": 2,
       "originX": 1,
       "originY": 1,
-      "canAim": true,
-      "aimAngleLimit": [-15, 15],
+      "canAim": false,
       "aimAnimation": "noAnimation",
       "linked": false,
       "hasAnimation": false,
       "texture": "noTexture",
       "bullet": {
         "isLaser": false,
-        "hasCollisionWithPlayerBullets": false,
+        "hasCollisionWithPlayerBullets": true,
         "texture": "destroyer_rocket",
         "shootSound": "sfx/gun2.ogg",
         "speed": 90,
-        "spread": 0,
-        "bulletsPerShot": 1,
+        "spread": 9.5,
+        "bulletsPerShot": 3,
         "damage": 15,
         "homing": true,
-        "explosionTimer": 2.1,
+        "explosionTimer": 3.5,
         "homingSpeed": 130,
         "trail": "particles/bullet_trail_left_yellow.p",
         "trailScale": 0.3,
-        "trailOffset": [15, 0],
+        "trailOffset": [13, 0],
         "drawTrailOnTop": false,
         "explosionEffect": "particles/explosion.p",
         "explosionScale": 0.5,
-        "height": 24,
-        "width": 40,
+        "height": 8,
+        "width": 13.34,
         "offset": [0, 0]
       },
-      "layer": 0,
+      "layer": 3,
       "offset": {
         "relativeTo": "body",
-        "X": 0,
-        "Y": 90
+        "X": 140,
+        "Y": 102
       },
       "fireRate": {
         "initialDelay": 0,
-        "baseRate": 0.5,
+        "baseRate": 0.3,
         "randomness": 0
       }
     },
@@ -93,12 +92,66 @@
       "override": {
         "offset": {
           "relativeTo": "body",
+          "X": 140,
+          "Y": 34
+        },
+        "fireRate": {
+          "initialDelay": 0.3,
+          "baseRate": 0.3,
+          "randomness": 0
+        }
+      }
+    },
+    "cannonLaserTop": {
+      "type": "cannon",
+      "drawBulletsOnTop": false,
+      "hasCollision": false,
+      "width": 2,
+      "height": 2,
+      "originX": 1,
+      "originY": 1,
+      "offset": {
+        "relativeTo": "body",
+        "X": 0,
+        "Y": 90
+      },
+      "canAim": false,
+      "aimAnimation": "noTexture",
+      "bullet": {
+        "isLaser": true,
+        "hasCollisionWithPlayerBullets": false,
+        "texture": "laser",
+        "shootSound": "sfx/laser.ogg",
+        "fadeOutTimer": 1,
+        "spread": 0,
+        "bulletsPerShot": 1,
+        "damage": 0.05,
+        "height": 20,
+        "color": "ff0000ff",
+        "offset": [0, 0]
+      },
+      "fireRate": {
+        "initialDelay": 0,
+        "baseRate": 0.3,
+        "randomness": 0
+      },
+      "linked": false,
+      "hasAnimation": false,
+      "texture": "noTexture",
+      "layer": 0
+    },
+    "cannonLaserBottom": {
+      "type": "clone",
+      "copyFrom": "cannonLaserTop",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
           "X": 0,
           "Y": 45
         },
         "fireRate": {
-          "initialDelay": 0.5,
-          "baseRate": 0.5,
+          "initialDelay": 0.15,
+          "baseRate": 0.3,
           "randomness": 0
         }
       }
@@ -153,13 +206,13 @@
         "ai": {
           "xBounds": [400, 800],
           "yBounds": [0, 480],
-          "basePosition": [550, 170],
+          "basePosition": [530, 170],
           "dodgeBullets": true,
           "bulletDodgeSpeed": 130,
           "followPlayer": true,
           "playerFollowSpeed": 90,
           "playerNotDamagedMaxTime": 5,
-          "playerInsideEntityMaxTime": 3
+          "playerInsideEntityMaxTime": 2
         }
       },
       "topCannonActivate": {
@@ -179,6 +232,24 @@
         "active": true,
         "changeTexture": false,
         "move": false
+      },
+      "topCannonLaserActivate": {
+        "target": "cannonLaserTop",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": false
+      },
+      "bottomCannonLaserActivate": {
+        "target": "cannonLaserBottom",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": true,
+        "active": true,
+        "changeTexture": false,
+        "move": false
       }
     },
     "thirdPhase": {
@@ -192,8 +263,8 @@
         "frameDuration": 0.0334,
         "move": {
           "shake": {
-            "shakeIntensityX": 3,
-            "shakeIntensityY": 3,
+            "shakeIntensityX": 7,
+            "shakeIntensityY": 7,
             "shakePeriod": 0.3,
             "stopPreviousAnimations": false
           }
@@ -201,16 +272,25 @@
         "ai": {
           "xBounds": [400, 800],
           "yBounds": [0, 480],
-          "basePosition": [550, 170],
+          "basePosition": [530, 170],
           "dodgeBullets": false,
           "followPlayer": true,
           "playerFollowSpeed": 110,
           "playerNotDamagedMaxTime": 1.3,
-          "playerInsideEntityMaxTime": 2
+          "playerInsideEntityMaxTime": 1.7
         }
       },
       "topCannonDeactivate": {
         "target": "cannonTop",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "visible": false,
+        "active": false,
+        "changeTexture": false,
+        "move": false
+      },
+      "topCannonLaserDeactivate": {
+        "target": "cannonLaserTop",
         "enableCollisions": false,
         "showHealthBar": false,
         "visible": false,
@@ -229,7 +309,7 @@
         "changeTexture": false,
         "move": {
           "moveLinearY": {
-            "moveBy": -600,
+            "moveBy": -500,
             "speed": 5,
             "stopPreviousAnimations": true
           },

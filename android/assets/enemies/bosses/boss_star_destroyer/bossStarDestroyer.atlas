@@ -5,203 +5,210 @@ filter: Nearest,Nearest
 repeat: none
 body_phase1
   rotate: false
-  xy: 1, 427
+  xy: 1, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 0
 body_phase1
   rotate: false
-  xy: 1, 356
+  xy: 1, 359
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 1
 body_phase1
   rotate: false
-  xy: 130, 427
+  xy: 130, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 2
 body_phase1
   rotate: false
-  xy: 1, 285
+  xy: 1, 288
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 3
 body_phase2
   rotate: false
-  xy: 130, 356
+  xy: 130, 359
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 0
 body_phase2
   rotate: false
-  xy: 259, 427
+  xy: 259, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 1
 body_phase2
   rotate: false
-  xy: 1, 214
+  xy: 1, 217
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 10
 body_phase2
   rotate: false
-  xy: 130, 285
+  xy: 130, 288
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 11
 body_phase2
   rotate: false
-  xy: 259, 356
+  xy: 259, 359
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 2
 body_phase2
   rotate: false
-  xy: 388, 427
+  xy: 388, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 3
 body_phase2
   rotate: false
-  xy: 1, 143
+  xy: 1, 146
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 4
 body_phase2
   rotate: false
-  xy: 130, 214
+  xy: 130, 217
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 5
 body_phase2
   rotate: false
-  xy: 259, 285
+  xy: 259, 288
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 6
 body_phase2
   rotate: false
-  xy: 388, 356
+  xy: 388, 359
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 7
 body_phase2
   rotate: false
-  xy: 517, 427
+  xy: 517, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 8
 body_phase2
   rotate: false
-  xy: 1, 72
+  xy: 1, 75
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 9
 body_phase3
   rotate: false
-  xy: 130, 143
+  xy: 130, 146
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 0
 body_phase3
   rotate: false
-  xy: 259, 214
+  xy: 259, 217
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 1
 body_phase3
   rotate: false
-  xy: 388, 285
+  xy: 388, 288
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 10
 body_phase3
   rotate: false
-  xy: 517, 356
+  xy: 517, 359
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 11
 body_phase3
   rotate: false
-  xy: 646, 427
+  xy: 646, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 2
 body_phase3
   rotate: false
-  xy: 1, 1
+  xy: 1, 4
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 3
 body_phase3
   rotate: false
-  xy: 130, 72
+  xy: 130, 75
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 4
 body_phase3
   rotate: false
-  xy: 259, 143
+  xy: 259, 146
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 5
 body_phase3
   rotate: false
-  xy: 388, 214
+  xy: 388, 217
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 6
 body_phase3
   rotate: false
-  xy: 517, 285
+  xy: 517, 288
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 7
 body_phase3
   rotate: false
-  xy: 646, 356
+  xy: 646, 359
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 8
 body_phase3
   rotate: false
-  xy: 775, 427
+  xy: 775, 430
   size: 127, 69
   orig: 127, 69
   offset: 0, 0
   index: 9
+laser
+  rotate: false
+  xy: 130, 1
+  size: 40, 72
+  orig: 40, 72
+  offset: 0, 0
+  index: 0
 destroyer_rocket
   rotate: false
-  xy: 130, 46
+  xy: 259, 120
   size: 40, 24
   orig: 40, 24
   offset: 0, 0

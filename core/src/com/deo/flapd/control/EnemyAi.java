@@ -57,6 +57,8 @@ public class EnemyAi {
                 playerLastHealth = player.Health + player.Shield;
                 if (playerLastHealthDifference >= 0) {
                     playerNotDamagedTimer += delta;
+                } else {
+                    playerNotDamagedTimer = 0;
                 }
                 playerInsideEntityTimer = clamp(playerInsideEntityTimer - delta, 0, playerInsideEntityMaxTime);
                 if (targetEntity.overlaps(playerBounds)) {
@@ -70,7 +72,6 @@ public class EnemyAi {
                             getRandomInRange(YMovementBounds[0], YMovementBounds[1]), false);
                 }
                 if (playerNotDamagedTimer > playerNotDamagedMaxTime) {
-                    playerNotDamagedTimer = 0;
                     float targetX = playerBounds.getX() + playerBounds.getWidth() + 15;
                     float targetY = playerBounds.getY() + playerBounds.getHeight() / 2f - targetEntity.height / 2f;
                     setTargetPosition(targetX, targetY, false);

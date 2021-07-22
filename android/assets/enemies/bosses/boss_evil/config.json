@@ -89,7 +89,7 @@
         "trailOffset": [0, 0],
         "drawTrailOnTop": true,
         "explosionEffect": "particles/explosion_evil_small.p",
-        "explosionScale": 1,
+        "explosionScale": 0.3,
         "height": 10,
         "width": 10,
         "offset": [0, 0]
@@ -102,8 +102,8 @@
       "linked": false,
       "hasAnimation": false,
       "texture": "evil_cannon",
-      "explosionEffect": "particles/explosion_evil.p",
-      "explosionScale": 0.5,
+      "explosionEffect": "particles/explosion_evil_small.p",
+      "explosionScale": 0.9,
       "explosionSound": "sfx/explosion.ogg",
       "layer": 0,
       "drops": {
