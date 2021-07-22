@@ -347,7 +347,7 @@ public class Bullet {
                 }
                 this.bullet.draw(batch);
                 
-                if (bullet.x > 800 || bullet.x < Math.max(bullet.height, bullet.width) || bullet.y > 480 || bullet.y < Math.max(bullet.height, bullet.width)) {
+                if (bullet.x > 800 || bullet.x < Math.max(bullet.height, bullet.width) || bullet.y > 480 || bullet.y < -Math.max(bullet.height, bullet.width)) {
                     removeBullet(i, false);
                 }
             }

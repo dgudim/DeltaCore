@@ -18,6 +18,7 @@ import com.deo.flapd.utils.DUtils;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
 import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
+import static java.lang.StrictMath.min;
 
 public class EnemyBullet extends Entity {
     
@@ -107,9 +108,7 @@ public class EnemyBullet extends Entity {
     }
     
     private boolean checkLaserIntersection(Rectangle hitBox) {
-        return false;
-        // TODO: 7/22/2021 fix asap
-        /*
+        if (hitBox.width <= 5 || hitBox.height <= 5) return false;
         float step = min(hitBox.width, hitBox.height) / 3f;
         float X1 = hitBox.x;
         float Y1 = hitBox.y;
@@ -123,8 +122,6 @@ public class EnemyBullet extends Entity {
             }
         }
         return false;
-        
-         */
     }
     
     public void draw(SpriteBatch batch, float delta) {
