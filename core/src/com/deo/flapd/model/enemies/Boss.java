@@ -515,7 +515,7 @@ class Part extends BasePart {
                 }
                 if (newConfig.get("override", i).name.equals("aimAngleLimit")) {
                     if (this instanceof Cannon) {
-                        ((Cannon)this).aimAngleLimit = newConfig.get("override", i).asIntArray();
+                        ((Cannon) this).aimAngleLimit = newConfig.get("override", i).asIntArray();
                     }
                 }
             }
@@ -1045,26 +1045,23 @@ class Action {
         int movementCount;
         
         if (boss.hasAi && this.target.equals(boss.body)) {
+            hasAiSettingsChange = !actionValue.get("ai").isBoolean();
             if (actionValue.get("ai").isBoolean()) {
                 log("no ai change for " + actionValue.name, INFO);
-                hasAiSettingsChange = false;
             } else {
-                if (active) {
-                    dodgeBullets = actionValue.get("ai").getBoolean(false, "dodgeBullets");
-                    if (dodgeBullets) {
-                        bulletDodgeSpeed = actionValue.get("ai").getFloat(90, "bulletDodgeSpeed");
-                    }
-                    XMovementBounds = actionValue.get("ai").getIntArray(new int[]{400, 800}, "xBounds");
-                    YMovementBounds = actionValue.get("ai").getIntArray(new int[]{0, 480}, "yBounds");
-                    followPlayer = actionValue.get("ai").getBoolean(false, "followPlayer");
-                    if (followPlayer) {
-                        playerFollowSpeed = actionValue.get("ai").getFloat(50, "playerFollowSpeed");
-                        playerNotDamagedMaxTime = actionValue.get("ai").getFloat(10, "playerNotDamagedMaxTime");
-                        playerInsideEntityMaxTime = actionValue.get("ai").getFloat(3, "playerInsideEntityMaxTime");
-                    }
-                    basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
+                dodgeBullets = actionValue.get("ai").getBoolean(false, "dodgeBullets");
+                if (dodgeBullets) {
+                    bulletDodgeSpeed = actionValue.get("ai").getFloat(90, "bulletDodgeSpeed");
                 }
-                hasAiSettingsChange = active;
+                XMovementBounds = actionValue.get("ai").getIntArray(new int[]{400, 800}, "xBounds");
+                YMovementBounds = actionValue.get("ai").getIntArray(new int[]{0, 480}, "yBounds");
+                followPlayer = actionValue.get("ai").getBoolean(false, "followPlayer");
+                if (followPlayer) {
+                    playerFollowSpeed = actionValue.get("ai").getFloat(50, "playerFollowSpeed");
+                    playerNotDamagedMaxTime = actionValue.get("ai").getFloat(10, "playerNotDamagedMaxTime");
+                    playerInsideEntityMaxTime = actionValue.get("ai").getFloat(3, "playerInsideEntityMaxTime");
+                }
+                basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
             }
         }
         if (actionValue.get("move").isBoolean()) {
@@ -1103,11 +1100,11 @@ class Action {
         target.visible = visible;
         target.active = active;
         target.showHealthBar = showHealthBar;
-        if (hasAiSettingsChange) {
-            boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
-                    XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, playerInsideEntityMaxTime, new Vector2(basePosition[0], basePosition[1]));
-        }
         if (boss.hasAi) {
+            if (hasAiSettingsChange) {
+                boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
+                        XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, playerInsideEntityMaxTime, new Vector2(basePosition[0], basePosition[1]));
+            }
             boss.bossAi.active = active;
         }
     }
