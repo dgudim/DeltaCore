@@ -5,6 +5,7 @@
     "score": 9000,
     "randomness": 1000
   },
+  "hasAi": false,
   "parts": {
     "body": {
       "type": "basePart",

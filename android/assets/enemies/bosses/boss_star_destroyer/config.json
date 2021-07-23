@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": -19000,
+    "score": 19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -69,7 +69,7 @@
         "trailOffset": [13, 0],
         "drawTrailOnTop": false,
         "explosionEffect": "particles/explosion.p",
-        "explosionScale": 0.5,
+        "explosionScale": 0.3,
         "height": 8,
         "width": 13.34,
         "offset": [0, 0]
