@@ -1,0 +1,55 @@
+
+menuUi.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+menuBg
+  rotate: false
+  xy: 1, 637
+  size: 640, 384
+  orig: 640, 384
+  offset: 0, 0
+  index: -1
+infoBg
+  rotate: false
+  xy: 1, 315
+  size: 416, 320
+  orig: 416, 320
+  offset: 0, 0
+  index: -1
+treeBg
+  rotate: false
+  xy: 1, 1
+  size: 408, 312
+  orig: 408, 312
+  offset: 0, 0
+  index: -1
+infoBg2
+  rotate: false
+  xy: 419, 315
+  size: 416, 320
+  orig: 416, 320
+  offset: 0, 0
+  index: -1
+greyishButton
+  rotate: false
+  xy: 411, 263
+  size: 150, 50
+  orig: 150, 50
+  offset: 0, 0
+  index: -1
+lamp
+  rotate: false
+  xy: 643, 993
+  size: 12, 28
+  orig: 12, 28
+  offset: 0, 0
+  index: -1
+9bg
+  rotate: false
+  xy: 411, 245
+  size: 16, 16
+  split: 5, 5, 5, 5
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

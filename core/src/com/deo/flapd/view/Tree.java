@@ -3,9 +3,7 @@ package com.deo.flapd.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -105,7 +103,8 @@ public class Tree {
         buttonSkin.addRegions((TextureAtlas) assetManager.get("menuButtons/menuButtons.atlas"));
         
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        scrollPaneStyle.background = new NinePatchDrawable(new NinePatch((Texture) assetManager.get("9bg.png"), 5, 5, 5, 5));
+        
+        scrollPaneStyle.background = new NinePatchDrawable(assetManager.get("ui/menuUi.atlas", TextureAtlas.class).createPatch("9bg"));
         
         scrollPaneStyle.hScrollKnob = constructFilledImageWithColor(4, 5, Color.DARK_GRAY);
         

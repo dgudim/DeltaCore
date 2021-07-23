@@ -7,16 +7,16 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
@@ -47,18 +47,15 @@ public class GameUi {
     private final Stage PauseStage;
     private final OrthographicCamera cam;
     
-    private final Skin touchpad_skin;
     private float deltaX;
     private float deltaY;
     
-    private final ProgressBar health;
-    private final ProgressBar shield;
-    private final ProgressBar charge;
+    private final ProgressBar healthProgressBar;
+    private final ProgressBar shieldProgressBar;
+    private final ProgressBar chargeProgressBar;
     
     boolean is_firing;
     boolean is_firing_secondary;
-    
-    private final Skin pause_skin;
     
     private final BitmapFont font_numbers;
     private final BitmapFont font_white;
@@ -66,13 +63,7 @@ public class GameUi {
     
     private final SpriteBatch batch;
     
-    private final Texture PauseBg;
-    private final Texture PauseBg2;
-    private final Texture pauseButton_e;
-    private final Texture pauseButton_o;
-    private final Texture pauseButton_d;
-    private final Texture knob;
-    private final Texture touch_bg;
+    private final TextureRegion PauseBg;
     
     private final float uiScale;
     private final float difficulty;
@@ -113,23 +104,16 @@ public class GameUi {
         cam = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(cam);
         
-        knob = new Texture("knob.png");
-        touch_bg = new Texture("bg_stick.png");
+        TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
         
-        PauseBg = new Texture("grey.png");
-        PauseBg2 = new Texture("pauseBg.png");
-        pauseButton_e = new Texture("buttonPauseBlank_enabled.png");
-        pauseButton_o = new Texture("buttonPauseBlank_over.png");
-        pauseButton_d = new Texture("buttonPauseBlank_disabled.png");
+        Image fireButton = new Image(gameUiAtlas.findRegion("firebutton"));
+        Image weaponChangeButton = new Image(gameUiAtlas.findRegion("weaponbutton"));
+        Image pause = new Image(gameUiAtlas.findRegion("pause"));
+        Image levelScore = new Image(gameUiAtlas.findRegion("level_score_indicator"));
+        Image money_display = new Image(gameUiAtlas.findRegion("money_display"));
+        Image stats_indicator_panel = new Image(gameUiAtlas.findRegion("health_indicator"));
         
-        Image fireButton = new Image((Texture) assetManager.get("firebutton.png"));
-        Image weaponChangeButton = new Image((Texture) assetManager.get("weaponbutton.png"));
-        Image pause = new Image((Texture) assetManager.get("pause.png"));
-        Image levelScore = new Image((Texture) assetManager.get("level score indicator.png"));
-        Image money_display = new Image((Texture) assetManager.get("money_display.png"));
-        Image pause2 = new Image((Texture) assetManager.get("health indicator.png"));
-        
-        pause2.setBounds(658 - 142 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
+        stats_indicator_panel.setBounds(658 - 142 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
         pause.setBounds(770 - 32 * (uiScale - 1), 450 - 32 * (uiScale - 1), 29 * uiScale, 29 * uiScale);
         levelScore.setBounds(516 - 284 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
         money_display.setBounds(374 - 426 * (uiScale - 1), 428 - 52 * (uiScale - 1), 142 * uiScale, 52 * uiScale);
@@ -146,26 +130,20 @@ public class GameUi {
         multiplexer.addProcessor(PauseStage);
         Gdx.input.setInputProcessor(multiplexer);
         
-        pause_skin = new Skin();
-        pause_skin.add("pauseBg", PauseBg2);
-        pause_skin.add("button_e", pauseButton_e);
-        pause_skin.add("button_o", pauseButton_o);
-        pause_skin.add("button_d", pauseButton_d);
-        
-        Table table = new Table();
-        table.bottom();
-        table.add(weaponChangeButton).padRight(5);
-        table.add(fireButton);
-        table.row();
-        table.setBounds(511 - 283 * (uiScale - 1.1f), 5, 283.5f * (uiScale - 0.1f), 69.75f * (uiScale - 0.1f));
+        Table weaponControlls = new Table();
+        weaponControlls.bottom();
+        weaponControlls.add(weaponChangeButton).padRight(5);
+        weaponControlls.add(fireButton);
+        weaponControlls.row();
+        weaponControlls.setBounds(511 - 283 * (uiScale - 1.1f), 5, 283.5f * (uiScale - 0.1f), 69.75f * (uiScale - 0.1f));
         
         TextButton.TextButtonStyle pauseButtonStyle = new TextButton.TextButtonStyle();
         pauseButtonStyle.font = font_buttons;
-        pauseButtonStyle.up = pause_skin.getDrawable("button_d");
+        pauseButtonStyle.up = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_disabled"));
         pauseButtonStyle.fontColor = Color.valueOf("#FF8000");
-        pauseButtonStyle.over = pause_skin.getDrawable("button_o");
+        pauseButtonStyle.over = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_over"));
         pauseButtonStyle.overFontColor = Color.valueOf("#FF9505");
-        pauseButtonStyle.down = pause_skin.getDrawable("button_e");
+        pauseButtonStyle.down = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_enabled"));
         pauseButtonStyle.downFontColor = Color.valueOf("#FFAF05");
         
         TextButton exit_button = new TextButton("Exit", pauseButtonStyle);
@@ -189,15 +167,12 @@ public class GameUi {
         pause1.row();
         pause1.add(exit_button).padRight(341 * (uiScale - 1));
         
-        pause1.setBackground(pause_skin.getDrawable("pauseBg"));
-        
-        touchpad_skin = new Skin();
-        touchpad_skin.add("touchBg", touch_bg);
-        touchpad_skin.add("touchKnob", knob);
+        pause1.setBackground(new TextureRegionDrawable(gameUiAtlas.findRegion("pauseBg")));
+        PauseBg = gameUiAtlas.findRegion("grey");
         
         Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
-        touchpadStyle.background = touchpad_skin.getDrawable("touchBg");
-        touchpadStyle.knob = touchpad_skin.getDrawable("touchKnob");
+        touchpadStyle.background = new TextureRegionDrawable(gameUiAtlas.findRegion("bg_stick"));
+        touchpadStyle.knob = new TextureRegionDrawable(gameUiAtlas.findRegion("knob"));
         touchpadStyle.knob.setMinWidth(22 * uiScale);
         touchpadStyle.knob.setMinHeight(22 * uiScale);
         
@@ -225,24 +200,24 @@ public class GameUi {
         chargeBarStyle.knob = BarBackgroundBlank;
         chargeBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.YELLOW);
         
-        health = new ProgressBar(0, this.player.healthCapacity * this.player.healthMultiplier, 0.01f, false, healthBarStyle);
-        shield = new ProgressBar(0, this.player.shieldStrength * this.player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
-        charge = new ProgressBar(0, this.player.chargeCapacity * this.player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
+        healthProgressBar = new ProgressBar(0, this.player.healthCapacity * this.player.healthMultiplier, 0.01f, false, healthBarStyle);
+        shieldProgressBar = new ProgressBar(0, this.player.shieldStrength * this.player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
+        chargeProgressBar = new ProgressBar(0, this.player.chargeCapacity * this.player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
         
-        health.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
-        shield.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);
-        charge.setBounds(666 - 134 * (uiScale - 1), 457 - 18 * (uiScale - 1), 56 * uiScale, 10);
+        healthProgressBar.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
+        shieldProgressBar.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);
+        chargeProgressBar.setBounds(666 - 134 * (uiScale - 1), 457 - 18 * (uiScale - 1), 56 * uiScale, 10);
         
-        health.setAnimateDuration(0.25f);
-        shield.setAnimateDuration(0.25f);
-        charge.setAnimateDuration(0.25f);
+        healthProgressBar.setAnimateDuration(0.25f);
+        shieldProgressBar.setAnimateDuration(0.25f);
+        chargeProgressBar.setAnimateDuration(0.25f);
         
         if (transparency) {
-            health.setColor(1, 1, 1, 0.5f);
-            shield.setColor(1, 1, 1, 0.5f);
-            charge.setColor(1, 1, 1, 0.5f);
+            healthProgressBar.setColor(1, 1, 1, 0.5f);
+            shieldProgressBar.setColor(1, 1, 1, 0.5f);
+            chargeProgressBar.setColor(1, 1, 1, 0.5f);
             pause.setColor(1, 1, 1, 0.5f);
-            pause2.setColor(1, 1, 1, 0.5f);
+            stats_indicator_panel.setColor(1, 1, 1, 0.5f);
             levelScore.setColor(1, 1, 1, 0.5f);
             money_display.setColor(1, 1, 1, 0.5f);
             font_numbers.setColor(0, 1, 1, 0.5f);
@@ -250,15 +225,15 @@ public class GameUi {
             font_numbers.setColor(0, 1, 1, 1);
         }
         
-        stage.addActor(pause2);
+        stage.addActor(stats_indicator_panel);
         stage.addActor(pause);
         stage.addActor(levelScore);
         stage.addActor(money_display);
         stage.addActor(touchpad);
-        stage.addActor(shield);
-        stage.addActor(health);
-        stage.addActor(charge);
-        stage.addActor(table);
+        stage.addActor(shieldProgressBar);
+        stage.addActor(healthProgressBar);
+        stage.addActor(chargeProgressBar);
+        stage.addActor(weaponControlls);
         
         PauseStage.addActor(pause1);
         
@@ -377,9 +352,9 @@ public class GameUi {
         }
         
         batch.begin();
-        health.setValue(player.Health);
-        shield.setValue(player.Shield);
-        charge.setValue(player.Charge);
+        healthProgressBar.setValue(player.Health);
+        shieldProgressBar.setValue(player.Shield);
+        chargeProgressBar.setValue(player.Charge);
         
         if (transparency) {
             font_main.setColor(0, 0, 0, 0.7f);
@@ -424,16 +399,6 @@ public class GameUi {
         font_main.dispose();
         font_numbers.dispose();
         font_white.dispose();
-        pause_skin.dispose();
-        touchpad_skin.dispose();
-        
-        knob.dispose();
-        touch_bg.dispose();
-        PauseBg.dispose();
-        PauseBg2.dispose();
-        pauseButton_e.dispose();
-        pauseButton_d.dispose();
-        pauseButton_o.dispose();
         
         putInteger("money", GameLogic.money);
     }

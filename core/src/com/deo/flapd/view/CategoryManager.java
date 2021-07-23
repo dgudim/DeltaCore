@@ -1,7 +1,6 @@
 package com.deo.flapd.view;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -53,11 +52,11 @@ public class CategoryManager extends Actor{
         Tbackground = new Image();
 
         if(!background.equals("")) {
-            this.background = new Image((Texture) assetManager.get(background+".png"));
+            this.background = new Image(assetManager.get("ui/menuUi.atlas", TextureAtlas.class).findRegion(background));
             this.background.setVisible(false);
         }
         if(!tableBackground.equals("")) {
-            Tbackground = new Image((Texture) assetManager.get(tableBackground+".png"));
+            Tbackground = new Image(assetManager.get("ui/menuUi.atlas", TextureAtlas.class).findRegion(tableBackground));
             Tbackground.setVisible(false);
         }
 

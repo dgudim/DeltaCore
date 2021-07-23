@@ -144,16 +144,18 @@ public class MenuScreen implements Screen {
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
-        MenuBg = new Image((Texture) assetManager.get("menuBg.png"));
-        Lamp = new Image((Texture) (assetManager.get("lamp.png")));
+        TextureAtlas menuUiAtlas = assetManager.get("ui/menuUi.atlas", TextureAtlas.class);
+        
+        MenuBg = new Image(menuUiAtlas.findRegion("menuBg"));
+        Lamp = new Image(menuUiAtlas.findRegion("lamp"));
         MenuBg.setBounds(0, 0, 800, 480);
         
         font_main = assetManager.get("fonts/font2(old).fnt");
         
-        Bg = assetManager.get("bg_old.png");
+        Bg = assetManager.get("backgrounds/bg_menu.png");
         Bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         
-        FillTexture = new Image((Texture) assetManager.get("menuFill.png"));
+        FillTexture = new Image(assetManager.get("screenFill.png", Texture.class));
         FillTexture.setSize(456, 72);
         
         currentShipTexture = getString("currentArmour");
@@ -164,7 +166,7 @@ public class MenuScreen implements Screen {
         
         initializeShip();
         
-        Image buildNumber = new Image((Texture) assetManager.get("greyishButton.png"));
+        Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
         buildNumber.setBounds(5, 5, 150, 50);
         
         Lamp.setBounds(730, 430, 15, 35);

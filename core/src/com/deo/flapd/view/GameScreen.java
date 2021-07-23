@@ -80,9 +80,9 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
-        bg1 = assetManager.get("bg_layer1.png");
-        bg2 = assetManager.get("bg_layer2.png");
-        FillTexture = assetManager.get("menuFill.png");
+        bg1 = assetManager.get("backgrounds/bg_layer1.png");
+        bg2 = assetManager.get("backgrounds/bg_layer2.png");
+        FillTexture = assetManager.get("screenFill.png");
         
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);

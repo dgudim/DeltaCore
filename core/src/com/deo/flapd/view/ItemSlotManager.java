@@ -83,7 +83,7 @@ public class ItemSlotManager {
         holderGroup = new Group();
         inventory = new Table();
         
-        inventory.setBackground(new TextureRegionDrawable(new Texture("buttonPauseBlank_disabled.png")));
+        inventory.setBackground(new TextureRegionDrawable(assetManager.get("ui/gameUi.atlas", TextureAtlas.class).findRegion("buttonPauseBlank_disabled")));
         
         scrollPane = new ScrollPane(table);
         

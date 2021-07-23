@@ -138,24 +138,22 @@ public class LoadingScreen implements Screen {
         assetManager.load("bonuses.atlas", TextureAtlas.class);
         assetManager.load("enemies/enemies.atlas", TextureAtlas.class);
         assetManager.load("enemies/ufo/ufo.atlas", TextureAtlas.class);
-        assetManager.load("9bg.png", Texture.class);
         
-        assetManager.load("bg_layer1.png", Texture.class);
-        assetManager.load("bg_layer2.png", Texture.class);
         assetManager.load("pew3.png", Texture.class);
         assetManager.load("pew.png", Texture.class);
         assetManager.load("pew2.png", Texture.class);
-        assetManager.load("homingPew.png", Texture.class);
         assetManager.load("Meteo.png", Texture.class);
         
         assetManager.load("uraniumCell.png", Texture.class);
         
-        assetManager.load("firebutton.png", Texture.class);
-        assetManager.load("weaponbutton.png", Texture.class);
-        assetManager.load("pause.png", Texture.class);
-        assetManager.load("level score indicator.png", Texture.class);
-        assetManager.load("health indicator.png", Texture.class);
-        assetManager.load("money_display.png", Texture.class);
+        assetManager.load("ui/menuUi.atlas", TextureAtlas.class);
+        assetManager.load("ui/gameUi.atlas", TextureAtlas.class);
+        
+        assetManager.load("backgrounds/bg_layer1.png", Texture.class);
+        assetManager.load("backgrounds/bg_layer2.png", Texture.class);
+        assetManager.load("backgrounds/bg_menu.png", Texture.class);
+        
+        assetManager.load("screenFill.png", Texture.class);
         
         assetManager.load("checkpoint.png", Texture.class);
         assetManager.load("checkpoint_green.png", Texture.class);
@@ -163,16 +161,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("cat_meteorite.png", Texture.class);
         assetManager.load("whiskas.png", Texture.class);
         assetManager.load("laser.png", Texture.class);
-        
-        assetManager.load("greyishButton.png", Texture.class);
-        
-        assetManager.load("menuBg.png", Texture.class);
-        assetManager.load("menuFill.png", Texture.class);
-        assetManager.load("lamp.png", Texture.class);
-        assetManager.load("infoBg.png", Texture.class);
-        assetManager.load("infoBg2.png", Texture.class);
-        assetManager.load("treeBg.png", Texture.class);
-        assetManager.load("bg_old.png", Texture.class);
     }
     
     @Override

@@ -1,0 +1,96 @@
+
+gameUi.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+grey
+  rotate: false
+  xy: 1, 535
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+pauseBg
+  rotate: false
+  xy: 1, 53
+  size: 720, 480
+  orig: 720, 480
+  offset: 0, 0
+  index: -1
+firebutton
+  rotate: false
+  xy: 803, 875
+  size: 284, 140
+  orig: 284, 140
+  offset: 0, 0
+  index: -1
+weaponbutton
+  rotate: false
+  xy: 803, 733
+  size: 284, 140
+  orig: 284, 140
+  offset: 0, 0
+  index: -1
+buttonPauseBlank_disabled
+  rotate: false
+  xy: 1, 1
+  size: 340, 50
+  orig: 340, 50
+  offset: 0, 0
+  index: -1
+buttonPauseBlank_enabled
+  rotate: false
+  xy: 1089, 965
+  size: 340, 50
+  orig: 340, 50
+  offset: 0, 0
+  index: -1
+buttonPauseBlank_over
+  rotate: false
+  xy: 343, 1
+  size: 340, 50
+  orig: 340, 50
+  offset: 0, 0
+  index: -1
+money_display
+  rotate: false
+  xy: 803, 627
+  size: 284, 104
+  orig: 284, 104
+  offset: 0, 0
+  index: -1
+health_indicator
+  rotate: false
+  xy: 1089, 881
+  size: 142, 82
+  orig: 142, 82
+  offset: 0, 0
+  index: -1
+level_score_indicator
+  rotate: false
+  xy: 803, 543
+  size: 142, 82
+  orig: 142, 82
+  offset: 0, 0
+  index: -1
+bg_stick
+  rotate: false
+  xy: 723, 462
+  size: 71, 71
+  orig: 71, 71
+  offset: 0, 0
+  index: -1
+knob
+  rotate: false
+  xy: 1431, 983
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 685, 23
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1

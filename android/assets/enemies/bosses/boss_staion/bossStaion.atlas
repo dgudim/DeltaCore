@@ -1,0 +1,82 @@
+
+bossStaion.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+dark_station
+  rotate: false
+  xy: 1, 31
+  size: 320, 96
+  orig: 320, 96
+  offset: 0, 0
+  index: -1
+core_shield
+  rotate: false
+  xy: 1, 1
+  size: 33, 28
+  orig: 33, 28
+  offset: 0, 0
+  index: -1
+heavy_artillery
+  rotate: false
+  xy: 323, 107
+  size: 30, 20
+  orig: 30, 20
+  offset: 0, 0
+  index: -1
+rocket_launcher
+  rotate: false
+  xy: 36, 4
+  size: 23, 25
+  orig: 23, 25
+  offset: 0, 0
+  index: -1
+dark_core
+  rotate: false
+  xy: 323, 91
+  size: 19, 14
+  orig: 19, 14
+  offset: 0, 0
+  index: -1
+standard_turret
+  rotate: false
+  xy: 355, 115
+  size: 16, 12
+  orig: 16, 12
+  offset: 0, 0
+  index: -1
+ventilation_top
+  rotate: false
+  xy: 61, 19
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+ventilation
+  rotate: false
+  xy: 323, 81
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+machine_gun
+  rotate: false
+  xy: 344, 100
+  size: 8, 5
+  orig: 8, 5
+  offset: 0, 0
+  index: -1
+core_guardian
+  rotate: false
+  xy: 355, 109
+  size: 7, 4
+  orig: 7, 4
+  offset: 0, 0
+  index: -1
+dark_lamp
+  rotate: false
+  xy: 373, 123
+  size: 4, 4
+  orig: 4, 4
+  offset: 0, 0
+  index: -1
