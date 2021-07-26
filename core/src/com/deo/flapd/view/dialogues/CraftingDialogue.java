@@ -294,11 +294,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private String[] getRequiredItems() {
-        if (treeJson.get(result, "items") == null) {
-            return new String[]{};
-        } else {
-            return treeJson.getStringArray(new String[]{}, result, "items");
-        }
+        return treeJson.getStringArray(new String[]{""}, result, "items");
     }
     
     private String getDescription(String result) {
@@ -316,11 +312,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private int[] getRequiredItemCounts() {
-        if (treeJson.get(result, "itemCounts") == null) {
-            return new int[]{};
-        } else {
-            return treeJson.getIntArray(new int[]{}, result, "itemCounts");
-        }
+        return treeJson.getIntArray(new int[]{0}, result, "itemCounts");
     }
     
     private int getResultCount() {
@@ -379,7 +371,7 @@ public class CraftingDialogue extends Dialogue {
     private void addRequirementsTable() {
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
-    
+        
         final JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
         final Array<String> Jitems = new Array<>();
         Jitems.addAll(slotsJson.getStringArray(new String[]{}, "slots"));
