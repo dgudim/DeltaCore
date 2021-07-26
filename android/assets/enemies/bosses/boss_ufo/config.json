@@ -20,22 +20,7 @@
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
       "explosionSound": "sfx/explosion.ogg",
-      "layer": 1,
-      "drops": {
-        "items": {
-          "timer": 1.3,
-          "rarity": [1, 2],
-          "count": [1, 2]
-        },
-        "money": {
-          "timer": 1.3,
-          "count": [1, 10]
-        },
-        "bonuses": {
-          "type": [1, 3],
-          "chance": 30
-        }
-      }
+      "layer": 1
     },
     "cannon": {
       "type": "cannon",
@@ -84,6 +69,21 @@
         "initialDelay": 0,
         "baseRate": 2,
         "randomness": 0.3
+      },
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 2],
+          "count": [1, 2]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 10]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 30
+        }
       }
     }
   },
