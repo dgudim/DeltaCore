@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": -19000,
+    "score": 19000,
     "randomness": 1000
   },
   "hasAi": true,
