@@ -1,0 +1,117 @@
+
+bullets.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bullet_whiskas
+  rotate: false
+  xy: 1, 85
+  size: 315, 422
+  orig: 315, 422
+  offset: 0, 0
+  index: -1
+bullet_thick_long_red
+  rotate: false
+  xy: 1, 65
+  size: 96, 18
+  orig: 96, 18
+  offset: 0, 0
+  index: -1
+bullet_long_yellow
+  rotate: false
+  xy: 318, 487
+  size: 75, 20
+  orig: 75, 20
+  offset: 0, 0
+  index: -1
+bullet_Cannon1
+  rotate: false
+  xy: 1, 43
+  size: 52, 20
+  orig: 52, 20
+  offset: 0, 0
+  index: -1
+bullet_Cannon2
+  rotate: false
+  xy: 318, 465
+  size: 52, 20
+  orig: 52, 20
+  offset: 0, 0
+  index: -1
+bullet_Cannon3
+  rotate: false
+  xy: 99, 71
+  size: 52, 12
+  orig: 52, 12
+  offset: 0, 0
+  index: -1
+bullet_Cannon5
+  rotate: false
+  xy: 395, 495
+  size: 52, 12
+  orig: 52, 12
+  offset: 0, 0
+  index: -1
+bullet_destroyer_rocket
+  rotate: false
+  xy: 1, 17
+  size: 40, 24
+  orig: 40, 24
+  offset: 0, 0
+  index: -1
+bullet_Cannon4
+  rotate: false
+  xy: 55, 49
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+bullet_med_red
+  rotate: false
+  xy: 318, 449
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+bullet_minigun
+  rotate: false
+  xy: 372, 471
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+bullet_shotgun
+  rotate: false
+  xy: 1, 1
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+bullet_long_red
+  rotate: false
+  xy: 99, 66
+  size: 13, 3
+  orig: 13, 3
+  offset: 0, 0
+  index: -1
+bullet_laser
+  rotate: false
+  xy: 153, 74
+  size: 5, 9
+  orig: 5, 9
+  offset: 0, 0
+  index: -1
+bullet_small_blue
+  rotate: false
+  xy: 449, 500
+  size: 7, 7
+  orig: 7, 7
+  offset: 0, 0
+  index: -1
+bullet_thick_red
+  rotate: false
+  xy: 395, 488
+  size: 7, 5
+  orig: 7, 5
+  offset: 0, 0
+  index: -1
