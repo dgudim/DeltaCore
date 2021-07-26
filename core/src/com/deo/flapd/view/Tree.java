@@ -426,7 +426,7 @@ class Node {
         if (name.equals("root")) {
             return name;
         } else {
-            if (treeJson.get(name) == null)
+            if (treeJson.get(name).isNull())
                 throw new IllegalArgumentException("no item declared with name " + name);
             return treeJson.getString("item", name, "type");
         }

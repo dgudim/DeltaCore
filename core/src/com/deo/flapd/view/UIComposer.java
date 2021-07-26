@@ -72,7 +72,7 @@ public class UIComposer {
     
     private void loadStyle(JsonEntry treeJson, String style, Skin textures, Array<String> dependencies, Array<BitmapFont> fonts) {
         String dependency;
-        if (treeJson.get(style) == null) {
+        if (treeJson.get(style).isNull()) {
             throw new IllegalArgumentException("No style defined with name " + style);
         } else {
             dependency = treeJson.getString("noStyleSpecified", style, "loadFrom");
