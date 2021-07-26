@@ -31,6 +31,7 @@ import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
@@ -314,7 +315,7 @@ class BasePart extends Entity {
             moneyCount = currentConfig.getIntArray(new int[]{3, 5}, "drops", "money", "count");
             moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
             
-            explosionSound = Gdx.audio.newSound(Gdx.files.internal(currentConfig.getString("sfx/explosion.ogg", "explosionSound")));
+            explosionSound = assetManager.get(currentConfig.getString("sfx/explosion.ogg", "explosionSound"));
             explosionEffect = new ParticleEffect();
             explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
@@ -430,7 +431,6 @@ class BasePart extends Entity {
     void dispose() {
         if (hasCollision && !type.equals("shield")) {
             explosionEffect.dispose();
-            explosionSound.dispose();
         }
     }
     
@@ -491,7 +491,7 @@ class Part extends BasePart {
         String relativeTo = currentConfig.getString(parts.get(0).name, "offset", "relativeTo");
         relativeX = currentConfig.getFloat(0, "offset", "X");
         relativeY = currentConfig.getFloat(0, "offset", "Y");
-        if (newConfig.getString("part", "type").equals("clone") && newConfig.get("override") != null) {
+        if (newConfig.getString("part", "type").equals("clone")) {
             for (int i = 0; i < newConfig.get("override").size; i++) {
                 if (newConfig.get("override", i).name.equals("offset")) {
                     relativeX = newConfig.get("override", i).getFloat(0, "X");
@@ -519,10 +519,9 @@ class Part extends BasePart {
                     }
                 }
             }
-            
         }
         
-        if (!currentConfig.get("linked").isBoolean()) {
+        if (!currentConfig.get("linked").isBoolean(true)) {
             for (int i = 0; i < parts.size; i++) {
                 if (currentConfig.getString("false", "linked").equals(parts.get(i).name)) {
                     link = parts.get(i);
@@ -613,6 +612,14 @@ class Cannon extends Part {
     
     Sound shootingSound;
     
+    boolean hasPowerupEffect;
+    ParticleEffect powerUpEffect;
+    float powerUpEffectShootDelay;
+    boolean powerUpActive;
+    float powerUpScale;
+    
+    float powerUpOffsetAngle, powerUpOffsetDistance;
+    
     Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
         super(partConfig, textures, parts, body, assetManager);
         
@@ -648,7 +655,21 @@ class Cannon extends Part {
         
         bulletData = new BulletData(currentConfig.get("bullet"));
         
-        shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
+        shootingSound = assetManager.get(bulletData.shootSound);
+        
+        hasPowerupEffect = !currentConfig.get("powerUpEffect").isBoolean(true);
+        if (hasPowerupEffect) {
+            powerUpScale = currentConfig.getFloat(1, "powerUpEffectScale");
+            powerUpEffect = new ParticleEffect();
+            powerUpEffect.load(Gdx.files.internal(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect")), Gdx.files.internal("particles"));
+            powerUpEffectShootDelay = currentConfig.getFloat(1, "powerUpShootDelay");
+            powerUpEffect.scaleEffect(powerUpScale);
+            float[] powerUpOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerUpEffectOffset");
+            powerUpOffset[0] += bulletData.offset[0];
+            powerUpOffset[1] += bulletData.offset[1];
+            powerUpOffsetAngle = MathUtils.atan2(powerUpOffset[1], powerUpOffset[0]) * MathUtils.radiansToDegrees;
+            powerUpOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerUpOffset[0], powerUpOffset[1]);
+        }
         
     }
     
@@ -695,10 +716,26 @@ class Cannon extends Part {
                         break;
                 }
             }
-            timer += delta * fireRate;
-            if (timer > 1 && health > 0 && visible) {
+            if (hasPowerupEffect) {
+                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
+                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
+                powerUpEffect.setPosition(newX, newY);
+                powerUpEffect.update(delta);
+            }
+            if (timer >= 1 + powerUpEffectShootDelay && health > 0 && visible) {
                 shoot();
+                powerUpActive = false;
                 timer = 0;
+            } else {
+                if (timer < 1) {
+                    timer += delta * fireRate;
+                } else {
+                    if (!powerUpActive) {
+                        powerUpEffect.start();
+                        powerUpActive = true;
+                    }
+                    timer += delta;
+                }
             }
         }
     }
@@ -719,24 +756,27 @@ class Cannon extends Part {
         if (!drawBulletsOnTop) {
             super.draw(batch, delta);
         }
+        if (hasPowerupEffect && active) {
+            powerUpEffect.draw(batch);
+        }
     }
     
     void shoot() {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(currentConfig.get("bullet"));
             
-            float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
-            float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + bulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newX = x + additionalOffsetX + originX - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + bulletData.bulletOffsetAngle) * bulletData.bulletOffsetDistance;
+            float newY = y + additionalOffsetY + originY - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + bulletData.bulletOffsetAngle) * bulletData.bulletOffsetDistance;
             float newRot = 0;
             
             if (canAim) {
-                newRot = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + height / 2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                newRot = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + additionalOffsetY + height / 2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + additionalOffsetY + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             
             newRot += getRandomInRange(-10, 10) * bulletData.spread;
             newRot += additionalRotation;
             
-            bullets.add(new EnemyBullet(textures, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
+            bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
         }
         
         if (soundVolume > 0) {
@@ -746,18 +786,23 @@ class Cannon extends Part {
     }
     
     @Override
+    void reset() {
+        super.reset();
+        powerUpEffect.reset();
+    }
+    
+    @Override
     void dispose() {
         super.dispose();
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
-        shootingSound.dispose();
     }
 }
 
 class Movement {
     
-    private final float moveBy;
+    private float moveBy;
     
     private float lastShakeXPos;
     private float lastShakeYPos;
@@ -766,7 +811,7 @@ class Movement {
     private float shakeIntensityY;
     
     private float currentAddPosition;
-    private final float speed;
+    private float speed;
     private float progress;
     private boolean active;
     private BasePart target;
@@ -778,7 +823,7 @@ class Movement {
     private float angleOffset;
     
     private final String type;
-    private final byte directionModifier;
+    private byte directionModifier;
     private final boolean stopPrevAnim;
     
     private final Array<Movement> animations;
@@ -799,15 +844,8 @@ class Movement {
                 break;
             }
         }
-        speed = movementConfig.getFloat(100, "speed");
         
         stopPrevAnim = movementConfig.getBoolean(false, "stopPreviousAnimations");
-        
-        if (movementConfig.getString("inf", "moveBy").equals("inf")) {
-            moveBy = Integer.MAX_VALUE;
-        } else {
-            moveBy = movementConfig.getFloat(Integer.MAX_VALUE, "moveBy");
-        }
         
         type = movementConfig.name;
         if (type.equals("rotateRelativeTo")) {
@@ -825,9 +863,15 @@ class Movement {
             shakeIntensityX = movementConfig.getFloat(10, "shakeIntensityX");
             shakeIntensityY = movementConfig.getFloat(10, "shakeIntensityY");
             shakePeriod = movementConfig.getFloat(0.3f, "shakePeriod");
+        }else{
+            speed = movementConfig.getFloat(100, "speed");
+            if (movementConfig.getString("inf", "moveBy").equals("inf")) {
+                moveBy = Integer.MAX_VALUE;
+            } else {
+                moveBy = movementConfig.getFloat(Integer.MAX_VALUE, "moveBy");
+            }
+            directionModifier = 0 < moveBy ? (byte) 1 : (byte) -1;
         }
-        
-        directionModifier = 0 < moveBy ? (byte) 1 : (byte) -1;
     }
     
     void start() {
@@ -1020,10 +1064,12 @@ class Action {
     float playerInsideEntityMaxTime;
     float[] basePosition;
     
+    String debug;
+    
     Action(JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, Boss boss) {
         
         log("loading boss action, name: " + actionValue.name, INFO);
-        
+        debug = actionValue.name;
         this.boss = boss;
         config = actionValue;
         movements = new Array<>();
@@ -1045,8 +1091,8 @@ class Action {
         int movementCount;
         
         if (boss.hasAi && this.target.equals(boss.body)) {
-            hasAiSettingsChange = !actionValue.get("ai").isBoolean();
-            if (actionValue.get("ai").isBoolean()) {
+            hasAiSettingsChange = !actionValue.get("ai").isBoolean(true);
+            if (actionValue.get("ai").isBoolean(true)) {
                 log("no ai change for " + actionValue.name, INFO);
             } else {
                 dodgeBullets = actionValue.get("ai").getBoolean(false, "dodgeBullets");
@@ -1064,7 +1110,7 @@ class Action {
                 basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
             }
         }
-        if (actionValue.get("move").isBoolean()) {
+        if (actionValue.get("move").isBoolean(true)) {
             log("no movement for " + actionValue.name, INFO);
             hasMovement = false;
         } else {
@@ -1100,7 +1146,7 @@ class Action {
         target.visible = visible;
         target.active = active;
         target.showHealthBar = showHealthBar;
-        if (boss.hasAi) {
+        if (boss.hasAi && target.equals(boss.body)) {
             if (hasAiSettingsChange) {
                 boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
                         XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, playerInsideEntityMaxTime, new Vector2(basePosition[0], basePosition[1]));

@@ -2,7 +2,7 @@
   "textures": "bossEvil.atlas",
   "spawnAt": [850, 200],
   "spawnConditions": {
-    "score": -13000,
+    "score": 13000,
     "randomness": 1000
   },
   "hasAi": false,
@@ -75,10 +75,11 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "aimAnimation": "noAnimation",
+      "powerUpEffect": false,
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": false,
-        "texture": "pew2",
+        "texture": "bullet_med_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 150,
         "spread": 1.5,
@@ -175,6 +176,10 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "aimAnimation": "textureChange",
+      "powerUpEffect": "particles/laser_powerup_red.p",
+      "powerUpShootDelay": 1.1,
+      "powerUpEffectOffset": [0, 10],
+      "powerUpEffectScale": 0.5,
       "aimAnimationTextures": {
         "right": "evil_right",
         "left": "evil_left",
@@ -188,7 +193,7 @@
       "bullet": {
         "isLaser": true,
         "hasCollisionWithPlayerBullets": false,
-        "texture": "laser",
+        "texture": "bullet_laser",
         "shootSound": "sfx/laser.ogg",
         "fadeOutTimer": 1,
         "spread": 0.7,

@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": 19000,
+    "score": -19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -52,10 +52,11 @@
       "linked": false,
       "hasAnimation": false,
       "texture": "noTexture",
+      "powerUpEffect": false,
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "destroyer_rocket",
+        "texture": "bullet_destroyer_rocket",
         "shootSound": "sfx/gun2.ogg",
         "speed": 90,
         "spread": 9.5,
@@ -117,10 +118,14 @@
       },
       "canAim": false,
       "aimAnimation": "noTexture",
+      "powerUpEffect": "particles/laser_powerup_red.p",
+      "powerUpShootDelay": 1.1,
+      "powerUpEffectOffset": [0, 10],
+      "powerUpEffectScale": 0.5,
       "bullet": {
         "isLaser": true,
         "hasCollisionWithPlayerBullets": false,
-        "texture": "laser",
+        "texture": "bullet_laser",
         "shootSound": "sfx/laser.ogg",
         "fadeOutTimer": 1,
         "spread": 0,
@@ -147,7 +152,7 @@
         "offset": {
           "relativeTo": "body",
           "X": 0,
-          "Y": 45
+          "Y": 46
         },
         "fireRate": {
           "initialDelay": 0.15,

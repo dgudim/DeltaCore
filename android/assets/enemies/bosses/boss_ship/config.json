@@ -88,10 +88,11 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "aimAnimation": "rotate",
+      "powerUpEffect": false,
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": false,
-        "texture": "bullet_blue",
+        "texture": "bullet_small_blue",
         "shootSound": "sfx/gun2.ogg",
         "speed": 180,
         "spread": 0,
@@ -106,7 +107,7 @@
         "explosionScale": 0.5,
         "height": 8,
         "width": 8,
-        "offset": [0, 0]
+        "offset": [-10, 0]
       },
       "offset": {
         "relativeTo": "body",
@@ -209,10 +210,11 @@
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "aimAnimation": "rotate",
+      "powerUpEffect": false,
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "bullet_red",
+        "texture": "bullet_thick_red",
         "shootSound": "sfx/gun1.ogg",
         "speed": 180,
         "spread": 0,
@@ -275,18 +277,19 @@
       "canAim": true,
       "aimAngleLimit": [-20, 20],
       "aimAnimation": "rotate",
+      "powerUpEffect": false,
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "bullet_red",
+        "texture": "bullet_thick_red",
         "shootSound": "sfx/gun3.ogg",
-        "speed": 180,
+        "speed": 90,
         "spread": 5,
         "bulletsPerShot": 3,
         "damage": 7,
         "homing": true,
         "explosionTimer": 4,
-        "homingSpeed": 190,
+        "homingSpeed": 100,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 1,
         "trailOffset": [0, 0],
@@ -295,7 +298,7 @@
         "explosionScale": 1,
         "height": 8,
         "width": 8,
-        "offset": [-35, 5]
+        "offset": [-75, 0]
       },
       "offset": {
         "relativeTo": "body",
@@ -341,13 +344,14 @@
       "canAim": true,
       "aimAngleLimit": [-30, 30],
       "aimAnimation": "rotate",
+      "powerUpEffect": false,
       "linked": "homingCannonBase",
       "hasAnimation": false,
       "texture": "upperCannon_part2",
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "bullet_red",
+        "texture": "bullet_long_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 110,
         "spread": 0,
