@@ -27,7 +27,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "pew2.png",
+        "texture": "bullet_med_red",
         "shootSound": "sfx/gun2.ogg",
         "speed": 300,
         "spread": 0.4,
@@ -73,7 +73,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "whiskas.png",
+        "texture": "bullet_whiskas",
         "shootSound": "sfx/mewcat.ogg",
         "speed": 300,
         "spread": 0.4,
@@ -144,7 +144,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "pew2.png",
+        "texture": "bullet_med_red",
         "shootSound": "sfx/gun2.ogg",
         "speed": 180,
         "spread": 2.4,
@@ -189,7 +189,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "whiskas.png",
+        "texture": "bullet_whiskas",
         "shootSound": "sfx/mewcat.ogg",
         "speed": 180,
         "spread": 2.4,
@@ -342,7 +342,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "pew.png",
+        "texture": "bullet_thick_long_red",
         "shootSound": "sfx/gun1.ogg",
         "speed": 450,
         "spread": 0,
@@ -388,7 +388,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "whiskas.png",
+        "texture": "bullet_whiskas",
         "shootSound": "sfx/mewcat.ogg",
         "speed": 450,
         "spread": 0,
@@ -548,7 +548,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "homingPew.png",
+        "texture": "bullet_thick_red",
         "shootSound": "sfx/gun3.ogg",
         "speed": 120,
         "spread": 0,
@@ -595,7 +595,7 @@
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
-        "texture": "whiskas.png",
+        "texture": "bullet_whiskas",
         "shootSound": "sfx/gun3.ogg",
         "speed": 120,
         "spread": 0,

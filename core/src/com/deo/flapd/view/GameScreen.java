@@ -262,8 +262,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         
-        musicManager.dispose();
-        
         gameUi.dispose();
         meteorites.dispose();
         

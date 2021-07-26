@@ -8,7 +8,7 @@ import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 
 public class BulletData {
     
-    String texture;
+    public String texture;
     
     boolean isLaser;
     public boolean hasCollisionWithPlayerBullets;
@@ -17,8 +17,8 @@ public class BulletData {
     public float height;
     
     public float[] offset;
-    public float bulletAngle;
-    public float bulletDistance;
+    public float bulletOffsetAngle;
+    public float bulletOffsetDistance;
     
     float damage;
     
@@ -27,8 +27,8 @@ public class BulletData {
     public float spread;
     
     public String trail;
-    public float trailDistance;
-    public float trailAngle;
+    public float trailOffsetDistance;
+    public float trailOffsetAngle;
     public boolean drawTrailOnTop;
     public ParticleEffect trailParticleEffect;
     
@@ -78,8 +78,8 @@ public class BulletData {
             trailScale = bulletData.getFloat(1, "trailScale");
             drawTrailOnTop = bulletData.getBoolean(false, "drawTrailOnTop");
             float[] trailOffset = bulletData.getFloatArray(new float[]{0, 0}, "trailOffset");
-            trailAngle = MathUtils.atan2(trailOffset[1], trailOffset[0]) * MathUtils.radiansToDegrees;
-            trailDistance = getDistanceBetweenTwoPoints(0, 0, trailOffset[0], trailOffset[1]);
+            trailOffsetAngle = MathUtils.atan2(trailOffset[1], trailOffset[0]) * MathUtils.radiansToDegrees;
+            trailOffsetDistance = getDistanceBetweenTwoPoints(0, 0, trailOffset[0], trailOffset[1]);
             
             explosion = bulletData.getString("particles/explosion2.p", "explosionEffect");
             explosionScale = bulletData.getFloat(1, "explosionScale");
@@ -94,8 +94,8 @@ public class BulletData {
         height = bulletData.getFloat(1, "height");
         offset = bulletData.getFloatArray(new float[]{0, 0}, "offset");
         
-        bulletAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
-        bulletDistance = getDistanceBetweenTwoPoints(0, 0, offset[0], offset[1]);
+        bulletOffsetAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
+        bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, offset[0], offset[1]);
     
         hasCollisionWithPlayerBullets = bulletData.getBoolean(true, "hasCollisionWithPlayerBullets");
        

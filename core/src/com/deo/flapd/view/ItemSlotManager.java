@@ -353,7 +353,7 @@ public class ItemSlotManager {
     
     private int getComplexity(String result) {
         int complexity = 0;
-        if (treeJson.get(result) == null) {
+        if (treeJson.get(result).isNull()) {
             log("no item declared with name " + result, ERROR);
             return 100;
         } else {

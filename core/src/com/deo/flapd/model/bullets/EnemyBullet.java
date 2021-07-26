@@ -3,7 +3,6 @@ package com.deo.flapd.model.bullets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,12 +31,9 @@ public class EnemyBullet extends Entity {
     private Bullet playerBullet;
     
     public EnemyBullet(AssetManager assetManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
-        entitySprite = new Sprite((Texture) assetManager.get(bulletData.texture));
-        initBullet(bulletData, player, x, y, rotation, hasCollisionWithPlayerBullets);
-    }
-    
-    public EnemyBullet(TextureAtlas bossAtlas, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
-        entitySprite = new Sprite(bossAtlas.findRegion(bulletData.texture));
+        if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)
+            throw new IllegalArgumentException("no bullet texture with name: " + bulletData.texture);
+        entitySprite = new Sprite(assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture));
         initBullet(bulletData, player, x, y, rotation, hasCollisionWithPlayerBullets);
     }
     
@@ -59,9 +55,9 @@ public class EnemyBullet extends Entity {
             bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
             bulletData.trailParticleEffect.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
-                            rotation + data.trailAngle * data.trailDistance),
+                            rotation + data.trailOffsetAngle * data.trailOffsetDistance),
                     y + height / 2f + MathUtils.sinDeg(
-                            rotation + data.trailAngle * data.trailDistance));
+                            rotation + data.trailOffsetAngle * data.trailOffsetDistance));
             bulletData.trailParticleEffect.start();
         }
         
@@ -179,9 +175,9 @@ public class EnemyBullet extends Entity {
                 
                 data.trailParticleEffect.setPosition(
                         x + width / 2f + MathUtils.cosDeg(
-                                rotation + data.trailAngle) * data.trailDistance,
+                                rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
                         y + height / 2f + MathUtils.sinDeg(
-                                rotation + data.trailAngle) * data.trailDistance);
+                                rotation + data.trailOffsetAngle) * data.trailOffsetDistance);
                 
                 if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
                     isDead = true;

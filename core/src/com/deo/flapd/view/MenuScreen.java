@@ -600,7 +600,6 @@ public class MenuScreen implements Screen {
     
     @Override
     public void dispose() {
-        musicManager.dispose();
         Menu.dispose();
         ShopStage.dispose();
         for (int i = 0; i < fires.size; i++) {

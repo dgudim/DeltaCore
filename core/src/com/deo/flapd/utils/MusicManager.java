@@ -1,6 +1,6 @@
 package com.deo.flapd.utils;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
@@ -22,6 +22,7 @@ public class MusicManager {
     public float targetVolume;
     private boolean sourceChanged;
     
+    private final AssetManager assetManager;
     public void setNewMusicSource(final String musicPath, int minMusicIndex, int maxMusicIndex, float delayBetweenSongs) {
         this.musicPath = musicPath;
         this.minMusicIndex = minMusicIndex;
@@ -30,25 +31,23 @@ public class MusicManager {
         sourceChanged = true;
     }
     
-    public MusicManager() {
+    public MusicManager(AssetManager assetManager) {
+        this.assetManager = assetManager;
     }
     
     private void loadNextMusic() {
         String songName = musicPath + getRandomInRange(minMusicIndex, maxMusicIndex) + ".ogg";
         isWaitingForNewSong = false;
-        try {
-            music.dispose();
-        } catch (Exception e) {
-            //ignore
+        if(music != null){
+            music.stop();
         }
-        music = Gdx.audio.newMusic(Gdx.files.internal(songName));
+        music = assetManager.get(songName, Music.class);
         log("playing " + songName, INFO);
         music.setVolume(0);
         currentVolume = 0;
         music.setOnCompletionListener(new Music.OnCompletionListener() {
             @Override
             public void onCompletion(Music music) {
-                dispose();
                 isWaitingForNewSong = true;
             }
         });
@@ -73,11 +72,11 @@ public class MusicManager {
         } else {
             if (!isWaitingForNewSong) {
                 if (targetVolume - currentVolume > 0.5 * delta) {
-                    currentVolume = (float) clamp(currentVolume + delta, 0, 1);
+                    currentVolume = clamp(currentVolume + delta, 0, 1);
                     resume();
                     music.setVolume(currentVolume);
                 } else if (targetVolume - currentVolume < -0.5 * delta) {
-                    currentVolume = (float) clamp(currentVolume - delta, 0, 1);
+                    currentVolume = clamp(currentVolume - delta, 0, 1);
                     resume();
                     music.setVolume(currentVolume);
                 }
@@ -94,14 +93,6 @@ public class MusicManager {
                     loadNextMusic();
                 }
             }
-        }
-    }
-    
-    public void dispose() {
-        try {
-            music.dispose();
-        } catch (Exception e) {
-            //ignore
         }
     }
 }

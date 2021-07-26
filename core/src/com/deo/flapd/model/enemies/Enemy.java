@@ -70,14 +70,14 @@ public class Enemy extends Entity {
         
         if (data.spawnsBullets) {
             bulletData = new BulletData(data.enemyInfo, data.type);
-            shootingSound = Gdx.audio.newSound(Gdx.files.internal(bulletData.shootSound));
+            shootingSound = assetManager.get(bulletData.shootSound);
         }
         
         if (data.spawnsDrones) {
-            shootingSound = Gdx.audio.newSound(Gdx.files.internal(data.droneSpawnSound));
+            shootingSound = assetManager.get(data.droneSpawnSound);
         }
         
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal(data.explosionSound));
+        explosionSound = assetManager.get(data.explosionSound);
         volume = getFloat("soundVolume");
         
         bullets = new Array<>();
@@ -269,8 +269,8 @@ public class Enemy extends Entity {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
             
-            float newX = x + width / 2f + MathUtils.cosDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
-            float newY = y + height / 2f + MathUtils.sinDeg(rotation + newBulletData.bulletAngle) * newBulletData.bulletDistance;
+            float newX = x + width / 2f + MathUtils.cosDeg(rotation + newBulletData.bulletOffsetAngle) * newBulletData.bulletOffsetDistance;
+            float newY = y + height / 2f + MathUtils.sinDeg(rotation + newBulletData.bulletOffsetAngle) * newBulletData.bulletOffsetDistance;
             
             float newAngle = getRandomInRange(-10, 10) * newBulletData.spread + rotation;
             if (data.canAim) {
@@ -304,10 +304,6 @@ public class Enemy extends Entity {
         data.explosionParticleEffect.dispose();
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
-        }
-        explosionSound.dispose();
-        if (data.spawnsBullets) {
-            shootingSound.dispose();
         }
         enemyDisposes++;
     }

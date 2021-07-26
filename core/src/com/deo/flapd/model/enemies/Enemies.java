@@ -71,7 +71,13 @@ public class Enemies {
     public void update(float delta) {
         for (int i = 0; i < enemies.size; i++) {
             EnemyData currentData = enemies.get(i);
-            if (currentData.millis > currentData.spawnDelay * 100 && getRandomInRange(0, 45) >= 15 && currentData.onBossWave == GameLogic.bossWave && GameLogic.score >= currentData.scoreSpawnConditions[0] && GameLogic.score <= currentData.scoreSpawnConditions[1] && GameLogic.enemiesKilled >= currentData.enemyCountSpawnConditions[0] && GameLogic.enemiesKilled <= currentData.enemyCountSpawnConditions[1]) {
+            if (currentData.millis > currentData.spawnDelay * 100
+                    && getRandomInRange(0, 45) >= 15
+                    && currentData.onBossWave == GameLogic.bossWave
+                    && GameLogic.score >= currentData.scoreSpawnConditions[0]
+                    && GameLogic.score <= currentData.scoreSpawnConditions[1]
+                    && GameLogic.enemiesKilled >= currentData.enemyCountSpawnConditions[0]
+                    && GameLogic.enemiesKilled <= currentData.enemyCountSpawnConditions[1]) {
                 SpawnEnemy(currentData);
                 currentData.millis = 0;
             }

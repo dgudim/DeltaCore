@@ -38,7 +38,7 @@ public class Main extends Game {
     public void create() {
         batch = new SpriteBatch();
         assetManager = new AssetManager();
-        musicManager = new MusicManager();
+        musicManager = new MusicManager(assetManager);
         
         clearLog();
         Date date = new Date();
@@ -82,6 +82,5 @@ public class Main extends Game {
         batch.dispose();
         assetManager.dispose();
         blurProcessor.dispose();
-        musicManager.dispose();
     }
 }

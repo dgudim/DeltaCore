@@ -240,7 +240,7 @@ public class Player {
         exploded = false;
         soundVolume = getFloat("soundVolume");
         
-        explosion = Gdx.audio.newSound(Gdx.files.internal("sfx/explosion.ogg"));
+        explosion = assetManager.get("sfx/explosion.ogg");
         
         bullet = new Bullet(assetManager, this, enemies, newGame);
     }
@@ -344,7 +344,6 @@ public class Player {
         }
         fires.clear();
         
-        explosion.dispose();
         explosionEffect.dispose();
         damage_fire.dispose();
         bullet.dispose();

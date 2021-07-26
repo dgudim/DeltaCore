@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,6 +38,10 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 import static com.deo.flapd.utils.LogLevel.INFO;
 import static com.deo.flapd.utils.LogLevel.WARNING;
 
+enum LoadingState {
+    LOADING_TEXTURES, LOADING_SOUNDS, BUILDING_TREE
+}
+
 public class LoadingScreen implements Screen {
     
     private final AssetManager assetManager;
@@ -52,7 +58,9 @@ public class LoadingScreen implements Screen {
     private final boolean enableShader;
     private final long loadingTime;
     public static Tree craftingTree;
-    private String stateName;
+    
+    private LoadingState loadingState;
+    private String loadingStateName;
     
     public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager) {
         
@@ -109,7 +117,7 @@ public class LoadingScreen implements Screen {
         
         enableShader = getBoolean("bloom");
         
-        stateName = "Loading";
+        setLoadingState(LoadingState.LOADING_TEXTURES);
         
         load();
     }
@@ -120,28 +128,29 @@ public class LoadingScreen implements Screen {
     }
     
     public void load() {
+        
         assetManager.load("items/items.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/menuButtons.atlas", TextureAtlas.class);
         assetManager.load("menuButtons/buttons.atlas", TextureAtlas.class);
+        
         assetManager.load("enemies/bosses/boss_evil/bossEvil.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_ship/bossShip.atlas", TextureAtlas.class);
-        assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_star_destroyer/bossStarDestroyer.atlas", TextureAtlas.class);
+        assetManager.load("enemies/bosses/boss_ufo/bossUFO.atlas", TextureAtlas.class);
+        
+        assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
         assetManager.load("items/items.atlas", TextureAtlas.class);
         assetManager.load("shop/workshop.atlas", TextureAtlas.class);
         assetManager.load("shop/slots.atlas", TextureAtlas.class);
         assetManager.load("shop/shopButtons.atlas", TextureAtlas.class);
         assetManager.load("shop/ui.atlas", TextureAtlas.class);
-        assetManager.load("player/bullets.atlas", TextureAtlas.class);
         assetManager.load("player/shields.atlas", TextureAtlas.class);
         assetManager.load("player/animations/beastMode.atlas", TextureAtlas.class);
         assetManager.load("bonuses.atlas", TextureAtlas.class);
         assetManager.load("enemies/enemies.atlas", TextureAtlas.class);
         assetManager.load("enemies/ufo/ufo.atlas", TextureAtlas.class);
-        
-        assetManager.load("pew3.png", Texture.class);
-        assetManager.load("pew.png", Texture.class);
-        assetManager.load("pew2.png", Texture.class);
+        assetManager.load("bullets/bullets.atlas", TextureAtlas.class);
+        // TODO: 7/26/2021 load sounds
         assetManager.load("Meteo.png", Texture.class);
         
         assetManager.load("uraniumCell.png", Texture.class);
@@ -159,8 +168,26 @@ public class LoadingScreen implements Screen {
         assetManager.load("checkpoint_green.png", Texture.class);
         
         assetManager.load("cat_meteorite.png", Texture.class);
-        assetManager.load("whiskas.png", Texture.class);
-        assetManager.load("laser.png", Texture.class);
+        
+        assetManager.load("sfx/explosion.ogg", Sound.class);
+        assetManager.load("sfx/gun1.ogg", Sound.class);
+        assetManager.load("sfx/gun2.ogg", Sound.class);
+        assetManager.load("sfx/gun3.ogg", Sound.class);
+        assetManager.load("sfx/gun4.ogg", Sound.class);
+        assetManager.load("sfx/laser.ogg", Sound.class);
+        assetManager.load("sfx/hitcat.ogg", Sound.class);
+        assetManager.load("sfx/mewcat.ogg", Sound.class);
+    
+        assetManager.load("music/main1.ogg", Music.class);
+        assetManager.load("music/main2.ogg", Music.class);
+        assetManager.load("music/main3.ogg", Music.class);
+        assetManager.load("music/main4.ogg", Music.class);
+        assetManager.load("music/main5.ogg", Music.class);
+        assetManager.load("music/ambient1.ogg", Music.class);
+        assetManager.load("music/ambient2.ogg", Music.class);
+        assetManager.load("music/ambient3.ogg", Music.class);
+        assetManager.load("music/ambient4.ogg", Music.class);
+        assetManager.load("music/ambient5.ogg", Music.class);
     }
     
     @Override
@@ -217,7 +244,7 @@ public class LoadingScreen implements Screen {
         loadingBar.act(delta);
         main.getData().setScale(0.8f);
         main.setColor(Color.CYAN);
-        main.draw(batch, stateName + state, 0, 440, 800, 1, false);
+        main.draw(batch, loadingStateName + state, 0, 440, 800, 1, false);
         main.getData().setScale(0.5f);
         main.setColor(Color.ORANGE);
         main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 47, 800, 1, false);
@@ -276,7 +303,7 @@ public class LoadingScreen implements Screen {
     
     private void checkState() {
         try {
-            if (assetManager.isFinished() && stateName.equals("Loading")) {
+            if (assetManager.isFinished() && !loadingState.equals(LoadingState.BUILDING_TREE)) {
                 float elapsedTime = TimeUtils.timeSinceMillis(loadingTime) / 1000.0f;
                 float relativePercentage = (100 - elapsedTime * 100f / 3f);
                 if (relativePercentage >= 0) {
@@ -285,12 +312,15 @@ public class LoadingScreen implements Screen {
                     log("loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)", INFO);
                 }
             }
-            if (stateName.equals("Building tree")) {
+            if (loadingState.equals(LoadingState.BUILDING_TREE)) {
                 craftingTree = new Tree(assetManager, 105, 65, 430, 410);
                 game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
             }
+            if (assetManager.isLoaded("sfx/explosion.ogg", Sound.class)) {
+                setLoadingState(LoadingState.LOADING_SOUNDS);
+            }
             if (assetManager.isFinished()) {
-                stateName = "Building tree";
+                setLoadingState(LoadingState.BUILDING_TREE);
             }
         } catch (ClassCastException | NumberFormatException e) {
             logException(e);
@@ -302,6 +332,11 @@ public class LoadingScreen implements Screen {
             log("force exiting", INFO);
             Gdx.app.exit();
         }
+    }
+    
+    void setLoadingState(LoadingState loadingState) {
+        this.loadingState = loadingState;
+        loadingStateName = loadingState.name().charAt(0) + loadingState.name().replace("_", " ").toLowerCase().substring(1);
     }
     
 }

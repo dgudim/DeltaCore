@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -93,7 +92,7 @@ public class Bullet {
         
         this.enemies = enemies;
         
-        TextureAtlas bullets = assetManager.get("player/bullets.atlas");
+        TextureAtlas bullets = assetManager.get("bullets/bullets.atlas");
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour")));
@@ -195,18 +194,18 @@ public class Bullet {
             this.player.bulletsShot = 0;
         }
         
-        laser = new Sprite((Texture) assetManager.get("laser.png"));
+        laser = new Sprite(bullets.findRegion("bullet_laser"));
         laser.setSize(3, laserHeight);
         laser.setPosition(-100, -100);
         
         soundVolume = getFloat("soundVolume");
         if (isLaser) {
-            laserSaw = Gdx.audio.newMusic(Gdx.files.internal("sfx/laserSaw.ogg"));
+            laserSaw = assetManager.get("sfx/laser.ogg");
             laserSaw.play();
             laserSaw.setLooping(true);
             laserSaw.setVolume(0);
         } else {
-            shot = Gdx.audio.newSound(Gdx.files.internal("sfx/gun4.ogg"));
+            shot = assetManager.get("sfx/gun4.ogg");
         }
         
         width = bullet.getWidth();
@@ -441,11 +440,6 @@ public class Bullet {
     }
     
     public void dispose() {
-        if (isLaser) {
-            laserSaw.dispose();
-        } else {
-            shot.dispose();
-        }
         bullets.clear();
         damages.clear();
         degrees.clear();
