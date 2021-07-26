@@ -294,7 +294,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private String[] getRequiredItems() {
-        return treeJson.getStringArray(new String[]{""}, result, "items");
+        return treeJson.getStringArray(new String[]{}, result, "items");
     }
     
     private String getDescription(String result) {
@@ -312,7 +312,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private int[] getRequiredItemCounts() {
-        return treeJson.getIntArray(new int[]{0}, result, "itemCounts");
+        return treeJson.getIntArray(new int[]{}, result, "itemCounts");
     }
     
     private int getResultCount() {
