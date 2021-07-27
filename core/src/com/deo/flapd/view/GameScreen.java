@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Checkpoint;
@@ -25,6 +24,7 @@ import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
+import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.logVariables;
@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
     private final GameLogic gameLogic;
     
     private final OrthographicCamera camera;
-    private final Viewport viewport;
+    private final ScreenViewport viewport;
     
     static boolean is_paused;
     
@@ -74,6 +74,12 @@ public class GameScreen implements Screen {
     private boolean drawScreenExtenders = true;
     private final boolean drawDebug;
     
+    private static float screenShakeIntensity;
+    private static float screenShakeIntensityDuration;
+    private float previousShakeOffsetX;
+    private float previousShakeOffsetY;
+    private float cameraZoomOffset;
+    
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, boolean newGame) {
         
         this.game = game;
@@ -85,7 +91,7 @@ public class GameScreen implements Screen {
         viewport = new ScreenViewport(camera);
         
         drawDebug = getBoolean("drawDebug");
-        if(drawDebug){
+        if (drawDebug) {
             Gdx.gl.glLineWidth(1);
             shapeRenderer = new ShapeRenderer();
             shapeRenderer.setColor(Color.GREEN);
@@ -116,7 +122,7 @@ public class GameScreen implements Screen {
         
         drops = new Drops(assetManager, 48, getFloat("ui"));
         
-        gameUi = new GameUi(game, batch, assetManager, blurProcessor, player, musicManager);
+        gameUi = new GameUi(viewport, game, batch, assetManager, blurProcessor, player, musicManager);
         
         meteorites = new Meteorites(assetManager, getBoolean("easterEgg"));
         
@@ -138,6 +144,27 @@ public class GameScreen implements Screen {
     
     @Override
     public void render(float delta) {
+        
+        if (screenShakeIntensityDuration > 0) {
+            float nextShakeX = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
+            float nextShakeY = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
+            if (cameraZoomOffset == 0) {
+                cameraZoomOffset = screenShakeIntensity / 300f;
+                camera.zoom -= screenShakeIntensity / 300f;
+            }
+            camera.translate(nextShakeX - previousShakeOffsetX, nextShakeY - previousShakeOffsetY);
+            camera.update();
+            previousShakeOffsetX = nextShakeX;
+            previousShakeOffsetY = nextShakeY;
+            screenShakeIntensityDuration -= delta;
+        } else if (previousShakeOffsetX != 0 || previousShakeOffsetY != 0) {
+            camera.zoom += cameraZoomOffset;
+            cameraZoomOffset = 0;
+            camera.translate(-previousShakeOffsetX, -previousShakeOffsetY);
+            camera.update();
+            previousShakeOffsetX = 0;
+            previousShakeOffsetY = 0;
+        }
         
         delta = is_paused ? 0 : delta;
         
@@ -201,8 +228,8 @@ public class GameScreen implements Screen {
         }
         
         batch.end();
-    
-        if(drawDebug){
+        
+        if (drawDebug) {
             shapeRenderer.begin();
             shapeRenderer.setProjectionMatrix(camera.combined);
             bosses.drawDebug(shapeRenderer);
@@ -241,7 +268,6 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
-        gameUi.resize(width, height);
         
         float targetHeight = viewport.getScreenHeight();
         float targetWidth = viewport.getScreenWidth();
@@ -263,6 +289,11 @@ public class GameScreen implements Screen {
         
         verticalFillingThreshold = (int) Math.ceil((targetHeight - actualHeight) / 144);
         horizontalFillingThreshold = (int) Math.ceil((targetWidth - actualWidth) / 912);
+    }
+    
+    public static void screenShake(float intensity, float duration) {
+        screenShakeIntensity = intensity;
+        screenShakeIntensityDuration = duration;
     }
     
     @Override
