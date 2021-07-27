@@ -36,3 +36,5 @@ task dist(type: Jar) {
 
 
 dist.dependsOn classes
+
+java.targetCompatibility = JavaVersion.VERSION_1_8

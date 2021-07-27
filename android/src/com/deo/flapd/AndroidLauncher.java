@@ -27,5 +27,10 @@ public class AndroidLauncher extends AndroidApplication {
 				this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 			}
 		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if (this.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+				this.requestPermissions(new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE}, 1);
+			}
+		}
 	}
 }
