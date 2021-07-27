@@ -621,13 +621,19 @@ class Cannon extends Part {
     
     Sound shootingSound;
     
-    boolean hasPowerupEffect;
+    boolean hasPowerUpEffect;
     ParticleEffect powerUpEffect;
     float powerUpEffectShootDelay;
     boolean powerUpActive;
     float powerUpScale;
+    float powerUpOffsetAngle;
+    float powerUpOffsetDistance;
     
-    float powerUpOffsetAngle, powerUpOffsetDistance;
+    boolean hasPowerDownEffect;
+    ParticleEffect powerDownEffect;
+    float powerDownScale;
+    float powerDownOffsetAngle;
+    float powerDownOffsetDistance;
     
     Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
         super(partConfig, textures, parts, body, assetManager);
@@ -666,8 +672,8 @@ class Cannon extends Part {
         
         shootingSound = assetManager.get(bulletData.shootSound);
         
-        hasPowerupEffect = !currentConfig.get("powerUpEffect").isBoolean(true);
-        if (hasPowerupEffect) {
+        hasPowerUpEffect = !currentConfig.get("powerUpEffect").isBoolean(true);
+        if (hasPowerUpEffect) {
             powerUpScale = currentConfig.getFloat(1, "powerUpEffectScale");
             powerUpEffect = new ParticleEffect();
             powerUpEffect.load(Gdx.files.internal(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect")), Gdx.files.internal("particles"));
@@ -678,6 +684,19 @@ class Cannon extends Part {
             powerUpOffset[1] += bulletData.offset[1];
             powerUpOffsetAngle = MathUtils.atan2(powerUpOffset[1], powerUpOffset[0]) * MathUtils.radiansToDegrees;
             powerUpOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerUpOffset[0], powerUpOffset[1]);
+        }
+    
+        hasPowerDownEffect = !currentConfig.get("powerDownEffect").isBoolean(true);
+        if (hasPowerDownEffect) {
+            powerDownScale = currentConfig.getFloat(1, "powerDownEffectScale");
+            powerDownEffect = new ParticleEffect();
+            powerDownEffect.load(Gdx.files.internal(currentConfig.getString("particles/smoke.p", "powerDownEffect")), Gdx.files.internal("particles"));
+            powerDownEffect.scaleEffect(powerDownScale);
+            float[] powerDownOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerDownEffectOffset");
+            powerDownOffset[0] += bulletData.offset[0];
+            powerDownOffset[1] += bulletData.offset[1];
+            powerDownOffsetAngle = MathUtils.atan2(powerDownOffset[1], powerDownOffset[0]) * MathUtils.radiansToDegrees;
+            powerDownOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerDownOffset[0], powerDownOffset[1]);
         }
         
     }
@@ -725,11 +744,17 @@ class Cannon extends Part {
                         break;
                 }
             }
-            if (hasPowerupEffect) {
+            if (hasPowerUpEffect) {
                 float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
                 float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
                 powerUpEffect.setPosition(newX, newY);
                 powerUpEffect.update(delta);
+            }
+            if (hasPowerDownEffect) {
+                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
+                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
+                powerDownEffect.setPosition(newX, newY);
+                powerDownEffect.update(delta);
             }
             if (timer >= 1 + powerUpEffectShootDelay && health > 0 && visible) {
                 shoot();
@@ -762,10 +787,13 @@ class Cannon extends Part {
                 bullets.removeIndex(i);
             }
         }
+        if (hasPowerDownEffect && active) {
+            powerDownEffect.draw(batch);
+        }
         if (!drawBulletsOnTop) {
             super.draw(batch, delta);
         }
-        if (hasPowerupEffect && active) {
+        if (hasPowerUpEffect && active) {
             powerUpEffect.draw(batch);
         }
     }
@@ -794,6 +822,10 @@ class Cannon extends Part {
             newRot += additionalRotation;
             
             bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
+            
+            if(hasPowerDownEffect) {
+                powerDownEffect.start();
+            }
         }
         
         if (soundVolume > 0) {
@@ -805,8 +837,11 @@ class Cannon extends Part {
     @Override
     void reset() {
         super.reset();
-        if(hasPowerupEffect){
+        if(hasPowerUpEffect){
             powerUpEffect.reset();
+        }
+        if(hasPowerDownEffect){
+            powerDownEffect.reset();
         }
     }
     
@@ -815,6 +850,12 @@ class Cannon extends Part {
         super.dispose();
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
+        }
+        if(hasPowerUpEffect){
+            powerUpEffect.dispose();
+        }
+        if(hasPowerDownEffect){
+            powerDownEffect.dispose();
         }
     }
 }
@@ -1249,5 +1290,4 @@ class PhaseTrigger {
                 break;
         }
     }
-    
 }

@@ -122,6 +122,9 @@
       "powerUpShootDelay": 1.1,
       "powerUpEffectOffset": [0, 10],
       "powerUpEffectScale": 0.5,
+      "powerDownEffect": "particles/smoke.p",
+      "powerDownEffectOffset": [5, 10],
+      "powerDownEffectScale": 0.5,
       "bullet": {
         "isLaser": true,
         "hasCollisionWithPlayerBullets": false,
@@ -143,7 +146,7 @@
       "linked": false,
       "hasAnimation": false,
       "texture": "noTexture",
-      "layer": 0
+      "layer": 2
     },
     "cannonLaserBottom": {
       "type": "clone",
