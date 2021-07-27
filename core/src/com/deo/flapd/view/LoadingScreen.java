@@ -177,7 +177,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("sfx/laser.ogg", Sound.class);
         assetManager.load("sfx/hitcat.ogg", Sound.class);
         assetManager.load("sfx/mewcat.ogg", Sound.class);
-    
+        
         assetManager.load("music/main1.ogg", Music.class);
         assetManager.load("music/main2.ogg", Music.class);
         assetManager.load("music/main3.ogg", Music.class);
@@ -304,13 +304,7 @@ public class LoadingScreen implements Screen {
     private void checkState() {
         try {
             if (assetManager.isFinished() && !loadingState.equals(LoadingState.BUILDING_TREE)) {
-                float elapsedTime = TimeUtils.timeSinceMillis(loadingTime) / 1000.0f;
-                float relativePercentage = (100 - elapsedTime * 100f / 3f);
-                if (relativePercentage >= 0) {
-                    log("loaded, elapsed time " + elapsedTime + "s(" + relativePercentage + "% better than average)", INFO);
-                } else {
-                    log("loaded, elapsed time " + elapsedTime + "s(" + -relativePercentage + "% worse than average)", INFO);
-                }
+                log("loaded, took" + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
             }
             if (loadingState.equals(LoadingState.BUILDING_TREE)) {
                 craftingTree = new Tree(assetManager, 105, 65, 430, 410);

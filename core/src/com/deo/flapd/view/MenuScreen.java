@@ -43,6 +43,7 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
 import static com.badlogic.gdx.math.MathUtils.sin;
+import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -170,6 +171,8 @@ public class MenuScreen implements Screen {
         buildNumber.setBounds(5, 5, 150, 50);
         
         Lamp.setBounds(730, 430, 15, 35);
+        
+        long uiGenTime = millis();
         
         UIComposer uiComposer = new UIComposer(assetManager);
         uiComposer.loadStyles("defaultLight", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
@@ -446,8 +449,8 @@ public class MenuScreen implements Screen {
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
         
         enableShader = getBoolean("bloom");
-        
-        log("done, elapsed time " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
+        log("generated ui in " + TimeUtils.timeSinceMillis(uiGenTime) + "ms", INFO);
+        log("done, took " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
     }
     
     @Override

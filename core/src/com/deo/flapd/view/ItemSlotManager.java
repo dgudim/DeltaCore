@@ -32,6 +32,7 @@ import com.deo.flapd.view.dialogues.SellScrapDialogue;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getLong;
@@ -43,6 +44,7 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.LogLevel.ERROR;
+import static com.deo.flapd.utils.LogLevel.INFO;
 import static com.deo.flapd.view.SlotManagerMode.INVENTORY;
 import static com.deo.flapd.view.SlotManagerMode.SHOP;
 import static java.lang.StrictMath.sqrt;
@@ -93,12 +95,13 @@ public class ItemSlotManager {
     }
     
     void addShopSlots() {
+        long timeSnap = millis();
         slotManagerMode = SHOP;
         int slotCount;
         long lastGenerationTime = getLong("lastGenTime");
         if (TimeUtils.timeSinceMillis(lastGenerationTime) > 18000000) {
-            putLong("lastGenTime", TimeUtils.millis());
-            slotCount = generateSlots();
+            putLong("lastGenTime", millis());
+            slotCount = generateShopSlots();
         } else {
             slotCount = loadSlots();
         }
@@ -122,9 +125,11 @@ public class ItemSlotManager {
             table.add(update).align(Align.center).size(300, 40);
         }
         addInfo();
+        log("added shop slots in " + TimeUtils.timeSinceMillis(timeSnap) + "ms", INFO);
     }
     
     void addInventorySlots() {
+        long timeSnap = millis();
         slotManagerMode = INVENTORY;
         boolean nextRow = false;
         for (int i = 0; i < treeJson.size; i++) {
@@ -134,9 +139,11 @@ public class ItemSlotManager {
             }
         }
         addInfo();
+        log("added inventory slots in " + TimeUtils.timeSinceMillis(timeSnap) + "ms", INFO);
     }
     
-    private int generateSlots() {
+    private int generateShopSlots() {
+        long timeSnap = millis();
         Array<String> itemsToAdd = new Array<>();
         Array<Integer> quantities = new Array<>();
         
@@ -145,13 +152,12 @@ public class ItemSlotManager {
                 itemsToAdd.add(treeJson.get(i).name);
             }
         }
-        System.out.println(itemsToAdd);
         boolean nextRow = false;
         Array<String> addedItems = new Array<>();
         int slotQuantity = getRandomInRange(itemsToAdd.size / 4, itemsToAdd.size / 2);
         for (int i = 0; i < slotQuantity; i++) {
             int index = getRandomInRange(0, itemsToAdd.size - 1);
-            int quantity = (int) MathUtils.clamp(getRandomInRange(5, 15) - sqrt(getComplexity(itemsToAdd.get(index))), 1, 15);
+            int quantity = (int) MathUtils.clamp(getRandomInRange(3, 15) - sqrt(getComplexity(itemsToAdd.get(index))) * 2, 1, 15);
             addedItems.add(itemsToAdd.get(index));
             quantities.add(quantity);
             addShopSlot(itemsToAdd.get(index), quantity, nextRow);
@@ -161,6 +167,7 @@ public class ItemSlotManager {
         
         putString("savedSlots", addedItems.toString());
         putString("savedSlotQuantities", quantities.toString());
+        log("generated shop slots in " + TimeUtils.timeSinceMillis(timeSnap) + "ms", INFO);
         return slotQuantity;
     }
     
@@ -290,7 +297,7 @@ public class ItemSlotManager {
         holder2.add(cogs_text).padLeft(5);
         inventory.align(Align.left);
         final long[] nextUpdateTime = {getLong("lastGenTime") + 18000000};
-        long lastReset = nextUpdateTime[0] - TimeUtils.millis();
+        long lastReset = nextUpdateTime[0] - millis();
         int hours = (int) TimeUnit.MILLISECONDS.toHours(lastReset);
         int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(lastReset) - hours * 60;
         int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(lastReset) - hours * 3600 - minutes * 60;
@@ -298,16 +305,16 @@ public class ItemSlotManager {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 super.draw(batch, parentAlpha);
-                long nextReset = nextUpdateTime[0] - TimeUtils.millis();
+                long nextReset = nextUpdateTime[0] - millis();
                 int hours = (int) TimeUnit.MILLISECONDS.toHours(nextReset);
                 int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(nextReset) - hours * 60;
                 int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(nextReset) - hours * 3600 - minutes * 60;
                 this.setText("||Reset in: " + hours + "h " + minutes + "m " + seconds + "s||");
                 if (hours <= 0 && minutes <= 0 && seconds <= 0) {
-                    putLong("lastGenTime", TimeUtils.millis());
-                    nextUpdateTime[0] = TimeUtils.millis() + 18000000;
+                    putLong("lastGenTime", millis());
+                    nextUpdateTime[0] = millis() + 18000000;
                     table.clearChildren();
-                    generateSlots();
+                    generateShopSlots();
                 }
             }
         };

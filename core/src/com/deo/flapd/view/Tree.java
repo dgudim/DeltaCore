@@ -34,7 +34,6 @@ import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.LogLevel.INFO;
-import static java.lang.StrictMath.abs;
 
 public class Tree {
     
@@ -96,8 +95,7 @@ public class Tree {
         nodes.get(0).get(0).initialize().update();
         
         float elapsedTime = TimeUtils.timeSinceMillis(loadingTime);
-        float relativePercentage = (100 - elapsedTime / (branchCount - 1) * 100f / 0.29f);
-        log("done, elapsed time " + elapsedTime + "ms(" + abs(relativePercentage) + "% " + ((relativePercentage >= 0) ? "better" : "worse") + " than average), total branch count " + (branchCount - 1), INFO);
+        log("done, took " + elapsedTime + "ms, total branch count " + (branchCount - 1), INFO);
         
         Skin buttonSkin = new Skin();
         buttonSkin.addRegions((TextureAtlas) assetManager.get("menuButtons/menuButtons.atlas"));
