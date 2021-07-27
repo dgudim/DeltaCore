@@ -31,14 +31,11 @@ public class Main extends Game {
     private PostProcessor blurProcessor;
     
     private AssetManager assetManager;
-
-    private MusicManager musicManager;
     
     @Override
     public void create() {
         batch = new SpriteBatch();
         assetManager = new AssetManager();
-        musicManager = new MusicManager(assetManager);
         
         clearLog();
         Date date = new Date();
@@ -62,7 +59,7 @@ public class Main extends Game {
             assetManager.update();
         }
 
-        this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor, musicManager));
+        this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor, new MusicManager(assetManager)));
     }
 
     @Override
