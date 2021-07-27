@@ -98,8 +98,13 @@
         "changeTexture": false,
         "move": {
           "moveLinearX": {
-            "moveBy": -380,
-            "speed": 9,
+            "moveBy": -170,
+            "speed": 4.5,
+            "stopPreviousAnimations": false
+          },
+          "moveLinearX": {
+            "moveBy": -200,
+            "speed": 4.5,
             "stopPreviousAnimations": false
           }
         }
@@ -141,7 +146,8 @@
         "showHealthBar": false,
         "visible": true,
         "active": false,
-        "changeTexture": false,
+        "changeTexture": "dead",
+        "frameDuration": 0.07,
         "move": {
           "moveLinearY": {
             "moveBy": -500,
@@ -168,7 +174,8 @@
         "showHealthBar": false,
         "visible": false,
         "active": false,
-        "changeTexture": false,
+        "changeTexture": "phase1",
+        "frameDuration": 0.07,
         "move": false
       }
     }
@@ -180,7 +187,7 @@
           "triggerType": "positionX",
           "triggerModifier": "<=",
           "target": "body",
-          "value": 560
+          "value": 510
         }
       }
     },

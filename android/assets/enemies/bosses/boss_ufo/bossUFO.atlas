@@ -3,51 +3,107 @@ bossUFO.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-body_phase1
+body_dead
+  rotate: false
+  xy: 1, 63
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 1
+body_dead
   rotate: false
   xy: 1, 12
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 2
+body_dead
+  rotate: false
+  xy: 107, 63
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 3
+body_dead
+  rotate: false
+  xy: 107, 12
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 4
+body_dead
+  rotate: false
+  xy: 213, 63
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 5
+body_dead
+  rotate: false
+  xy: 213, 12
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 6
+body_dead
+  rotate: false
+  xy: 319, 63
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 7
+body_dead
+  rotate: false
+  xy: 319, 12
+  size: 104, 49
+  orig: 104, 49
+  offset: 0, 0
+  index: 8
+body_phase1
+  rotate: false
+  xy: 425, 63
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
   index: 1
 body_phase1
   rotate: false
-  xy: 107, 12
+  xy: 425, 12
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
   index: 2
 body_phase1
   rotate: false
-  xy: 213, 12
+  xy: 531, 63
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
   index: 3
 body_phase1
   rotate: false
-  xy: 319, 12
+  xy: 531, 12
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
   index: 4
 body_phase1
   rotate: false
-  xy: 425, 12
+  xy: 637, 63
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
   index: 5
 body_phase1
   rotate: false
-  xy: 531, 12
+  xy: 637, 12
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
   index: 6
 body_phase1
   rotate: false
-  xy: 637, 12
+  xy: 743, 63
   size: 104, 49
   orig: 104, 49
   offset: 0, 0
