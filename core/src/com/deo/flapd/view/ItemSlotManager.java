@@ -45,6 +45,7 @@ import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.LogLevel.ERROR;
 import static com.deo.flapd.view.SlotManagerMode.INVENTORY;
 import static com.deo.flapd.view.SlotManagerMode.SHOP;
+import static java.lang.StrictMath.sqrt;
 
 enum SlotManagerMode {INVENTORY, SHOP}
 
@@ -144,14 +145,13 @@ public class ItemSlotManager {
                 itemsToAdd.add(treeJson.get(i).name);
             }
         }
-        
+        System.out.println(itemsToAdd);
         boolean nextRow = false;
         Array<String> addedItems = new Array<>();
         int slotQuantity = getRandomInRange(itemsToAdd.size / 4, itemsToAdd.size / 2);
         for (int i = 0; i < slotQuantity; i++) {
             int index = getRandomInRange(0, itemsToAdd.size - 1);
-            // TODO: 7/7/2021 quantity always 1
-            int quantity = MathUtils.clamp(getRandomInRange(5, 15) - getComplexity(itemsToAdd.get(index)), 1, 15);
+            int quantity = (int) MathUtils.clamp(getRandomInRange(5, 15) - sqrt(getComplexity(itemsToAdd.get(index))), 1, 15);
             addedItems.add(itemsToAdd.get(index));
             quantities.add(quantity);
             addShopSlot(itemsToAdd.get(index), quantity, nextRow);
@@ -355,7 +355,7 @@ public class ItemSlotManager {
         int complexity = 0;
         if (treeJson.get(result).isNull()) {
             log("no item declared with name " + result, ERROR);
-            return 100;
+            return 0;
         } else {
             
             String[] items = treeJson.getStringArray(new String[]{}, result, "items");
@@ -364,7 +364,6 @@ public class ItemSlotManager {
                 complexity += buffer + 1;
             }
             
-            complexity = MathUtils.clamp((int) (Math.ceil(complexity / 2f) - 1) * 4, 0, 15);
             return complexity;
         }
     }

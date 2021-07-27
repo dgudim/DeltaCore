@@ -141,7 +141,7 @@ public class Tree {
     
     private void loadCraftingRecipe(String item, Node root, float maxHeight) {
         String[] items = getRequiredItemsFromCraftingTree(item);
-        if (!items[0].equals("")) {
+        if (items.length > 0) {
             Array<Node> currentCategoryNodes = new Array<>();
             
             for (int i = 0; i < items.length; i++) {

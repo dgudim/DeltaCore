@@ -236,8 +236,8 @@
     "homing": false
   },
   "upgrades": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 0,
     "description": "just a category for small upgrades",
     "isCraftable": false,
@@ -248,8 +248,8 @@
     "saveTo": "bonus1C"
   },
   "basic ammo weapons":{
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 0,
     "description": "just a category for basic cannons",
     "isCraftable": false,
@@ -260,8 +260,8 @@
     "saveTo": "bonus2C"
   },
   "laser weapons":{
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 0,
     "description": "just a category for laser cannons",
     "isCraftable": false,
@@ -272,8 +272,8 @@
     "saveTo": "bonus3C"
   },
   "energy weapons":{
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 0,
     "description": "just a category for energy cannons",
     "isCraftable": false,
@@ -284,8 +284,8 @@
     "saveTo": "bonus4C"
   },
   "basic armour": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 0,
     "description": "this is your starting ship bruh",
     "isCraftable": false,
@@ -610,8 +610,8 @@
     "type": "item"
   },
   "red crystal": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "base ingredient for higher tier crystals",
     "isCraftable":false,
@@ -621,8 +621,8 @@
     "type": "endItem"
   },
   "core shard": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "damaged piece of core",
     "isCraftable":false,
@@ -885,8 +885,8 @@
     "type": "item"
   },
   "ore": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "space ore",
     "isCraftable":false,
@@ -896,8 +896,8 @@
     "type": "endItem"
   },
   "cyan warp shard": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "mysterious glowing cyan shard, used to craft crystal",
     "isCraftable":false,
@@ -907,8 +907,8 @@
     "type": "endItem"
   },
   "purple warp shard": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "mysterious glowing purple shard, used to craft crystal",
     "isCraftable":false,
@@ -940,8 +940,8 @@
     "type": "item"
   },
   "glass shard": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "just a piece of glass",
     "isCraftable":false,
@@ -973,8 +973,8 @@
     "type": "item"
   },
   "plastic": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "just a piece of plastic",
     "isCraftable":false,
@@ -995,8 +995,8 @@
     "type": "item"
   },
   "rubber": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "black bouncy material, used in coating",
     "isCraftable":false,
@@ -1039,8 +1039,8 @@
     "type": "item"
   },
   "green warp shard": {
-    "items": [""],
-    "itemCounts": [0],
+    "items": [],
+    "itemCounts": [],
     "resultCount": 1,
     "description": "mysterious glowing green shard, used to craft crystal",
     "isCraftable":false,
