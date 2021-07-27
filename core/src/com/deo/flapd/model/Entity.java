@@ -2,6 +2,7 @@ package com.deo.flapd.model;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
@@ -61,6 +62,10 @@ public class Entity {
         } else {
             entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
         }
+    }
+    
+    public void drawDebug(ShapeRenderer shapeRenderer){
+        shapeRenderer.rect(entityHitBox.x, entityHitBox.y, entityHitBox.width, entityHitBox.height);
     }
     
     public boolean overlaps(Entity entity) {

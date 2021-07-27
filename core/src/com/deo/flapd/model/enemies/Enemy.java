@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -134,6 +135,25 @@ public class Enemy extends Entity {
         }
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).draw(batch, delta);
+        }
+    }
+    
+    @Override
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        super.drawDebug(shapeRenderer);
+        shapeRenderer.setColor(Color.YELLOW);
+        for (int i = 0; i < data.fireParticleEffects.size; i++) {
+            ParticleEffect particleEffect = data.fireParticleEffects.get(i);
+            shapeRenderer.rect(x + width / 2f + MathUtils.cosDeg(
+                    rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
+                    y + height / 2f + MathUtils.sinDeg(
+                            rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
+                    particleEffect.getBoundingBox().getWidth(),
+                    particleEffect.getBoundingBox().getHeight());
+        }
+        shapeRenderer.setColor(Color.GREEN);
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).drawDebug(shapeRenderer);
         }
     }
     

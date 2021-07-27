@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -335,6 +336,10 @@ public class Player {
             }
             
         }
+    }
+    
+    public void drawDebug(ShapeRenderer shapeRenderer){
+        shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
     
     public void dispose() {

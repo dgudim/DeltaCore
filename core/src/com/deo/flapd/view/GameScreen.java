@@ -5,10 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
@@ -41,6 +43,7 @@ public class GameScreen implements Screen {
     private final Checkpoint checkpoint;
     
     private final SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
     
     private final Player player;
     private final GameUi gameUi;
@@ -69,6 +72,7 @@ public class GameScreen implements Screen {
     private final Bosses bosses;
     
     private boolean drawScreenExtenders = true;
+    private final boolean drawDebug;
     
     GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, boolean newGame) {
         
@@ -79,6 +83,14 @@ public class GameScreen implements Screen {
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
+        
+        drawDebug = getBoolean("drawDebug");
+        if(drawDebug){
+            Gdx.gl.glLineWidth(1);
+            shapeRenderer = new ShapeRenderer();
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.setAutoShapeType(true);
+        }
         
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
         bg2 = assetManager.get("backgrounds/bg_layer2.png");
@@ -189,6 +201,15 @@ public class GameScreen implements Screen {
         }
         
         batch.end();
+    
+        if(drawDebug){
+            shapeRenderer.begin();
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            bosses.drawDebug(shapeRenderer);
+            player.drawDebug(shapeRenderer);
+            enemies.drawDebug(shapeRenderer);
+            shapeRenderer.end();
+        }
         
         musicManager.update(delta);
         

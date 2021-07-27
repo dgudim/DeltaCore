@@ -2,6 +2,7 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Player;
 
@@ -39,6 +40,12 @@ public class Bosses {
     public void draw(SpriteBatch batch, float delta) {
         for (int i = 0; i < bosses.size; i++) {
             bosses.get(i).draw(batch, delta);
+        }
+    }
+    
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        for (int i = 0; i < bosses.size; i++) {
+            bosses.get(i).drawDebug(shapeRenderer);
         }
     }
     

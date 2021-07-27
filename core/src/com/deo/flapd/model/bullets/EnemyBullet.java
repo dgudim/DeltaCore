@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Bullet;
@@ -134,6 +135,19 @@ public class EnemyBullet extends Entity {
                 data.explosionParticleEffect.draw(batch, delta);
             }
         }
+    }
+    
+    @Override
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        super.drawDebug(shapeRenderer);
+        shapeRenderer.setColor(Color.YELLOW);
+        shapeRenderer.rect(x + width / 2f + MathUtils.cosDeg(
+                rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
+                y + height / 2f + MathUtils.sinDeg(
+                        rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
+                data.trailParticleEffect.getBoundingBox().getWidth(),
+                data.trailParticleEffect.getBoundingBox().getHeight());
+        shapeRenderer.setColor(Color.GREEN);
     }
     
     public void update(float delta) {

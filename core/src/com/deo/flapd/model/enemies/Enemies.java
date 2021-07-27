@@ -3,6 +3,7 @@ package com.deo.flapd.model.enemies;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
@@ -65,6 +66,12 @@ public class Enemies {
     public void drawEffects(SpriteBatch batch, float delta) {
         for (int i = 0; i < enemyEntities.size; i++) {
             enemyEntities.get(i).drawEffects(batch, delta);
+        }
+    }
+    
+    public void drawDebug(ShapeRenderer shapeRenderer){
+        for (int i = 0; i < enemyEntities.size; i++) {
+            enemyEntities.get(i).drawDebug(shapeRenderer);
         }
     }
     

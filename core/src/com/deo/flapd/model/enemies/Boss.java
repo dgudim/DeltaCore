@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -158,6 +159,14 @@ public class Boss {
         if (visible) {
             for (int i = 0; i < parts.size; i++) {
                 parts.get(i).draw(batch, delta);
+            }
+        }
+    }
+    
+    void drawDebug(ShapeRenderer shapeRenderer){
+        if(visible){
+            for (int i = 0; i < parts.size; i++) {
+                parts.get(i).drawDebug(shapeRenderer);
             }
         }
     }
@@ -761,6 +770,14 @@ class Cannon extends Part {
         }
     }
     
+    @Override
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        super.drawDebug(shapeRenderer);
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).drawDebug(shapeRenderer);
+        }
+    }
+    
     void shoot() {
         for (int i = 0; i < bulletData.bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(currentConfig.get("bullet"));
@@ -788,7 +805,9 @@ class Cannon extends Part {
     @Override
     void reset() {
         super.reset();
-        powerUpEffect.reset();
+        if(hasPowerupEffect){
+            powerUpEffect.reset();
+        }
     }
     
     @Override
@@ -1086,7 +1105,7 @@ class Action {
         active = actionValue.getBoolean(false, "active");
         changeTexture = actionValue.getString("false", "changeTexture");
         if (this.target.hasAnimation && !changeTexture.equals("false")) {
-            frameDuration = actionValue.getFloat(1, "frameDuration");
+            frameDuration = actionValue.getFloat(this.target.enemyAnimation.getFrameDuration(), "frameDuration");
         }
         int movementCount;
         
