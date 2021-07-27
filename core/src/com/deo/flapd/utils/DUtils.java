@@ -42,7 +42,7 @@ public class DUtils {
     public static int enemyBulletDisposes;
     public static int enemyBulletTrailDisposes;
     
-    private static final String androidRootDir = ".!DeltaCore/";
+    private static final String androidRootDir = "Logs/";
     private static final String pcRootDir = "!DeltaCore/";
     
     private static final String currentRootDir = getRootDir();
