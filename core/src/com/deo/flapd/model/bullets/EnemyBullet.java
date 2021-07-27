@@ -139,15 +139,18 @@ public class EnemyBullet extends Entity {
     
     @Override
     public void drawDebug(ShapeRenderer shapeRenderer) {
-        super.drawDebug(shapeRenderer);
-        shapeRenderer.setColor(Color.YELLOW);
-        shapeRenderer.rect(x + width / 2f + MathUtils.cosDeg(
-                rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
-                y + height / 2f + MathUtils.sinDeg(
-                        rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
-                data.trailParticleEffect.getBoundingBox().getWidth(),
-                data.trailParticleEffect.getBoundingBox().getHeight());
-        shapeRenderer.setColor(Color.GREEN);
+        if (!data.isLaser) {
+            super.drawDebug(shapeRenderer);
+            shapeRenderer.setColor(Color.YELLOW);
+            float pX = x + width / 2f + MathUtils.cosDeg(
+                    rotation + data.trailOffsetAngle) * data.trailOffsetDistance;
+            float pY = y + height / 2f + MathUtils.sinDeg(
+                    rotation + data.trailOffsetAngle) * data.trailOffsetDistance;
+            shapeRenderer.rectLine(pX, pY, pX + data.trailParticleEffect.getBoundingBox().getWidth(), pY, data.trailParticleEffect.getBoundingBox().getHeight());
+            shapeRenderer.setColor(Color.GREEN);
+        } else {
+            shapeRenderer.rectLine(x, y, x + MathUtils.cosDeg(rotation) * width, y + MathUtils.sinDeg(rotation) * width, height);
+        }
     }
     
     public void update(float delta) {

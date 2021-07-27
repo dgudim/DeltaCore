@@ -144,12 +144,11 @@ public class Enemy extends Entity {
         shapeRenderer.setColor(Color.YELLOW);
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             ParticleEffect particleEffect = data.fireParticleEffects.get(i);
-            shapeRenderer.rect(x + width / 2f + MathUtils.cosDeg(
-                    rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
-                    y + height / 2f + MathUtils.sinDeg(
-                            rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i),
-                    particleEffect.getBoundingBox().getWidth(),
-                    particleEffect.getBoundingBox().getHeight());
+            float pX = x + width / 2f + MathUtils.cosDeg(
+                    rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i);
+            float pY = y + height / 2f + MathUtils.sinDeg(
+                    rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i);
+            shapeRenderer.rectLine(pX, pY, pX + particleEffect.getBoundingBox().getWidth(), pY, particleEffect.getBoundingBox().getHeight());
         }
         shapeRenderer.setColor(Color.GREEN);
         for (int i = 0; i < bullets.size; i++) {
