@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -24,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.MusicManager;
@@ -36,16 +34,13 @@ import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
-import static com.deo.flapd.utils.DUtils.updateCamera;
 import static com.deo.flapd.view.GameScreen.is_paused;
 
 
 public class GameUi {
     
-    private final Viewport viewport;
     private final Stage stage;
     private final Stage PauseStage;
-    private final OrthographicCamera cam;
     
     private float deltaX;
     private float deltaY;
@@ -81,7 +76,7 @@ public class GameUi {
     
     private final MusicManager musicManager;
     
-    public GameUi(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
+    public GameUi(ScreenViewport viewport, final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
         
         this.game = game;
         this.musicManager = musicManager;
@@ -100,9 +95,6 @@ public class GameUi {
         transparency = getBoolean("transparency");
         
         this.batch = batch;
-        
-        cam = new OrthographicCamera(800, 480);
-        viewport = new ScreenViewport(cam);
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
         
@@ -365,31 +357,6 @@ public class GameUi {
         if (player.exploded && player.explosionEffect.isComplete()) {
             game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor, player, musicManager));
         }
-        
-        if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
-            cam.zoom *= 1.01;
-            cam.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
-            cam.zoom *= 0.99;
-            cam.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            cam.translate(3, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            cam.translate(-3, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            cam.translate(0, 3);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            cam.translate(0, -3);
-        }
-    }
-    
-    void resize(int width, int height) {
-        updateCamera(cam, viewport, width, height);
     }
     
     public void dispose() {
