@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": 19000,
+    "score": -19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -136,7 +136,9 @@
         "damage": 0.05,
         "height": 20,
         "color": "ff0000ff",
-        "offset": [0, 0]
+        "offset": [0, 0],
+        "screenShakeOnHit": 3,
+        "screenShakeDuration": 0.001
       },
       "fireRate": {
         "initialDelay": 0,

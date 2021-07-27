@@ -36,6 +36,8 @@
       "hasAnimation": false,
       "texture": "gun",
       "powerUpEffect": false,
+      "recoil": 5,
+      "recoilReturnSpeed": 10,
       "bullet": {
         "isLaser": false,
         "hasCollisionWithPlayerBullets": false,

@@ -163,8 +163,8 @@ public class Boss {
         }
     }
     
-    void drawDebug(ShapeRenderer shapeRenderer){
-        if(visible){
+    void drawDebug(ShapeRenderer shapeRenderer) {
+        if (visible) {
             for (int i = 0; i < parts.size; i++) {
                 parts.get(i).drawDebug(shapeRenderer);
             }
@@ -635,6 +635,10 @@ class Cannon extends Part {
     float powerDownOffsetAngle;
     float powerDownOffsetDistance;
     
+    float recoil;
+    float currentRecoilOffset;
+    float recoilReturnSpeed;
+    
     Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
         super(partConfig, textures, parts, body, assetManager);
         
@@ -685,7 +689,7 @@ class Cannon extends Part {
             powerUpOffsetAngle = MathUtils.atan2(powerUpOffset[1], powerUpOffset[0]) * MathUtils.radiansToDegrees;
             powerUpOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerUpOffset[0], powerUpOffset[1]);
         }
-    
+        
         hasPowerDownEffect = !currentConfig.get("powerDownEffect").isBoolean(true);
         if (hasPowerDownEffect) {
             powerDownScale = currentConfig.getFloat(1, "powerDownEffectScale");
@@ -699,6 +703,28 @@ class Cannon extends Part {
             powerDownOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerDownOffset[0], powerDownOffset[1]);
         }
         
+        if (!currentConfig.get("recoil").isBoolean(true)) {
+            recoil = currentConfig.getFloat(5, "recoil");
+            recoilReturnSpeed = currentConfig.getFloat(10, "recoilReturnSpeed");
+        }
+        
+    }
+    
+    @Override
+    protected void updateEntity(float delta) {
+        entitySprite.setPosition(
+                x + additionalOffsetX + MathUtils.cosDeg(rotation + additionalRotation) * currentRecoilOffset,
+                y + additionalOffsetY + MathUtils.sinDeg(rotation + additionalRotation) * currentRecoilOffset);
+        entitySprite.setRotation(rotation + additionalRotation);
+        entitySprite.setColor(color);
+        if (health > 0) {
+            entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
+            if (regeneration > 0 && maxHealth > 0) {
+                health = clamp(health + regeneration * delta, 0, maxHealth);
+            }
+        } else {
+            entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
+        }
     }
     
     @Override
@@ -771,6 +797,9 @@ class Cannon extends Part {
                     timer += delta;
                 }
             }
+            if (currentRecoilOffset > 0) {
+                currentRecoilOffset = clamp(currentRecoilOffset - delta * recoilReturnSpeed, 0, recoil);
+            }
         }
     }
     
@@ -822,11 +851,13 @@ class Cannon extends Part {
             newRot += additionalRotation;
             
             bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
-            
-            if(hasPowerDownEffect) {
-                powerDownEffect.start();
-            }
         }
+        
+        if (hasPowerDownEffect) {
+            powerDownEffect.start();
+        }
+        
+        currentRecoilOffset = recoil;
         
         if (soundVolume > 0) {
             shootingSound.play();
@@ -837,10 +868,10 @@ class Cannon extends Part {
     @Override
     void reset() {
         super.reset();
-        if(hasPowerUpEffect){
+        if (hasPowerUpEffect) {
             powerUpEffect.reset();
         }
-        if(hasPowerDownEffect){
+        if (hasPowerDownEffect) {
             powerDownEffect.reset();
         }
     }
@@ -851,10 +882,10 @@ class Cannon extends Part {
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
-        if(hasPowerUpEffect){
+        if (hasPowerUpEffect) {
             powerUpEffect.dispose();
         }
-        if(hasPowerDownEffect){
+        if (hasPowerDownEffect) {
             powerDownEffect.dispose();
         }
     }
@@ -923,7 +954,7 @@ class Movement {
             shakeIntensityX = movementConfig.getFloat(10, "shakeIntensityX");
             shakeIntensityY = movementConfig.getFloat(10, "shakeIntensityY");
             shakePeriod = movementConfig.getFloat(0.3f, "shakePeriod");
-        }else{
+        } else {
             speed = movementConfig.getFloat(100, "speed");
             if (movementConfig.getString("inf", "moveBy").equals("inf")) {
                 moveBy = Integer.MAX_VALUE;

@@ -49,6 +49,9 @@ public class BulletData {
     float explosionTimer;
     float homingSpeed;
     
+    float screenShakeIntensity;
+    float screenShakeDuration;
+    
     JsonEntry enemyInfo;
     String color;
     
@@ -104,5 +107,8 @@ public class BulletData {
         shootSound = bulletData.getString("sfx/gun1.ogg", "shootSound");
         
         bulletsPerShot = bulletData.getInt(1, "bulletsPerShot");
+        
+        screenShakeIntensity = bulletData.getFloat(0, "screenShakeOnHit");
+        screenShakeDuration = bulletData.getFloat(0, "screenShakeDuration");
     }
 }

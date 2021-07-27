@@ -14,6 +14,7 @@ import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.DUtils;
+import com.deo.flapd.view.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
@@ -165,6 +166,7 @@ public class EnemyBullet extends Entity {
         
         if (overlaps(player.bounds)) {
             player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1));
+            GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);
             explode();
         }
         
