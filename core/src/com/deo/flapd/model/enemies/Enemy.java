@@ -26,6 +26,7 @@ import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 
+import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.enemyDisposes;
 import static com.deo.flapd.utils.DUtils.enemyFireDisposes;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
@@ -37,7 +38,6 @@ public class Enemy extends Entity {
     
     public EnemyData data;
     
-    private BulletData bulletData;
     private final Array<EnemyBullet> bullets;
     
     private final AssetManager assetManager;
@@ -70,8 +70,7 @@ public class Enemy extends Entity {
         difficulty = getFloat("difficulty");
         
         if (data.spawnsBullets) {
-            bulletData = new BulletData(data.enemyInfo, data.type);
-            shootingSound = assetManager.get(bulletData.shootSound);
+            shootingSound = assetManager.get(data.shootingSound);
         }
         
         if (data.spawnsDrones) {
@@ -84,7 +83,7 @@ public class Enemy extends Entity {
         bullets = new Array<>();
         if (data.hasAnimation) {
             entitySprite = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(data.frameDuration, assetManager.get(data.texture, TextureAtlas.class).findRegions(data.name), Animation.PlayMode.LOOP);
+            enemyAnimation = new Animation<>(data.frameDuration, assetManager.get(data.texture, TextureAtlas.class).findRegions(data.name), Animation.PlayMode.LOOP);
         } else {
             entitySprite = new Sprite(assetManager.get("enemies/enemies.atlas", TextureAtlas.class).findRegion(data.texture));
         }
@@ -143,14 +142,8 @@ public class Enemy extends Entity {
         super.drawDebug(shapeRenderer);
         shapeRenderer.setColor(Color.YELLOW);
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
-            ParticleEffect particleEffect = data.fireParticleEffects.get(i);
-            float pX = x + width / 2f + MathUtils.cosDeg(
-                    rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i);
-            float pY = y + height / 2f + MathUtils.sinDeg(
-                    rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i);
-            shapeRenderer.rectLine(pX, pY, pX + particleEffect.getBoundingBox().getWidth(), pY, particleEffect.getBoundingBox().getHeight());
+            drawParticleEffectBounds(shapeRenderer, data.fireParticleEffects.get(i));
         }
-        shapeRenderer.setColor(Color.GREEN);
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).drawDebug(shapeRenderer);
         }
@@ -216,13 +209,11 @@ public class Enemy extends Entity {
             
             animationPosition += delta;
             
-            for (int i = 0; i < playerBullet.bullets.size; i++) {
-                if (overlaps(playerBullet.bullets.get(i))) {
-                    color = Color.valueOf(data.hitColor);
-                    health -= playerBullet.damages.get(i);
-                    GameLogic.score += 30 + 10 * (playerBullet.damages.get(i) / 50 - 1);
-                    playerBullet.removeBullet(i, true);
-                }
+            float damage = playerBullet.overlaps(entityHitBox, true);
+            if(damage>0){
+                color = Color.valueOf(data.hitColor);
+                health-=damage;
+                GameLogic.score += 30 + 10 * (damage / 50 - 1);
             }
             
             if (overlaps(playerBullet.laser.getBoundingRectangle())) {
@@ -285,13 +276,13 @@ public class Enemy extends Entity {
     }
     
     private void shoot() {
-        for (int i = 0; i < bulletData.bulletsPerShot; i++) {
-            BulletData newBulletData = new BulletData(data.enemyInfo, data.type);
+        for (int i = 0; i < data.bulletsPerShot; i++) {
+            BulletData newBulletData = new BulletData(data.enemyInfo.get("bullet"));
             
-            float newX = x + width / 2f + MathUtils.cosDeg(rotation + newBulletData.bulletOffsetAngle) * newBulletData.bulletOffsetDistance;
-            float newY = y + height / 2f + MathUtils.sinDeg(rotation + newBulletData.bulletOffsetAngle) * newBulletData.bulletOffsetDistance;
+            float newX = x + width / 2f + MathUtils.cosDeg(rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
+            float newY = y + height / 2f + MathUtils.sinDeg(rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
             
-            float newAngle = getRandomInRange(-10, 10) * newBulletData.spread + rotation;
+            float newAngle = getRandomInRange(-10, 10) * data.bulletSpread + rotation;
             if (data.canAim) {
                 newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
@@ -306,7 +297,7 @@ public class Enemy extends Entity {
         float x = this.x + width / 2f + MathUtils.cosDeg(rotation + data.droneAngle) * data.droneDistance;
         float y = this.y + height / 2f + MathUtils.sinDeg(rotation + data.droneAngle) * data.droneDistance;
         for (int i = 0; i < data.dronesPerSpawn; i++) {
-            EnemyData droneData = new EnemyData(enemies.enemiesJson.get(data.droneType), data.type).setNewPosition(x, y);
+            EnemyData droneData = new EnemyData(enemies.enemiesJson.get(data.droneType)).setNewPosition(x, y);
             droneData.health *= difficulty;
             enemies.enemyEntities.add(new Enemy(assetManager, droneData, enemies, player));
         }
@@ -358,6 +349,14 @@ class EnemyData {
     String explosion;
     ParticleEffect explosionParticleEffect;
     float explosionScale;
+    String shootingSound;
+    
+    float[] bulletOffset;
+    float bulletOffsetAngle;
+    float bulletOffsetDistance;
+    
+    int bulletsPerShot;
+    float bulletSpread;
     
     float x;
     float y;
@@ -385,8 +384,6 @@ class EnemyData {
     float millis;
     
     String hitColor;
-    
-    String type;
     
     int[] spawnHeight;
     
@@ -437,28 +434,26 @@ class EnemyData {
     
     JsonEntry enemyInfo;
     
-    EnemyData(JsonEntry enemyInfo, String type) {
+    EnemyData(JsonEntry enemyInfo) {
         
-        JsonEntry enemyBodyInfo = enemyInfo.get(type, "body");
         fireParticleEffects = new Array<>();
         fireParticleEffectAngles = new Array<>();
         fireParticleEffectDistances = new Array<>();
-        this.type = type;
         this.enemyInfo = enemyInfo;
         
         name = enemyInfo.name;
-        texture = enemyBodyInfo.getString("noTexture", "texture");
-        explosionSound = enemyBodyInfo.getString("sfx/explosion.ogg", "explosionSound");
-        explosion = enemyBodyInfo.getString("particles/explosion.p", "explosionEffect");
-        explosionScale = enemyBodyInfo.getFloat(1, "explosionScale");
+        texture = enemyInfo.getString("noTexture", "texture");
+        explosionSound = enemyInfo.getString("sfx/explosion.ogg", "explosionSound");
+        explosion = enemyInfo.getString("particles/explosion.p", "explosionEffect");
+        explosionScale = enemyInfo.getFloat(1, "explosionScale");
         
-        width = enemyBodyInfo.getFloat(1, "width");
-        height = enemyBodyInfo.getFloat(1, "height");
+        width = enemyInfo.getFloat(1, "width");
+        height = enemyInfo.getFloat(1, "height");
         
         x = 805;
         y = 0;
         
-        fireEffectCount = enemyInfo.getInt(1, type, "body", "fire", "count");
+        fireEffectCount = enemyInfo.getInt(1, "fire", "count");
         
         fireOffsetsX = new int[fireEffectCount];
         fireOffsetsY = new int[fireEffectCount];
@@ -475,56 +470,65 @@ class EnemyData {
         onBossWave = enemyInfo.getBoolean(false, "spawnConditions", "bossWave");
         
         for (int i = 0; i < fireEffectCount; i++) {
-            fireOffsetsX[i] = enemyBodyInfo.getIntArray(new int[]{0, 0}, "fire", "offset" + i)[0];
-            fireOffsetsY[i] = enemyBodyInfo.getIntArray(new int[]{0, 0}, "fire", "offset" + i)[1];
-            fireEffects[i] = enemyBodyInfo.getString("particles/fire_engine_left_blue.p", "fire", "effect" + i);
-            fireScales[i] = enemyBodyInfo.getFloat(1, "fire", "scale" + i);
+            fireOffsetsX[i] = enemyInfo.getIntArray(new int[]{0, 0}, "fire", "offset" + i)[0];
+            fireOffsetsY[i] = enemyInfo.getIntArray(new int[]{0, 0}, "fire", "offset" + i)[1];
+            fireEffects[i] = enemyInfo.getString("particles/fire_engine_left_blue.p", "fire", "effect" + i);
+            fireScales[i] = enemyInfo.getFloat(1, "fire", "scale" + i);
             fireParticleEffectAngles.set(i, MathUtils.atan2(fireOffsetsY[i], fireOffsetsX[i]) * MathUtils.radiansToDegrees);
             fireParticleEffectDistances.set(i, getDistanceBetweenTwoPoints(0, 0, fireOffsetsX[i], fireOffsetsY[i]));
         }
         
         hasAnimation = texture.endsWith(".atlas");
         if (hasAnimation) {
-            frameDuration = enemyBodyInfo.getFloat(1, "frameDuration");
+            frameDuration = enemyInfo.getFloat(1, "frameDuration");
         }
         
-        isHoming = enemyBodyInfo.getBoolean(false, "homing");
+        isHoming = enemyInfo.getBoolean(false, "homing");
         
         if (isHoming) {
-            explosionTimer = enemyBodyInfo.getFloat(3, "explosionTimer");
-            idealExplosionTimer = enemyBodyInfo.getFloat(3, "explosionTimer");
-            homingSpeed = enemyBodyInfo.getFloat(10, "homingSpeed");
+            explosionTimer = enemyInfo.getFloat(3, "explosionTimer");
+            idealExplosionTimer = enemyInfo.getFloat(3, "explosionTimer");
+            homingSpeed = enemyInfo.getFloat(10, "homingSpeed");
         }
         
-        spawnsDrones = enemyBodyInfo.getBoolean(false, "spawnsDrones");
+        spawnsDrones = enemyInfo.getBoolean(false, "spawnsDrones");
         
-        spawnsBullets = enemyBodyInfo.getBoolean(false, "spawnsBullets");
+        spawnsBullets = enemyInfo.getBoolean(false, "spawnsBullets");
         
-        health = enemyBodyInfo.getFloat(100, "health");
-        regeneration = enemyBodyInfo.getFloat(0, "regeneration");
+        health = enemyInfo.getFloat(100, "health");
+        regeneration = enemyInfo.getFloat(0, "regeneration");
         
-        speed = enemyBodyInfo.getInt(100, "speed");
+        speed = enemyInfo.getInt(100, "speed");
         
         if (spawnsBullets) {
-            shootingDelay = enemyBodyInfo.getFloat(2, "shootingDelay");
-            canAim = enemyBodyInfo.getBoolean(false, "canAim");
+            shootingSound = enemyInfo.getString("sfx/gun1.ogg", "shootSound");
+    
+            bulletOffset = enemyInfo.getFloatArray(new float[]{0, 0}, "bulletOffset");
+            bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
+            bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, bulletOffset[0], bulletOffset[1]);
+    
+            bulletsPerShot = enemyInfo.getInt(1, "bulletsPerShot");
+            bulletSpread = enemyInfo.getFloat(0, "bulletSpread");
+            
+            shootingDelay = enemyInfo.getFloat(2, "shootingDelay");
+            canAim = enemyInfo.getBoolean(false, "canAim");
             if (canAim) {
-                aimMinAngle = enemyBodyInfo.getFloatArray(new float[]{-30, 30}, "aimAngleLimit")[0];
-                aimMaxAngle = enemyBodyInfo.getFloatArray(new float[]{-30, 30}, "aimAngleLimit")[1];
+                aimMinAngle = enemyInfo.getFloatArray(new float[]{-30, 30}, "aimAngleLimit")[0];
+                aimMaxAngle = enemyInfo.getFloatArray(new float[]{-30, 30}, "aimAngleLimit")[1];
             }
         }
         
         if (spawnsDrones) {
-            droneSpawnDelay = enemyBodyInfo.getFloat(3, "droneSpawnDelay");
-            dronesPerSpawn = enemyBodyInfo.getInt(1, "dronesPerSpawn");
-            droneType = enemyBodyInfo.getString(name, "droneType");
-            droneSpawnSound = enemyBodyInfo.getString("sfx/gun3.ogg", "droneSpawnSound");
-            droneSpawnOffset = enemyBodyInfo.getIntArray(new int[]{0, 0}, "droneSpawnOffset");
+            droneSpawnDelay = enemyInfo.getFloat(3, "droneSpawnDelay");
+            dronesPerSpawn = enemyInfo.getInt(1, "dronesPerSpawn");
+            droneType = enemyInfo.getString(name, "droneType");
+            droneSpawnSound = enemyInfo.getString("sfx/gun3.ogg", "droneSpawnSound");
+            droneSpawnOffset = enemyInfo.getIntArray(new int[]{0, 0}, "droneSpawnOffset");
             droneAngle = MathUtils.atan2(droneSpawnOffset[1], droneSpawnOffset[0]) * MathUtils.radiansToDegrees;
             droneDistance = getDistanceBetweenTwoPoints(0, 0, droneSpawnOffset[0], droneSpawnOffset[1]);
         }
         
-        hitColor = enemyBodyInfo.getString("#FF0000", "hitColor");
+        hitColor = enemyInfo.getString("#FF0000", "hitColor");
         
         dropTimer = enemyInfo.getInt(3, "drops", "timer");
         dropCount = enemyInfo.getIntArray(new int[]{1, 3}, "drops", "count");
@@ -540,7 +544,7 @@ class EnemyData {
     }
     
     protected EnemyData clone() {
-        EnemyData copy = new EnemyData(enemyInfo, type);
+        EnemyData copy = new EnemyData(enemyInfo);
         copy.y = getRandomInRange(copy.spawnHeight[0], copy.spawnHeight[1]);
         copy.shootingDelay += getRandomInRange(-7, 7) / 100f;
         return copy;

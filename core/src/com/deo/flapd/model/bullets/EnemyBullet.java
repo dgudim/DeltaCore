@@ -17,6 +17,7 @@ import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.view.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
 import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
 import static java.lang.StrictMath.min;
@@ -143,12 +144,7 @@ public class EnemyBullet extends Entity {
         if (!data.isLaser) {
             super.drawDebug(shapeRenderer);
             shapeRenderer.setColor(Color.YELLOW);
-            float pX = x + width / 2f + MathUtils.cosDeg(
-                    rotation + data.trailOffsetAngle) * data.trailOffsetDistance;
-            float pY = y + height / 2f + MathUtils.sinDeg(
-                    rotation + data.trailOffsetAngle) * data.trailOffsetDistance;
-            shapeRenderer.rectLine(pX, pY, pX + data.trailParticleEffect.getBoundingBox().getWidth(), pY, data.trailParticleEffect.getBoundingBox().getHeight());
-            shapeRenderer.setColor(Color.GREEN);
+            drawParticleEffectBounds(shapeRenderer,  data.trailParticleEffect);
         } else {
             shapeRenderer.rectLine(x, y, x + MathUtils.cosDeg(rotation) * width, y + MathUtils.sinDeg(rotation) * width, height);
         }
