@@ -5,15 +5,12 @@
     "score": 5000,
     "randomness": 250
   },
-  "hasAi": false,
   "parts": {
     "body": {
       "type": "basePart",
       "hasCollision": false,
       "width": 208,
       "height": 98,
-      "originX": "standard",
-      "originY": "standard",
       "hasAnimation": true,
       "texture": "phase1",
       "frameDuration": 0.07,
@@ -21,7 +18,6 @@
     },
     "cannon": {
       "type": "cannon",
-      "drawBulletsOnTop": false,
       "hasCollision": true,
       "health": 3000,
       "regeneration": 0,
@@ -32,22 +28,13 @@
       "canAim": true,
       "aimAngleLimit": [-30, 30],
       "aimAnimation": "rotate",
-      "linked": false,
-      "hasAnimation": false,
       "texture": "gun",
-      "powerUpEffect": false,
       "recoil": 5,
       "recoilReturnSpeed": 10,
       "bullet": {
-        "isLaser": false,
-        "hasCollisionWithPlayerBullets": false,
         "texture": "bullet_thick_red",
-        "shootSound": "sfx/gun3.ogg",
         "speed": 110,
-        "spread": 0.5,
-        "bulletsPerShot": 1,
         "damage": 15,
-        "homing": false,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.3,
         "trailOffset": [0, 0],
@@ -55,8 +42,7 @@
         "explosionEffect": "particles/explosion3.p",
         "explosionScale": 1,
         "height": 5,
-        "width": 14,
-        "offset": [-41, -2.5]
+        "width": 14
       },
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
@@ -67,6 +53,10 @@
         "X": 58,
         "Y": -10
       },
+      "bulletSpread": 0.5,
+      "bulletOffset": [-41, -2.5],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun3.ogg",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 2,
@@ -93,52 +83,28 @@
     "initialisingPhase": {
       "bodyInit": {
         "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "moveLinearX": {
             "moveBy": -170,
-            "speed": 4.5,
-            "stopPreviousAnimations": false
+            "speed": 4.5
           },
           "moveLinearX": {
             "moveBy": -200,
-            "speed": 4.5,
-            "stopPreviousAnimations": false
+            "speed": 4.5
           }
         }
-      },
-      "cannonInit": {
-        "target": "cannon",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false
       }
     },
     "inPlacePhase": {
       "bodyInPlace": {
         "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
+        "active": true
       },
       "cannonInPlace": {
         "target": "cannon",
         "enableCollisions": true,
         "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
+        "active": true
       }
     },
     "deathAnimationPhase": {
@@ -146,7 +112,6 @@
         "target": "body",
         "enableCollisions": false,
         "showHealthBar": false,
-        "visible": true,
         "active": false,
         "changeTexture": "dead",
         "frameDuration": 0.07,
@@ -158,13 +123,11 @@
           },
           "moveLinearX": {
             "moveBy": -100,
-            "speed": 1,
-            "stopPreviousAnimations": false
+            "speed": 1
           },
           "rotate": {
             "moveBy": 360,
-            "speed": 1,
-            "stopPreviousAnimations": false
+            "speed": 1
           }
         }
       }

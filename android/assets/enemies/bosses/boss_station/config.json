@@ -1,0 +1,938 @@
+{
+  "textures": "bossStation.atlas",
+  "spawnAt": [850, 0],
+  "spawnConditions": {
+    "score": 30000,
+    "randomness": 1000
+  },
+  "parts": {
+    "body": {
+      "type": "basePart",
+      "health": 50000,
+      "regeneration": 100,
+      "hasCollision": true,
+      "width": 1600,
+      "height": 480,
+      "originX": "standard",
+      "originY": "standard",
+      "hasAnimation": false,
+      "texture": "dark_station",
+      "explosionEffect": "particles/explosion_destroyer.p",
+      "explosionScale": 4,
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 0,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [3, 5],
+          "count": [3, 10]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [10, 15]
+        },
+        "bonuses": {
+          "type": [2, 4],
+          "chance": 100
+        }
+      }
+    },
+    "ventFan": {
+      "type": "part",
+      "health": 100,
+      "regeneration": 0,
+      "hasCollision": true,
+      "width": 48,
+      "height": 48,
+      "offset": {
+        "relativeTo": "body",
+        "X": 311,
+        "Y": 426
+      },
+      "texture": "ventilation",
+      "layer": 2,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 4],
+          "count": [2, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 15]
+        },
+        "bonuses": {
+          "type": [2, 3],
+          "chance": 60
+        }
+      }
+    },
+    "ventCase": {
+      "type": "part",
+      "health": 100,
+      "regeneration": 0,
+      "hasCollision": true,
+      "width": 48,
+      "height": 48,
+      "offset": {
+        "relativeTo": "body",
+        "X": 311,
+        "Y": 426
+      },
+      "texture": "ventilation_top",
+      "layer": 3,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 4],
+          "count": [2, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 15]
+        },
+        "bonuses": {
+          "type": [2, 3],
+          "chance": 60
+        }
+      }
+    },
+    "core": {
+      "type": "part",
+      "health": 1000,
+      "regeneration": 0,
+      "hasCollision": true,
+      "width": 76,
+      "height": 56,
+      "offset": {
+        "relativeTo": "body",
+        "X": 1310,
+        "Y": 212
+      },
+      "texture": "dark_core",
+      "layer": 1,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [2, 4],
+          "count": [5, 7]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [10, 15]
+        },
+        "bonuses": {
+          "type": [2, 3],
+          "chance": 100
+        }
+      }
+    },
+    "coreCover": {
+      "type": "part",
+      "health": 1000,
+      "regeneration": 0,
+      "hasCollision": true,
+      "width": 165,
+      "height": 140,
+      "offset": {
+        "relativeTo": "body",
+        "X": 1265.5,
+        "Y": 170
+      },
+      "texture": "core_shield",
+      "layer": 1,
+      "drops": {
+        "items": {
+          "timer": 1,
+          "rarity": [1, 3],
+          "count": [0, 1]
+        },
+        "money": {
+          "timer": 1,
+          "count": [1, 4]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 20
+        }
+      }
+    },
+    "cannonStandard": {
+      "type": "cannon",
+      "hasCollision": true,
+      "health": 1000,
+      "width": 80,
+      "height": 60,
+      "originX": 50,
+      "originY": "standard",
+      "canAim": true,
+      "aimAngleLimit": [-360, 360],
+      "aimAnimation": "rotate",
+      "texture": "standard_turret",
+      "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
+      "explosionSound": "sfx/explosion.ogg",
+      "bullet": {
+        "hasCollisionWithPlayerBullets": true,
+        "texture": "bullet_thick_red",
+        "speed": 90,
+        "damage": 15,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion3.p",
+        "explosionScale": 1,
+        "width": 14,
+        "height": 10
+      },
+      "layer": 2,
+      "offset": {
+        "relativeTo": "body",
+        "X": 180,
+        "Y": 140
+      },
+      "bulletSpread": 0.1,
+      "bulletOffset": [-35, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun3.ogg",
+      "fireRate": {
+        "initialDelay": 0,
+        "baseRate": 0.3,
+        "randomness": 0.1
+      },
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [2, 4],
+          "count": [1, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 10]
+        },
+        "bonuses": {
+          "type": [2, 3],
+          "chance": 50
+        }
+      }
+    },
+    "cannonStandard_middle": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 180,
+          "Y": 210
+        }
+      }
+    },
+    "cannonStandard_top": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 180,
+          "Y": 280
+        }
+      }
+    },
+    "cannonStandard_secondSegment1": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 695,
+          "Y": 290
+        }
+      }
+    },
+    "cannonStandard_secondSegment2": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 695,
+          "Y": 210
+        }
+      }
+    },
+    "cannonStandard_secondSegment3": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 695,
+          "Y": 130
+        }
+      }
+    },
+    "cannonStandard_secondSegment4": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 615,
+          "Y": 290
+        }
+      }
+    },
+    "cannonStandard_secondSegment5": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 615,
+          "Y": 210
+        }
+      }
+    },
+    "cannonStandard_secondSegment6": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 615,
+          "Y": 130
+        }
+      }
+    },
+    "cannonStandard_secondSegmentTop1": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 465,
+          "Y": 295
+        }
+      }
+    },
+    "cannonStandard_secondSegmentTop2": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 465,
+          "Y": 370
+        }
+      }
+    },
+    "cannonStandard_thirdSegment1": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 815,
+          "Y": 400
+        }
+      }
+    },
+    "cannonStandard_thirdSegment2": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 895,
+          "Y": 400
+        }
+      }
+    },
+    "cannonRocket": {
+      "type": "cannon",
+      "hasCollision": true,
+      "health": 7000,
+      "width": 92,
+      "height": 100,
+      "originX": 58,
+      "originY": "standard",
+      "canAim": true,
+      "aimAngleLimit": [-360, 360],
+      "aimAnimation": "rotate",
+      "texture": "rocket_launcher",
+      "bullet": {
+        "hasCollisionWithPlayerBullets": true,
+        "texture": "missile",
+        "speed": 150,
+        "damage": 15,
+        "trail": "particles/bullet_trail_left_yellow.p",
+        "trailScale": 1,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "width": 14,
+        "height": 10
+      },
+      "layer": 3,
+      "offset": {
+        "relativeTo": "body",
+        "X": 375,
+        "Y": 312.5
+      },
+      "fireRate": {
+        "initialDelay": 0,
+        "baseRate": 0.3,
+        "randomness": 0.1
+      },
+      "bulletSpread": 0.1,
+      "bulletOffset": [-35, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun3.ogg",
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 4],
+          "count": [2, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 15]
+        },
+        "bonuses": {
+          "type": [2, 3],
+          "chance": 60
+        }
+      }
+    },
+    "cannonRocket_RearTop1": {
+      "type": "clone",
+      "copyFrom": "cannonRocket",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1154,
+          "Y": 257
+        }
+      }
+    },
+    "cannonRocket_RearTop2": {
+      "type": "clone",
+      "copyFrom": "cannonRocket",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1289,
+          "Y": 312
+        }
+      }
+    },
+    "cannonRocket_RearBottom1": {
+      "type": "clone",
+      "copyFrom": "cannonRocket",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1154,
+          "Y": 123
+        }
+      }
+    },
+    "cannonRocket_RearBottom2": {
+      "type": "clone",
+      "copyFrom": "cannonRocket",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1289,
+          "Y": 68
+        }
+      }
+    },
+    "cannonArtillery": {
+      "type": "cannon",
+      "hasCollision": true,
+      "health": 10000,
+      "width": 180,
+      "height": 120,
+      "originX": 115,
+      "originY": "standard",
+      "canAim": true,
+      "aimAngleLimit": [-360, 360],
+      "aimAnimation": "rotate",
+      "texture": "heavy_artillery",
+      "bullet": {
+        "hasCollisionWithPlayerBullets": true,
+        "texture": "missile",
+        "speed": 150,
+        "damage": 15,
+        "trail": "particles/bullet_trail_left_yellow.p",
+        "trailScale": 1,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 1,
+        "width": 14,
+        "height": 10
+      },
+      "layer": 2,
+      "offset": {
+        "relativeTo": "body",
+        "X": 860,
+        "Y": 255
+      },
+      "fireRate": {
+        "initialDelay": 0,
+        "baseRate": 0.3,
+        "randomness": 0.1
+      },
+      "bulletSpread": 0.1,
+      "bulletOffset": [-35, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun3.ogg",
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 4],
+          "count": [2, 3]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 15]
+        },
+        "bonuses": {
+          "type": [2, 3],
+          "chance": 60
+        }
+      }
+    },
+    "cannonSmall1": {
+      "type": "cannon",
+      "hasCollision": true,
+      "health": 700,
+      "width": 32,
+      "height": 20,
+      "originX": 20,
+      "originY": "standard",
+      "canAim": true,
+      "aimAngleLimit": [-360, 360],
+      "aimAnimation": "rotate",
+      "texture": "machine_gun",
+      "bullet": {
+        "hasCollisionWithPlayerBullets": true,
+        "texture": "bullet_med_red",
+        "speed": 90,
+        "damage": 15,
+        "trail": "particles/bullet_trail_left.p",
+        "trailScale": 1,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion3.p",
+        "explosionScale": 1,
+        "width": 10,
+        "height": 10
+      },
+      "layer": 2,
+      "offset": {
+        "relativeTo": "body",
+        "X": 327.5,
+        "Y": 107.5
+      },
+      "bulletSpread": 0.1,
+      "bulletOffset": [-35, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun3.ogg",
+      "fireRate": {
+        "initialDelay": 0,
+        "baseRate": 0.3,
+        "randomness": 0.1
+      },
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 2],
+          "count": [1, 1]
+        },
+        "money": {
+          "timer": 1.3,
+          "count": [1, 2]
+        },
+        "bonuses": {
+          "type": [1, 2],
+          "chance": 1
+        }
+      }
+    },
+    "cannonSmall2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 372.5,
+          "Y": 107.5
+        }
+      }
+    },
+    "cannonSmall3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 417.5,
+          "Y": 107.5
+        }
+      }
+    },
+    "cannonSmall_Top1": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 642.5,
+          "Y": 407.5
+        }
+      }
+    },
+    "cannonSmall_Top2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 682.5,
+          "Y": 407.5
+        }
+      }
+    },
+    "cannonSmall_Top3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 722.5,
+          "Y": 407.5
+        }
+      }
+    },
+    "cannonSmall_Bottom1": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 642.5,
+          "Y": 52.5
+        }
+      }
+    },
+    "cannonSmall_Bottom2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 682.5,
+          "Y": 52.5
+        }
+      }
+    },
+    "cannonSmall_Bottom3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 722.5,
+          "Y": 52.5
+        }
+      }
+    },
+    "cannonSmall_Middle1": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 827.5,
+          "Y": 137.5
+        }
+      }
+    },
+    "cannonSmall_Middle2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 867.5,
+          "Y": 137.5
+        }
+      }
+    },
+    "cannonSmall_Middle3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 907.5,
+          "Y": 137.5
+        }
+      }
+    },
+    "cannonSmall_Middle4": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 947.5,
+          "Y": 137.5
+        }
+      }
+    },
+    "cannonSmall_Middle5": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 827.5,
+          "Y": 177.5
+        }
+      }
+    },
+    "cannonSmall_Middle6": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 867.5,
+          "Y": 177.5
+        }
+      }
+    },
+    "cannonSmall_Middle7": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 907.5,
+          "Y": 177.5
+        }
+      }
+    },
+    "cannonSmall_Middle8": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 947.5,
+          "Y": 177.5
+        }
+      }
+    },
+    "cannonSmall_RearTop1": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1152.5,
+          "Y": 447.5
+        }
+      }
+    },
+    "cannonSmall_RearTop2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1197.5,
+          "Y": 447.5
+        }
+      }
+    },
+    "cannonSmall_RearTop3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1242.5,
+          "Y": 447.5
+        }
+      }
+    },
+    "cannonSmall_RearBottom1": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1152.5,
+          "Y": 12.5
+        }
+      }
+    },
+    "cannonSmall_RearBottom2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1197.5,
+          "Y": 12.5
+        }
+      }
+    },
+    "cannonSmall_RearBottom3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1242.5,
+          "Y": 12.5
+        }
+      }
+    },
+    "cannonSmall_RearMiddle1": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1132.5,
+          "Y": 77.5
+        }
+      }
+    },
+    "cannonSmall_RearMiddle2": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1132.5,
+          "Y": 117.5
+        }
+      }
+    },
+    "cannonSmall_RearMiddle3": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1132.5,
+          "Y": 157.5
+        }
+      }
+    },
+    "cannonSmall_RearMiddle4": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1132.5,
+          "Y": 302.5
+        }
+      }
+    },
+    "cannonSmall_RearMiddle5": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1132.5,
+          "Y": 342.5
+        }
+      }
+    },
+    "cannonSmall_RearMiddle6": {
+      "type": "clone",
+      "copyFrom": "cannonSmall1",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1132.5,
+          "Y": 382.5
+        }
+      }
+    },
+    "cannonStandard_rearBottom": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1165,
+          "Y": 65
+        }
+      }
+    },
+    "cannonStandard_rearMiddle": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1120,
+          "Y": 210
+        }
+      }
+    },
+    "cannonStandard_rearTop": {
+      "type": "clone",
+      "copyFrom": "cannonStandard",
+      "override": {
+        "offset": {
+          "relativeTo": "body",
+          "X": 1165,
+          "Y": 355
+        }
+      }
+    }
+  },
+  "groups": {
+    "test": "cannonSmall_RearMiddle1, cannonSmall_Middle6"
+  },
+  "phases": {
+    "initialisingPhase": {
+      "bodyInit": {
+        "target": "body",
+        "move": {
+          "moveLinearX": {
+            "moveBy": -690,
+            "speed": 100,
+            "stopPreviousAnimations": false
+          },
+          "moveLinearX": {
+            "moveBy": -610,
+            "speed": 100,
+            "stopPreviousAnimations": false
+          }
+        }
+      },
+      "ventFanInit": {
+        "target": "ventFan",
+        "move": {
+          "rotate": {
+            "speed": 3,
+            "moveBy": "inf"
+          }
+        }
+      }
+    }
+  },
+  "phaseTriggers": {
+  }
+}

@@ -42,15 +42,15 @@
       "type": "shield",
       "hasCollision": true,
       "health": 1500,
-      "regeneration": 3,
-      "width": 128,
-      "height": 128,
+      "regeneration": 15,
+      "width": 164,
+      "height": 164,
       "originX": "standard",
       "originY": "standard",
       "offset": {
         "relativeTo": "body",
-        "X": 0,
-        "Y": 0
+        "X": -18,
+        "Y": -18
       },
       "linked": false,
       "hasAnimation": false,
@@ -65,27 +65,12 @@
       "regeneration": 0.3,
       "width": 60,
       "height": 60,
-      "originX": "standard",
-      "originY": "standard",
-      "offset": {
-        "relativeTo": "body",
-        "X": 34,
-        "Y": 34
-      },
       "canAim": true,
       "aimAngleLimit": [-360, 360],
-      "aimAnimation": "noAnimation",
-      "powerUpEffect": false,
       "bullet": {
-        "isLaser": false,
-        "hasCollisionWithPlayerBullets": false,
         "texture": "bullet_med_red",
-        "shootSound": "sfx/gun3.ogg",
         "speed": 150,
-        "spread": 1.5,
-        "bulletsPerShot": 1,
         "damage": 5,
-        "homing": false,
         "trail": "particles/bullet_trail_left.p",
         "trailScale": 0.7,
         "trailOffset": [0, 0],
@@ -93,16 +78,17 @@
         "explosionEffect": "particles/explosion_evil_small.p",
         "explosionScale": 0.3,
         "height": 10,
-        "width": 10,
-        "offset": [0, 0]
+        "width": 10
       },
+      "bulletSpread": 1.5,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun3.ogg",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.7,
         "randomness": 0.1
       },
-      "linked": false,
-      "hasAnimation": false,
       "texture": "evil_cannon",
       "explosionEffect": "particles/explosion_evil_small.p",
       "explosionScale": 0.9,
@@ -163,23 +149,11 @@
     "middleCannon": {
       "type": "cannon",
       "drawBulletsOnTop": true,
-      "hasCollision": false,
       "width": 128,
       "height": 128,
-      "originX": "standard",
-      "originY": "standard",
-      "offset": {
-        "relativeTo": "body",
-        "X": 0,
-        "Y": 0
-      },
       "canAim": true,
       "aimAngleLimit": [-360, 360],
       "aimAnimation": "textureChange",
-      "powerUpEffect": "particles/laser_powerup_red.p",
-      "powerUpShootDelay": 1.1,
-      "powerUpEffectOffset": [0, 10],
-      "powerUpEffectScale": 0.5,
       "aimAnimationTextures": {
         "right": "evil_right",
         "left": "evil_left",
@@ -190,59 +164,53 @@
         "down_right": "evil_down_right",
         "down_left": "evil_down_left"
       },
+      "powerUpEffect": "particles/laser_powerup_red.p",
+      "powerUpShootDelay": 1.1,
+      "powerUpEffectOffset": [0, 10],
+      "powerUpEffectScale": 0.5,
       "bullet": {
         "isLaser": true,
-        "hasCollisionWithPlayerBullets": false,
         "texture": "bullet_laser",
-        "shootSound": "sfx/laser.ogg",
         "fadeOutTimer": 1,
-        "spread": 0.7,
-        "bulletsPerShot": 1,
         "damage": 0.05,
         "height": 20,
         "color": "ff0000ff",
-        "offset": [0, 0]
+        "screenShakeOnHit": 3,
+        "screenShakeDuration": 0.001
       },
+      "bulletSpread": 0.7,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/laser.ogg",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.3,
         "randomness": 0.07
       },
-      "linked": false,
-      "hasAnimation": false,
       "texture": "evil_center",
       "layer": 1
     }
+  },
+  "groups": {
+    "cannons": "cannon1, cannon2, cannon3, cannon4, cannon5, cannon6, cannon7, cannon8, cannon9, cannon10"
   },
   "phases": {
     "initialisingPhase": {
       "bodyInit": {
         "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "moveLinearX": {
             "moveBy": -250,
-            "speed": 5,
-            "stopPreviousAnimations": false
+            "speed": 5
           },
           "moveLinearX": {
             "moveBy": -220,
-            "speed": 5,
-            "stopPreviousAnimations": false
+            "speed": 5
           }
         }
       },
       "cannon1Init": {
         "target": "cannon1",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -250,18 +218,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 0,
-            "stopPreviousAnimations": false
+            "angleOffset": 0
           }
         }
       },
       "cannon2Init": {
         "target": "cannon2",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -269,18 +231,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 36,
-            "stopPreviousAnimations": false
+            "angleOffset": 36
           }
         }
       },
       "cannon3Init": {
         "target": "cannon3",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -288,18 +244,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 72,
-            "stopPreviousAnimations": false
+            "angleOffset": 72
           }
         }
       },
       "cannon4Init": {
         "target": "cannon4",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -307,18 +257,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 108,
-            "stopPreviousAnimations": false
+            "angleOffset": 108
           }
         }
       },
       "cannon5Init": {
         "target": "cannon5",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -326,18 +270,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 144,
-            "stopPreviousAnimations": false
+            "angleOffset": 144
           }
         }
       },
       "cannon6Init": {
         "target": "cannon6",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -345,18 +283,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 180,
-            "stopPreviousAnimations": false
+            "angleOffset": 180
           }
         }
       },
       "cannon7Init": {
         "target": "cannon7",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -364,18 +296,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 216,
-            "stopPreviousAnimations": false
+            "angleOffset": 216
           }
         }
       },
       "cannon8Init": {
         "target": "cannon8",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -383,18 +309,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 252,
-            "stopPreviousAnimations": false
+            "angleOffset": 252
           }
         }
       },
       "cannon9Init": {
         "target": "cannon9",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -402,18 +322,12 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 288,
-            "stopPreviousAnimations": false
+            "angleOffset": 288
           }
         }
       },
       "cannon10Init": {
         "target": "cannon10",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "rotateRelativeTo": {
             "moveBy": "inf",
@@ -421,158 +335,34 @@
             "relativeTo": "body",
             "radiusExpansionRate": 5,
             "targetRadius": 150,
-            "angleOffset": 324,
-            "stopPreviousAnimations": false
+            "angleOffset": 324
           }
         }
-      },
-      "shieldInit": {
-        "target": "shield",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false
-      },
-      "middleCannonInit": {
-        "target": "middleCannon",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false
       }
     },
     "inPlacePhase": {
-      "bodyInPlace": {
-        "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon1InPlace": {
-        "target": "cannon1",
+      "cannonsInPlace": {
+        "target": "group:cannons",
         "enableCollisions": true,
         "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon2InPlace": {
-        "target": "cannon2",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon3InPlace": {
-        "target": "cannon3",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon4InPlace": {
-        "target": "cannon4",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon5InPlace": {
-        "target": "cannon5",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon6InPlace": {
-        "target": "cannon6",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon7InPlace": {
-        "target": "cannon7",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon8InPlace": {
-        "target": "cannon8",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon9InPlace": {
-        "target": "cannon9",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "cannon10InPlace": {
-        "target": "cannon10",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
+        "active": true
       },
       "shieldInPlace": {
         "target": "shield",
-        "enableCollisions": true,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false
+        "enableCollisions": true
       }
     },
     "secondPhase": {
       "middleCannonActivate": {
         "target": "middleCannon",
-        "enableCollisions": false,
-        "showHealthBar": false,
         "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
+        "active": true
       },
       "bodyActivate": {
         "target": "body",
         "enableCollisions": true,
         "showHealthBar": true,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false
+        "active": true
       }
     },
     "deathAnimationPhase": {
@@ -580,24 +370,18 @@
         "target": "body",
         "enableCollisions": false,
         "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "moveLinearY": {
             "moveBy": -500,
-            "speed": 5,
-            "stopPreviousAnimations": false
+            "speed": 5
           },
           "moveLinearX": {
             "moveBy": -100,
-            "speed": 1,
-            "stopPreviousAnimations": false
+            "speed": 1
           },
           "rotate": {
             "moveBy": 360,
-            "speed": 1,
-            "stopPreviousAnimations": false
+            "speed": 1
           }
         }
       }
@@ -605,12 +389,7 @@
     "RESET": {
       "bodyReset": {
         "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": false,
-        "active": false,
-        "changeTexture": false,
-        "move": false
+        "active": false
       }
     }
   },

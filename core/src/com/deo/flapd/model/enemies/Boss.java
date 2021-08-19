@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.deo.flapd.control.EnemyAi;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
@@ -31,6 +32,7 @@ import com.deo.flapd.utils.JsonEntry;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -61,14 +63,15 @@ public class Boss {
     public String bossName;
     
     Boss(String bossName, AssetManager assetManager) {
-        
+        log("------------------------------------------------------\n", INFO);
         log("---------loading boss config, name: " + bossName, INFO);
         
         this.bossName = bossName;
         
         bossConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/bosses/" + bossName + "/config.json")));
-        hasAi = bossConfig.getBoolean(false, "hasAi");
+        hasAi = bossConfig.getBoolean(false, false, "hasAi");
         TextureAtlas bossAtlas = assetManager.get("enemies/bosses/" + bossName + "/" + bossConfig.getString("noTextures", "textures"));
+        bossAtlas.addRegion("noTexture", new TextureRegion(bossAtlas.getRegions().get(0), 0, 0, 0, 0));
         parts = new Array<>();
         animations = new Array<>();
         hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
@@ -132,7 +135,7 @@ public class Boss {
         sortedParts.setSize(maxLayer);
         
         for (int i = 0; i < maxLayer; i++) {
-            sortedParts.set(i, new Array<BasePart>());
+            sortedParts.set(i, new Array<>());
         }
         
         for (int i = 0; i < parts.size; i++) {
@@ -149,8 +152,16 @@ public class Boss {
         
         phases = new Array<>();
         
+        if (bossConfig.get(false, "groups").isNull()) {
+            bossConfig.jsonValue.addChild("groups", new JsonValue(JsonValue.ValueType.object));
+        }
+        StringBuilder allParts = new StringBuilder(parts.get(0).name);
+        for (int i = 1; i < parts.size; i++) {
+            allParts.append(",").append(parts.get(i).name);
+        }
+        bossConfig.get("groups").jsonValue.addChild("all", new JsonValue(allParts.toString()));
         for (int i = 0; i < bossConfig.get("phases").size; i++) {
-            Phase phase = new Phase(bossConfig.get("phases", i), parts, animations, this);
+            Phase phase = new Phase(bossConfig.get("groups"), bossConfig.get("phases", i), parts, animations, this);
             phases.add(phase);
         }
     }
@@ -172,18 +183,20 @@ public class Boss {
     }
     
     void update(float delta) {
-        body.x += body.additionalOffsetX;
-        body.y += body.additionalOffsetY;
-        body.additionalOffsetX = 0;
-        body.additionalOffsetY = 0;
         if (GameLogic.score >= spawnScore && !hasAlreadySpawned) {
             spawn();
         }
         if (visible) {
+            
+            body.x += body.movementOffsetX;
+            body.y += body.movementOffsetY;
+            body.movementOffsetX = 0;
+            body.movementOffsetY = 0;
+            
             for (int i = 0; i < parts.size; i++) {
                 if (!parts.get(i).equals(body)) {
-                    parts.get(i).x = body.x + body.additionalOffsetX + parts.get(i).offsetX;
-                    parts.get(i).y = body.y + body.additionalOffsetY + parts.get(i).offsetY;
+                    parts.get(i).x = body.x + parts.get(i).offsetX;
+                    parts.get(i).y = body.y + parts.get(i).offsetY;
                 }
                 parts.get(i).update(delta);
             }
@@ -250,11 +263,9 @@ class BasePart extends Entity {
     
     AssetManager assetManager;
     
-    float originalOffsetX = 0;
-    float originalOffsetY = 0;
-    float additionalOffsetX = 0;
-    float additionalOffsetY = 0;
-    float additionalRotation = 0;
+    float movementOffsetX = 0;
+    float movementOffsetY = 0;
+    float movementRotation = 0;
     String name;
     String type;
     JsonEntry currentConfig;
@@ -263,8 +274,7 @@ class BasePart extends Entity {
     boolean hasAnimation;
     boolean collisionEnabled;
     boolean hasCollision;
-    boolean visible;
-    boolean active;
+    boolean visible = true;
     boolean showHealthBar;
     
     int layer;
@@ -287,6 +297,7 @@ class BasePart extends Entity {
         
         log("loading boss part, name: " + newConfig.name, INFO);
         
+        active = false;
         this.assetManager = assetManager;
         
         exploded = false;
@@ -298,12 +309,15 @@ class BasePart extends Entity {
             currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
             currentConfig.name = name;
         }
+        if (currentConfig.isNull()) {
+            log("Invalid copy from target while trying to load " + name, ERROR);
+        }
         type = currentConfig.getString("part", "type");
         
-        hasCollision = currentConfig.getBoolean(false, "hasCollision");
+        hasCollision = currentConfig.getBoolean(false, false, "hasCollision");
         if (hasCollision) {
             health = currentConfig.getFloat(1, "health");
-            regeneration = currentConfig.getFloat(0, "regeneration");
+            regeneration = currentConfig.getFloat(false, 0, "regeneration");
         } else {
             health = 1;
             regeneration = 0;
@@ -333,11 +347,11 @@ class BasePart extends Entity {
         
         soundVolume = getFloat("soundVolume");
         String texture = currentConfig.getString("noTexture", "texture");
-        hasAnimation = currentConfig.getBoolean(false, "hasAnimation");
+        hasAnimation = currentConfig.getBoolean(false, false, "hasAnimation");
         
         if (hasAnimation) {
             entitySprite = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(
+            enemyAnimation = new Animation<>(
                     currentConfig.getFloat(1, "frameDuration"),
                     textures.findRegions(name + "_" + texture),
                     Animation.PlayMode.LOOP);
@@ -347,10 +361,10 @@ class BasePart extends Entity {
         
         originX = width / 2f;
         originY = height / 2f;
-        if (!currentConfig.getString("standard", "originX").equals("standard")) {
+        if (!currentConfig.getString(false, "standard", "originX").equals("standard")) {
             originX = currentConfig.getFloat(0, "originX");
         }
-        if (!currentConfig.getString("standard", "originY").equals("standard")) {
+        if (!currentConfig.getString(false, "standard", "originY").equals("standard")) {
             originY = currentConfig.getFloat(0, "originY");
         }
         collisionEnabled = false;
@@ -369,7 +383,7 @@ class BasePart extends Entity {
         healthBar = new ProgressBar(0, health, 0.01f, false, healthBarStyle);
         healthBar.setAnimateDuration(0.25f);
         healthBar.setSize(25, 6);
-        healthBar.setPosition(width / 2 + x + additionalOffsetX - 12.5f, y + additionalOffsetY - 7);
+        healthBar.setPosition(width / 2 + x + movementOffsetX - 12.5f, y + movementOffsetY - 7);
     }
     
     void draw(SpriteBatch batch, float delta) {
@@ -388,9 +402,17 @@ class BasePart extends Entity {
     }
     
     @Override
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.rect(entityHitBox.x, entityHitBox.y, entityHitBox.width, entityHitBox.height);
+        shapeRenderer.setColor(Color.CYAN);
+        shapeRenderer.circle(x + originX + movementOffsetX, y + originY + movementOffsetY, 5);
+    }
+    
+    @Override
     protected void updateEntity(float delta) {
-        entitySprite.setPosition(x + additionalOffsetX, y + additionalOffsetY);
-        entitySprite.setRotation(rotation + additionalRotation);
+        entitySprite.setPosition(x + movementOffsetX, y + movementOffsetY);
+        entitySprite.setRotation(rotation + movementRotation);
         entitySprite.setColor(color);
         if (health > 0) {
             entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
@@ -409,16 +431,11 @@ class BasePart extends Entity {
         
         if (showHealthBar) {
             healthBar.setValue(health);
-            healthBar.setPosition(width / 2 + x + additionalOffsetX - 12.5f, y + additionalOffsetY - 7);
+            healthBar.setPosition(width / 2 + x + movementOffsetX - 12.5f, y + movementOffsetY - 7);
             healthBar.act(delta);
         }
         if (hasCollision && collisionEnabled && health > 0) {
-            for (int i = 0; i < player.bullet.bullets.size; i++) {
-                if (player.bullet.bullets.get(i).overlaps(entitySprite.getBoundingRectangle())) {
-                    health -= player.bullet.damages.get(i);
-                    player.bullet.removeBullet(i, true);
-                }
-            }
+            health -= player.bullet.overlaps(entityHitBox, true);
         }
         if (health <= 0 && !exploded) {
             explode();
@@ -457,7 +474,7 @@ class BasePart extends Entity {
             
             Drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
             
-            explosionEffect.setPosition(x + additionalOffsetX + width / 2, y + additionalOffsetY + height / 2);
+            explosionEffect.setPosition(x + movementOffsetX + width / 2, y + movementOffsetY + height / 2);
             explosionEffect.start();
             
             if (soundVolume > 0) {
@@ -470,14 +487,12 @@ class BasePart extends Entity {
     }
     
     void reset() {
-        additionalOffsetX = 0;
-        additionalOffsetY = 0;
-        additionalRotation = 0;
-        offsetX = originalOffsetX;
-        offsetY = originalOffsetY;
+        movementOffsetX = 0;
+        movementOffsetY = 0;
+        movementRotation = 0;
         health = maxHealth;
         showHealthBar = false;
-        visible = false;
+        visible = true;
         active = false;
         collisionEnabled = false;
         exploded = false;
@@ -488,7 +503,6 @@ class BasePart extends Entity {
 class Part extends BasePart {
     
     private final Array<BasePart> parts;
-    private float relativeX, relativeY;
     private BasePart link;
     private final BasePart body;
     
@@ -497,14 +511,14 @@ class Part extends BasePart {
         this.parts = parts;
         link = body;
         this.body = body;
-        String relativeTo = currentConfig.getString(parts.get(0).name, "offset", "relativeTo");
-        relativeX = currentConfig.getFloat(0, "offset", "X");
-        relativeY = currentConfig.getFloat(0, "offset", "Y");
+        String relativeTo = currentConfig.getString(false, body.name, "offset", "relativeTo");
+        offsetX = currentConfig.getFloat(false, 0, "offset", "X");
+        offsetY = currentConfig.getFloat(false, 0, "offset", "Y");
         if (newConfig.getString("part", "type").equals("clone")) {
-            for (int i = 0; i < newConfig.get("override").size; i++) {
+            for (int i = 0; i < newConfig.get(false, "override").size; i++) {
                 if (newConfig.get("override", i).name.equals("offset")) {
-                    relativeX = newConfig.get("override", i).getFloat(0, "X");
-                    relativeY = newConfig.get("override", i).getFloat(0, "Y");
+                    offsetX = newConfig.get("override", i).getFloat(0, "X");
+                    offsetY = newConfig.get("override", i).getFloat(0, "Y");
                     relativeTo = newConfig.get("override", i).getString(parts.get(0).name, "relativeTo");
                 }
                 if (newConfig.get("override", i).name.equals("originX")) {
@@ -530,9 +544,9 @@ class Part extends BasePart {
             }
         }
         
-        if (!currentConfig.get("linked").isBoolean(true)) {
+        if (currentConfig.get(false, "linked").isString()) {
             for (int i = 0; i < parts.size; i++) {
-                if (currentConfig.getString("false", "linked").equals(parts.get(i).name)) {
+                if (currentConfig.getString("no link target", "linked").equals(parts.get(i).name)) {
                     link = parts.get(i);
                     break;
                 }
@@ -542,19 +556,13 @@ class Part extends BasePart {
         link.addLinkedPart(this);
         
         getOffset(relativeTo);
-        offsetX = relativeX;
-        offsetY = relativeY;
-        
-        originalOffsetX = relativeX;
-        originalOffsetY = relativeY;
-        
     }
     
     private void getOffset(String relativeTo) {
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(relativeTo)) {
-                relativeX += parts.get(i).offsetX;
-                relativeY += parts.get(i).offsetY;
+                offsetX += parts.get(i).offsetX;
+                offsetY += parts.get(i).offsetY;
                 if (!parts.get(i).type.equals("basePart")) {
                     String relativeToP = parts.get(i).currentConfig.getString("noRelativeToTarget", "offset", "relativeTo");
                     getOffset(relativeToP);
@@ -590,16 +598,11 @@ class Shield extends Part {
         entitySprite.setAlpha(health / maxHealth);
         if (showHealthBar) {
             healthBar.setValue(health);
-            healthBar.setPosition(width / 2 + x + additionalOffsetX - 12.5f, y + additionalOffsetY - 7);
+            healthBar.setPosition(width / 2 + x + movementOffsetX - 12.5f, y + movementOffsetY - 7);
             healthBar.act(delta);
         }
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
-            for (int i = 0; i < player.bullet.bullets.size; i++) {
-                if (player.bullet.bullets.get(i).overlaps(entitySprite.getBoundingRectangle())) {
-                    health = clamp(health - player.bullet.damages.get(i), 1, maxHealth);
-                    player.bullet.removeBullet(i, true);
-                }
-            }
+            health = clamp(health - player.bullet.overlaps(entityHitBox, true), 1, maxHealth);
         }
     }
 }
@@ -610,8 +613,16 @@ class Cannon extends Part {
     String aimAnimationType;
     String[] aimTextures;
     int[] aimAngleLimit;
+    
+    float[] bulletOffset;
+    float bulletOffsetAngle;
+    float bulletOffsetDistance;
+    
+    int bulletsPerShot;
+    float bulletSpread;
+    
     float fireRate;
-    float timer;
+    float fireTimer;
     
     boolean drawBulletsOnTop;
     
@@ -646,37 +657,46 @@ class Cannon extends Part {
         
         bullets = new Array<>();
         
-        drawBulletsOnTop = currentConfig.getBoolean(false, "drawBulletsOnTop");
+        drawBulletsOnTop = currentConfig.getBoolean(false, false, "drawBulletsOnTop");
         
-        aimAnimationType = currentConfig.getString("noAnimation", "aimAnimation");
-        if (aimAnimationType.equals("textureChange")) {
-            aimTextures = new String[8];
-            JsonEntry aimTexturesJsonValue = currentConfig.get("aimAnimationTextures");
-            aimTextures[0] = aimTexturesJsonValue.getString("right", "right");
-            aimTextures[1] = aimTexturesJsonValue.getString("left", "left");
-            aimTextures[2] = aimTexturesJsonValue.getString("up", "up");
-            aimTextures[3] = aimTexturesJsonValue.getString("down", "down");
+        canAim = currentConfig.getBoolean(false, false, "canAim");
+        if (canAim) {
+            if (aimAngleLimit == null) {
+                aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
+            }
             
-            aimTextures[4] = aimTexturesJsonValue.getString("up_right", "up_right");
-            aimTextures[5] = aimTexturesJsonValue.getString("up_left", "up_left");
-            aimTextures[6] = aimTexturesJsonValue.getString("down_right", "down_right");
-            aimTextures[7] = aimTexturesJsonValue.getString("down_left", "down_left");
-        }
-        
-        canAim = currentConfig.getBoolean(false, "canAim");
-        if (canAim && aimAngleLimit == null) {
-            aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
+            aimAnimationType = currentConfig.getString("noAnimation", "aimAnimation");
+            
+            if (aimAnimationType.equals("textureChange")) {
+                aimTextures = new String[8];
+                JsonEntry aimTexturesJsonValue = currentConfig.get("aimAnimationTextures");
+                aimTextures[0] = aimTexturesJsonValue.getString("right", "right");
+                aimTextures[1] = aimTexturesJsonValue.getString("left", "left");
+                aimTextures[2] = aimTexturesJsonValue.getString("up", "up");
+                aimTextures[3] = aimTexturesJsonValue.getString("down", "down");
+                
+                aimTextures[4] = aimTexturesJsonValue.getString("up_right", "up_right");
+                aimTextures[5] = aimTexturesJsonValue.getString("up_left", "up_left");
+                aimTextures[6] = aimTexturesJsonValue.getString("down_right", "down_right");
+                aimTextures[7] = aimTexturesJsonValue.getString("down_left", "down_left");
+            }
         }
         
         float fireRateRandomness = currentConfig.getFloat(0, "fireRate", "randomness");
         fireRate = currentConfig.getFloat(1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
-        timer = -currentConfig.getFloat(0, "fireRate", "initialDelay");
+        fireTimer = -currentConfig.getFloat(0, "fireRate", "initialDelay");
         
         bulletData = new BulletData(currentConfig.get("bullet"));
         
-        shootingSound = assetManager.get(bulletData.shootSound);
+        shootingSound = assetManager.get(currentConfig.getString("sfx/gun1.ogg", "shootSound"));
         
-        hasPowerUpEffect = !currentConfig.get("powerUpEffect").isBoolean(true);
+        bulletOffset = currentConfig.getFloatArray(new float[]{0, 0}, "bulletOffset");
+        bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
+        bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, bulletOffset[0], bulletOffset[1]);
+        bulletsPerShot = currentConfig.getInt(1, "bulletsPerShot");
+        bulletSpread = currentConfig.getFloat(0, "bulletSpread");
+        
+        hasPowerUpEffect = currentConfig.getBoolean(false, false, "powerUpEffect");
         if (hasPowerUpEffect) {
             powerUpScale = currentConfig.getFloat(1, "powerUpEffectScale");
             powerUpEffect = new ParticleEffect();
@@ -684,26 +704,26 @@ class Cannon extends Part {
             powerUpEffectShootDelay = currentConfig.getFloat(1, "powerUpShootDelay");
             powerUpEffect.scaleEffect(powerUpScale);
             float[] powerUpOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerUpEffectOffset");
-            powerUpOffset[0] += bulletData.offset[0];
-            powerUpOffset[1] += bulletData.offset[1];
+            powerUpOffset[0] += bulletOffset[0];
+            powerUpOffset[1] += bulletOffset[1];
             powerUpOffsetAngle = MathUtils.atan2(powerUpOffset[1], powerUpOffset[0]) * MathUtils.radiansToDegrees;
             powerUpOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerUpOffset[0], powerUpOffset[1]);
         }
         
-        hasPowerDownEffect = !currentConfig.get("powerDownEffect").isBoolean(true);
+        hasPowerDownEffect = currentConfig.getBoolean(false, false, "powerDownEffect");
         if (hasPowerDownEffect) {
             powerDownScale = currentConfig.getFloat(1, "powerDownEffectScale");
             powerDownEffect = new ParticleEffect();
             powerDownEffect.load(Gdx.files.internal(currentConfig.getString("particles/smoke.p", "powerDownEffect")), Gdx.files.internal("particles"));
             powerDownEffect.scaleEffect(powerDownScale);
             float[] powerDownOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerDownEffectOffset");
-            powerDownOffset[0] += bulletData.offset[0];
-            powerDownOffset[1] += bulletData.offset[1];
+            powerDownOffset[0] += bulletOffset[0];
+            powerDownOffset[1] += bulletOffset[1];
             powerDownOffsetAngle = MathUtils.atan2(powerDownOffset[1], powerDownOffset[0]) * MathUtils.radiansToDegrees;
             powerDownOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerDownOffset[0], powerDownOffset[1]);
         }
         
-        if (!currentConfig.get("recoil").isBoolean(true)) {
+        if (currentConfig.get(false, "recoil").isNumber()) {
             recoil = currentConfig.getFloat(5, "recoil");
             recoilReturnSpeed = currentConfig.getFloat(10, "recoilReturnSpeed");
         }
@@ -713,9 +733,9 @@ class Cannon extends Part {
     @Override
     protected void updateEntity(float delta) {
         entitySprite.setPosition(
-                x + additionalOffsetX + MathUtils.cosDeg(rotation + additionalRotation) * currentRecoilOffset,
-                y + additionalOffsetY + MathUtils.sinDeg(rotation + additionalRotation) * currentRecoilOffset);
-        entitySprite.setRotation(rotation + additionalRotation);
+                x + movementOffsetX + MathUtils.cosDeg(rotation + movementRotation) * currentRecoilOffset,
+                y + movementOffsetY + MathUtils.sinDeg(rotation + movementRotation) * currentRecoilOffset);
+        entitySprite.setRotation(rotation + movementRotation);
         entitySprite.setColor(color);
         if (health > 0) {
             entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
@@ -757,7 +777,7 @@ class Cannon extends Part {
                         if (hasAnimation) {
                             String atlas = texture.replace(" ", "").split(",")[0];
                             float frameDuration = Float.parseFloat(texture.replace(" ", "").split(",")[1]);
-                            enemyAnimation = new Animation<TextureRegion>(
+                            enemyAnimation = new Animation<>(
                                     frameDuration,
                                     textures.findRegions(name + "_" + atlas),
                                     Animation.PlayMode.LOOP);
@@ -771,30 +791,30 @@ class Cannon extends Part {
                 }
             }
             if (hasPowerUpEffect) {
-                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
-                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
+                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
+                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
                 powerUpEffect.setPosition(newX, newY);
                 powerUpEffect.update(delta);
             }
             if (hasPowerDownEffect) {
-                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
-                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
+                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
+                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
                 powerDownEffect.setPosition(newX, newY);
                 powerDownEffect.update(delta);
             }
-            if (timer >= 1 + powerUpEffectShootDelay && health > 0 && visible) {
+            if (fireTimer >= 1 + powerUpEffectShootDelay && health > 0) {
                 shoot();
                 powerUpActive = false;
-                timer = 0;
+                fireTimer = 0;
             } else {
-                if (timer < 1) {
-                    timer += delta * fireRate;
+                if (fireTimer < 1) {
+                    fireTimer += delta * fireRate;
                 } else {
                     if (!powerUpActive) {
                         powerUpEffect.start();
                         powerUpActive = true;
                     }
-                    timer += delta;
+                    fireTimer += delta;
                 }
             }
             if (currentRecoilOffset > 0) {
@@ -833,22 +853,30 @@ class Cannon extends Part {
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).drawDebug(shapeRenderer);
         }
+        if (hasPowerUpEffect) {
+            shapeRenderer.setColor(Color.YELLOW);
+            drawParticleEffectBounds(shapeRenderer, powerUpEffect);
+        }
+        if (hasPowerDownEffect) {
+            shapeRenderer.setColor(Color.RED);
+            drawParticleEffectBounds(shapeRenderer, powerDownEffect);
+        }
     }
     
     void shoot() {
-        for (int i = 0; i < bulletData.bulletsPerShot; i++) {
+        for (int i = 0; i < bulletsPerShot; i++) {
             BulletData newBulletData = new BulletData(currentConfig.get("bullet"));
             
-            float newX = x + additionalOffsetX + originX - bulletData.width / 2f + MathUtils.cosDeg(rotation + additionalRotation + bulletData.bulletOffsetAngle) * bulletData.bulletOffsetDistance;
-            float newY = y + additionalOffsetY + originY - bulletData.height / 2f + MathUtils.sinDeg(rotation + additionalRotation + bulletData.bulletOffsetAngle) * bulletData.bulletOffsetDistance;
+            float newX = x + movementOffsetX + originX - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + bulletOffsetAngle) * bulletOffsetDistance;
+            float newY = y + movementOffsetY + originY - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + bulletOffsetAngle) * bulletOffsetDistance;
             float newRot = 0;
             
             if (canAim) {
-                newRot = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + additionalOffsetY + height / 2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + additionalOffsetY + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                newRot = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + movementOffsetY + height / 2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + movementOffsetY + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
             }
             
-            newRot += getRandomInRange(-10, 10) * bulletData.spread;
-            newRot += additionalRotation;
+            newRot += getRandomInRange(-10, 10) * bulletSpread;
+            newRot += movementRotation;
             
             bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
         }
@@ -915,7 +943,7 @@ class Movement {
     
     private final String type;
     private byte directionModifier;
-    private final boolean stopPrevAnim;
+    private final boolean stopPreviousAnimations;
     
     private final Array<Movement> animations;
     
@@ -927,7 +955,6 @@ class Movement {
         
         this.body = body;
         
-        active = false;
         this.animations = animations;
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(target)) {
@@ -936,7 +963,7 @@ class Movement {
             }
         }
         
-        stopPrevAnim = movementConfig.getBoolean(false, "stopPreviousAnimations");
+        stopPreviousAnimations = movementConfig.getBoolean(false, false, "stopPreviousAnimations");
         
         type = movementConfig.name;
         if (type.equals("rotateRelativeTo")) {
@@ -966,7 +993,7 @@ class Movement {
     }
     
     void start() {
-        if (stopPrevAnim) {
+        if (stopPreviousAnimations) {
             for (int i = 0; i < animations.size; i++) {
                 animations.get(i).stop();
             }
@@ -991,36 +1018,37 @@ class Movement {
             
             switch (type) {
                 case ("moveLinearX"):
-                    target.additionalOffsetX += speed * delta * 10 * directionModifier;
+                    target.movementOffsetX += speed * delta * 10 * directionModifier;
                     break;
                 case ("moveLinearY"):
-                    target.additionalOffsetY += speed * delta * 10 * directionModifier;
+                    target.movementOffsetY += speed * delta * 10 * directionModifier;
                     break;
                 case ("rotate"):
-                    target.additionalRotation += speed * delta * 10 * directionModifier;
+                    target.movementRotation += speed * delta * 10 * directionModifier;
                     break;
                 case ("moveSinX"): {
-                    target.additionalOffsetX += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
+                    target.movementOffsetX += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("moveSinY"): {
-                    target.additionalOffsetY += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
+                    target.movementOffsetY += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("rotateSin"): {
-                    target.additionalRotation += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
+                    target.movementRotation += MathUtils.sinDeg(progress) * moveBy * directionModifier * delta;
                     progress += speed * delta * 10;
                     break;
                 }
                 case ("rotateRelativeTo"): {
+                    // TODO: 19/8/2021 fix this
                     if (relativeTarget.equals(body)) {
-                        target.offsetX = body.originX - target.originX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
-                        target.offsetY = body.originY - target.originY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
+                        target.movementOffsetX = body.originX - target.originX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
+                        target.movementOffsetY = body.originY - target.originY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
                     } else {
-                        target.offsetX = relativeTarget.offsetX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
-                        target.offsetY = relativeTarget.offsetY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
+                        target.movementOffsetX = relativeTarget.offsetX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
+                        target.movementOffsetY = relativeTarget.offsetY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
                     }
                     if (progress < moveBy) {
                         progress = clamp(progress + speed * delta * 10, 0, moveBy);
@@ -1039,8 +1067,8 @@ class Movement {
                         progress = 0;
                         float nextShakeXPos = (random() - 0.5f) * 2 * shakeIntensityX;
                         float nextShakeYPos = (random() - 0.5f) * 2 * shakeIntensityY;
-                        target.additionalOffsetX = target.additionalOffsetX - lastShakeXPos + nextShakeXPos;
-                        target.additionalOffsetY = target.additionalOffsetY - lastShakeYPos + nextShakeYPos;
+                        target.movementOffsetX = target.movementOffsetX - lastShakeXPos + nextShakeXPos;
+                        target.movementOffsetY = target.movementOffsetY - lastShakeYPos + nextShakeYPos;
                         lastShakeXPos = nextShakeXPos;
                         lastShakeYPos = nextShakeYPos;
                     }
@@ -1067,7 +1095,7 @@ class Phase {
     
     Boss boss;
     
-    Phase(JsonEntry phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
+    Phase(JsonEntry partGroups, JsonEntry phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
         
         log("loading boss phase, name: " + phaseData.name, INFO);
         
@@ -1078,16 +1106,12 @@ class Phase {
         activated = false;
         config = phaseData;
         for (int i = 0; i < phaseData.size; i++) {
-            Action action = new Action(phaseData.get(i), parts, animations, boss);
-            actions.add(action);
+            actions.add(new Action(partGroups, phaseData.get(i), parts, animations, boss, "", actions));
         }
-        JsonEntry triggers = null;
-        try {
-            triggers = phaseData.parent().parent().get("phaseTriggers", config.name, "triggers");
-        } catch (Exception e) {
-            log("no triggers for " + phaseData.name, INFO);
-        }
-        if (triggers != null) {
+        JsonEntry triggers = phaseData.parent().parent().get(false, "phaseTriggers", config.name, "triggers");
+        if (triggers.isNull()) {
+            log("no triggers for " + phaseData.name, WARNING);
+        } else {
             for (int i = 0; i < triggers.size; i++) {
                 PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts);
                 phaseTriggers.add(trigger);
@@ -1155,37 +1179,56 @@ class Action {
     float playerInsideEntityMaxTime;
     float[] basePosition;
     
-    String debug;
-    
-    Action(JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, Boss boss) {
+    Action(JsonEntry partGroups, JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, Boss boss, String predeterminedTarget, Array<Action> actions) {
         
-        log("loading boss action, name: " + actionValue.name, INFO);
-        debug = actionValue.name;
         this.boss = boss;
         config = actionValue;
         movements = new Array<>();
-        String target = actionValue.getString(baseParts.get(0).name, "target");
+        String target;
+        if (predeterminedTarget.equals("")) {
+            Array<String> targets = new Array<>();
+            targets.addAll(actionValue.getString(baseParts.get(0).name, "target").replace(" ", "").split(","));
+            for (int i = 0; i < targets.size; i++) {
+                if (targets.get(i).startsWith("group:")) {
+                    targets.addAll(partGroups.getString("", targets.get(i).replace("group:", "")).replace(" ", "").split(","));
+                    targets.removeIndex(i);
+                }
+            }
+            if (targets.isEmpty()) {
+                log("Invalid action target, empty list", ERROR);
+            }
+            target = targets.get(0);
+            if (targets.size > 1) {
+                for (int i = 1; i < targets.size; i++) {
+                    actions.add(new Action(partGroups, actionValue, baseParts, animations, boss, targets.get(i), actions));
+                }
+            }
+        } else {
+            target = predeterminedTarget;
+        }
+        log("loading boss action, name: " + actionValue.name + ", target: " + target, INFO);
         for (int i = 0; i < baseParts.size; i++) {
             if (baseParts.get(i).name.equals(target)) {
                 this.target = baseParts.get(i);
                 break;
             }
         }
-        showHealthBar = actionValue.getBoolean(false, "showHealthBar");
-        enableCollisions = actionValue.getBoolean(false, "enableCollisions");
-        visible = actionValue.getBoolean(true, "visible");
-        active = actionValue.getBoolean(false, "active");
-        changeTexture = actionValue.getString("false", "changeTexture");
+        if (this.target == null) {
+            log("Invalid action target, target " + target + " not found", ERROR);
+        }
+        showHealthBar = actionValue.getBoolean(false, false, "showHealthBar");
+        enableCollisions = actionValue.getBoolean(false, false, "enableCollisions");
+        visible = actionValue.getBoolean(false, false, "visible");
+        active = actionValue.getBoolean(false, false, "active");
+        changeTexture = actionValue.getString(false, "false", "changeTexture");
         if (this.target.hasAnimation && !changeTexture.equals("false")) {
             frameDuration = actionValue.getFloat(this.target.enemyAnimation.getFrameDuration(), "frameDuration");
         }
         int movementCount;
         
         if (boss.hasAi && this.target.equals(boss.body)) {
-            hasAiSettingsChange = !actionValue.get("ai").isBoolean(true);
-            if (actionValue.get("ai").isBoolean(true)) {
-                log("no ai change for " + actionValue.name, INFO);
-            } else {
+            hasAiSettingsChange = actionValue.get(false, "ai").isObject();
+            if (hasAiSettingsChange) {
                 dodgeBullets = actionValue.get("ai").getBoolean(false, "dodgeBullets");
                 if (dodgeBullets) {
                     bulletDodgeSpeed = actionValue.get("ai").getFloat(90, "bulletDodgeSpeed");
@@ -1199,12 +1242,11 @@ class Action {
                     playerInsideEntityMaxTime = actionValue.get("ai").getFloat(3, "playerInsideEntityMaxTime");
                 }
                 basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
+            } else {
+                log("no ai change for " + actionValue.name, INFO);
             }
         }
-        if (actionValue.get("move").isBoolean(true)) {
-            log("no movement for " + actionValue.name, INFO);
-            hasMovement = false;
-        } else {
+        if (actionValue.get(false, "move").isObject()) {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
@@ -1212,6 +1254,9 @@ class Action {
                 animations.add(movement);
                 movements.add(movement);
             }
+        } else {
+            log("no movement for " + actionValue.name + ", target: " + target, INFO);
+            hasMovement = false;
         }
     }
     
@@ -1222,11 +1267,11 @@ class Action {
             }
         }
         if (target.hasCollision) {
-            target.collisionEnabled = enableCollisions;
+            target.collisionEnabled = config.get(false, "enableCollisions").isNull() ? target.collisionEnabled : enableCollisions;
         }
         if (!changeTexture.equals("false")) {
             if (target.hasAnimation) {
-                target.enemyAnimation = new Animation<TextureRegion>(
+                target.enemyAnimation = new Animation<>(
                         frameDuration,
                         target.textures.findRegions(target.name + "_" + changeTexture),
                         Animation.PlayMode.LOOP);
@@ -1234,15 +1279,14 @@ class Action {
                 target.entitySprite.setRegion(target.textures.findRegion(changeTexture));
             }
         }
-        target.visible = visible;
-        target.active = active;
-        target.showHealthBar = showHealthBar;
+        target.visible = config.get(false, "visible").isNull() ? target.visible : visible;
+        target.active = config.get(false, "active").isNull() ? target.active : active;
+        target.showHealthBar = config.get(false, "showHealthBar").isNull() ? target.showHealthBar : showHealthBar;
         if (boss.hasAi && target.equals(boss.body)) {
             if (hasAiSettingsChange) {
                 boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
                         XMovementBounds, YMovementBounds, followPlayer, playerFollowSpeed, playerNotDamagedMaxTime, playerInsideEntityMaxTime, new Vector2(basePosition[0], basePosition[1]));
             }
-            boss.bossAi.active = active;
         }
     }
 }
@@ -1273,7 +1317,7 @@ class PhaseTrigger {
             }
         }
         if (triggerTarget == null) {
-            log("error setting up trigger for part " + targetPart + ", no valid trigger target", WARNING);
+            log("error setting up trigger for part " + targetPart + ", no valid trigger target", ERROR);
         }
         triggerModifier = triggerData.getString("<=", "triggerModifier");
     }
@@ -1286,13 +1330,13 @@ class PhaseTrigger {
         float partValue = 0;
         switch (triggerType) {
             case ("positionX"):
-                partValue = triggerTarget.x + triggerTarget.additionalOffsetX;
+                partValue = triggerTarget.x + triggerTarget.movementOffsetX;
                 break;
             case ("positionY"):
-                partValue = triggerTarget.y + triggerTarget.additionalOffsetY;
+                partValue = triggerTarget.y + triggerTarget.movementOffsetY;
                 break;
             case ("rotation"):
-                partValue = triggerTarget.rotation + triggerTarget.additionalRotation;
+                partValue = triggerTarget.rotation + triggerTarget.movementRotation;
                 break;
             case ("health"):
                 partValue = triggerTarget.health;

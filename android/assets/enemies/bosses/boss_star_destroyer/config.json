@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": -19000,
+    "score": 19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -42,25 +42,15 @@
     "cannonTop": {
       "type": "cannon",
       "drawBulletsOnTop": true,
-      "hasCollision": false,
       "width": 2,
       "height": 2,
       "originX": 1,
       "originY": 1,
-      "canAim": false,
-      "aimAnimation": "noAnimation",
-      "linked": false,
-      "hasAnimation": false,
       "texture": "noTexture",
-      "powerUpEffect": false,
       "bullet": {
-        "isLaser": false,
         "hasCollisionWithPlayerBullets": true,
         "texture": "bullet_destroyer_rocket",
-        "shootSound": "sfx/gun2.ogg",
         "speed": 90,
-        "spread": 9.5,
-        "bulletsPerShot": 3,
         "damage": 15,
         "homing": true,
         "explosionTimer": 3.5,
@@ -68,12 +58,10 @@
         "trail": "particles/bullet_trail_left_yellow.p",
         "trailScale": 0.3,
         "trailOffset": [13, 0],
-        "drawTrailOnTop": false,
         "explosionEffect": "particles/explosion.p",
         "explosionScale": 0.3,
         "height": 8,
-        "width": 13.34,
-        "offset": [0, 0]
+        "width": 13.34
       },
       "layer": 3,
       "offset": {
@@ -81,6 +69,10 @@
         "X": 140,
         "Y": 102
       },
+      "bulletSpread": 9.5,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 3,
+      "shootSound": "sfx/gun2.ogg",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.3,
@@ -105,8 +97,6 @@
     },
     "cannonLaserTop": {
       "type": "cannon",
-      "drawBulletsOnTop": false,
-      "hasCollision": false,
       "width": 2,
       "height": 2,
       "originX": 1,
@@ -116,39 +106,34 @@
         "X": 0,
         "Y": 90
       },
-      "canAim": false,
-      "aimAnimation": "noTexture",
       "powerUpEffect": "particles/laser_powerup_red.p",
       "powerUpShootDelay": 1.1,
       "powerUpEffectOffset": [0, 10],
       "powerUpEffectScale": 0.5,
       "powerDownEffect": "particles/smoke.p",
-      "powerDownEffectOffset": [5, 10],
-      "powerDownEffectScale": 0.5,
+      "powerDownEffectOffset": [130, 10],
+      "powerDownEffectScale": 1,
       "bullet": {
         "isLaser": true,
-        "hasCollisionWithPlayerBullets": false,
         "texture": "bullet_laser",
-        "shootSound": "sfx/laser.ogg",
         "fadeOutTimer": 1,
-        "spread": 0,
-        "bulletsPerShot": 1,
         "damage": 0.05,
         "height": 20,
         "color": "ff0000ff",
-        "offset": [0, 0],
         "screenShakeOnHit": 3,
         "screenShakeDuration": 0.001
       },
+      "bulletSpread": 0,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/laser.ogg",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.3,
         "randomness": 0
       },
-      "linked": false,
-      "hasAnimation": false,
       "texture": "noTexture",
-      "layer": 2
+      "layer": 0
     },
     "cannonLaserBottom": {
       "type": "clone",
@@ -167,52 +152,39 @@
       }
     }
   },
+  "groups": {
+    "allCannons": "cannonTop, cannonBottom, cannonLaserTop, cannonLaserBottom",
+    "topCannons": "cannonTop, cannonLaserTop"
+  },
   "phases": {
     "initialisingPhase": {
       "bodyInit": {
         "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
         "move": {
           "moveLinearX": {
             "moveBy": -190,
-            "speed": 5,
-            "stopPreviousAnimations": false
+            "speed": 5
           },
           "moveLinearX": {
             "moveBy": -210,
-            "speed": 5,
-            "stopPreviousAnimations": false
+            "speed": 5
           }
-        },
-        "ai": false
+        }
       }
     },
     "inPlacePhase": {
       "bodyInPlace": {
         "target": "body",
         "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": false,
-        "changeTexture": false,
-        "move": false,
-        "ai": false
+        "showHealthBar": true
       }
     },
     "secondPhase": {
       "bodyChangePhase": {
         "target": "body",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
         "active": true,
         "changeTexture": "phase2",
         "frameDuration": 0.0334,
-        "move": false,
         "ai": {
           "xBounds": [400, 800],
           "yBounds": [0, 480],
@@ -225,58 +197,21 @@
           "playerInsideEntityMaxTime": 2
         }
       },
-      "topCannonActivate": {
-        "target": "cannonTop",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "bottomCannonActivate": {
-        "target": "cannonBottom",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "topCannonLaserActivate": {
-        "target": "cannonLaserTop",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
-      },
-      "bottomCannonLaserActivate": {
-        "target": "cannonLaserBottom",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": true,
-        "active": true,
-        "changeTexture": false,
-        "move": false
+      "allCannonsActivate": {
+        "target": "group:allCannons",
+        "active": true
       }
     },
     "thirdPhase": {
       "bodyChangePhase": {
         "target": "body",
-        "enableCollisions": true,
-        "showHealthBar": true,
-        "visible": true,
-        "active": true,
         "changeTexture": "phase3",
         "frameDuration": 0.0334,
         "move": {
           "shake": {
             "shakeIntensityX": 7,
             "shakeIntensityY": 7,
-            "shakePeriod": 0.3,
-            "stopPreviousAnimations": false
+            "shakePeriod": 0.3
           }
         },
         "ai": {
@@ -290,23 +225,9 @@
           "playerInsideEntityMaxTime": 1.7
         }
       },
-      "topCannonDeactivate": {
-        "target": "cannonTop",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": false,
-        "active": false,
-        "changeTexture": false,
-        "move": false
-      },
-      "topCannonLaserDeactivate": {
-        "target": "cannonLaserTop",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": false,
-        "active": false,
-        "changeTexture": false,
-        "move": false
+      "topCannonsDeactivate": {
+        "target": "group:topCannons",
+        "active": false
       }
     },
     "deathAnimationPhase": {
@@ -314,40 +235,29 @@
         "target": "body",
         "enableCollisions": false,
         "showHealthBar": false,
-        "visible": true,
         "active": false,
-        "changeTexture": false,
         "move": {
           "moveLinearY": {
-            "moveBy": -500,
+            "moveBy": -900,
             "speed": 5,
             "stopPreviousAnimations": true
           },
           "moveLinearX": {
             "moveBy": -100,
-            "speed": 1,
-            "stopPreviousAnimations": false
+            "speed": 1
           },
           "rotate": {
             "moveBy": 360,
-            "speed": 1,
-            "stopPreviousAnimations": false
+            "speed": 1
           }
-        },
-        "ai": false
+        }
       }
     },
     "RESET": {
       "bodyReset": {
         "target": "body",
-        "enableCollisions": false,
-        "showHealthBar": false,
-        "visible": false,
-        "active": false,
         "changeTexture": "phase1",
-        "frameDuration": 0.1,
-        "move": false,
-        "ai": false
+        "frameDuration": 0.1
       }
     }
   },
