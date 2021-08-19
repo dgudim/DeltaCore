@@ -37,7 +37,7 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class ColorCustomizationDialogue extends Dialogue {
 
-    private Dialog dialog;
+    private final Dialog dialog;
 
     ColorCustomizationDialogue(final AssetManager assetManager, final String particleEffect, final Stage stage) {
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
@@ -46,7 +46,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         font.getData().markupEnabled = true;
 
         Skin textures = new Skin();
-        textures.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
+        textures.addRegions(assetManager.get("shop/workshop.atlas"));
         final Window.WindowStyle dialogStyle = new Window.WindowStyle();
         dialogStyle.background = textures.getDrawable("colorDialog");
         dialogStyle.titleFont = font;
@@ -87,7 +87,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         itemButtonStyle.imageOver = new Image(items.findRegion("over_crystal")).getDrawable();
         ImageButton item = new ImageButton(itemButtonStyle);
         crystal.add(item).size(10, 10);
-        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.13f);
+        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", assetManager.get("fonts/font2(old).fnt"), 0.13f);
 
         if (getInteger("item_crystal") < 1) {
             quantity.setColor(Color.RED);
@@ -163,10 +163,10 @@ public class ColorCustomizationDialogue extends Dialogue {
         ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getInteger("item_crystal") >= 5) {
+                if (getInteger("item_crystal") >= 1) {
                     writeFireColor(colors, particleEffect);
                     if (!Arrays.equals(colors, notEditedColors)) {
-                        subtractInteger("item_crystal", 5);
+                        subtractInteger("item_crystal", 1);
                     }
                     fire.dispose();
                     fire2.dispose();
@@ -196,16 +196,16 @@ public class ColorCustomizationDialogue extends Dialogue {
             blueSlider.setValue(colors[3 * i + 2]);
 
             final Table redSliderTable = new Table();
-            redSliderTable.add(uiComposer.addText("[#FF0000]R:", (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
+            redSliderTable.add(uiComposer.addText("[#FF0000]R:", assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
             redSliderTable.add(redSlider).width(35).padLeft(1);
 
             Table greenSliderTable = new Table();
-            greenSliderTable.add(uiComposer.addText("[#00FF00]G:", (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
+            greenSliderTable.add(uiComposer.addText("[#00FF00]G:", assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
             greenSliderTable.add(greenSlider).width(35).padLeft(1);
             greenSliderTable.add(colorSquare);
 
             Table blueSliderTable = new Table();
-            blueSliderTable.add(uiComposer.addText("[#0000FF]B:", (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
+            blueSliderTable.add(uiComposer.addText("[#0000FF]B:", assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
             blueSliderTable.add(blueSlider).width(35).padLeft(1);
 
             sliders.add(redSlider, greenSlider, blueSlider);
