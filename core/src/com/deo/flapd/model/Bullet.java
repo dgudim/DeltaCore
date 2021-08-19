@@ -31,8 +31,8 @@ public class Bullet {
     private final Player player;
     private final Enemies enemies;
     private final Rectangle playerBounds;
-    public Array<Rectangle> bullets;
-    public Array<Integer> damages;
+    public final Array<Rectangle> bullets;
+    private final Array<Float> damages;
     private final Array<ParticleEffect> trails;
     private final Array<ParticleEffect> disposedTrails;
     private final Array<Float> trailCountDownTimers;
@@ -63,7 +63,7 @@ public class Bullet {
     
     private float width, height;
     
-    public int damage;
+    public float damage;
     private int baseDamage;
     private int bulletSpeed;
     private int bulletsPerShot;
@@ -241,7 +241,7 @@ public class Bullet {
                     remove_Bullet.add(false);
                     if (player.Charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
                         types.add(true);
-                        damages.add((int) (damage * damageMultiplier));
+                        damages.add(damage * damageMultiplier);
                         player.Charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
                     } else {
                         types.add(false);
@@ -290,8 +290,18 @@ public class Bullet {
                 millis = 0;
             }
         } else {
-            damage = baseDamage * (GameLogic.bonuses_collected + 1) / 10;
+            damage = baseDamage * (GameLogic.bonuses_collected + 1) / 10f;
         }
+    }
+    
+    public float overlaps(Rectangle hitBox, boolean explode){
+        for(int i = 0; i<bullets.size; i++){
+            if(bullets.get(i).overlaps(hitBox) && !remove_Bullet.get(i)){
+                removeBullet(i, explode);
+                return damages.get(i);
+            }
+        }
+        return 0;
     }
     
     public void updateLaser(boolean active) {

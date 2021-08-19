@@ -16,15 +16,9 @@ public class BulletData {
     public float width;
     public float height;
     
-    public float[] offset;
-    public float bulletOffsetAngle;
-    public float bulletOffsetDistance;
-    
     float damage;
     
     float speed;
-    
-    public float spread;
     
     public String trail;
     public float trailOffsetDistance;
@@ -41,10 +35,6 @@ public class BulletData {
     float fadeOutTimer;
     float maxFadeOutTimer;
     
-    public String shootSound;
-    
-    public int bulletsPerShot;
-    
     boolean isHoming;
     float explosionTimer;
     float homingSpeed;
@@ -52,13 +42,7 @@ public class BulletData {
     float screenShakeIntensity;
     float screenShakeDuration;
     
-    JsonEntry enemyInfo;
     String color;
-    
-    public BulletData(JsonEntry enemyInfo, String type) {
-        loadFromBulletData(enemyInfo.get(type, "bullet"));
-        this.enemyInfo = enemyInfo;
-    }
     
     public BulletData(JsonEntry bulletData) {
         loadFromBulletData(bulletData);
@@ -67,48 +51,40 @@ public class BulletData {
     void loadFromBulletData(JsonEntry bulletData) {
         texture = bulletData.getString("noTexture", "texture");
         
-        isLaser = bulletData.getBoolean(false, "isLaser");
-        if(isLaser){
+        isLaser = bulletData.getBoolean(false, false, "isLaser");
+        if (isLaser) {
             fadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
             maxFadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
             color = bulletData.getString("ffffffff", "color");
-        }else{
+        } else {
             width = bulletData.getFloat(1, "width");
             
             speed = bulletData.getFloat(130, "speed");
-    
+            
             trail = bulletData.getString("particles/bullet_trail_left.p", "trail");
             trailScale = bulletData.getFloat(1, "trailScale");
-            drawTrailOnTop = bulletData.getBoolean(false, "drawTrailOnTop");
+            drawTrailOnTop = bulletData.getBoolean(false, false, "drawTrailOnTop");
             float[] trailOffset = bulletData.getFloatArray(new float[]{0, 0}, "trailOffset");
             trailOffsetAngle = MathUtils.atan2(trailOffset[1], trailOffset[0]) * MathUtils.radiansToDegrees;
             trailOffsetDistance = getDistanceBetweenTwoPoints(0, 0, trailOffset[0], trailOffset[1]);
             
             explosion = bulletData.getString("particles/explosion2.p", "explosionEffect");
             explosionScale = bulletData.getFloat(1, "explosionScale");
-    
-            isHoming = bulletData.getBoolean(false, "homing");
+            
+            isHoming = bulletData.getBoolean(false, false, "homing");
             if (isHoming) {
                 explosionTimer = bulletData.getFloat(3, "explosionTimer");
                 homingSpeed = bulletData.getFloat(5, "homingSpeed");
             }
         }
-    
+        
         height = bulletData.getFloat(1, "height");
-        offset = bulletData.getFloatArray(new float[]{0, 0}, "offset");
         
-        bulletOffsetAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
-        bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, offset[0], offset[1]);
-    
-        hasCollisionWithPlayerBullets = bulletData.getBoolean(true, "hasCollisionWithPlayerBullets");
-       
+        hasCollisionWithPlayerBullets = bulletData.getBoolean(false, false, "hasCollisionWithPlayerBullets");
+        
         damage = bulletData.getFloat(1, "damage");
-        spread = bulletData.getFloat(5, "spread");
-        shootSound = bulletData.getString("sfx/gun1.ogg", "shootSound");
         
-        bulletsPerShot = bulletData.getInt(1, "bulletsPerShot");
-        
-        screenShakeIntensity = bulletData.getFloat(0, "screenShakeOnHit");
-        screenShakeDuration = bulletData.getFloat(0, "screenShakeDuration");
+        screenShakeIntensity = bulletData.getFloat(false, 0, "screenShakeOnHit");
+        screenShakeDuration = bulletData.getFloat(false, 0, "screenShakeDuration");
     }
 }
