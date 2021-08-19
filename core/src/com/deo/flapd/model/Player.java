@@ -3,6 +3,7 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -339,6 +340,7 @@ public class Player {
     }
     
     public void drawDebug(ShapeRenderer shapeRenderer){
+        shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
     
