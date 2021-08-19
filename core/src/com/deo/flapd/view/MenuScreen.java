@@ -101,10 +101,6 @@ public class MenuScreen implements Screen {
     
     private final Array<ParticleEffect> fires;
     
-    private boolean easterEgg;
-    
-    private int easterEggCounter;
-    
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
     
@@ -137,8 +133,6 @@ public class MenuScreen implements Screen {
         this.assetManager = assetManager;
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        
-        easterEgg = getBoolean("easterEgg");
         
         this.batch = batch;
         
@@ -225,7 +219,7 @@ public class MenuScreen implements Screen {
         TextButton importGameData = uiComposer.addTextButton("defaultLight", "import game data", 0.4f);
         TextButton clearGameData = uiComposer.addTextButton("defaultLight", "clear game data", 0.4f);
         
-        final Label exportMessage = uiComposer.addText("", (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.4f);
+        final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/font2(old).fnt"), 0.4f);
         exportMessage.setWrap(true);
         
         exportGameData.addListener(new ClickListener() {
@@ -417,16 +411,6 @@ public class MenuScreen implements Screen {
         
         buildNumber.addListener(new ActorGestureListener(20, 0.4f, 60, 0.15f) {
             @Override
-            public void tap(InputEvent event, float x, float y, int count, int button) {
-                easterEggCounter++;
-                if (easterEggCounter > 10) {
-                    easterEgg = !easterEgg;
-                    putBoolean("easterEgg", easterEgg);
-                    easterEggCounter = 0;
-                }
-            }
-            
-            @Override
             public boolean longPress(Actor actor, float x, float y) {
                 addInteger("money", 100000);
                 addInteger("cogs", 100000);
@@ -534,11 +518,6 @@ public class MenuScreen implements Screen {
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
         font_main.draw(batch, "V 0.0.8", 5, 35, 150, 1, false);
-        if (easterEgg) {
-            font_main.getData().setScale(0.2f);
-            font_main.setColor(Color.ORANGE);
-            font_main.draw(batch, "cat edition", 5, 20, 150, 1, false);
-        }
         
         for (int i = 0; i < verticalFillingThreshold; i++) {
             FillTexture.setPosition(0, -72 * (i + 1));
@@ -673,7 +652,7 @@ public class MenuScreen implements Screen {
             Ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
         } else {
             Ship = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(
+            enemyAnimation = new Animation<>(
                     shipConfig.getFloat(3, "frameDuration"),
                     assetManager.get("player/animations/" + shipConfig.getString("noAnimation", "animation") + ".atlas", TextureAtlas.class)
                             .findRegions(shipConfig.getString("noAnimation", "animation")),

@@ -3,37 +3,16 @@ enemies.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-cat2
-  rotate: false
-  xy: 1, 515
-  size: 3500, 1524
-  orig: 3500, 1524
-  offset: 0, 0
-  index: -1
-cat
-  rotate: false
-  xy: 3503, 1328
-  size: 1448, 711
-  orig: 1448, 711
-  offset: 0, 0
-  index: -1
-cat_bomb
-  rotate: false
-  xy: 1, 191
-  size: 658, 322
-  orig: 658, 322
-  offset: 0, 0
-  index: -1
 atomic_bomb
   rotate: false
-  xy: 3503, 1134
+  xy: 1, 191
   size: 348, 192
   orig: 348, 192
   offset: 0, 0
   index: -1
 enemy_shotgun
   rotate: false
-  xy: 4953, 1895
+  xy: 351, 239
   size: 388, 144
   orig: 388, 144
   offset: 0, 0
@@ -47,14 +26,14 @@ enemy_sniper
   index: -1
 trainingbot
   rotate: false
-  xy: 661, 439
+  xy: 741, 309
   size: 104, 74
   orig: 104, 74
   offset: 0, 0
   index: -1
 enemy_rocket
   rotate: false
-  xy: 3503, 1090
+  xy: 351, 195
   size: 78, 42
   orig: 78, 42
   offset: 0, 0

@@ -3,115 +3,115 @@ bullets.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-bullet_whiskas
-  rotate: false
-  xy: 1, 85
-  size: 315, 422
-  orig: 315, 422
-  offset: 0, 0
-  index: -1
 bullet_thick_long_red
   rotate: false
-  xy: 1, 65
+  xy: 1, 13
   size: 96, 18
   orig: 96, 18
   offset: 0, 0
   index: -1
 bullet_long_yellow
   rotate: false
-  xy: 318, 487
+  xy: 99, 11
   size: 75, 20
   orig: 75, 20
   offset: 0, 0
   index: -1
 bullet_Cannon1
   rotate: false
-  xy: 1, 43
+  xy: 176, 11
   size: 52, 20
   orig: 52, 20
   offset: 0, 0
   index: -1
 bullet_Cannon2
   rotate: false
-  xy: 318, 465
+  xy: 230, 11
   size: 52, 20
   orig: 52, 20
   offset: 0, 0
   index: -1
 bullet_Cannon3
   rotate: false
-  xy: 99, 71
+  xy: 284, 19
   size: 52, 12
   orig: 52, 12
   offset: 0, 0
   index: -1
 bullet_Cannon5
   rotate: false
-  xy: 395, 495
+  xy: 338, 19
   size: 52, 12
   orig: 52, 12
   offset: 0, 0
   index: -1
+missile
+  rotate: false
+  xy: 284, 1
+  size: 28, 16
+  orig: 28, 16
+  offset: 0, 0
+  index: -1
 bullet_destroyer_rocket
   rotate: false
-  xy: 1, 17
+  xy: 392, 7
   size: 40, 24
   orig: 40, 24
   offset: 0, 0
   index: -1
 bullet_Cannon4
   rotate: false
-  xy: 55, 49
+  xy: 434, 17
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 bullet_med_red
   rotate: false
-  xy: 318, 449
+  xy: 434, 1
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 bullet_minigun
   rotate: false
-  xy: 372, 471
+  xy: 314, 3
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 bullet_shotgun
   rotate: false
-  xy: 1, 1
+  xy: 450, 17
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 bullet_long_red
   rotate: false
-  xy: 99, 66
+  xy: 1, 8
   size: 13, 3
   orig: 13, 3
   offset: 0, 0
   index: -1
+bullet_thick_red
+  rotate: false
+  xy: 1, 1
+  size: 7, 5
+  orig: 7, 5
+  offset: 0, 0
+  index: -1
 bullet_laser
   rotate: false
-  xy: 153, 74
+  xy: 330, 8
   size: 5, 9
   orig: 5, 9
   offset: 0, 0
   index: -1
 bullet_small_blue
   rotate: false
-  xy: 449, 500
+  xy: 450, 8
   size: 7, 7
   orig: 7, 7
-  offset: 0, 0
-  index: -1
-bullet_thick_red
-  rotate: false
-  xy: 395, 488
-  size: 7, 5
-  orig: 7, 5
   offset: 0, 0
   index: -1
