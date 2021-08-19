@@ -23,6 +23,7 @@ public class Entity {
     public float regeneration = 0;
     public float speed;
     public boolean isDead = false;
+    public boolean active = true;
     public boolean hasCollisionWithPlayerBullets = true;
     public Color color = Color.WHITE;
     
@@ -64,8 +65,11 @@ public class Entity {
         }
     }
     
-    public void drawDebug(ShapeRenderer shapeRenderer){
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.rect(entityHitBox.x, entityHitBox.y, entityHitBox.width, entityHitBox.height);
+        shapeRenderer.setColor(Color.CYAN);
+        shapeRenderer.circle(x + originX, y + originY, 5);
     }
     
     public boolean overlaps(Entity entity) {
