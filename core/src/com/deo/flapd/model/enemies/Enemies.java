@@ -10,7 +10,6 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.JsonEntry;
 
-import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
@@ -22,8 +21,6 @@ public class Enemies {
     private final Array<EnemyData> enemies;
     private final Array<String> enemyNames;
     public Array<Enemy> enemyEntities;
-    
-    private final String type;
     
     private final float difficulty;
     
@@ -37,7 +34,6 @@ public class Enemies {
         enemyNames = new Array<>();
         enemyEntities = new Array<>();
         
-        type = getBoolean("easterEgg") ? "easterEgg" : "normal";
         difficulty = getFloat("difficulty");
     }
     
@@ -45,7 +41,7 @@ public class Enemies {
         int enemyTypeCount = enemiesJson.size;
         
         for (int i = 0; i < enemyTypeCount; i++) {
-            EnemyData enemyData = new EnemyData(enemiesJson.get(i), type);
+            EnemyData enemyData = new EnemyData(enemiesJson.get(i));
             enemies.add(enemyData);
             enemyNames.add(enemyData.name);
         }
