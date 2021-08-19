@@ -98,7 +98,7 @@ public class Tree {
         log("done, took " + elapsedTime + "ms, total branch count " + (branchCount - 1), INFO);
         
         Skin buttonSkin = new Skin();
-        buttonSkin.addRegions((TextureAtlas) assetManager.get("menuButtons/menuButtons.atlas"));
+        buttonSkin.addRegions(assetManager.get("menuButtons/menuButtons.atlas"));
         
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         
@@ -120,11 +120,11 @@ public class Tree {
     private void addItems(Array<String> categories, Array<Array<String>> items, String category, Node root, float maxHeight) {
         int index = categories.indexOf(category, false);
         if (index >= 0) {
-            Array<String> currentCategories = items.get(index);
+            Array<String> currentCategoryItems = items.get(index);
             Array<Node> currentCategoryNodes = new Array<>();
             
-            for (int i = 0; i < currentCategories.size; i++) {
-                Node nextNode = new Node(assetManager, currentCategories.get(i), root.node.getX() + 85, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
+            for (int i = 0; i < currentCategoryItems.size; i++) {
+                Node nextNode = new Node(assetManager, currentCategoryItems.get(i), root.node.getX() + 85, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
                 addItems(categories, items, nextNode.name, nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -202,7 +202,7 @@ class Node {
         children = new Array<>();
         final TextureAtlas items = assetManager.get("items/items.atlas");
         Skin nodeSkin = new Skin();
-        nodeSkin.addRegions((TextureAtlas) assetManager.get("shop/slots.atlas"));
+        nodeSkin.addRegions(assetManager.get("shop/slots.atlas"));
         ImageButton.ImageButtonStyle nodeStyle = new ImageButton.ImageButtonStyle();
         nodeStyle.imageUp = new Image(items.findRegion(getItemCodeNameByName(item))).getDrawable();
         nodeStyle.imageOver = new Image(items.findRegion("over_" + getItemCodeNameByName(item))).getDrawable();
