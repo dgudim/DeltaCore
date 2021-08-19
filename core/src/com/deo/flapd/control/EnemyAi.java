@@ -22,7 +22,6 @@ public class EnemyAi {
     
     boolean playerFollowActive;
     boolean dodgeFlightActive;
-    public boolean active;
     float playerInsideEntityTimer;
     float playerInsideEntityMaxTime;
     
@@ -51,7 +50,7 @@ public class EnemyAi {
     }
     
     public void update(float delta) {
-        if (active) {
+        if (targetEntity.active) {
             if (followPlayer) {
                 playerLastHealthDifference = (player.Health + player.Shield - playerLastHealth) / delta;
                 playerLastHealth = player.Health + player.Shield;
