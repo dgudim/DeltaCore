@@ -3,9 +3,9 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.LogLevel.ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
 
 public final class ShaderLoader {
 	public static String BasePath = "";

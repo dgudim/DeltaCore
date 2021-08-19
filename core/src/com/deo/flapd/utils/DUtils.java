@@ -26,13 +26,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import static com.deo.flapd.utils.LogLevel.DEBUG;
-import static com.deo.flapd.utils.LogLevel.ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
 
 public class DUtils {
+    
+    public enum LogLevel {DEBUG, INFO, WARNING, ERROR, CRITICAL_ERROR}
     
     private static final Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");

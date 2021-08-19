@@ -18,12 +18,12 @@ import com.deo.flapd.view.LoadingScreen;
 import java.text.DateFormat;
 import java.util.Date;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.clearLog;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
 
 public class Main extends Game {
 

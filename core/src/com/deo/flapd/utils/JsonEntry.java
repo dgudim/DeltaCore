@@ -2,8 +2,8 @@ package com.deo.flapd.utils;
 
 import com.badlogic.gdx.utils.JsonValue;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.LogLevel.WARNING;
 
 public class JsonEntry {
     

@@ -33,6 +33,9 @@ import com.deo.flapd.view.dialogues.SellScrapDialogue;
 import java.util.concurrent.TimeUnit;
 
 import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getLong;
@@ -42,9 +45,6 @@ import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
-import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
-import static com.deo.flapd.utils.LogLevel.ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
 import static com.deo.flapd.view.SlotManagerMode.INVENTORY;
 import static com.deo.flapd.view.SlotManagerMode.SHOP;
 import static java.lang.StrictMath.sqrt;
@@ -70,7 +70,7 @@ public class ItemSlotManager {
     ItemSlotManager(AssetManager assetManager) {
         
         slotSkin = new Skin();
-        slotSkin.addRegions((TextureAtlas) assetManager.get("shop/workshop.atlas"));
+        slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
         uiComposer = new UIComposer(assetManager);
         uiComposer.loadStyles("workshopGreen");

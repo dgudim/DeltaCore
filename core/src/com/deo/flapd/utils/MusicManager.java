@@ -4,9 +4,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.LogLevel.INFO;
 
 public class MusicManager {
     

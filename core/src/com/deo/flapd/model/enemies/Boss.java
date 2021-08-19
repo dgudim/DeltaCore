@@ -31,6 +31,9 @@ import com.deo.flapd.utils.JsonEntry;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -39,9 +42,6 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.utils.LogLevel.ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
-import static com.deo.flapd.utils.LogLevel.WARNING;
 import static java.lang.StrictMath.abs;
 
 public class Boss {

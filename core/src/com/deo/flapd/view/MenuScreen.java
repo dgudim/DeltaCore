@@ -44,6 +44,8 @@ import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
 import static com.badlogic.gdx.math.MathUtils.sin;
 import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -60,8 +62,6 @@ import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
-import static com.deo.flapd.utils.LogLevel.ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
 import static java.lang.Math.abs;
 
 public class MenuScreen implements Screen {

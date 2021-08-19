@@ -24,6 +24,8 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -35,8 +37,6 @@ import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.updateCamera;
-import static com.deo.flapd.utils.LogLevel.INFO;
-import static com.deo.flapd.utils.LogLevel.WARNING;
 
 public class LoadingScreen implements Screen {
     

@@ -26,14 +26,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.LogLevel.CRITICAL_ERROR;
-import static com.deo.flapd.utils.LogLevel.INFO;
 
 public class Tree {
     
