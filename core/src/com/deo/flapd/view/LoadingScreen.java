@@ -38,11 +38,9 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 import static com.deo.flapd.utils.LogLevel.INFO;
 import static com.deo.flapd.utils.LogLevel.WARNING;
 
-enum LoadingState {
-    LOADING_TEXTURES, LOADING_SOUNDS, BUILDING_TREE
-}
-
 public class LoadingScreen implements Screen {
+    
+    enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, BUILDING_TREE}
     
     private final AssetManager assetManager;
     private final SpriteBatch batch;
@@ -81,10 +79,11 @@ public class LoadingScreen implements Screen {
                     putString(tree.getString("noSaveToLocation", i, "saveTo"), tree.get(i).name);
                 }
             }
-            log("------------first launch------------" + "\n", INFO);
+            log("------------first launch------------\n", INFO);
         }
         
-        log("started loading", INFO);
+        log("---------------------------------------\n", INFO);
+        log("------------started loading------------", INFO);
         loadingTime = TimeUtils.millis();
         
         this.batch = batch;
@@ -137,6 +136,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("enemies/bosses/boss_ship/bossShip.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_star_destroyer/bossStarDestroyer.atlas", TextureAtlas.class);
         assetManager.load("enemies/bosses/boss_ufo/bossUFO.atlas", TextureAtlas.class);
+        assetManager.load("enemies/bosses/boss_station/bossStation.atlas", TextureAtlas.class);
         
         assetManager.load("GameOverScreenButtons/GameOverButtons.atlas", TextureAtlas.class);
         assetManager.load("items/items.atlas", TextureAtlas.class);
@@ -150,7 +150,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("enemies/enemies.atlas", TextureAtlas.class);
         assetManager.load("enemies/ufo/ufo.atlas", TextureAtlas.class);
         assetManager.load("bullets/bullets.atlas", TextureAtlas.class);
-        // TODO: 7/26/2021 load sounds
+        
         assetManager.load("Meteo.png", Texture.class);
         
         assetManager.load("uraniumCell.png", Texture.class);
@@ -167,16 +167,12 @@ public class LoadingScreen implements Screen {
         assetManager.load("checkpoint.png", Texture.class);
         assetManager.load("checkpoint_green.png", Texture.class);
         
-        assetManager.load("cat_meteorite.png", Texture.class);
-        
         assetManager.load("sfx/explosion.ogg", Sound.class);
         assetManager.load("sfx/gun1.ogg", Sound.class);
         assetManager.load("sfx/gun2.ogg", Sound.class);
         assetManager.load("sfx/gun3.ogg", Sound.class);
         assetManager.load("sfx/gun4.ogg", Sound.class);
         assetManager.load("sfx/laser.ogg", Sound.class);
-        assetManager.load("sfx/hitcat.ogg", Sound.class);
-        assetManager.load("sfx/mewcat.ogg", Sound.class);
         
         assetManager.load("music/main1.ogg", Music.class);
         assetManager.load("music/main2.ogg", Music.class);
@@ -304,7 +300,7 @@ public class LoadingScreen implements Screen {
     private void checkState() {
         try {
             if (assetManager.isFinished() && !loadingState.equals(LoadingState.BUILDING_TREE)) {
-                log("loaded, took" + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
+                log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
             }
             if (loadingState.equals(LoadingState.BUILDING_TREE)) {
                 craftingTree = new Tree(assetManager, 105, 65, 430, 410);
