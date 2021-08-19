@@ -26,45 +26,79 @@ public class JsonEntry {
     
     /**
      * Returns the child at the specified index. This requires walking the linked list to the specified entry, see
-     * {@link JsonEntry} for how to iterate efficiently.
-     *
-     * @return May be null.
+     * {@link JsonValue} for how to iterate efficiently.
      */
-    public JsonEntry get(int index) {
+    public JsonEntry get(boolean showWarnings, int index) {
         if (jsonValue.get(index) == null) {
-            log("No key with index " + index + ", trace info: " + jsonValue.trace(), WARNING);
+            if (showWarnings) {
+                log("No key with index " + index + ", trace info: " + jsonValue.trace(), WARNING);
+            }
             return new JsonEntry();
         }
         return new JsonEntry(jsonValue.get(index));
     }
     
     /**
-     * Returns the child with the specified name.
-     *
-     * @return May be null.
+     * Returns the child at the specified index. This requires walking the linked list to the specified entry, see
+     * {@link JsonValue} for how to iterate efficiently.
      */
-    public JsonEntry get(String name) {
+    public JsonEntry get(int index) {
+        return get(true, index);
+    }
+    
+    /**
+     * Returns the child with the specified name.
+     */
+    public JsonEntry get(boolean showWarnings, String name) {
         if (jsonValue.get(name) == null) {
-            log("No key named " + name + " (path: " + jsonValue.trace() + ")", WARNING);
+            if (showWarnings) {
+                log("No key named " + name + " (path: " + jsonValue.trace() + ")", WARNING);
+            }
             return new JsonEntry();
         }
         return new JsonEntry(jsonValue.get(name));
     }
     
     /**
+     * Returns the child with the specified name.
+     */
+    public JsonEntry get(String name) {
+        return get(true, name);
+    }
+    
+    /**
      * Returns the child with the specified name and path.
+     */
+    public JsonEntry get(boolean showWarnings, String... keys) {
+        JsonEntry entry = this;
+        for (String key : keys) {
+            if (entry.get(showWarnings, key).isNull()) {
+                return new JsonEntry();
+            }
+            entry = entry.get(showWarnings, key);
+        }
+        return entry;
+    }
+    
+    /**
+     * Returns the child with the specified name and path.
+     */
+    public JsonEntry get(String... keys) {
+        return get(true, keys);
+    }
+    
+    /**
+     * Returns the child with the specified index of the child with the specified name.
      *
      * @return May be null.
      */
-    public JsonEntry get(String... keys) {
-        JsonEntry entry = this;
-        for (String key : keys) {
-            if (entry.get(key).isNull()) {
-                return new JsonEntry();
+    public JsonEntry get(boolean showWarnings, String key, int index) {
+        if (!(get(showWarnings, key).isNull())) {
+            if (!(get(showWarnings, key).get(showWarnings, index).isNull())) {
+                return get(showWarnings, key).get(showWarnings, index);
             }
-            entry = entry.get(key);
         }
-        return entry;
+        return null;
     }
     
     /**
@@ -73,171 +107,270 @@ public class JsonEntry {
      * @return May be null.
      */
     public JsonEntry get(String key, int index) {
-        if (!(get(key).isNull())) {
-            if (!(get(key).get(index).isNull())) {
-                return get(key).get(index);
-            }
-        }
-        return null;
+        return get(true, key, index);
     }
     
     /**
      * Returns the parent for this value.
-     *
-     * @return May be null.
      */
-    public JsonEntry parent() {
+    public JsonEntry parent(boolean showWarnings) {
         if (!jsonValue.parent().isNull()) {
             return new JsonEntry(jsonValue.parent());
         } else {
-            log("Json entry " + jsonValue.name + " has no parent, first child: " + jsonValue.child(), WARNING);
+            if (showWarnings) {
+                log("Json entry " + jsonValue.name + " has no parent, first child: " + jsonValue.child(), WARNING);
+            }
             return new JsonEntry();
         }
+    }
+    
+    /**
+     * Returns the parent for this value.
+     */
+    public JsonEntry parent() {
+        return parent(true);
+    }
+    
+    /**
+     * Finds the child with the specified index and returns it as a string.
+     */
+    public String getString(boolean showWarnings, String defaultValue, int index) {
+        if (get(false, index).isNull()) {
+            if (showWarnings) {
+                log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
+            return defaultValue;
+        }
+        return get(showWarnings, index).jsonValue.asString();
     }
     
     /**
      * Finds the child with the specified index and returns it as a string.
      */
     public String getString(String defaultValue, int index) {
-        if (get(index).isNull()) {
-            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        return getString(true, defaultValue, index);
+    }
+    
+    /**
+     * Finds the child with the specified index and returns it as a float.
+     */
+    public float getFloat(boolean showWarnings, float defaultValue, int index) {
+        if (get(false, index).isNull()) {
+            if (showWarnings) {
+                log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(index).jsonValue.asString();
+        return get(showWarnings, index).jsonValue.asFloat();
     }
     
     /**
      * Finds the child with the specified index and returns it as a float.
      */
     public float getFloat(float defaultValue, int index) {
-        if (get(index).isNull()) {
-            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
-            return defaultValue;
+        return getFloat(true, defaultValue, index);
+    }
+    
+    /**
+     * Finds the child with the specified key and returns it's child with specified index as a float.
+     */
+    public float getFloat(boolean showWarnings, float defaultValue, String key, int index) {
+        if (!(get(false, key).isNull())) {
+            if (!(get(false, key).get(false, index).isNull())) {
+                return get(showWarnings, key).get(showWarnings, index).jsonValue.asFloat();
+            }
         }
-        return get(index).jsonValue.asFloat();
+        if (showWarnings) {
+            log("No value specified for key " + key + " and index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        }
+        return defaultValue;
     }
     
     /**
      * Finds the child with the specified key and returns it's child with specified index as a float.
      */
     public float getFloat(float defaultValue, String key, int index) {
-        if (!(get(key).isNull())) {
-            if (!(get(key).get(index).isNull())) {
-                return get(key).get(index).jsonValue.asFloat();
+        return getFloat(true, defaultValue, key, index);
+    }
+    
+    /**
+     * Finds the child with the specified name and path and returns it as a boolean.
+     */
+    public boolean getBoolean(boolean showWarnings, boolean defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
             }
+            return defaultValue;
         }
-        log("No value specified for key " + key + " and index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
-        return defaultValue;
+        return get(showWarnings, keys).jsonValue.asBoolean();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as a boolean.
      */
     public boolean getBoolean(boolean defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        return getBoolean(true, defaultValue, keys);
+    }
+    
+    /**
+     * Finds the child with the specified name and path and returns it as an integer.
+     */
+    public int getInt(boolean showWarnings, int defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asBoolean();
+        return get(showWarnings, keys).jsonValue.asInt();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as an integer.
      */
     public int getInt(int defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        return getInt(true, defaultValue, keys);
+    }
+    
+    /**
+     * Finds the child with the specified name and path and returns it as a float.
+     */
+    public float getFloat(boolean showWarnings, float defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asInt();
+        return get(showWarnings, keys).jsonValue.asFloat();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as a float.
      */
     public float getFloat(float defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        return getFloat(true, defaultValue, keys);
+    }
+    
+    /**
+     * Finds the child with the specified name and path and returns it as a string.
+     */
+    public String getString(boolean showWarnings, String defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asFloat();
+        return get(showWarnings, keys).jsonValue.asString();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as a string.
      */
     public String getString(String defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
-            return defaultValue;
-        }
-        return get(keys).jsonValue.asString();
+        return getString(true, defaultValue, keys);
     }
     
     /**
-     * Finds the child with the specified name and path and returns it as a boolean array.
+     * Finds the child with the specified name and path and returns it as an integer array.
      */
-    public boolean[] getBooleanArray(boolean[] defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+    public int[] getIntArray(boolean showWarnings, int[] defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asBooleanArray();
+        return get(showWarnings, keys).jsonValue.asIntArray();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as an integer array.
      */
     public int[] getIntArray(int[] defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+        return getIntArray(true, defaultValue, keys);
+    }
+    
+    /**
+     * Finds the child with the specified name and path and returns it as a float array.
+     */
+    public float[] getFloatArray(boolean showWarnings, float[] defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asIntArray();
+        return get(showWarnings, keys).jsonValue.asFloatArray();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as a float array.
      */
     public float[] getFloatArray(float[] defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+        return getFloatArray(true, defaultValue, keys);
+    }
+    
+    /**
+     * Finds the child with the specified name and path and returns it as a string array.
+     */
+    public String[] getStringArray(boolean showWarnings, String[] defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asFloatArray();
+        return get(showWarnings, keys).jsonValue.asStringArray();
     }
     
     /**
      * Finds the child with the specified name and path and returns it as a string array.
      */
     public String[] getStringArray(String[] defaultValue, String... keys) {
-        if (get(keys).isNull()) {
-            log("No value specified for key path " + keys[0] + "..." + keys[keys.length - 1] + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+        return getStringArray(true, defaultValue, keys);
+    }
+    
+    /**
+     * Returns the child with the specified index of the child with the specified name and returns it as a string.
+     */
+    public String getString(boolean showWarnings, String defaultValue, String key, int index) {
+        if (get(false, key).isNull()) {
+            if (showWarnings) {
+                log("No value specified for key " + key + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(keys).jsonValue.asStringArray();
+        return get(showWarnings, key).getString(showWarnings, defaultValue, index);
     }
     
     /**
      * Returns the child with the specified index of the child with the specified name and returns it as a string.
      */
     public String getString(String defaultValue, String key, int index) {
-        if (get(key).isNull()) {
-            log("No value specified for key " + key + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+        return getString(true, defaultValue, key, index);
+    }
+    
+    /**
+     * Returns the child with the specified name of the child with the specified index and returns it as a string.
+     */
+    public String getString(boolean showWarnings, String defaultValue, int index, String key) {
+        if (get(false, index).isNull()) {
+            if (showWarnings) {
+                log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
             return defaultValue;
         }
-        return get(key).getString(defaultValue, index);
+        return get(showWarnings, index).getString(showWarnings, defaultValue, key);
     }
     
     /**
      * Returns the child with the specified name of the child with the specified index and returns it as a string.
      */
     public String getString(String defaultValue, int index, String key) {
-        if (get(index).isNull()) {
-            log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
-            return defaultValue;
-        }
-        return get(index).getString(defaultValue, key);
+        return getString(true, defaultValue, index, key);
     }
     
     public String asString() {
@@ -252,11 +385,33 @@ public class JsonEntry {
         return jsonValue.asIntArray();
     }
     
-    public boolean isBoolean(boolean defaultValue) {
+    public boolean isNumber() {
         if (isNull()) {
-            return defaultValue;
+            return false;
+        } else {
+            return jsonValue.isNumber();
+        }
+    }
+    
+    public boolean isBoolean() {
+        if (isNull()) {
+            return false;
         }
         return jsonValue.isBoolean();
+    }
+    
+    public boolean isString() {
+        if (isNull()) {
+            return false;
+        }
+        return jsonValue.isString();
+    }
+    
+    public boolean isObject() {
+        if (isNull()) {
+            return false;
+        }
+        return jsonValue.isObject();
     }
     
     public boolean isNull() {
