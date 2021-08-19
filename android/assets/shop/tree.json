@@ -492,7 +492,7 @@
     "items": ["iron plate", "bolt", "glass rod", "glass shard", "green crystal"],
     "itemCounts": [1, 4, 4, 6, 1],
     "resultCount": 2,
-    "description": "a very strong bullet and explosionproof glass pane",
+    "description": "a very strong bullet and explosion-proof glass pane",
     "isCraftable": true,
     "category": "recepies",
     "requires": [""],
