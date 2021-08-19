@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonReader;
@@ -419,6 +421,10 @@ public class DUtils {
         final float x_delta = x2 - x1;
         final float y_delta = y2 - y1;
         return (float) Math.sqrt(x_delta * x_delta + y_delta * y_delta);
+    }
+    
+    public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffect particleEffect){
+        shapeRenderer.rectLine(particleEffect.getBoundingBox().getCenterX() - particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getCenterX() + particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getHeight());
     }
     
     public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {
