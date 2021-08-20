@@ -147,33 +147,27 @@
   },
   "phaseTriggers": {
     "inPlacePhase": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "positionX",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": 510
-        }
+      "trigger0": {
+        "triggerType": "positionX",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": 510
       }
     },
     "deathAnimationPhase": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "health",
-          "triggerModifier": "<=",
-          "target": "cannon",
-          "value": 0
-        }
+      "trigger0": {
+        "triggerType": "health",
+        "triggerModifier": "<=",
+        "target": "cannon",
+        "value": 0
       }
     },
     "RESET": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "positionY",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": -250
-        }
+      "trigger0": {
+        "triggerType": "positionY",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": -250
       }
     }
   }

@@ -263,53 +263,43 @@
   },
   "phaseTriggers": {
     "inPlacePhase": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "positionX",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": 510
-        }
+      "trigger0": {
+        "triggerType": "positionX",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": 510
       }
     },
     "secondPhase": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "health",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": 9999
-        }
+      "trigger0": {
+        "triggerType": "health",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": 9999
       }
     },
     "thirdPhase": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "health",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": 3100
-        }
+      "trigger0": {
+        "triggerType": "health",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": 3100
       }
     },
     "deathAnimationPhase": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "health",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": 0
-        }
+      "trigger0": {
+        "triggerType": "health",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": 0
       }
     },
     "RESET": {
-      "triggers": {
-        "trigger0": {
-          "triggerType": "positionY",
-          "triggerModifier": "<=",
-          "target": "body",
-          "value": -200
-        }
+      "trigger0": {
+        "triggerType": "positionY",
+        "triggerModifier": "<=",
+        "target": "body",
+        "value": -200
       }
     }
   }

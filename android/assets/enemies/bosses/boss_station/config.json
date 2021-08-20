@@ -2,7 +2,7 @@
   "textures": "bossStation.atlas",
   "spawnAt": [850, 0],
   "spawnConditions": {
-    "score": 30000,
+    "score": -30000,
     "randomness": 1000
   },
   "parts": {
@@ -902,23 +902,18 @@
       }
     }
   },
-  "groups": {
-    "test": "cannonSmall_RearMiddle1, cannonSmall_Middle6"
-  },
   "phases": {
     "initialisingPhase": {
       "bodyInit": {
         "target": "body",
         "move": {
           "moveLinearX": {
-            "moveBy": -690,
-            "speed": 100,
-            "stopPreviousAnimations": false
+            "moveBy": -290,
+            "speed": 100
           },
           "moveLinearX": {
             "moveBy": -610,
-            "speed": 100,
-            "stopPreviousAnimations": false
+            "speed": 100
           }
         }
       },
