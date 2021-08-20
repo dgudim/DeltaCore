@@ -35,6 +35,7 @@ import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.convertPercentsToAbsoluteValue;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
@@ -966,6 +967,7 @@ class Movement {
         stopPreviousAnimations = movementConfig.getBoolean(false, false, "stopPreviousAnimations");
         
         type = movementConfig.name;
+        
         if (type.equals("rotateRelativeTo")) {
             for (int i = 0; i < parts.size; i++) {
                 if (parts.get(i).name.equals(movementConfig.getString(parts.get(0).name, "relativeTo"))) {
@@ -977,18 +979,38 @@ class Movement {
             targetRadius = movementConfig.getFloat(100, "targetRadius");
             angleOffset = movementConfig.getFloat(0, "angleOffset");
         }
+        
         if (type.equals("shake")) {
             shakeIntensityX = movementConfig.getFloat(10, "shakeIntensityX");
             shakeIntensityY = movementConfig.getFloat(10, "shakeIntensityY");
             shakePeriod = movementConfig.getFloat(0.3f, "shakePeriod");
         } else {
             speed = movementConfig.getFloat(100, "speed");
-            if (movementConfig.getString("inf", "moveBy").equals("inf")) {
+            String moveByRaw = movementConfig.getString("inf", "moveBy").trim();
+            if (moveByRaw.equals("inf")) {
                 moveBy = Integer.MAX_VALUE;
+            } else if (moveByRaw.endsWith("%")) {
+                float maxValue = 0;
+                switch (type) {
+                    case ("moveLinearX"):
+                    case ("moveSinX"):
+                        maxValue = body.width;
+                        break;
+                    case ("moveLinearY"):
+                    case ("moveSinY"):
+                        maxValue = body.height;
+                        break;
+                    case ("rotateSin"):
+                    case ("rotateRelativeTo"):
+                    case ("rotate"):
+                        maxValue = 360;
+                        break;
+                }
+                moveBy = convertPercentsToAbsoluteValue(moveByRaw, maxValue);
             } else {
-                moveBy = movementConfig.getFloat(Integer.MAX_VALUE, "moveBy");
+                moveBy = Float.parseFloat(moveByRaw);
             }
-            directionModifier = 0 < moveBy ? (byte) 1 : (byte) -1;
+            directionModifier = moveBy >= 0 ? (byte) 1 : (byte) -1;
         }
     }
     
@@ -1108,7 +1130,7 @@ class Phase {
         for (int i = 0; i < phaseData.size; i++) {
             actions.add(new Action(partGroups, phaseData.get(i), parts, animations, boss, "", actions));
         }
-        JsonEntry triggers = phaseData.parent().parent().get(false, "phaseTriggers", config.name, "triggers");
+        JsonEntry triggers = phaseData.parent().parent().get(false, "phaseTriggers", config.name);
         if (triggers.isNull()) {
             log("no triggers for " + phaseData.name, WARNING);
         } else {
@@ -1308,7 +1330,6 @@ class PhaseTrigger {
         
         conditionsMet = false;
         triggerType = triggerData.getString("health", "triggerType");
-        value = triggerData.getFloat(1, "value");
         String targetPart = triggerData.getString(parts.get(0).name, "target");
         for (int i2 = 0; i2 < parts.size; i2++) {
             if (parts.get(i2).name.equals(targetPart)) {
@@ -1318,6 +1339,27 @@ class PhaseTrigger {
         }
         if (triggerTarget == null) {
             log("error setting up trigger for part " + targetPart + ", no valid trigger target", ERROR);
+        }
+        String valueRaw = triggerData.getString("1", "value").trim();
+        if (valueRaw.endsWith("%")) {
+            float maxValue = 0;
+            switch (triggerType) {
+                case ("positionX"):
+                    maxValue = 800;
+                    break;
+                case ("positionY"):
+                    maxValue = 480;
+                    break;
+                case ("rotation"):
+                    maxValue = 360;
+                    break;
+                case ("health"):
+                    maxValue = triggerTarget.health;
+                    break;
+            }
+            value = convertPercentsToAbsoluteValue(valueRaw, maxValue);
+        } else {
+            value = Float.parseFloat(valueRaw);
         }
         triggerModifier = triggerData.getString("<=", "triggerModifier");
     }

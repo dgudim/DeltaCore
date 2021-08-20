@@ -398,6 +398,10 @@ public class DUtils {
         enemyBulletTrailDisposes = 0;
     }
     
+    public static float convertPercentsToAbsoluteValue(String percentValue, float maxValue){
+        return Float.parseFloat(percentValue.replace("%", "").trim()) / 100f * maxValue;
+    }
+    
     public static TextureRegionDrawable constructFilledImageWithColor(int width, int height, Color color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
