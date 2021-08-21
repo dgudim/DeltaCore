@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.control.EnemyAi;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Bonus;
@@ -66,7 +67,8 @@ public class Boss {
     
     Boss(String bossName, AssetManager assetManager) {
         log("------------------------------------------------------\n", INFO);
-        log("---------loading " + bossName + " config", INFO);
+        log("---------loading " + bossName, INFO);
+        long genTime = TimeUtils.millis();
         
         this.bossName = bossName;
         
@@ -140,6 +142,11 @@ public class Boss {
             Phase phase = new Phase(bossConfig.get("groups"), bossConfig.get("phases", i), parts, animations, this);
             phases.add(phase);
         }
+        
+        log("------------------------------------------------------", INFO);
+        log("loaded " + bossName + " in " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
+        log(parts.size + " parts", INFO);
+        log(phases.size + " phases", INFO);
     }
     
     void draw(SpriteBatch batch, float delta) {
@@ -969,11 +976,11 @@ class Movement {
                 switch (type) {
                     case ("moveLinearX"):
                     case ("moveSinX"):
-                        maxValue = body.width;
+                        maxValue = 800;
                         break;
                     case ("moveLinearY"):
                     case ("moveSinY"):
-                        maxValue = body.height;
+                        maxValue = 480;
                         break;
                     case ("rotateSin"):
                     case ("rotateRelativeTo"):
