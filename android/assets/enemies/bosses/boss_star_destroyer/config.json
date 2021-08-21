@@ -177,6 +177,14 @@
         "target": "body",
         "enableCollisions": true,
         "showHealthBar": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 510
+        }
       }
     },
     "secondPhase": {
@@ -200,6 +208,14 @@
       "allCannonsActivate": {
         "target": "group:allCannons",
         "active": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 9999
+        }
       }
     },
     "thirdPhase": {
@@ -228,6 +244,14 @@
       "topCannonsDeactivate": {
         "target": "group:topCannons",
         "active": false
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 3100
+        }
       }
     },
     "deathAnimationPhase": {
@@ -251,6 +275,14 @@
             "speed": 1
           }
         }
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 0
+        }
       }
     },
     "RESET": {
@@ -258,48 +290,14 @@
         "target": "body",
         "changeTexture": "phase1",
         "frameDuration": 0.1
-      }
-    }
-  },
-  "phaseTriggers": {
-    "inPlacePhase": {
-      "trigger0": {
-        "triggerType": "positionX",
-        "triggerModifier": "<=",
-        "target": "body",
-        "value": 510
-      }
-    },
-    "secondPhase": {
-      "trigger0": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "body",
-        "value": 9999
-      }
-    },
-    "thirdPhase": {
-      "trigger0": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "body",
-        "value": 3100
-      }
-    },
-    "deathAnimationPhase": {
-      "trigger0": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "body",
-        "value": 0
-      }
-    },
-    "RESET": {
-      "trigger0": {
-        "triggerType": "positionY",
-        "triggerModifier": "<=",
-        "target": "body",
-        "value": -200
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionY",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": -200
+        }
       }
     }
   }

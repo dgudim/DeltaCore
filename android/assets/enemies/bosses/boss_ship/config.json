@@ -401,6 +401,14 @@
       "homingCannonPart2Activate": {
         "target": "homingCannon",
         "active": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 270
+        }
       }
     },
     "phase2": {
@@ -430,6 +438,50 @@
             "moveBy": 10,
             "speed": 3
           }
+        }
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon1",
+          "value": 0
+        },
+        "trigger1": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon2",
+          "value": 0
+        },
+        "trigger2": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon3",
+          "value": 0
+        },
+        "trigger3": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon4",
+          "value": 0
+        },
+        "trigger4": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon5",
+          "value": 0
+        },
+        "trigger5": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "smallCannon6",
+          "value": 0
+        },
+        "trigger6": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "mediumCannon",
+          "value": 0
         }
       }
     },
@@ -467,6 +519,14 @@
         "showHealthBar": false,
         "visible": false,
         "active": false
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": 0
+        }
       }
     },
     "RESET": {
@@ -477,76 +537,14 @@
         "visible": false,
         "active": false,
         "changeTexture": "boss"
-      }
-    }
-  },
-  "phaseTriggers": {
-    "phase1": {
-      "trigger0": {
-        "triggerType": "positionX",
-        "triggerModifier": "<=",
-        "target": "body",
-        "value": 270
-      }
-    },
-    "phase2": {
-      "trigger0": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "smallCannon1",
-        "value": 0
       },
-      "trigger1": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "smallCannon2",
-        "value": 0
-      },
-      "trigger2": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "smallCannon3",
-        "value": 0
-      },
-      "trigger3": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "smallCannon4",
-        "value": 0
-      },
-      "trigger4": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "smallCannon5",
-        "value": 0
-      },
-      "trigger5": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "smallCannon6",
-        "value": 0
-      },
-      "trigger6": {
-        "triggerType": "health",
-        "triggerModifier": "<=",
-        "target": "mediumCannon",
-        "value": 0
-      }
-    },
-    "deathAnimationPhase": {
-      "trigger0": {
-        "triggerType": "health",
-        "triggerModifier": "<",
-        "target": "body",
-        "value": 0
-      }
-    },
-    "RESET": {
-      "trigger0": {
-        "triggerType": "positionY",
-        "triggerModifier": "<",
-        "target": "body",
-        "value": -370
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionY",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": -370
+        }
       }
     }
   }

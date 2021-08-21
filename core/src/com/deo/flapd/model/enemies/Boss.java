@@ -65,7 +65,7 @@ public class Boss {
     
     Boss(String bossName, AssetManager assetManager) {
         log("------------------------------------------------------\n", INFO);
-        log("---------loading boss config, name: " + bossName, INFO);
+        log("---------loading " + bossName+" config", INFO);
         
         this.bossName = bossName;
         
@@ -296,7 +296,7 @@ class BasePart extends Entity {
     
     BasePart(JsonEntry newConfig, TextureAtlas textures, AssetManager assetManager) {
         
-        log("loading boss part, name: " + newConfig.name, INFO);
+        log("loading " + newConfig.name, INFO);
         
         active = false;
         this.assetManager = assetManager;
@@ -343,7 +343,7 @@ class BasePart extends Entity {
             explosionEffect = new ParticleEffect();
             explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
-            log("creating explosion effect for part: " + newConfig.name, INFO);
+            log("creating explosion effect for " + newConfig.name, INFO);
         }
         
         soundVolume = getFloat("soundVolume");
@@ -666,7 +666,7 @@ class Cannon extends Part {
                 aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
             }
             
-            aimAnimationType = currentConfig.getString("noAnimation", "aimAnimation");
+            aimAnimationType = currentConfig.getString(false, "noAnimation", "aimAnimation");
             
             if (aimAnimationType.equals("textureChange")) {
                 aimTextures = new String[8];
@@ -753,7 +753,7 @@ class Cannon extends Part {
         super.update(delta);
         if (active) {
             if (canAim) {
-                float angleToThePlayer = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y - (player.bounds.getY() + player.bounds.getHeight() / 2), x - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                float angleToThePlayer = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + originY - (player.bounds.getY() + player.bounds.getHeight() / 2), x + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
                 switch (aimAnimationType) {
                     case ("textureChange"):
                         
@@ -952,7 +952,7 @@ class Movement {
     
     Movement(JsonEntry movementConfig, String target, Array<BasePart> parts, Array<Movement> animations, BasePart body) {
         
-        log("loading boss movement, name: " + movementConfig.name, INFO);
+        log("loading movement: " + movementConfig.name, INFO);
         
         this.body = body;
         
@@ -1119,7 +1119,7 @@ class Phase {
     
     Phase(JsonEntry partGroups, JsonEntry phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
         
-        log("loading boss phase, name: " + phaseData.name, INFO);
+        log("loading phase: " + phaseData.name, INFO);
         
         this.boss = boss;
         
@@ -1127,13 +1127,22 @@ class Phase {
         phaseTriggers = new Array<>();
         activated = false;
         config = phaseData;
+        JsonEntry triggers = null;
         for (int i = 0; i < phaseData.size; i++) {
-            actions.add(new Action(partGroups, phaseData.get(i), parts, animations, boss, "", actions));
+            if (!phaseData.get(i).name.equals("triggers")) {
+                actions.add(new Action(partGroups, phaseData.get(i), parts, animations, boss, "", actions));
+            } else {
+                if (triggers == null) {
+                    triggers = phaseData.get(i);
+                } else {
+                    log("multiple trigger entries detected for " + phaseData.name + ", ignoring", WARNING);
+                }
+            }
         }
-        JsonEntry triggers = phaseData.parent().parent().get(false, "phaseTriggers", config.name);
-        if (triggers.isNull()) {
+        if (triggers == null) {
             log("no triggers for " + phaseData.name, WARNING);
         } else {
+            log(triggers.size + " trigger(s) for " + phaseData.name, INFO);
             for (int i = 0; i < triggers.size; i++) {
                 PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts);
                 phaseTriggers.add(trigger);
@@ -1228,7 +1237,7 @@ class Action {
         } else {
             target = predeterminedTarget;
         }
-        log("loading boss action, name: " + actionValue.name + ", target: " + target, INFO);
+        log("loading action: " + actionValue.name + ", target: " + target, INFO);
         for (int i = 0; i < baseParts.size; i++) {
             if (baseParts.get(i).name.equals(target)) {
                 this.target = baseParts.get(i);
@@ -1324,7 +1333,7 @@ class PhaseTrigger {
     
     PhaseTrigger(JsonEntry triggerData, Array<BasePart> parts) {
         
-        log("loading boss phase trigger, trigger name: " + triggerData.name + ", phase name: " + triggerData.parent().parent().name, INFO);
+        log("loading phase trigger: " + triggerData.name + ", phase: " + triggerData.parent().parent().name, INFO);
         
         isResetPhase = triggerData.parent().parent().name.equals("RESET");
         

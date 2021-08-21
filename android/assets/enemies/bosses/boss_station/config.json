@@ -365,6 +365,9 @@
         "texture": "missile",
         "speed": 150,
         "damage": 15,
+        "homing": true,
+        "homingSpeed": 15,
+        "explosionTimer": 3,
         "trail": "particles/bullet_trail_left_yellow.p",
         "trailScale": 1,
         "trailOffset": [0, 0],
@@ -520,14 +523,14 @@
         "hasCollisionWithPlayerBullets": true,
         "texture": "bullet_med_red",
         "speed": 90,
-        "damage": 15,
+        "damage": 5,
         "trail": "particles/bullet_trail_left.p",
-        "trailScale": 1,
+        "trailScale": 0.3,
         "trailOffset": [0, 0],
         "explosionEffect": "particles/explosion3.p",
-        "explosionScale": 1,
-        "width": 10,
-        "height": 10
+        "explosionScale": 0.5,
+        "width": 3,
+        "height": 3
       },
       "layer": 2,
       "offset": {
@@ -536,13 +539,13 @@
         "Y": 107.5
       },
       "bulletSpread": 0.1,
-      "bulletOffset": [-35, 0],
+      "bulletOffset": [-20, 0],
       "bulletsPerShot": 1,
       "shootSound": "sfx/gun3.ogg",
       "fireRate": {
         "initialDelay": 0,
-        "baseRate": 0.3,
-        "randomness": 0.1
+        "baseRate": 1,
+        "randomness": 0.25
       },
       "drops": {
         "items": {
@@ -568,6 +571,11 @@
           "relativeTo": "body",
           "X": 372.5,
           "Y": 107.5
+        },
+        "fireRate": {
+          "initialDelay": 0.33,
+          "baseRate": 1,
+          "randomness": 0.25
         }
       }
     },
@@ -579,6 +587,11 @@
           "relativeTo": "body",
           "X": 417.5,
           "Y": 107.5
+        },
+        "fireRate": {
+          "initialDelay": 0.66,
+          "baseRate": 1,
+          "randomness": 0.25
         }
       }
     },
@@ -902,23 +915,30 @@
       }
     }
   },
+  "groups": {
+    "frontCannons": "cannonStandard, cannonStandard_middle, cannonStandard_top",
+    "1stSegmentSmallCannons": "cannonSmall1, cannonSmall2, cannonSmall3",
+    "1stSegmentRestCannons": "cannonRocket, cannonStandard_secondSegmentTop1, cannonStandard_secondSegmentTop2",
+    "2ndSegmentCannons": "cannonSmall_Top1, cannonSmall_Top2, cannonSmall_Bottom1, cannonSmall_Bottom2, cannonSmall_Bottom3, cannonSmall_Top3, cannonStandard_secondSegment1, cannonStandard_secondSegment2, cannonStandard_secondSegment3, cannonStandard_secondSegment4, cannonStandard_secondSegment5, cannonStandard_secondSegment6"
+  },
   "phases": {
     "initialisingPhase": {
       "bodyInit": {
         "target": "body",
         "move": {
           "moveLinearX": {
-            "moveBy": -290,
-            "speed": 100
+            "moveBy": "-20%",
+            "speed": 10
           },
           "moveLinearX": {
-            "moveBy": -610,
-            "speed": 100
+            "moveBy": "-210%",
+            "speed": 1
           }
         }
       },
       "ventFanInit": {
         "target": "ventFan",
+        "enableCollisions": true,
         "move": {
           "rotate": {
             "speed": 3,
@@ -926,8 +946,70 @@
           }
         }
       }
+    },
+    "1stPhase": {
+      "frontCannonsInit": {
+        "target": "group:frontCannons",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": "70%"
+        }
+      }
+    },
+    "2ndPhase": {
+      "2ndSegmentSmallCannonsInit": {
+        "target": "group:1stSegmentSmallCannons",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": "50%"
+        }
+      }
+    },
+    "3rdPhase": {
+      "2ndSegmentCannonsInit": {
+        "target": "group:1stSegmentRestCannons",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": "45%"
+        }
+      }
+    },
+    "4thPhase": {
+      "2ndSegmentCannonsInit": {
+        "target": "group:2ndSegmentCannons",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": "20%"
+        }
+      }
     }
-  },
-  "phaseTriggers": {
   }
 }
