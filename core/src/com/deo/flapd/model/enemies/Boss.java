@@ -41,6 +41,7 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static java.lang.StrictMath.abs;
@@ -65,7 +66,7 @@ public class Boss {
     
     Boss(String bossName, AssetManager assetManager) {
         log("------------------------------------------------------\n", INFO);
-        log("---------loading " + bossName+" config", INFO);
+        log("---------loading " + bossName + " config", INFO);
         
         this.bossName = bossName;
         
@@ -123,33 +124,7 @@ public class Boss {
             bossAi = new EnemyAi();
         }
         
-        Array<Array<BasePart>> sortedParts = new Array<>();
-        
-        int maxLayer = 0;
-        
-        for (int i = 0; i < parts.size; i++) {
-            maxLayer = Math.max(maxLayer, parts.get(i).layer);
-        }
-        
-        maxLayer++;
-        
-        sortedParts.setSize(maxLayer);
-        
-        for (int i = 0; i < maxLayer; i++) {
-            sortedParts.set(i, new Array<>());
-        }
-        
-        for (int i = 0; i < parts.size; i++) {
-            sortedParts.get(parts.get(i).layer).add(parts.get(i));
-        }
-        
-        parts.clear();
-        
-        for (int i = 0; i < maxLayer; i++) {
-            for (int i2 = 0; i2 < sortedParts.get(i).size; i2++) {
-                parts.add(sortedParts.get(i).get(i2));
-            }
-        }
+        parts.sort((basePart, basePart2) -> basePart.layer - basePart2.layer);
         
         phases = new Array<>();
         
@@ -1064,11 +1039,11 @@ class Movement {
                     break;
                 }
                 case ("rotateRelativeTo"): {
-                    // TODO: 19/8/2021 fix this
                     if (relativeTarget.equals(body)) {
                         target.movementOffsetX = body.originX - target.originX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
                         target.movementOffsetY = body.originY - target.originY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
                     } else {
+                        // TODO: 21/8/2021 probably doesn't work, fix this
                         target.movementOffsetX = relativeTarget.offsetX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
                         target.movementOffsetY = relativeTarget.offsetY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
                     }
@@ -1144,7 +1119,7 @@ class Phase {
         } else {
             log(triggers.size + " trigger(s) for " + phaseData.name, INFO);
             for (int i = 0; i < triggers.size; i++) {
-                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts);
+                PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts, "", partGroups, phaseTriggers);
                 phaseTriggers.add(trigger);
             }
         }
@@ -1210,42 +1185,37 @@ class Action {
     float playerInsideEntityMaxTime;
     float[] basePosition;
     
-    Action(JsonEntry partGroups, JsonEntry actionValue, Array<BasePart> baseParts, Array<Movement> animations, Boss boss, String predeterminedTarget, Array<Action> actions) {
+    Action(JsonEntry partGroups, JsonEntry actionValue, Array<BasePart> parts, Array<Movement> animations, Boss boss, String predeterminedTarget, Array<Action> actions) {
         
         this.boss = boss;
         config = actionValue;
         movements = new Array<>();
         String target;
         if (predeterminedTarget.equals("")) {
-            Array<String> targets = new Array<>();
-            targets.addAll(actionValue.getString(baseParts.get(0).name, "target").replace(" ", "").split(","));
-            for (int i = 0; i < targets.size; i++) {
-                if (targets.get(i).startsWith("group:")) {
-                    targets.addAll(partGroups.getString("", targets.get(i).replace("group:", "")).replace(" ", "").split(","));
-                    targets.removeIndex(i);
-                }
-            }
+            
+            Array<String> targets = getTargetsFromGroup(actionValue.getString(parts.get(0).name, "target"), partGroups);
+            
             if (targets.isEmpty()) {
                 log("Invalid action target, empty list", ERROR);
             }
             target = targets.get(0);
             if (targets.size > 1) {
                 for (int i = 1; i < targets.size; i++) {
-                    actions.add(new Action(partGroups, actionValue, baseParts, animations, boss, targets.get(i), actions));
+                    actions.add(new Action(partGroups, actionValue, parts, animations, boss, targets.get(i), actions));
                 }
             }
         } else {
             target = predeterminedTarget;
         }
         log("loading action: " + actionValue.name + ", target: " + target, INFO);
-        for (int i = 0; i < baseParts.size; i++) {
-            if (baseParts.get(i).name.equals(target)) {
-                this.target = baseParts.get(i);
+        for (int i = 0; i < parts.size; i++) {
+            if (parts.get(i).name.equals(target)) {
+                this.target = parts.get(i);
                 break;
             }
         }
         if (this.target == null) {
-            log("Invalid action target, target " + target + " not found", ERROR);
+            log("Invalid action target, " + target + " not found", ERROR);
         }
         showHealthBar = actionValue.getBoolean(false, false, "showHealthBar");
         enableCollisions = actionValue.getBoolean(false, false, "enableCollisions");
@@ -1281,7 +1251,7 @@ class Action {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
-                Movement movement = new Movement(actionValue.get("move", i), target, baseParts, animations, boss.body);
+                Movement movement = new Movement(actionValue.get("move", i), target, parts, animations, boss.body);
                 animations.add(movement);
                 movements.add(movement);
             }
@@ -1331,15 +1301,30 @@ class PhaseTrigger {
     String triggerModifier;
     BasePart triggerTarget;
     
-    PhaseTrigger(JsonEntry triggerData, Array<BasePart> parts) {
-        
-        log("loading phase trigger: " + triggerData.name + ", phase: " + triggerData.parent().parent().name, INFO);
+    PhaseTrigger(JsonEntry triggerData, Array<BasePart> parts, String predeterminedTarget, JsonEntry partGroups, Array<PhaseTrigger> triggers) {
         
         isResetPhase = triggerData.parent().parent().name.equals("RESET");
         
         conditionsMet = false;
         triggerType = triggerData.getString("health", "triggerType");
-        String targetPart = triggerData.getString(parts.get(0).name, "target");
+        String targetPart;
+        if (predeterminedTarget.equals("")) {
+            
+            Array<String> targets = getTargetsFromGroup(triggerData.getString(parts.get(0).name, "target"), partGroups);
+            
+            if (targets.isEmpty()) {
+                log("Error setting up trigger, empty list", ERROR);
+            }
+            targetPart = targets.get(0);
+            if (targets.size > 1) {
+                for (int i = 1; i < targets.size; i++) {
+                    triggers.add(new PhaseTrigger(triggerData, parts, targets.get(i), partGroups, triggers));
+                }
+            }
+        } else {
+            targetPart = predeterminedTarget;
+        }
+        log("loading phase trigger: " + triggerData.name + ", phase: " + triggerData.parent().parent().name + ", target: " + targetPart, INFO);
         for (int i2 = 0; i2 < parts.size; i2++) {
             if (parts.get(i2).name.equals(targetPart)) {
                 triggerTarget = parts.get(i2);
@@ -1347,7 +1332,7 @@ class PhaseTrigger {
             }
         }
         if (triggerTarget == null) {
-            log("error setting up trigger for part " + targetPart + ", no valid trigger target", ERROR);
+            log("Error setting up trigger, " + targetPart + " not found", ERROR);
         }
         String valueRaw = triggerData.getString("1", "value").trim();
         if (valueRaw.endsWith("%")) {
