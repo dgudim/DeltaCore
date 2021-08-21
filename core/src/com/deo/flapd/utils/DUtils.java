@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.enemies.Bosses;
@@ -398,8 +399,20 @@ public class DUtils {
         enemyBulletTrailDisposes = 0;
     }
     
-    public static float convertPercentsToAbsoluteValue(String percentValue, float maxValue){
+    public static float convertPercentsToAbsoluteValue(String percentValue, float maxValue) {
         return Float.parseFloat(percentValue.replace("%", "").trim()) / 100f * maxValue;
+    }
+    
+    public static Array<String> getTargetsFromGroup(String groupOfTargets, JsonEntry partGroups) {
+        Array<String> targets = new Array<>();
+        targets.addAll(groupOfTargets.replace(" ", "").split(","));
+        for (int i = 0; i < targets.size; i++) {
+            if (targets.get(i).startsWith("group:")) {
+                targets.addAll(partGroups.getString("", targets.get(i).replace("group:", "")).replace(" ", "").split(","));
+                targets.removeIndex(i);
+            }
+        }
+        return targets;
     }
     
     public static TextureRegionDrawable constructFilledImageWithColor(int width, int height, Color color) {
@@ -429,7 +442,7 @@ public class DUtils {
         return (float) Math.sqrt(x_delta * x_delta + y_delta * y_delta);
     }
     
-    public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffect particleEffect){
+    public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffect particleEffect) {
         shapeRenderer.rectLine(particleEffect.getBoundingBox().getCenterX() - particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getCenterX() + particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getHeight());
     }
     
