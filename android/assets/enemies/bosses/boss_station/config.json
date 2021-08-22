@@ -167,6 +167,7 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimingSpeed": 30,
       "aimAnimation": "rotate",
       "texture": "standard_turret",
       "explosionEffect": "particles/explosion.p",
@@ -185,6 +186,8 @@
         "width": 14,
         "height": 10
       },
+      "recoil": 5,
+      "recoilReturnSpeed": 10,
       "layer": 2,
       "offset": {
         "relativeTo": "body",
@@ -358,6 +361,7 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimingSpeed": 20,
       "aimAnimation": "rotate",
       "texture": "rocket_launcher",
       "bullet": {
@@ -461,6 +465,7 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimingSpeed": 20,
       "aimAnimation": "rotate",
       "texture": "heavy_artillery",
       "bullet": {
@@ -517,6 +522,7 @@
       "originY": "standard",
       "canAim": true,
       "aimAngleLimit": [-360, 360],
+      "aimingSpeed": 50,
       "aimAnimation": "rotate",
       "texture": "machine_gun",
       "bullet": {
@@ -532,6 +538,8 @@
         "width": 3,
         "height": 3
       },
+      "recoil": 2,
+      "recoilReturnSpeed": 13,
       "layer": 2,
       "offset": {
         "relativeTo": "body",
@@ -919,7 +927,10 @@
     "frontCannons": "cannonStandard, cannonStandard_middle, cannonStandard_top",
     "1stSegmentSmallCannons": "cannonSmall1, cannonSmall2, cannonSmall3",
     "1stSegmentRestCannons": "cannonRocket, cannonStandard_secondSegmentTop1, cannonStandard_secondSegmentTop2",
-    "2ndSegmentCannons": "cannonSmall_Top1, cannonSmall_Top2, cannonSmall_Bottom1, cannonSmall_Bottom2, cannonSmall_Bottom3, cannonSmall_Top3, cannonStandard_secondSegment1, cannonStandard_secondSegment2, cannonStandard_secondSegment3, cannonStandard_secondSegment4, cannonStandard_secondSegment5, cannonStandard_secondSegment6"
+    "2ndSegmentCannons": "cannonSmall_Top1, cannonSmall_Top2, cannonSmall_Bottom1, cannonSmall_Bottom2, cannonSmall_Bottom3, cannonSmall_Top3, cannonStandard_secondSegment1, cannonStandard_secondSegment2, cannonStandard_secondSegment3, cannonStandard_secondSegment4, cannonStandard_secondSegment5, cannonStandard_secondSegment6",
+    "3rdSegmentCannons": "cannonSmall_Middle1, cannonSmall_Middle2, cannonSmall_Middle3, cannonSmall_Middle4, cannonSmall_Middle5, cannonSmall_Middle6, cannonSmall_Middle7, cannonSmall_Middle8, cannonArtillery, cannonStandard_thirdSegment1, cannonStandard_thirdSegment2",
+    "rearCannonsSmallAndStandard": "cannonSmall_RearTop1, cannonSmall_RearTop2, cannonSmall_RearTop3, cannonSmall_RearBottom1, cannonSmall_RearBottom2, cannonSmall_RearBottom3, cannonSmall_RearMiddle1, cannonSmall_RearMiddle2, cannonSmall_RearMiddle3, cannonSmall_RearMiddle4, cannonSmall_RearMiddle5, cannonSmall_RearMiddle6, cannonStandard_rearBottom, cannonStandard_rearMiddle, cannonStandard_rearTop",
+    "rearCannonsBig": "cannonRocket_RearBottom1, cannonRocket_RearBottom2, cannonRocket_RearTop1, cannonRocket_RearTop2"
   },
   "phases": {
     "initialisingPhase": {
@@ -927,11 +938,11 @@
         "target": "body",
         "move": {
           "moveLinearX": {
-            "moveBy": "-20%",
+            "moveBy": "-30%",
             "speed": 10
           },
           "moveLinearX": {
-            "moveBy": "-210%",
+            "moveBy": "-310%",
             "speed": 1
           }
         }
@@ -945,6 +956,10 @@
             "moveBy": "inf"
           }
         }
+      },
+      "ventCaseInit": {
+        "target": "ventCase",
+        "enableCollisions": true
       }
     },
     "1stPhase": {
@@ -1008,6 +1023,74 @@
           "triggerModifier": "<",
           "target": "body",
           "value": "20%"
+        }
+      }
+    },
+    "5thPhase": {
+      "3rdSegmentCannonsInit": {
+        "target": "group:3rdSegmentCannons",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": "-20%"
+        }
+      }
+    },
+    "6thPhase": {
+      "rearCannonsPrephaseInit": {
+        "target": "group:rearCannonsSmallAndStandard",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "bodyRearCannonsActivationTrigger": {
+          "triggerType": "positionX",
+          "triggerModifier": "<",
+          "target": "body",
+          "value": "-50%"
+        }
+      }
+    },
+    "7thPhase": {
+      "rearCannonsInit": {
+        "target": "group:rearCannonsBig",
+        "active": true,
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "coreCoverInit": {
+        "target": "coreCover",
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "rearCannonsHealthTrigger": {
+          "triggerType": "health",
+          "triggerModifier": "<",
+          "target": "group:rearCannonsSmallAndStandard",
+          "value": 0
+        }
+      }
+    },
+    "8thPhase": {
+      "coreInit": {
+        "target": "core",
+        "enableCollisions": true,
+        "showHealthBar": true
+      },
+      "triggers": {
+        "coreCoverHealthTrigger": {
+          "triggerType": "health",
+          "triggerModifier": "<",
+          "target": "coreCover",
+          "value": 0
         }
       }
     }
