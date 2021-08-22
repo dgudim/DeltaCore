@@ -43,6 +43,7 @@ import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
+import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static java.lang.StrictMath.abs;
@@ -593,6 +594,8 @@ class Shield extends Part {
 class Cannon extends Part {
     
     boolean canAim;
+    float currentAimAngle;
+    float aimingSpeed;
     String aimAnimationType;
     String[] aimTextures;
     int[] aimAngleLimit;
@@ -647,6 +650,8 @@ class Cannon extends Part {
             if (aimAngleLimit == null) {
                 aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
             }
+            
+            aimingSpeed = currentConfig.getFloat(false, 10, "aimingSpeed");
             
             aimAnimationType = currentConfig.getString(false, "noAnimation", "aimAnimation");
             
@@ -735,41 +740,46 @@ class Cannon extends Part {
         super.update(delta);
         if (active) {
             if (canAim) {
-                float angleToThePlayer = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + originY - (player.bounds.getY() + player.bounds.getHeight() / 2), x + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
+                
+                currentAimAngle = lerpAngleWithConstantSpeed(currentAimAngle, clamp(MathUtils.radiansToDegrees * MathUtils.atan2(
+                        y + originY - (player.bounds.getY() + player.bounds.getHeight() / 2),
+                        x + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)),
+                        aimAngleLimit[0], aimAngleLimit[1]), aimingSpeed, delta);
+                
                 switch (aimAnimationType) {
                     case ("textureChange"):
                         
                         String texture;
-                        if (angleToThePlayer >= -22.5 && angleToThePlayer <= 22.5) {
+                        if (currentAimAngle >= -22.5 && currentAimAngle <= 22.5) {
                             texture = aimTextures[1];
-                        } else if (angleToThePlayer >= 22.5 && angleToThePlayer <= 67.5) {
+                        } else if (currentAimAngle >= 22.5 && currentAimAngle <= 67.5) {
                             texture = aimTextures[7];
-                        } else if (angleToThePlayer >= 67.5 && angleToThePlayer <= 112.5) {
+                        } else if (currentAimAngle >= 67.5 && currentAimAngle <= 112.5) {
                             texture = aimTextures[3];
-                        } else if (angleToThePlayer >= 112.5 && angleToThePlayer <= 157.5) {
+                        } else if (currentAimAngle >= 112.5 && currentAimAngle <= 157.5) {
                             texture = aimTextures[6];
-                        } else if ((angleToThePlayer >= 157.5 && angleToThePlayer <= 180) || (angleToThePlayer >= -180 && angleToThePlayer <= -157.5)) {
+                        } else if ((currentAimAngle >= 157.5 && currentAimAngle <= 180) || (currentAimAngle >= -180 && currentAimAngle <= -157.5)) {
                             texture = aimTextures[0];
-                        } else if (angleToThePlayer >= -157.5 && angleToThePlayer <= -112.5) {
+                        } else if (currentAimAngle >= -157.5 && currentAimAngle <= -112.5) {
                             texture = aimTextures[4];
-                        } else if (angleToThePlayer >= -112.5 && angleToThePlayer <= -67.5) {
+                        } else if (currentAimAngle >= -112.5 && currentAimAngle <= -67.5) {
                             texture = aimTextures[2];
                         } else {
                             texture = aimTextures[5];
                         }
                         if (hasAnimation) {
-                            String atlas = texture.replace(" ", "").split(",")[0];
-                            float frameDuration = Float.parseFloat(texture.replace(" ", "").split(",")[1]);
+                            String[] atlasAndFrameDuration = texture.replace(" ", "").split(",");
+                            float frameDuration = Float.parseFloat(atlasAndFrameDuration[1]);
                             enemyAnimation = new Animation<>(
                                     frameDuration,
-                                    textures.findRegions(name + "_" + atlas),
+                                    textures.findRegions(name + "_" + atlasAndFrameDuration[0]),
                                     Animation.PlayMode.LOOP);
                         } else {
                             entitySprite.setRegion(textures.findRegion(texture));
                         }
                         break;
                     case ("rotate"):
-                        rotation = angleToThePlayer;
+                        rotation = currentAimAngle;
                         break;
                 }
             }
@@ -852,11 +862,7 @@ class Cannon extends Part {
             
             float newX = x + movementOffsetX + originX - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + bulletOffsetAngle) * bulletOffsetDistance;
             float newY = y + movementOffsetY + originY - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + bulletOffsetAngle) * bulletOffsetDistance;
-            float newRot = 0;
-            
-            if (canAim) {
-                newRot = clamp(MathUtils.radiansToDegrees * MathUtils.atan2(y + movementOffsetY + height / 2f - (player.bounds.getY() + player.bounds.getHeight() / 2), x + movementOffsetY + width / 2f - (player.bounds.getX() + player.bounds.getWidth() / 2)), aimAngleLimit[0], aimAngleLimit[1]);
-            }
+            float newRot = currentAimAngle;
             
             newRot += getRandomInRange(-10, 10) * bulletSpread;
             newRot += movementRotation;
