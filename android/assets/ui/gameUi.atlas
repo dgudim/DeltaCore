@@ -19,16 +19,23 @@ pauseBg
   index: -1
 firebutton
   rotate: false
-  xy: 803, 875
-  size: 284, 140
-  orig: 284, 140
+  xy: 803, 873
+  size: 286, 142
+  orig: 286, 142
   offset: 0, 0
   index: -1
 weaponbutton
   rotate: false
-  xy: 803, 733
-  size: 284, 140
-  orig: 284, 140
+  xy: 803, 729
+  size: 286, 142
+  orig: 286, 142
+  offset: 0, 0
+  index: -1
+money_display
+  rotate: false
+  xy: 1091, 909
+  size: 286, 106
+  orig: 286, 106
   offset: 0, 0
   index: -1
 buttonPauseBlank_disabled
@@ -40,7 +47,7 @@ buttonPauseBlank_disabled
   index: -1
 buttonPauseBlank_enabled
   rotate: false
-  xy: 1089, 965
+  xy: 1379, 965
   size: 340, 50
   orig: 340, 50
   offset: 0, 0
@@ -52,25 +59,18 @@ buttonPauseBlank_over
   orig: 340, 50
   offset: 0, 0
   index: -1
-money_display
-  rotate: false
-  xy: 803, 627
-  size: 284, 104
-  orig: 284, 104
-  offset: 0, 0
-  index: -1
 health_indicator
   rotate: false
-  xy: 1089, 881
-  size: 142, 82
-  orig: 142, 82
+  xy: 803, 643
+  size: 144, 84
+  orig: 144, 84
   offset: 0, 0
   index: -1
 level_score_indicator
   rotate: false
-  xy: 803, 543
-  size: 142, 82
-  orig: 142, 82
+  xy: 1091, 823
+  size: 144, 84
+  orig: 144, 84
   offset: 0, 0
   index: -1
 bg_stick
@@ -82,15 +82,29 @@ bg_stick
   index: -1
 knob
   rotate: false
-  xy: 1431, 983
+  xy: 1379, 931
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 pause
   rotate: false
-  xy: 685, 23
+  xy: 1721, 987
   size: 28, 28
   orig: 28, 28
+  offset: 0, 0
+  index: -1
+heart_icon
+  rotate: false
+  xy: 685, 33
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+shield_icon
+  rotate: false
+  xy: 803, 623
+  size: 18, 18
+  orig: 18, 18
   offset: 0, 0
   index: -1

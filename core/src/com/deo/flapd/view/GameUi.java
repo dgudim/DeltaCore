@@ -40,7 +40,7 @@ import static com.deo.flapd.view.GameScreen.is_paused;
 public class GameUi {
     
     private final Stage stage;
-    private final Stage PauseStage;
+    private final Stage pauseStage;
     
     private float deltaX;
     private float deltaY;
@@ -105,10 +105,16 @@ public class GameUi {
         Image money_display = new Image(gameUiAtlas.findRegion("money_display"));
         Image stats_indicator_panel = new Image(gameUiAtlas.findRegion("health_indicator"));
         
+        Image heartIcon = new Image(gameUiAtlas.findRegion("heart_icon"));
+        Image shieldIcon = new Image(gameUiAtlas.findRegion("shield_icon"));
+        
         stats_indicator_panel.setBounds(658 - 142 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
         pause.setBounds(770 - 32 * (uiScale - 1), 450 - 32 * (uiScale - 1), 29 * uiScale, 29 * uiScale);
         levelScore.setBounds(516 - 284 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
         money_display.setBounds(374 - 426 * (uiScale - 1), 428 - 52 * (uiScale - 1), 142 * uiScale, 52 * uiScale);
+        
+        heartIcon.setBounds(658 - 142 * (uiScale - 1), 410 - 70 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
+        shieldIcon.setBounds(658 - 142 * (uiScale - 1), 432 - 48 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
         
         font_numbers = assetManager.get("fonts/font.fnt");
         font_white = assetManager.get("fonts/font_white.fnt");
@@ -116,10 +122,10 @@ public class GameUi {
         BitmapFont font_buttons = assetManager.get("fonts/font2.fnt");
         
         stage = new Stage(viewport, batch);
-        PauseStage = new Stage(viewport, batch);
+        pauseStage = new Stage(viewport, batch);
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(PauseStage);
+        multiplexer.addProcessor(pauseStage);
         Gdx.input.setInputProcessor(multiplexer);
         
         Table weaponControlls = new Table();
@@ -213,6 +219,8 @@ public class GameUi {
             levelScore.setColor(1, 1, 1, 0.5f);
             money_display.setColor(1, 1, 1, 0.5f);
             font_numbers.setColor(0, 1, 1, 0.5f);
+            heartIcon.setColor(1, 1, 1, 0.7f);
+            shieldIcon.setColor(1, 1, 1, 0.7f);
         } else {
             font_numbers.setColor(0, 1, 1, 1);
         }
@@ -226,8 +234,10 @@ public class GameUi {
         stage.addActor(healthProgressBar);
         stage.addActor(chargeProgressBar);
         stage.addActor(weaponControlls);
+        stage.addActor(heartIcon);
+        stage.addActor(shieldIcon);
         
-        PauseStage.addActor(pause1);
+        pauseStage.addActor(pause1);
         
         touchpad.addListener(new ChangeListener() {
             
@@ -339,8 +349,8 @@ public class GameUi {
         batch.end();
         
         if (is_paused) {
-            PauseStage.draw();
-            PauseStage.act(delta);
+            pauseStage.draw();
+            pauseStage.act(delta);
         }
         
         batch.begin();
@@ -362,7 +372,7 @@ public class GameUi {
     public void dispose() {
         
         stage.dispose();
-        PauseStage.dispose();
+        pauseStage.dispose();
         font_main.dispose();
         font_numbers.dispose();
         font_white.dispose();
