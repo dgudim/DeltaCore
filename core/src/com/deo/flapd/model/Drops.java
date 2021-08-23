@@ -101,7 +101,7 @@ public class Drops {
             drop.x = x;
             drop.y = y;
 
-            types.add(MathUtils.clamp(getRandomInRange(rarity / 2 + 1, rarity + 10), 1, 14));
+            types.add(MathUtils.clamp(getRandomInRange(1, rarity + 10), 1, 14));
 
             drops.add(drop);
             timers.add(timer * (random.nextFloat() + 1));
