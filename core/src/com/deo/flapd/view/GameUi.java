@@ -61,7 +61,6 @@ public class GameUi {
     private final TextureRegion PauseBg;
     
     private final float uiScale;
-    private final float difficulty;
     
     private final boolean showFps;
     
@@ -89,8 +88,6 @@ public class GameUi {
         uiScale = getFloat("ui");
         
         showFps = getBoolean("showFps");
-        
-        difficulty = getFloat("difficulty");
         
         transparency = getBoolean("transparency");
         
@@ -190,10 +187,10 @@ public class GameUi {
         TextureRegionDrawable BarBackgroundBlank = constructFilledImageWithColor(0, (int) (12 * uiScale), Color.BLACK);
         
         healthBarStyle.knob = BarBackgroundBlank;
-        healthBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.GREEN);
+        healthBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.WHITE);
         
         shieldBarStyle.knob = BarBackgroundBlank;
-        shieldBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.CYAN);
+        shieldBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.WHITE);
         
         chargeBarStyle.knob = BarBackgroundBlank;
         chargeBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.YELLOW);
@@ -211,8 +208,6 @@ public class GameUi {
         chargeProgressBar.setAnimateDuration(0.25f);
         
         if (transparency) {
-            healthProgressBar.setColor(1, 1, 1, 0.5f);
-            shieldProgressBar.setColor(1, 1, 1, 0.5f);
             chargeProgressBar.setColor(1, 1, 1, 0.5f);
             pause.setColor(1, 1, 1, 0.5f);
             stats_indicator_panel.setColor(1, 1, 1, 0.5f);
@@ -334,7 +329,6 @@ public class GameUi {
         font_numbers.draw(batch, "" + GameLogic.score, 537 - 263 * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
         font_numbers.draw(batch, "" + GameLogic.money, (537 - 122) - (263 + 122) * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
         font_main.getData().setScale(0.27f * uiScale);
-        font_main.draw(batch, "Difficulty: " + difficulty + "X", 544 - 263 * (uiScale - 1), 433 - 45 * (uiScale - 1), 100 * uiScale, 1, false);
         
         if (showFps) {
             font_main.setColor(Color.WHITE);
@@ -354,6 +348,10 @@ public class GameUi {
         }
         
         batch.begin();
+        Color healthColor = new Color().fromHsv(player.Health / (player.healthCapacity * player.healthMultiplier) * 120, 1, 1);
+        Color shieldColor = new Color().fromHsv(220 - player.Shield / (player.shieldStrength * player.shieldStrengthMultiplier) * 40, 1, 1);
+        healthProgressBar.setColor(healthColor.r, healthColor.g, healthColor.b, transparency ? 0.5f : 1);
+        shieldProgressBar.setColor(shieldColor.r, shieldColor.g, shieldColor.b, transparency ? 0.5f : 1);
         healthProgressBar.setValue(player.Health);
         shieldProgressBar.setValue(player.Shield);
         chargeProgressBar.setValue(player.Charge);
