@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.ParticleEffectPool;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
@@ -40,9 +41,10 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
     
-    enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, BUILDING_TREE}
+    enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, LOADING_PARTICLES, BUILDING_TREE}
     
     private final AssetManager assetManager;
+    public static ParticleEffectPool particleEffectPool;
     private final SpriteBatch batch;
     private final BitmapFont main;
     private final MusicManager musicManager;
@@ -299,18 +301,23 @@ public class LoadingScreen implements Screen {
     
     private void checkState() {
         try {
-            if (assetManager.isFinished() && !loadingState.equals(LoadingState.BUILDING_TREE)) {
-                log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
-            }
-            if (loadingState.equals(LoadingState.BUILDING_TREE)) {
-                craftingTree = new Tree(assetManager, 105, 65, 430, 410);
-                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
-            }
-            if (assetManager.isLoaded("sfx/explosion.ogg", Sound.class)) {
-                setLoadingState(LoadingState.LOADING_SOUNDS);
-            }
             if (assetManager.isFinished()) {
-                setLoadingState(LoadingState.BUILDING_TREE);
+                if (loadingState.equals(LoadingState.BUILDING_TREE)) {
+                    craftingTree = new Tree(assetManager, 105, 65, 430, 410);
+                    log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
+                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
+                }
+                if (particleEffectPool == null) {
+                    if(loadingState.equals(LoadingState.LOADING_PARTICLES)){
+                        particleEffectPool = new ParticleEffectPool();
+                    }else{
+                        setLoadingState(LoadingState.LOADING_PARTICLES);
+                    }
+                } else {
+                    setLoadingState(LoadingState.BUILDING_TREE);
+                }
+            } else if (assetManager.isLoaded("sfx/explosion.ogg", Sound.class)) {
+                setLoadingState(LoadingState.LOADING_SOUNDS);
             }
         } catch (ClassCastException | NumberFormatException e) {
             logException(e);

@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -29,6 +28,7 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.PooledParticleEffectCollection.PooledParticleEffect;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -46,6 +46,7 @@ import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPool;
 import static java.lang.StrictMath.abs;
 
 public class Boss {
@@ -266,7 +267,7 @@ class BasePart extends Entity {
     
     int layer;
     
-    ParticleEffect explosionEffect;
+    PooledParticleEffect explosionEffect;
     boolean exploded;
     
     TextureAtlas textures;
@@ -335,8 +336,7 @@ class BasePart extends Entity {
             moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
             
             explosionSound = assetManager.get(currentConfig.getString("sfx/explosion.ogg", "explosionSound"));
-            explosionEffect = new ParticleEffect();
-            explosionEffect.load(Gdx.files.internal(currentConfig.getString("particles/explosion.p", "explosionEffect")), Gdx.files.internal("particles"));
+            explosionEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
             log("creating explosion effect for " + newConfig.name, INFO);
         }
@@ -452,7 +452,7 @@ class BasePart extends Entity {
     
     void dispose() {
         if (hasCollision && !type.equals("shield")) {
-            explosionEffect.dispose();
+            explosionEffect.free();
         }
     }
     
@@ -602,7 +602,7 @@ class Cannon extends Part {
     Sound shootingSound;
     
     boolean hasPowerUpEffect;
-    ParticleEffect powerUpEffect;
+    PooledParticleEffect powerUpEffect;
     float powerUpEffectShootDelay;
     boolean powerUpActive;
     float powerUpScale;
@@ -610,7 +610,7 @@ class Cannon extends Part {
     float powerUpOffsetDistance;
     
     boolean hasPowerDownEffect;
-    ParticleEffect powerDownEffect;
+    PooledParticleEffect powerDownEffect;
     float powerDownScale;
     float powerDownOffsetAngle;
     float powerDownOffsetDistance;
@@ -670,8 +670,7 @@ class Cannon extends Part {
         hasPowerUpEffect = currentConfig.getBoolean(false, false, "powerUpEffect");
         if (hasPowerUpEffect) {
             powerUpScale = currentConfig.getFloat(1, "powerUpEffectScale");
-            powerUpEffect = new ParticleEffect();
-            powerUpEffect.load(Gdx.files.internal(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect")), Gdx.files.internal("particles"));
+            powerUpEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect"));
             powerUpEffectShootDelay = currentConfig.getFloat(1, "powerUpShootDelay");
             powerUpEffect.scaleEffect(powerUpScale);
             float[] powerUpOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerUpEffectOffset");
@@ -684,8 +683,7 @@ class Cannon extends Part {
         hasPowerDownEffect = currentConfig.getBoolean(false, false, "powerDownEffect");
         if (hasPowerDownEffect) {
             powerDownScale = currentConfig.getFloat(1, "powerDownEffectScale");
-            powerDownEffect = new ParticleEffect();
-            powerDownEffect.load(Gdx.files.internal(currentConfig.getString("particles/smoke.p", "powerDownEffect")), Gdx.files.internal("particles"));
+            powerUpEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/smoke.p", "powerDownEffect"));
             powerDownEffect.scaleEffect(powerDownScale);
             float[] powerDownOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerDownEffectOffset");
             powerDownOffset[0] += bulletOffset[0];
@@ -883,10 +881,10 @@ class Cannon extends Part {
             bullets.get(i).dispose();
         }
         if (hasPowerUpEffect) {
-            powerUpEffect.dispose();
+            powerUpEffect.free();
         }
         if (hasPowerDownEffect) {
-            powerDownEffect.dispose();
+            powerDownEffect.free();
         }
     }
 }
