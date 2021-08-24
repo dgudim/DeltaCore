@@ -131,6 +131,25 @@ public class JsonEntry {
         return parent(true);
     }
     
+    public void replaceValue(JsonEntry valueToAdd) {
+        removeValue(valueToAdd.name);
+        addValue(valueToAdd);
+    }
+    
+    public void removeValue(String name) {
+        jsonValue.remove(name);
+        size--;
+    }
+    
+    public void addValue(JsonEntry valueToAdd) {
+        JsonValue lastValue = jsonValue.get(size - 1);
+        lastValue.next = valueToAdd.jsonValue;
+        valueToAdd.jsonValue.parent = valueToAdd.jsonValue;
+        valueToAdd.jsonValue.prev = lastValue;
+        jsonValue.size++;
+        size++;
+    }
+    
     /**
      * Finds the child with the specified index and returns it as a string.
      */
