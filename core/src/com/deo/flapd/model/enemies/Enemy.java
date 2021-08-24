@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -33,6 +34,7 @@ import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.lerpToColor;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Enemy extends Entity {
     
@@ -110,8 +112,7 @@ public class Enemy extends Entity {
             data.fireParticleEffects.set(i, fire);
             fire.start();
         }
-        data.explosionParticleEffect = new ParticleEffect();
-        data.explosionParticleEffect.load(Gdx.files.internal(data.explosion), Gdx.files.internal("particles"));
+        data.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(data.explosion);
         data.explosionParticleEffect.scaleEffect(data.explosionScale);
     }
     
@@ -311,7 +312,7 @@ public class Enemy extends Entity {
             enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
-        data.explosionParticleEffect.dispose();
+        data.explosionParticleEffect.free();
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
@@ -325,7 +326,6 @@ public class Enemy extends Entity {
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.setPosition(x + originX, y + originY);
-        data.explosionParticleEffect.start();
         isDead = true;
         
         GameLogic.enemiesKilled++;
@@ -347,7 +347,7 @@ class EnemyData {
     String texture;
     String explosionSound;
     String explosion;
-    ParticleEffect explosionParticleEffect;
+    ParticleEffectPool.PooledEffect explosionParticleEffect;
     float explosionScale;
     String shootingSound;
     

@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -28,7 +29,6 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.PooledParticleEffectCollection.PooledParticleEffect;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -46,7 +46,7 @@ import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPool;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.abs;
 
 public class Boss {
@@ -267,7 +267,7 @@ class BasePart extends Entity {
     
     int layer;
     
-    PooledParticleEffect explosionEffect;
+    ParticleEffectPool.PooledEffect explosionEffect;
     boolean exploded;
     
     TextureAtlas textures;
@@ -336,7 +336,7 @@ class BasePart extends Entity {
             moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
             
             explosionSound = assetManager.get(currentConfig.getString("sfx/explosion.ogg", "explosionSound"));
-            explosionEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
+            explosionEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
             log("creating explosion effect for " + newConfig.name, INFO);
         }
@@ -602,7 +602,7 @@ class Cannon extends Part {
     Sound shootingSound;
     
     boolean hasPowerUpEffect;
-    PooledParticleEffect powerUpEffect;
+    ParticleEffectPool.PooledEffect powerUpEffect;
     float powerUpEffectShootDelay;
     boolean powerUpActive;
     float powerUpScale;
@@ -610,7 +610,7 @@ class Cannon extends Part {
     float powerUpOffsetDistance;
     
     boolean hasPowerDownEffect;
-    PooledParticleEffect powerDownEffect;
+    ParticleEffectPool.PooledEffect powerDownEffect;
     float powerDownScale;
     float powerDownOffsetAngle;
     float powerDownOffsetDistance;
@@ -670,7 +670,7 @@ class Cannon extends Part {
         hasPowerUpEffect = currentConfig.getBoolean(false, false, "powerUpEffect");
         if (hasPowerUpEffect) {
             powerUpScale = currentConfig.getFloat(1, "powerUpEffectScale");
-            powerUpEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect"));
+            powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect"));
             powerUpEffectShootDelay = currentConfig.getFloat(1, "powerUpShootDelay");
             powerUpEffect.scaleEffect(powerUpScale);
             float[] powerUpOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerUpEffectOffset");
@@ -683,7 +683,7 @@ class Cannon extends Part {
         hasPowerDownEffect = currentConfig.getBoolean(false, false, "powerDownEffect");
         if (hasPowerDownEffect) {
             powerDownScale = currentConfig.getFloat(1, "powerDownEffectScale");
-            powerUpEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/smoke.p", "powerDownEffect"));
+            powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/smoke.p", "powerDownEffect"));
             powerDownEffect.scaleEffect(powerDownScale);
             float[] powerDownOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerDownEffectOffset");
             powerDownOffset[0] += bulletOffset[0];

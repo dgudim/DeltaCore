@@ -1,10 +1,9 @@
 package com.deo.flapd.model;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -19,6 +18,7 @@ import java.util.Random;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Bonus {
     
@@ -27,7 +27,7 @@ public class Bonus {
     private static Array<Rectangle> bonuses;
     private static Array<Integer> types;
     private static Array<Float> anglesY;
-    private final Array<ParticleEffect> explosions;
+    private final Array<ParticleEffectPool.PooledEffect> explosions;
     private final Sprite bonus_health;
     private final Sprite bonus_charge;
     private final Sprite bonus_shield;
@@ -211,7 +211,7 @@ public class Bonus {
         for (int i3 = 0; i3 < explosions.size; i3++) {
             explosions.get(i3).draw(batch, delta);
             if (explosions.get(i3).isComplete()) {
-                explosions.get(i3).dispose();
+                explosions.get(i3).free();
                 explosions.removeIndex(i3);
             }
         }
@@ -222,33 +222,34 @@ public class Bonus {
         types.clear();
         anglesY.clear();
         for (int i3 = 0; i3 < explosions.size; i3++) {
-            explosions.get(i3).dispose();
-            explosions.removeIndex(i3);
+            explosions.get(i3).free();
         }
+        explosions.clear();
         font_text.dispose();
     }
     
     private void removeBonus(int i, boolean explode) {
         if (explode) {
-            ParticleEffect explosionEffect = new ParticleEffect();
+            String path;
             switch (types.get(i)) {
                 case (1):
-                    explosionEffect.load(Gdx.files.internal("particles/explosion4.p"), Gdx.files.internal("particles"));
+                default:
+                    path = "particles/explosion4.p";
                     break;
                 case (2):
                 case (5):
-                    explosionEffect.load(Gdx.files.internal("particles/explosion4_1.p"), Gdx.files.internal("particles"));
+                    path = "particles/explosion4_1.p";
                     break;
                 case (0):
                 case (3):
-                    explosionEffect.load(Gdx.files.internal("particles/explosion4_2.p"), Gdx.files.internal("particles"));
+                    path = "particles/explosion4_2.p";
                     break;
                 case (4):
-                    explosionEffect.load(Gdx.files.internal("particles/explosion4_3.p"), Gdx.files.internal("particles"));
+                    path = "particles/explosion4_3.p";
                     break;
             }
+            ParticleEffectPool.PooledEffect explosionEffect = particleEffectPoolLoader.getParticleEffectByPath(path);
             explosionEffect.setPosition(bonuses.get(i).x + bonuses.get(i).width / 2, bonuses.get(i).y + bonuses.get(i).height / 2);
-            explosionEffect.start();
             explosions.add(explosionEffect);
         }
         bonuses.removeIndex(i);

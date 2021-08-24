@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
-import com.deo.flapd.utils.ParticleEffectPool;
+import com.deo.flapd.utils.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
@@ -44,7 +44,7 @@ public class LoadingScreen implements Screen {
     enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, LOADING_PARTICLES, BUILDING_TREE}
     
     private final AssetManager assetManager;
-    public static ParticleEffectPool particleEffectPool;
+    public static ParticleEffectPoolLoader particleEffectPoolLoader;
     private final SpriteBatch batch;
     private final BitmapFont main;
     private final MusicManager musicManager;
@@ -307,9 +307,9 @@ public class LoadingScreen implements Screen {
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
                     game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
                 }
-                if (particleEffectPool == null) {
+                if (particleEffectPoolLoader == null) {
                     if(loadingState.equals(LoadingState.LOADING_PARTICLES)){
-                        particleEffectPool = new ParticleEffectPool();
+                        particleEffectPoolLoader = new ParticleEffectPoolLoader();
                     }else{
                         setLoadingState(LoadingState.LOADING_PARTICLES);
                     }

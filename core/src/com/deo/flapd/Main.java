@@ -24,7 +24,7 @@ import static com.deo.flapd.utils.DUtils.clearLog;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPool;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Main extends Game {
 
@@ -80,6 +80,6 @@ public class Main extends Game {
         batch.dispose();
         assetManager.dispose();
         blurProcessor.dispose();
-        particleEffectPool.dispose();
+        particleEffectPoolLoader.dispose();
     }
 }
