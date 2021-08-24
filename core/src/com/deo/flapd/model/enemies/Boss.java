@@ -112,6 +112,9 @@ public class Boss {
                         case ("cannon"):
                             parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                             break;
+                        case ("shield"):
+                            parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                            break;
                         default:
                             log("Can't copy base part", WARNING);
                             break;
@@ -290,7 +293,16 @@ class BasePart extends Entity {
         this.textures = textures;
         links = new Array<>();
         if (newConfig.getString("part", "type").equals("clone")) {
-            currentConfig = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
+            JsonEntry copyFrom = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
+            if(!copyFrom.getString("", "type").equals("")){
+                newConfig.removeValue("type");
+            }
+            for (int i = 0; i < copyFrom.size; i++) {
+                newConfig.addValue(copyFrom.get(i));
+            }
+            for (int i = 0; i < newConfig.get(false, "override").size; i++) {
+                newConfig.replaceValue(newConfig.get(false, "override").get(i));
+            }
             currentConfig.name = name;
         }
         if (currentConfig.isNull()) {
@@ -498,35 +510,6 @@ class Part extends BasePart {
         String relativeTo = currentConfig.getString(false, body.name, "offset", "relativeTo");
         offsetX = currentConfig.getFloat(false, 0, "offset", "X");
         offsetY = currentConfig.getFloat(false, 0, "offset", "Y");
-        if (newConfig.getString("part", "type").equals("clone")) {
-            for (int i = 0; i < newConfig.get(false, "override").size; i++) {
-                if (newConfig.get("override", i).name.equals("offset")) {
-                    offsetX = newConfig.get("override", i).getFloat(0, "X");
-                    offsetY = newConfig.get("override", i).getFloat(0, "Y");
-                    relativeTo = newConfig.get("override", i).getString(parts.get(0).name, "relativeTo");
-                }
-                if (newConfig.get("override", i).name.equals("originX")) {
-                    originX = newConfig.getFloat(0, "override", i);
-                    entitySprite.setOrigin(originX, originY);
-                }
-                if (newConfig.get("override", i).name.equals("originY")) {
-                    originY = newConfig.getFloat(0, "override", i);
-                    entitySprite.setOrigin(originX, originY);
-                }
-                if (newConfig.get("override", i).name.equals("fireRate")) {
-                    if (this instanceof Cannon) {
-                        currentConfig.get("fireRate", "randomness").jsonValue.set(newConfig.get("override", i).getFloat(0, "randomness"), "randomness");
-                        currentConfig.get("fireRate", "baseRate").jsonValue.set(newConfig.get("override", i).getFloat(1, "baseRate"), "baseRate");
-                        currentConfig.get("fireRate", "initialDelay").jsonValue.set(newConfig.get("override", i).getFloat(0, "initialDelay"), "initialDelay");
-                    }
-                }
-                if (newConfig.get("override", i).name.equals("aimAngleLimit")) {
-                    if (this instanceof Cannon) {
-                        ((Cannon) this).aimAngleLimit = newConfig.get("override", i).asIntArray();
-                    }
-                }
-            }
-        }
         
         if (currentConfig.get(false, "linked").isString()) {
             for (int i = 0; i < parts.size; i++) {
