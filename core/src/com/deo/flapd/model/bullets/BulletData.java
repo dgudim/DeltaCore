@@ -1,6 +1,6 @@
 package com.deo.flapd.model.bullets;
 
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.utils.JsonEntry;
 
@@ -24,10 +24,10 @@ public class BulletData {
     public float trailOffsetDistance;
     public float trailOffsetAngle;
     public boolean drawTrailOnTop;
-    public ParticleEffect trailParticleEffect;
+    public ParticleEffectPool.PooledEffect trailParticleEffect;
     
     public String explosion;
-    public ParticleEffect explosionParticleEffect;
+    public ParticleEffectPool.PooledEffect explosionParticleEffect;
     
     float trailScale;
     public float explosionScale;

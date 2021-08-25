@@ -40,12 +40,6 @@ public class DUtils {
     private static final Preferences prefs = Gdx.app.getPreferences("Preferences");
     public static boolean logging = prefs.getBoolean("logging");
     private static final JsonEntry itemNames = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
-    public static int bulletDisposes;
-    public static int bulletTrailDisposes;
-    public static int enemyDisposes;
-    public static int enemyFireDisposes;
-    public static int enemyBulletDisposes;
-    public static int enemyBulletTrailDisposes;
     
     private static final String androidRootDir = "Logs/";
     private static final String pcRootDir = "!DeltaCore/";
@@ -382,21 +376,6 @@ public class DUtils {
             return from - speed * delta;
         }
         
-    }
-    
-    public static void logVariables() {
-        log("total bullet dispose calls: " + bulletDisposes, INFO);
-        log("total bullet trail particle effects dispose calls: " + bulletTrailDisposes, INFO);
-        log("total enemy bullet dispose calls: " + enemyBulletDisposes, INFO);
-        log("total enemy bullet trail particle effects dispose calls: " + enemyBulletTrailDisposes, INFO);
-        log("total enemy dispose calls: " + enemyDisposes, INFO);
-        log("total enemy fire particle effects dispose calls: " + enemyFireDisposes, INFO);
-        bulletDisposes = 0;
-        bulletTrailDisposes = 0;
-        enemyDisposes = 0;
-        enemyFireDisposes = 0;
-        enemyBulletDisposes = 0;
-        enemyBulletTrailDisposes = 0;
     }
     
     public static float convertPercentsToAbsoluteValue(String percentValue, float maxValue) {

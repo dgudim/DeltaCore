@@ -1,9 +1,7 @@
 package com.deo.flapd.model.bullets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,8 +16,7 @@ import com.deo.flapd.view.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static com.deo.flapd.utils.DUtils.enemyBulletDisposes;
-import static com.deo.flapd.utils.DUtils.enemyBulletTrailDisposes;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.min;
 
 public class EnemyBullet extends Entity {
@@ -49,19 +46,16 @@ public class EnemyBullet extends Entity {
         playerBullet = this.player.bullet;
         
         if (!data.isLaser) {
-            bulletData.explosionParticleEffect = new ParticleEffect();
-            bulletData.explosionParticleEffect.load(Gdx.files.internal(bulletData.explosion), Gdx.files.internal("particles"));
+            bulletData.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(bulletData.explosion);
             bulletData.explosionParticleEffect.scaleEffect(bulletData.explosionScale);
             
-            bulletData.trailParticleEffect = new ParticleEffect();
-            bulletData.trailParticleEffect.load(Gdx.files.internal(bulletData.trail), Gdx.files.internal("particles"));
+            bulletData.trailParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(bulletData.trail);
             bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
             bulletData.trailParticleEffect.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
                             rotation + data.trailOffsetAngle * data.trailOffsetDistance),
                     y + height / 2f + MathUtils.sinDeg(
                             rotation + data.trailOffsetAngle * data.trailOffsetDistance));
-            bulletData.trailParticleEffect.start();
         }
         
         if (bulletData.isLaser) {
@@ -207,27 +201,23 @@ public class EnemyBullet extends Entity {
         if (data.isLaser) {
             queuedForDeletion = isDead;
         } else {
-            queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished || data.isLaser) && isDead;
+            queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished) && isDead;
         }
     }
     
     public void dispose() {
         if (!data.isLaser) {
-            data.explosionParticleEffect.dispose();
-            data.trailParticleEffect.dispose();
+            data.explosionParticleEffect.free();
+            if(!explosionStarted){
+                data.trailParticleEffect.free();
+            }
         }
-        if (!explosionStarted) {
-            enemyBulletTrailDisposes++;
-        }
-        enemyBulletDisposes++;
     }
     
     private void explode() {
         if (!data.isLaser) {
-            data.trailParticleEffect.dispose();
-            enemyBulletTrailDisposes++;
+            data.trailParticleEffect.free();
             data.explosionParticleEffect.setPosition(x + originX, y + originY);
-            data.explosionParticleEffect.start();
             explosionStarted = true;
             entitySprite.setPosition(-100, -100);
             isDead = true;

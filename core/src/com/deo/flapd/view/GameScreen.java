@@ -27,7 +27,6 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.logVariables;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
@@ -325,7 +324,5 @@ public class GameScreen implements Screen {
         
         enemies.dispose();
         bosses.dispose();
-        
-        logVariables();
     }
 }

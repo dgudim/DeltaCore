@@ -14,6 +14,9 @@ public class PooledParticleEffectCollection{
     ParticleEffect templateParticleEffect;
     
     PooledParticleEffectCollection(String path, int initialCapacity, String name) {
+        
+        final boolean[] initialized = new boolean[]{false};
+        
         this.path = path;
         this.initialCapacity = initialCapacity;
         currentCapacity = initialCapacity;
@@ -25,8 +28,18 @@ public class PooledParticleEffectCollection{
             protected void discard(PooledEffect effect) {
                 effect.dispose();
             }
+    
+            /*@Override
+            protected PooledEffect newObject() {
+                if(initialized[0]){
+                    currentCapacity ++;
+                    log("expanding pooled particle effect collection " + name + ", path: " + path + ", new size: " + currentCapacity + ", overhead: " + currentCapacity / (float) initialCapacity * 100 + "%", INFO);
+                }
+                return super.newObject();
+            }*/
         };
-        pool.fill(initialCapacity / 2);
+        pool.fill(initialCapacity);
+        initialized[0] = true;
     }
     
     ParticleEffectPool.PooledEffect obtainEffect() {
@@ -35,5 +48,6 @@ public class PooledParticleEffectCollection{
     
     void dispose() {
        pool.clear();
+       templateParticleEffect.dispose();
     }
 }

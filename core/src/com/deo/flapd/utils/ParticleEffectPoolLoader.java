@@ -15,7 +15,7 @@ public class ParticleEffectPoolLoader {
         log("preparing particle pool", INFO);
         long time = TimeUtils.millis();
         effectCollections.add(new PooledParticleEffectCollection("particles/bullet_trail_highEmission.p", 1, ""));
-        effectCollections.add(new PooledParticleEffectCollection("particles/bullet_trail_left.p", 1, ""));
+        effectCollections.add(new PooledParticleEffectCollection("particles/bullet_trail_left.p", 100, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/bullet_trail_left_blue.p", 1, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/bullet_trail_left_yellow.p", 1, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/engine_warp.p", 1, ""));
@@ -24,7 +24,7 @@ public class ParticleEffectPoolLoader {
         effectCollections.add(new PooledParticleEffectCollection("particles/explosion2_cyan.p", 1, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/explosion2_green.p", 1, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/explosion2_purple.p", 1, ""));
-        effectCollections.add(new PooledParticleEffectCollection("particles/explosion3.p", 1, ""));
+        effectCollections.add(new PooledParticleEffectCollection("particles/explosion3.p", 50, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/explosion3_2.p", 1, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/explosion3_3.p", 1, ""));
         effectCollections.add(new PooledParticleEffectCollection("particles/explosion3_4.p", 1, ""));

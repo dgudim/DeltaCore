@@ -28,8 +28,6 @@ import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static com.deo.flapd.utils.DUtils.enemyDisposes;
-import static com.deo.flapd.utils.DUtils.enemyFireDisposes;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
@@ -309,20 +307,17 @@ public class Enemy extends Entity {
     void dispose() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
-            enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.free();
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
-        enemyDisposes++;
     }
     
     private void kill() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).dispose();
-            enemyFireDisposes++;
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.setPosition(x + originX, y + originY);

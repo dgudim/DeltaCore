@@ -17,8 +17,6 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
-import static com.deo.flapd.utils.DUtils.bulletDisposes;
-import static com.deo.flapd.utils.DUtils.bulletTrailDisposes;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
@@ -384,7 +382,6 @@ public class Bullet {
                     damages.removeIndex(i4);
                     remove_Bullet.removeIndex(i4);
                     types.removeIndex(i4);
-                    bulletDisposes++;
                     if (hasTrail) {
                         disposedTrails.add(trails.get(i4));
                         trailCountDownTimers.add(bulletTrailTimer);
@@ -400,7 +397,6 @@ public class Bullet {
                     damages.removeIndex(i4);
                     remove_Bullet.removeIndex(i4);
                     types.removeIndex(i4);
-                    bulletDisposes++;
                     if (hasTrail) {
                         disposedTrails.add(trails.get(i4));
                         trailCountDownTimers.add(bulletTrailTimer);
@@ -417,7 +413,6 @@ public class Bullet {
                 if (trailCountDownTimers.get(i) <= 0) {
                     disposedTrails.get(i).dispose();
                     disposedTrails.removeIndex(i);
-                    bulletTrailDisposes++;
                     trailCountDownTimers.removeIndex(i);
                 }
             }
@@ -461,19 +456,16 @@ public class Bullet {
         for (int i3 = 0; i3 < trails.size; i3++) {
             trails.get(i3).dispose();
             trails.removeIndex(i3);
-            bulletTrailDisposes++;
         }
         
         for (int i3 = 0; i3 < disposedTrails.size; i3++) {
             disposedTrails.get(i3).dispose();
             disposedTrails.removeIndex(i3);
-            bulletTrailDisposes++;
         }
         
         trailCountDownTimers.clear();
         explosionTimers.clear();
         explosionQueue.clear();
-        bulletDisposes += remove_Bullet.size;
         remove_Bullet.clear();
         types.clear();
     }
