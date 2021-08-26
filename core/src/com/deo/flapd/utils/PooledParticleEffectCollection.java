@@ -4,7 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 
-public class PooledParticleEffectCollection{
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.putInteger;
+
+public class PooledParticleEffectCollection {
     
     String path;
     int initialCapacity;
@@ -28,15 +32,16 @@ public class PooledParticleEffectCollection{
             protected void discard(PooledEffect effect) {
                 effect.dispose();
             }
-    
-            /*@Override
+            
+            @Override
             protected PooledEffect newObject() {
-                if(initialized[0]){
-                    currentCapacity ++;
+                if (initialized[0]) {
+                    currentCapacity++;
+                    putInteger("pool_" + path, currentCapacity);
                     log("expanding pooled particle effect collection " + name + ", path: " + path + ", new size: " + currentCapacity + ", overhead: " + currentCapacity / (float) initialCapacity * 100 + "%", INFO);
                 }
                 return super.newObject();
-            }*/
+            }
         };
         pool.fill(initialCapacity);
         initialized[0] = true;
@@ -47,7 +52,7 @@ public class PooledParticleEffectCollection{
     }
     
     void dispose() {
-       pool.clear();
-       templateParticleEffect.dispose();
+        pool.clear();
+        templateParticleEffect.dispose();
     }
 }

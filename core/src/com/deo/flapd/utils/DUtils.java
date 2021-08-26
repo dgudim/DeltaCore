@@ -35,19 +35,15 @@ import static java.lang.Math.min;
 
 public class DUtils {
     
-    public enum LogLevel {DEBUG, INFO, WARNING, ERROR, CRITICAL_ERROR}
-    
     private static final Preferences prefs = Gdx.app.getPreferences("Preferences");
-    public static boolean logging = prefs.getBoolean("logging");
     private static final JsonEntry itemNames = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
-    
     private static final String androidRootDir = "Logs/";
     private static final String pcRootDir = "!DeltaCore/";
-    
     private static final String currentRootDir = getRootDir();
+    public static boolean logging = prefs.getBoolean("logging");
     
     private static String getRootDir() {
-        return (Gdx.app.getType() == Application.ApplicationType.Android) ? androidRootDir : pcRootDir;
+        return Gdx.app.getType() == Application.ApplicationType.Android ? androidRootDir : pcRootDir;
     }
     
     public static void log(String contents, LogLevel logLevel) {
@@ -71,7 +67,7 @@ public class DUtils {
     }
     
     public static int getRandomInRange(int min, int max) {
-        return (MathUtils.random(max - min) + min);
+        return MathUtils.random(max - min) + min;
     }
     
     public static boolean getRandomBoolean(float positiveChance) {
@@ -218,35 +214,35 @@ public class DUtils {
         if (logging) {
             log("got integer " + prefs.getInteger(key) + " with key " + key, DEBUG);
         }
-        return (prefs.getInteger(key));
+        return prefs.getInteger(key);
     }
     
     public static float getFloat(String key) {
         if (logging) {
             log("got float " + prefs.getFloat(key) + " with key " + key, DEBUG);
         }
-        return (prefs.getFloat(key));
+        return prefs.getFloat(key);
     }
     
     public static boolean getBoolean(String key) {
         if (logging) {
             log("got boolean " + prefs.getBoolean(key) + " with key " + key, DEBUG);
         }
-        return (prefs.getBoolean(key));
+        return prefs.getBoolean(key);
     }
     
     public static String getString(String key) {
         if (logging) {
             log("got string " + prefs.getString(key) + " with key " + key, DEBUG);
         }
-        return (prefs.getString(key));
+        return prefs.getString(key);
     }
     
     public static long getLong(String key) {
         if (logging) {
             log("got long " + prefs.getLong(key) + " with key " + key, DEBUG);
         }
-        return (prefs.getLong(key));
+        return prefs.getLong(key);
     }
     
     public static void removeKey(String key) {
@@ -265,7 +261,7 @@ public class DUtils {
                 log("preferences don't contain key " + key, DEBUG);
             }
         }
-        return (prefs.contains(key));
+        return prefs.contains(key);
     }
     
     public static void subtractInteger(String key, int val) {
@@ -359,7 +355,7 @@ public class DUtils {
         final float width = end - start;
         final float offsetValue = angle - start;   // value relative to 0
         
-        return (float) ((offsetValue - (floor(offsetValue / width) * width)) + start);
+        return (float) (offsetValue - floor(offsetValue / width) * width + start);
         // + start to reset back to start of original range
     }
     
@@ -370,7 +366,7 @@ public class DUtils {
         float distance1 = Math.abs(from - to);
         float distance2 = 360 - distance1;
         
-        if ((distance1 < distance2 && to > from) || (distance1 > distance2 && to < from)) {
+        if (distance1 < distance2 && to > from || distance1 > distance2 && to < from) {
             return from + speed * delta;
         } else {
             return from - speed * delta;
@@ -442,4 +438,6 @@ public class DUtils {
         priceArray[1] = (int) MathUtils.clamp((Math.ceil(priceArray[1] / 2f) - 1) * priceCoefficient, 0, 100);
         return priceArray;
     }
+    
+    public enum LogLevel {DEBUG, INFO, WARNING, ERROR, CRITICAL_ERROR}
 }
