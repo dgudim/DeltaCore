@@ -9,18 +9,14 @@ public class Meteorites{
 
     private final Array<Meteorite> meteorites;
     private final AssetManager assetManager;
-    private final boolean easterEgg;
-
-    public Meteorites(AssetManager assetManager, boolean easterEgg) {
-
+    
+    public Meteorites(AssetManager assetManager) {
         this.assetManager = assetManager;
-        this.easterEgg = easterEgg;
-
         meteorites = new Array<>();
     }
 
     public void Spawn(float x, float flyingDirection, float radius) {
-        Meteorite meteorite = new Meteorite(assetManager, easterEgg, x, flyingDirection, radius);
+        Meteorite meteorite = new Meteorite(assetManager, x, flyingDirection, radius);
         meteorites.add(meteorite);
     }
 

@@ -1,9 +1,8 @@
 package com.deo.flapd.model;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
@@ -16,6 +15,7 @@ import java.util.Random;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Checkpoint {
 
@@ -25,8 +25,8 @@ public class Checkpoint {
     private final Polygon bounds;
     private final Rectangle shipBounds;
     private final Player player;
-    private ParticleEffect fire;
-    private ParticleEffect fire2;
+    private ParticleEffectPool.PooledEffect fire;
+    private ParticleEffectPool.PooledEffect fire2;
     private float speed;
     private float destination_posX;
     private float destination_posY;
@@ -59,15 +59,9 @@ public class Checkpoint {
 
         bounds.setPosition(950, random.nextInt(201) + 100);
 
-        fire = new ParticleEffect();
-        fire.load(Gdx.files.internal("particles/fire_down.p"), Gdx.files.internal("particles"));
-
-        fire2 = new ParticleEffect();
-        fire2.load(Gdx.files.internal("particles/fire_down.p"), Gdx.files.internal("particles"));
-
-        fire.start();
-        fire2.start();
-
+        fire = particleEffectPoolLoader.getParticleEffectByPath("particles/fire_down.p");
+        fire2 = particleEffectPoolLoader.getParticleEffectByPath("particles/fire_down.p");
+        
         effects = true;
 
         checkpointState = false;
@@ -132,8 +126,8 @@ public class Checkpoint {
         }
 
         if (bounds.getY() > 850 && checkpointState) {
-            fire.dispose();
-            fire2.dispose();
+            fire.free();
+            fire2.free();
             checkpointState = false;
             effects = false;
         }

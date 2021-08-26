@@ -295,7 +295,7 @@ class BasePart extends Entity {
         links = new Array<>();
         if (newConfig.getString("part", "type").equals("clone")) {
             JsonEntry copyFrom = newConfig.parent().get(newConfig.getString("noCopyFromTarget", "copyFrom"));
-            if(!copyFrom.getString("", "type").equals("")){
+            if (!copyFrom.getString("", "type").equals("")) {
                 newConfig.removeValue("type");
             }
             for (int i = 0; i < copyFrom.size; i++) {
@@ -471,7 +471,6 @@ class BasePart extends Entity {
             Drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
             
             explosionEffect.setPosition(x + movementOffsetX + width / 2, y + movementOffsetY + height / 2);
-            explosionEffect.start();
             
             if (soundVolume > 0) {
                 explosionSound.play(soundVolume);
@@ -785,7 +784,6 @@ class Cannon extends Part {
                     fireTimer += delta * fireRate;
                 } else {
                     if (!powerUpActive) {
-                        powerUpEffect.start();
                         powerUpActive = true;
                     }
                     fireTimer += delta;
@@ -849,10 +847,6 @@ class Cannon extends Part {
             newRot += movementRotation;
             
             bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
-        }
-        
-        if (hasPowerDownEffect) {
-            powerDownEffect.start();
         }
         
         currentRecoilOffset = recoil;

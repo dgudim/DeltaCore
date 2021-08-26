@@ -1,11 +1,9 @@
 package com.deo.flapd.model.enemies;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -99,8 +97,7 @@ public class Enemy extends Entity {
         
         super.init();
         for (int i = 0; i < data.fireEffects.length; i++) {
-            ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal(data.fireEffects[i]), Gdx.files.internal("particles"));
+            ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath(data.fireEffects[i]);
             fire.scaleEffect(data.fireScales[i]);
             fire.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
@@ -108,7 +105,6 @@ public class Enemy extends Entity {
                     y + height / 2f + MathUtils.sinDeg(
                             rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             data.fireParticleEffects.set(i, fire);
-            fire.start();
         }
         data.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(data.explosion);
         data.explosionParticleEffect.scaleEffect(data.explosionScale);
@@ -306,7 +302,7 @@ public class Enemy extends Entity {
     
     void dispose() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
-            data.fireParticleEffects.get(i).dispose();
+            data.fireParticleEffects.get(i).free();
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.free();
@@ -317,7 +313,7 @@ public class Enemy extends Entity {
     
     private void kill() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
-            data.fireParticleEffects.get(i).dispose();
+            data.fireParticleEffects.get(i).free();
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.setPosition(x + originX, y + originY);
@@ -365,7 +361,7 @@ class EnemyData {
     int[] fireOffsetsY;
     String[] fireEffects;
     float[] fireScales;
-    Array<ParticleEffect> fireParticleEffects;
+    Array<ParticleEffectPool.PooledEffect> fireParticleEffects;
     Array<Float> fireParticleEffectAngles;
     Array<Float> fireParticleEffectDistances;
     

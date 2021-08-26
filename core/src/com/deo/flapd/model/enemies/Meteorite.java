@@ -1,29 +1,26 @@
 package com.deo.flapd.model.enemies;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deo.flapd.model.Entity;
+
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Meteorite extends Entity {
     
     private final float flyingDirection;
     private final float rotationSpeed;
     public float radius;
-    private final ParticleEffect trail;
+    private final ParticleEffectPool.PooledEffect trail;
     
     public boolean remove;
     
-    public Meteorite(AssetManager assetManager, boolean easterEgg, float x, float flyingDirection, float radius) {
+    public Meteorite(AssetManager assetManager, float x, float flyingDirection, float radius) {
         
-        if (easterEgg) {
-            entitySprite = new Sprite((Texture) assetManager.get("cat_meteorite.png"));
-        } else {
-            entitySprite = new Sprite((Texture) assetManager.get("Meteo.png"));
-        }
+        entitySprite = new Sprite((Texture) assetManager.get("Meteo.png"));
         
         setSize(radius * 2, radius * 2);
         
@@ -34,11 +31,9 @@ public class Meteorite extends Entity {
         
         super.init();
         
-        trail = new ParticleEffect();
-        trail.load(Gdx.files.internal("particles/particle_nowind.p"), Gdx.files.internal("particles"));
+        trail = particleEffectPoolLoader.getParticleEffectByPath("particles/particle_nowind.p");
         trail.scaleEffect(radius / 25);
         trail.setPosition(x + originX, y + originY);
-        trail.start();
         
         this.flyingDirection = flyingDirection;
         this.radius = radius;
@@ -68,7 +63,7 @@ public class Meteorite extends Entity {
     }
     
     public void dispose() {
-        trail.dispose();
+        trail.free();
     }
     
 }

@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -62,6 +62,7 @@ import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
+import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.Math.abs;
 
 public class MenuScreen implements Screen {
@@ -99,7 +100,7 @@ public class MenuScreen implements Screen {
     
     private final Game game;
     
-    private final Array<ParticleEffect> fires;
+    private final Array<ParticleEffectPool.PooledEffect> fires;
     
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
@@ -585,7 +586,7 @@ public class MenuScreen implements Screen {
         Menu.dispose();
         ShopStage.dispose();
         for (int i = 0; i < fires.size; i++) {
-            fires.get(i).dispose();
+            fires.get(i).free();
         }
         fires.clear();
     }
@@ -596,17 +597,15 @@ public class MenuScreen implements Screen {
         int fireCount = shipConfig.getInt(1, "fireCount");
         
         for (int i = 0; i < fires.size; i++) {
-            fires.get(i).dispose();
+            fires.get(i).free();
         }
         fires.clear();
         
         String fireEffect = treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect");
         
         for (int i = 0; i < fireCount; i++) {
-            ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal("particles/" + fireEffect + ".p"), Gdx.files.internal("particles"));
+            ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + fireEffect + ".p");
             fire.setPosition(Ship.getX() + shipConfig.getFloat(0, "fires", "fire" + i + "OffsetX"), Ship.getY() + shipConfig.getFloat(0, "fires", "fire" + i + "OffsetY"));
-            fire.start();
             fires.add(fire);
         }
         lastFireEffect = fireEffect;

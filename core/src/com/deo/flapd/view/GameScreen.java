@@ -123,7 +123,7 @@ public class GameScreen implements Screen {
         
         gameUi = new GameUi(viewport, game, batch, assetManager, blurProcessor, player, musicManager);
         
-        meteorites = new Meteorites(assetManager, getBoolean("easterEgg"));
+        meteorites = new Meteorites(assetManager);
         
         checkpoint = new Checkpoint(assetManager, player);
         
@@ -134,6 +134,7 @@ public class GameScreen implements Screen {
         
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
+        
     }
     
     @Override
