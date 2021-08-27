@@ -281,7 +281,7 @@
         "Y": 48
       },
       "bulletSpread": 0.5,
-      "bulletOffset": [-75, 0],
+      "bulletOffset": [-40, 0],
       "bulletsPerShot": 3,
       "shootSound": "sfx/gun3.ogg",
       "fireRate": {

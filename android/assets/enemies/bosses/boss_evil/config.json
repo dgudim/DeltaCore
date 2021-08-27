@@ -166,8 +166,8 @@
       },
       "powerUpEffect": "particles/laser_powerup_red.p",
       "powerUpShootDelay": 1.1,
-      "powerUpEffectOffset": [0, 10],
-      "powerUpEffectScale": 0.5,
+      "powerUpEffectOffset": [0, 0],
+      "powerUpEffectScale": 1,
       "bullet": {
         "isLaser": true,
         "texture": "bullet_laser",
