@@ -50,11 +50,15 @@ public class JsonEntry {
      * Returns the child with the specified name.
      */
     public JsonEntry get(boolean showWarnings, String name) {
+        return getWithFallBack(new JsonEntry(), showWarnings, name);
+    }
+    
+    public JsonEntry getWithFallBack(JsonEntry fallback, boolean showWarnings, String name){
         if (jsonValue.get(name) == null) {
             if (showWarnings) {
                 log("No key named " + name + " (path: " + jsonValue.trace() + ")", WARNING);
             }
-            return new JsonEntry();
+            return fallback;
         }
         return new JsonEntry(jsonValue.get(name));
     }
@@ -70,10 +74,14 @@ public class JsonEntry {
      * Returns the child with the specified name and path.
      */
     public JsonEntry get(boolean showWarnings, String... keys) {
+        return getWithFallBack(new JsonEntry(), showWarnings, keys);
+    }
+    
+    public JsonEntry getWithFallBack(JsonEntry fallback, boolean showWarnings, String... keys) {
         JsonEntry entry = this;
         for (String key : keys) {
             if (entry.get(showWarnings, key).isNull()) {
-                return new JsonEntry();
+                return fallback;
             }
             entry = entry.get(showWarnings, key);
         }
@@ -225,6 +233,14 @@ public class JsonEntry {
         return get(showWarnings, keys).jsonValue.asBoolean();
     }
     
+    public boolean getBooleanWithFallback(JsonEntry fallback, boolean showWarnings, boolean defaultValue, String... keys) {
+        if (get(false, keys).isBoolean()) {
+            return getBoolean(false, false, keys);
+        } else {
+            return fallback.getBoolean(showWarnings, defaultValue, keys);
+        }
+    }
+    
     /**
      * Finds the child with the specified name and path and returns it as a boolean.
      */
@@ -243,6 +259,14 @@ public class JsonEntry {
             return defaultValue;
         }
         return get(showWarnings, keys).jsonValue.asInt();
+    }
+    
+    public int getIntWithFallback(JsonEntry fallback, boolean showWarnings, int defaultValue, String... keys) {
+        if (get(false, keys).isNumber()) {
+            return getInt(false, 0, keys);
+        } else {
+            return fallback.getInt(showWarnings, defaultValue, keys);
+        }
     }
     
     /**
@@ -265,6 +289,14 @@ public class JsonEntry {
         return get(showWarnings, keys).jsonValue.asFloat();
     }
     
+    public float getFloatWithFallback(JsonEntry fallback, boolean showWarnings, float defaultValue, String... keys) {
+        if (get(false, keys).isNumber()) {
+            return getFloat(false, 0, keys);
+        } else {
+            return fallback.getFloat(showWarnings, defaultValue, keys);
+        }
+    }
+    
     /**
      * Finds the child with the specified name and path and returns it as a float.
      */
@@ -283,6 +315,14 @@ public class JsonEntry {
             return defaultValue;
         }
         return get(showWarnings, keys).jsonValue.asString();
+    }
+    
+    public String getStringWithFallback(JsonEntry fallback, boolean showWarnings, String defaultValue, String... keys) {
+        if (get(false, keys).isString()) {
+            return getString(false, null, keys);
+        } else {
+            return fallback.getString(showWarnings, defaultValue, keys);
+        }
     }
     
     /**
@@ -323,6 +363,15 @@ public class JsonEntry {
             return defaultValue;
         }
         return get(showWarnings, keys).jsonValue.asFloatArray();
+    }
+    
+    public float[] getFloatArrayWithFallback(JsonEntry fallback, boolean showWarnings, float[] defaultValue, String... keys) {
+        if (get(false, keys).isNull()) {
+            return fallback.getFloatArray(showWarnings, defaultValue, keys);
+           
+        } else {
+            return getFloatArray(false, null, keys);
+        }
     }
     
     /**

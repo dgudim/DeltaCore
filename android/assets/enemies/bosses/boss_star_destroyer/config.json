@@ -2,7 +2,7 @@
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": 19000,
+    "score": -19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -108,10 +108,10 @@
       },
       "powerUpEffect": "particles/laser_powerup_red.p",
       "powerUpShootDelay": 1.1,
-      "powerUpEffectOffset": [0, 10],
+      "powerUpEffectOffset": [-3, 0],
       "powerUpEffectScale": 0.5,
       "powerDownEffect": "particles/smoke.p",
-      "powerDownEffectOffset": [130, 10],
+      "powerDownEffectOffset": [130, 0],
       "powerDownEffectScale": 1,
       "bullet": {
         "isLaser": true,

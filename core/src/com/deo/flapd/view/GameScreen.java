@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final ScreenViewport viewport;
     
-    static boolean is_paused;
+    public static volatile boolean is_paused;
     
     private float movement;
     

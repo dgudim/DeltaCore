@@ -32,8 +32,10 @@ import com.deo.flapd.utils.JsonEntry;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
+import static com.deo.flapd.model.enemies.Bosses.secondThread;
+import static com.deo.flapd.model.enemies.Bosses.stopThread;
+import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.convertPercentsToAbsoluteValue;
@@ -46,6 +48,7 @@ import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.view.GameScreen.is_paused;
 import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.abs;
 
@@ -68,8 +71,8 @@ public class Boss {
     public String bossName;
     
     Boss(String bossName, AssetManager assetManager) {
-        log("------------------------------------------------------\n", INFO);
-        log("---------loading " + bossName, INFO);
+        log("------------------------------------------------------\n", DEBUG);
+        log("---------loading " + bossName, DEBUG);
         long genTime = TimeUtils.millis();
         
         this.bossName = bossName;
@@ -98,7 +101,41 @@ public class Boss {
                     parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
                     break;
                 case ("cannon"):
-                    parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                    
+                    JsonEntry config = bossConfig.get("parts", i);
+                    
+                    JsonEntry barrelsJsonEntry = config.get(false, "barrels");
+                    if (barrelsJsonEntry.isNull()) {
+                        JsonValue toAdd = new JsonValue(JsonValue.ValueType.object);
+                        toAdd.setName("barrels");
+                        JsonValue toAdd_mainBarrel = new JsonValue(JsonValue.ValueType.object);
+                        toAdd_mainBarrel.setName("main");
+                        toAdd_mainBarrel.addChild("texture", new JsonValue(config.getString("noTexture", "texture")));
+                        float width = config.getFloat(false, 1, "width");
+                        float height = config.getFloat(false, 1, "height");
+                        float originX = width/2f;
+                        float originY = height/2f;
+                        if(!config.getString(false, "standard","originX").equals("standard")){
+                            originX = config.getFloat(0.5f, "originX");
+                        }
+                        if(!config.getString(false, "standard","originY").equals("standard")){
+                            originY = config.getFloat(0.5f, "originX");
+                        }
+                        toAdd_mainBarrel.addChild("width", new JsonValue(width));
+                        toAdd_mainBarrel.addChild("height", new JsonValue(height));
+                        JsonValue toAdd_mainBarrel_offset = new JsonValue(JsonValue.ValueType.array);
+                        toAdd_mainBarrel_offset.addChild(new JsonValue(width / 2f - originX));
+                        toAdd_mainBarrel_offset.addChild(new JsonValue(height / 2f - originY));
+                        toAdd_mainBarrel.addChild("offset", toAdd_mainBarrel_offset);
+                        toAdd.addChild(toAdd_mainBarrel);
+                        if (!config.getString("noTexture", "texture").equals("noTexture")) {
+                            config.jsonValue.get("texture").set("noTexture");
+                        }
+                        
+                        config.addValue(new JsonEntry(toAdd));
+                    }
+                    
+                    parts.add(new Cannon(config, bossAtlas, parts, body, assetManager));
                     break;
                 case ("shield"):
                     parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
@@ -148,10 +185,10 @@ public class Boss {
             phases.add(phase);
         }
         
-        log("------------------------------------------------------", INFO);
-        log("loaded " + bossName + " in " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
-        log(parts.size + " parts", INFO);
-        log(phases.size + " phases", INFO);
+        log("------------------------------------------------------", DEBUG);
+        log("loaded " + bossName + " in " + TimeUtils.timeSinceMillis(genTime) + "ms", DEBUG);
+        log(parts.size + " parts", DEBUG);
+        log(phases.size + " phases", DEBUG);
     }
     
     void draw(SpriteBatch batch, float delta) {
@@ -283,7 +320,7 @@ class BasePart extends Entity {
     
     BasePart(JsonEntry newConfig, TextureAtlas textures, AssetManager assetManager) {
         
-        log("loading " + newConfig.name, INFO);
+        log("loading " + newConfig.name, DEBUG);
         
         active = false;
         this.assetManager = assetManager;
@@ -338,7 +375,7 @@ class BasePart extends Entity {
             explosionSound = assetManager.get(currentConfig.getString("sfx/explosion.ogg", "explosionSound"));
             explosionEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
-            log("creating explosion effect for " + newConfig.name, INFO);
+            log("creating explosion effect for " + newConfig.name, DEBUG);
         }
         
         soundVolume = getFloat("soundVolume");
@@ -582,50 +619,10 @@ class Cannon extends Part {
     String[] aimTextures;
     int[] aimAngleLimit;
     
-    float[] bulletOffset;
-    float bulletOffsetAngle;
-    float bulletOffsetDistance;
-    
-    int bulletsPerShot;
-    float bulletSpread;
-    
-    float fireRate;
-    float fireTimer;
-    
-    boolean drawBulletsOnTop;
-    
-    BulletData bulletData;
-    Array<EnemyBullet> bullets;
-    TextureAtlas textures;
-    
-    Sound shootingSound;
-    
-    boolean hasPowerUpEffect;
-    ParticleEffectPool.PooledEffect powerUpEffect;
-    float powerUpEffectShootDelay;
-    boolean powerUpActive;
-    float powerUpScale;
-    float powerUpOffsetAngle;
-    float powerUpOffsetDistance;
-    
-    boolean hasPowerDownEffect;
-    ParticleEffectPool.PooledEffect powerDownEffect;
-    float powerDownScale;
-    float powerDownOffsetAngle;
-    float powerDownOffsetDistance;
-    
-    float recoil;
-    float currentRecoilOffset;
-    float recoilReturnSpeed;
+    Array<Barrel> barrels;
     
     Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
         super(partConfig, textures, parts, body, assetManager);
-        
-        this.textures = textures;
-        
-        bullets = new Array<>();
-        
-        drawBulletsOnTop = currentConfig.getBoolean(false, false, "drawBulletsOnTop");
         
         canAim = currentConfig.getBoolean(false, false, "canAim");
         if (canAim) {
@@ -651,58 +648,19 @@ class Cannon extends Part {
                 aimTextures[7] = aimTexturesJsonValue.getString("down_left", "down_left");
             }
         }
-        
-        float fireRateRandomness = currentConfig.getFloat(0, "fireRate", "randomness");
-        fireRate = currentConfig.getFloat(1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
-        fireTimer = -currentConfig.getFloat(0, "fireRate", "initialDelay");
-        
-        bulletData = new BulletData(currentConfig.get("bullet"));
-        
-        shootingSound = assetManager.get(currentConfig.getString("sfx/gun1.ogg", "shootSound"));
-        
-        bulletOffset = currentConfig.getFloatArray(new float[]{0, 0}, "bulletOffset");
-        bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
-        bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, bulletOffset[0], bulletOffset[1]);
-        bulletsPerShot = currentConfig.getInt(1, "bulletsPerShot");
-        bulletSpread = currentConfig.getFloat(0, "bulletSpread");
-        
-        hasPowerUpEffect = currentConfig.getBoolean(false, false, "powerUpEffect");
-        if (hasPowerUpEffect) {
-            powerUpScale = currentConfig.getFloat(1, "powerUpEffectScale");
-            powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/laser_powerup_red.p", "powerUpEffect"));
-            powerUpEffectShootDelay = currentConfig.getFloat(1, "powerUpShootDelay");
-            powerUpEffect.scaleEffect(powerUpScale);
-            float[] powerUpOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerUpEffectOffset");
-            powerUpOffset[0] += bulletOffset[0];
-            powerUpOffset[1] += bulletOffset[1];
-            powerUpOffsetAngle = MathUtils.atan2(powerUpOffset[1], powerUpOffset[0]) * MathUtils.radiansToDegrees;
-            powerUpOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerUpOffset[0], powerUpOffset[1]);
-        }
-        
-        hasPowerDownEffect = currentConfig.getBoolean(false, false, "powerDownEffect");
-        if (hasPowerDownEffect) {
-            powerDownScale = currentConfig.getFloat(1, "powerDownEffectScale");
-            powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/smoke.p", "powerDownEffect"));
-            powerDownEffect.scaleEffect(powerDownScale);
-            float[] powerDownOffset = currentConfig.getFloatArray(new float[]{0, 0}, "powerDownEffectOffset");
-            powerDownOffset[0] += bulletOffset[0];
-            powerDownOffset[1] += bulletOffset[1];
-            powerDownOffsetAngle = MathUtils.atan2(powerDownOffset[1], powerDownOffset[0]) * MathUtils.radiansToDegrees;
-            powerDownOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerDownOffset[0], powerDownOffset[1]);
-        }
-        
-        if (currentConfig.get(false, "recoil").isNumber()) {
-            recoil = currentConfig.getFloat(5, "recoil");
-            recoilReturnSpeed = currentConfig.getFloat(10, "recoilReturnSpeed");
+    
+        JsonEntry barrelsJsonEntry = currentConfig.get(false, "barrels");
+        barrels = new Array<>();
+        for (int i = 0; i < barrelsJsonEntry.size; i++) {
+            log("loading barrel " + barrelsJsonEntry.get(i).name + " for " + name, DEBUG);
+            barrels.add(new Barrel(textures, barrelsJsonEntry.get(i), this));
         }
         
     }
     
     @Override
     protected void updateEntity(float delta) {
-        entitySprite.setPosition(
-                x + movementOffsetX + MathUtils.cosDeg(rotation + movementRotation) * currentRecoilOffset,
-                y + movementOffsetY + MathUtils.sinDeg(rotation + movementRotation) * currentRecoilOffset);
+        entitySprite.setPosition(x + movementOffsetX, y + movementOffsetY);
         entitySprite.setRotation(rotation + movementRotation);
         entitySprite.setColor(color);
         if (health > 0) {
@@ -720,7 +678,6 @@ class Cannon extends Part {
         super.update(delta);
         if (active) {
             if (canAim) {
-                
                 currentAimAngle = lerpAngleWithConstantSpeed(currentAimAngle, clamp(MathUtils.radiansToDegrees * MathUtils.atan2(
                         y + originY - (player.bounds.getY() + player.bounds.getHeight() / 2),
                         x + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)),
@@ -763,42 +720,169 @@ class Cannon extends Part {
                         break;
                 }
             }
-            if (hasPowerUpEffect) {
-                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
-                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + powerUpOffsetAngle) * powerUpOffsetDistance;
-                powerUpEffect.setPosition(newX, newY);
-                powerUpEffect.update(delta);
-            }
-            if (hasPowerDownEffect) {
-                float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
-                float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + powerDownOffsetAngle) * powerDownOffsetDistance;
-                powerDownEffect.setPosition(newX, newY);
-                powerDownEffect.update(delta);
-            }
-            if (fireTimer >= 1 + powerUpEffectShootDelay && health > 0) {
-                shoot();
-                powerUpActive = false;
-                fireTimer = 0;
-            } else {
-                if (fireTimer < 1) {
-                    fireTimer += delta * fireRate;
-                } else {
-                    if (!powerUpActive) {
-                        powerUpActive = true;
-                    }
-                    fireTimer += delta;
-                }
-            }
-            if (currentRecoilOffset > 0) {
-                currentRecoilOffset = clamp(currentRecoilOffset - delta * recoilReturnSpeed, 0, recoil);
-            }
+        }
+        for (int i = 0; i < barrels.size; i++) {
+            barrels.get(i).update(delta);
         }
     }
     
     @Override
     void draw(SpriteBatch batch, float delta) {
+        for (int i = 0; i < barrels.size; i++) {
+            barrels.get(i).draw(batch, delta);
+        }
+        super.draw(batch, delta);
+    }
+    
+    @Override
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        super.drawDebug(shapeRenderer);
+        for (int i = 0; i < barrels.size; i++) {
+            barrels.get(i).drawDebug(shapeRenderer);
+        }
+    }
+    
+    @Override
+    void dispose() {
+        super.dispose();
+        for (int i = 0; i < barrels.size; i++) {
+            barrels.get(i).dispose();
+        }
+    }
+}
+
+class Barrel extends Entity {
+    
+    float[] bulletOffset;
+    float bulletOffsetAngle;
+    float bulletOffsetDistance;
+    
+    int bulletsPerShot;
+    int burstSpacing;
+    float bulletSpread;
+    
+    float fireRate;
+    float fireTimer;
+    
+    boolean drawBulletsOnTop;
+    
+    BulletData bulletData;
+    Array<EnemyBullet> bullets;
+    
+    Sound shootingSound;
+    
+    boolean powerUpActive;
+    ParticleEffectPool.PooledEffect powerUpEffect;
+    boolean hasPowerUpEffect;
+    String powerUpEffectPath;
+    float powerUpEffectShootDelay;
+    float powerUpScale;
+    float powerUpOffsetAngle;
+    float powerUpOffsetDistance;
+    
+    boolean powerDownActive;
+    ParticleEffectPool.PooledEffect powerDownEffect;
+    boolean hasPowerDownEffect;
+    String powerDownEffectPath;
+    float powerDownScale;
+    float powerDownOffsetAngle;
+    float powerDownOffsetDistance;
+    
+    float recoil;
+    float currentRecoilOffset;
+    float recoilReturnSpeed;
+    
+    float offsetAngle;
+    float offsetDistance;
+    
+    Cannon base;
+    
+    // TODO: 26/8/2021 implement animations
+    
+    Barrel(TextureAtlas textures, JsonEntry config, Cannon base) {
+        
+        bullets = new Array<>();
+        
+        JsonEntry baseConfig = base.currentConfig;
+        drawBulletsOnTop = config.getBooleanWithFallback(baseConfig, false, false, "drawBulletsOnTop");
+        
+        this.base = base;
+        
+        entitySprite = new Sprite(textures.findRegion(config.getString("noTexture", "texture")));
+        width = config.getFloat(1, "width");
+        height = config.getFloat(1, "height");
+        setSize(width, height);
+        init();
+        
+        float[] offset = config.getFloatArray(false, new float[]{0, 0}, "offset");
+        offsetAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
+        offsetDistance = getDistanceBetweenTwoPoints(0, 0, offset[0], offset[1]);
+        
+        float fireRateRandomness = config.getFloatWithFallback(baseConfig, true, 0, "fireRate", "randomness");
+        fireRate = config.getFloatWithFallback(baseConfig, true, 1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
+        fireTimer = -config.getFloatWithFallback(baseConfig, true, 0, "fireRate", "initialDelay");
+        
+        bulletData = new BulletData(config.getWithFallBack(baseConfig.get(true, "bullet"), false, "bullet"));
+        
+        shootingSound = base.assetManager.get(config.getStringWithFallback(baseConfig, true, "sfx/gun1.ogg", "shootSound"));
+        
+        bulletOffset = config.getFloatArrayWithFallback(baseConfig, true, new float[]{0, 0}, "bulletOffset");
+        
+        bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
+        bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, bulletOffset[0], bulletOffset[1]);
+        
+        bulletsPerShot = config.getIntWithFallback(baseConfig, false, 1, "bulletsPerShot");
+        if (bulletsPerShot > 0) {
+            burstSpacing = config.getIntWithFallback(baseConfig, false, 0, "burstSpacing");
+        }
+        bulletSpread = config.getFloatWithFallback(baseConfig, true, 0, "bulletSpread");
+        
+        hasPowerUpEffect = config.getWithFallBack(baseConfig.get(false, "powerUpEffect"), false, "powerUpEffect").isString();
+        if (hasPowerUpEffect) {
+            powerUpEffectPath = config.getStringWithFallback(baseConfig, true, "particles/laser_powerup_red.p", "powerUpEffect");
+            powerUpScale = config.getFloatWithFallback(baseConfig, true, 1, "powerUpEffectScale");
+            powerUpEffectShootDelay = config.getFloatWithFallback(baseConfig, true, 1, "powerUpShootDelay");
+            float[] powerUpOffset = config.getFloatArrayWithFallback(baseConfig, true, new float[]{0, 0}, "powerUpEffectOffset");
+            powerUpOffset[0] += bulletOffset[0];
+            powerUpOffset[1] += bulletOffset[1];
+            powerUpOffsetAngle = MathUtils.atan2(powerUpOffset[1], powerUpOffset[0]) * MathUtils.radiansToDegrees;
+            powerUpOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerUpOffset[0], powerUpOffset[1]);
+        }
+        
+        hasPowerDownEffect = config.getWithFallBack(baseConfig.get(false, "powerDownEffect"), false, "powerDownEffect").isString();
+        if (hasPowerDownEffect) {
+            powerDownEffectPath = config.getStringWithFallback(baseConfig, true, "particles/smoke.p", "powerDownEffect");
+            powerDownScale = config.getFloatWithFallback(baseConfig, true, 1, "powerDownEffectScale");
+            float[] powerDownOffset = config.getFloatArrayWithFallback(baseConfig, true, new float[]{0, 0}, "powerDownEffectOffset");
+            powerDownOffset[0] += bulletOffset[0];
+            powerDownOffset[1] += bulletOffset[1];
+            powerDownOffsetAngle = MathUtils.atan2(powerDownOffset[1], powerDownOffset[0]) * MathUtils.radiansToDegrees;
+            powerDownOffsetDistance = getDistanceBetweenTwoPoints(0, 0, powerDownOffset[0], powerDownOffset[1]);
+        }
+        
+        if (config.getWithFallBack(baseConfig.get(false, "recoil"), false, "recoil").isNumber()) {
+            recoil = config.getFloatWithFallback(baseConfig, true, 5, "recoil");
+            recoilReturnSpeed = config.getFloatWithFallback(baseConfig, true, 10, "recoilReturnSpeed");
+        }
+        
+        
+        if (hasPowerUpEffect) {
+            powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(powerUpEffectPath);
+            powerUpEffect.scaleEffect(powerUpScale);
+        }
+        if (hasPowerDownEffect) {
+            powerDownEffect = particleEffectPoolLoader.getParticleEffectByPath(powerDownEffectPath);
+            powerDownEffect.scaleEffect(powerDownScale);
+        }
+        
+    }
+    
+    void draw(SpriteBatch batch, float delta) {
+        if (powerDownActive) {
+            powerDownEffect.draw(batch);
+        }
         if (drawBulletsOnTop) {
-            super.draw(batch, delta);
+            entitySprite.draw(batch);
         }
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update(delta);
@@ -808,79 +892,129 @@ class Cannon extends Part {
                 bullets.removeIndex(i);
             }
         }
-        if (hasPowerDownEffect && active) {
-            powerDownEffect.draw(batch);
-        }
         if (!drawBulletsOnTop) {
-            super.draw(batch, delta);
+            entitySprite.draw(batch);
         }
-        if (hasPowerUpEffect && active) {
+        if (powerUpActive && base.active) {
             powerUpEffect.draw(batch);
         }
     }
     
     @Override
     public void drawDebug(ShapeRenderer shapeRenderer) {
-        super.drawDebug(shapeRenderer);
+        shapeRenderer.setColor(Color.CYAN);
+        shapeRenderer.circle(x + originX, y + originY, 5);
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).drawDebug(shapeRenderer);
         }
-        if (hasPowerUpEffect) {
+        if (powerUpActive) {
             shapeRenderer.setColor(Color.YELLOW);
             drawParticleEffectBounds(shapeRenderer, powerUpEffect);
         }
-        if (hasPowerDownEffect) {
+        if (powerDownActive) {
             shapeRenderer.setColor(Color.RED);
             drawParticleEffectBounds(shapeRenderer, powerDownEffect);
         }
     }
     
-    void shoot() {
-        for (int i = 0; i < bulletsPerShot; i++) {
-            BulletData newBulletData = new BulletData(currentConfig.get("bullet"));
-            
-            float newX = x + movementOffsetX + originX - bulletData.width / 2f + MathUtils.cosDeg(rotation + movementRotation + bulletOffsetAngle) * bulletOffsetDistance;
-            float newY = y + movementOffsetY + originY - bulletData.height / 2f + MathUtils.sinDeg(rotation + movementRotation + bulletOffsetAngle) * bulletOffsetDistance;
-            float newRot = currentAimAngle;
-            
-            newRot += getRandomInRange(-10, 10) * bulletSpread;
-            newRot += movementRotation;
-            
-            bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
+    void update(float delta) {
+        rotation = base.rotation + base.movementRotation;
+        x = base.x + base.originX - width / 2f + MathUtils.cosDeg(rotation + offsetAngle) * offsetDistance + MathUtils.cosDeg(rotation) * currentRecoilOffset;
+        y = base.y + base.originY - height / 2f + MathUtils.sinDeg(rotation + offsetAngle) * offsetDistance + MathUtils.sinDeg(rotation) * currentRecoilOffset;
+        entitySprite.setPosition(x, y);
+        entitySprite.setRotation(rotation);
+        
+        if (base.active) {
+            if (powerUpActive) {
+                float newX = x + width / 2f + MathUtils.cosDeg(rotation + powerUpOffsetAngle) * powerUpOffsetDistance;
+                float newY = y + height / 2f + MathUtils.sinDeg(rotation + powerUpOffsetAngle) * powerUpOffsetDistance;
+                powerUpEffect.setPosition(newX, newY);
+                powerUpEffect.update(delta);
+            }
+            if (powerDownActive) {
+                float newX = x + width / 2f + MathUtils.cosDeg(rotation + powerDownOffsetAngle) * powerDownOffsetDistance;
+                float newY = y + height / 2f + MathUtils.sinDeg(rotation + powerDownOffsetAngle) * powerDownOffsetDistance;
+                powerDownEffect.setPosition(newX, newY);
+                powerDownEffect.update(delta);
+            }
+            if (fireTimer >= 1 && base.health > 0) {
+                shoot();
+                fireTimer = 0;
+            } else {
+                fireTimer += delta * fireRate;
+            }
+            if (currentRecoilOffset > 0) {
+                currentRecoilOffset = clamp(currentRecoilOffset - delta * recoilReturnSpeed, 0, recoil);
+            }
         }
+    }
+    
+    void shoot() {
         
-        currentRecoilOffset = recoil;
+        secondThread.execute(() -> {
+            try {
+                int bulletsShot = 0;
+                if (powerUpEffect != null) {
+                    powerUpActive = true;
+                    powerUpEffect.reset(false);
+                }
+                Thread.sleep((int) (powerUpEffectShootDelay * 1000));
+                powerUpActive = false;
+                if (burstSpacing < 100 && base.soundVolume > 0) {
+                    shootingSound.play();
+                }
+                while (true) {
+                    if (!is_paused) {
+                        Thread.sleep(burstSpacing);
+                        Gdx.app.postRunnable(Barrel.this::spawnBullet);
+                        bulletsShot++;
+                        if (bulletsShot >= bulletsPerShot) {
+                            break;
+                        }
+                    } else if (stopThread) {
+                        break;
+                    }
+                }
+                if (powerDownEffect != null) {
+                    powerDownActive = true;
+                    powerDownEffect.reset(false);
+                }
+            } catch (InterruptedException e) {
+                log("Burst thread interrupted", DEBUG);
+            }
+        });
         
-        if (soundVolume > 0) {
+        
+    }
+    
+    void spawnBullet() {
+        BulletData newBulletData = new BulletData(base.currentConfig.get("bullet"));
+        
+        float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + bulletOffsetAngle) * bulletOffsetDistance;
+        float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletOffsetAngle) * bulletOffsetDistance;
+        float newRot = rotation;
+        
+        newRot += getRandomInRange(-10, 10) * bulletSpread;
+        
+        bullets.add(new EnemyBullet(base.assetManager, newBulletData, base.player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
+        if (burstSpacing >= 100 && base.soundVolume > 0) {
             shootingSound.play();
         }
-        
+        currentRecoilOffset = recoil;
     }
     
-    @Override
-    void reset() {
-        super.reset();
-        if (hasPowerUpEffect) {
-            powerUpEffect.reset();
-        }
-        if (hasPowerDownEffect) {
-            powerDownEffect.reset();
-        }
-    }
-    
-    @Override
     void dispose() {
-        super.dispose();
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).dispose();
         }
-        if (hasPowerUpEffect) {
+        if (powerUpEffect != null) {
             powerUpEffect.free();
         }
-        if (hasPowerDownEffect) {
+        if (powerDownEffect != null) {
             powerDownEffect.free();
         }
     }
+    
 }
 
 class Movement {
@@ -915,7 +1049,7 @@ class Movement {
     
     Movement(JsonEntry movementConfig, String target, Array<BasePart> parts, Array<Movement> animations, BasePart body) {
         
-        log("loading movement: " + movementConfig.name, INFO);
+        log("loading movement: " + movementConfig.name, DEBUG);
         
         this.body = body;
         
@@ -1082,7 +1216,7 @@ class Phase {
     
     Phase(JsonEntry partGroups, JsonEntry phaseData, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
         
-        log("loading phase: " + phaseData.name, INFO);
+        log("loading phase: " + phaseData.name, DEBUG);
         
         this.boss = boss;
         
@@ -1105,7 +1239,7 @@ class Phase {
         if (triggers == null) {
             log("no triggers for " + phaseData.name, WARNING);
         } else {
-            log(triggers.size + " trigger(s) for " + phaseData.name, INFO);
+            log(triggers.size + " trigger(s) for " + phaseData.name, DEBUG);
             for (int i = 0; i < triggers.size; i++) {
                 PhaseTrigger trigger = new PhaseTrigger(triggers.get(i), parts, "", partGroups, phaseTriggers);
                 phaseTriggers.add(trigger);
@@ -1195,7 +1329,7 @@ class Action {
         } else {
             target = predeterminedTarget;
         }
-        log("loading action: " + actionValue.name + ", target: " + target, INFO);
+        log("loading action: " + actionValue.name + ", target: " + target, DEBUG);
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(target)) {
                 this.target = parts.get(i);
@@ -1232,7 +1366,7 @@ class Action {
                 }
                 basePosition = actionValue.get("ai").getFloatArray(new float[]{400, 170}, "basePosition");
             } else {
-                log("no ai change for " + actionValue.name, INFO);
+                log("no ai change for " + actionValue.name, DEBUG);
             }
         }
         if (actionValue.get(false, "move").isObject()) {
@@ -1244,7 +1378,7 @@ class Action {
                 movements.add(movement);
             }
         } else {
-            log("no movement for " + actionValue.name + ", target: " + target, INFO);
+            log("no movement for " + actionValue.name + ", target: " + target, DEBUG);
             hasMovement = false;
         }
     }
@@ -1312,7 +1446,7 @@ class PhaseTrigger {
         } else {
             targetPart = predeterminedTarget;
         }
-        log("loading phase trigger: " + triggerData.name + ", phase: " + triggerData.parent().parent().name + ", target: " + targetPart, INFO);
+        log("loading phase trigger: " + triggerData.name + ", phase: " + triggerData.parent().parent().name + ", target: " + targetPart, DEBUG);
         for (int i2 = 0; i2 < parts.size; i2++) {
             if (parts.get(i2).name.equals(targetPart)) {
                 triggerTarget = parts.get(i2);

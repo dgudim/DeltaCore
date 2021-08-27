@@ -5,70 +5,98 @@ filter: Nearest,Nearest
 repeat: none
 dark_station
   rotate: false
-  xy: 1, 115
+  xy: 1, 127
   size: 1280, 384
   orig: 1280, 384
   offset: 0, 0
   index: -1
 core_shield
   rotate: false
-  xy: 1, 1
+  xy: 1, 13
   size: 132, 112
   orig: 132, 112
   offset: 0, 0
   index: -1
-heavy_artillery
+heavy_artillery_body
   rotate: false
-  xy: 1283, 419
-  size: 120, 80
-  orig: 120, 80
-  offset: 0, 0
-  index: -1
-rocket_launcher
-  rotate: false
-  xy: 135, 13
-  size: 92, 100
-  orig: 92, 100
+  xy: 1283, 431
+  size: 87, 80
+  orig: 87, 80
   offset: 0, 0
   index: -1
 dark_core
   rotate: false
-  xy: 1283, 361
+  xy: 135, 69
   size: 76, 56
   orig: 76, 56
   offset: 0, 0
   index: -1
+rocket_launcher_body
+  rotate: false
+  xy: 1283, 385
+  size: 80, 44
+  orig: 80, 44
+  offset: 0, 0
+  index: -1
+rocket_launcher_left_barrel
+  rotate: false
+  xy: 1372, 483
+  size: 88, 28
+  orig: 88, 28
+  offset: 0, 0
+  index: -1
+rocket_launcher_right_barrel
+  rotate: false
+  xy: 213, 97
+  size: 88, 28
+  orig: 88, 28
+  offset: 0, 0
+  index: -1
 standard_turret
   rotate: false
-  xy: 1405, 451
+  xy: 135, 19
   size: 64, 48
   orig: 64, 48
   offset: 0, 0
   index: -1
 ventilation_top
   rotate: false
-  xy: 229, 73
+  xy: 1283, 343
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 ventilation
   rotate: false
-  xy: 1283, 327
+  xy: 1372, 449
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+heavy_artillery_left_barrel
+  rotate: false
+  xy: 1462, 487
+  size: 33, 24
+  orig: 33, 24
+  offset: 0, 0
+  index: -1
+heavy_artillery_right_barrel
+  rotate: false
+  xy: 213, 71
+  size: 33, 24
+  orig: 33, 24
+  offset: 0, 0
+  index: -1
 machine_gun
   rotate: false
-  xy: 1361, 397
+  xy: 303, 105
   size: 32, 20
   orig: 32, 20
   offset: 0, 0
   index: -1
 dark_lamp
   rotate: false
-  xy: 1405, 433
+  xy: 135, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

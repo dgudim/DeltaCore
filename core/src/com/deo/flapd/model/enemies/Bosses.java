@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Player;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Bosses {
@@ -13,6 +16,8 @@ public class Bosses {
     private final AssetManager assetManager;
     public static Array<Boss> bosses;
     public static final String[] bossNames = new String[]{"boss_ship", "boss_evil", "boss_star_destroyer", "boss_ufo", "boss_station"};
+    static final ExecutorService secondThread = Executors.newSingleThreadExecutor();
+    static boolean stopThread = false;
     
     public Bosses(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -54,6 +59,7 @@ public class Bosses {
     }
     
     public void dispose() {
+        stopThread = true;
         for (int i = 0; i < bosses.size; i++) {
             bosses.get(i).dispose();
         }
