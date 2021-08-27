@@ -535,8 +535,8 @@ class BasePart extends Entity {
 class Part extends BasePart {
     
     private final Array<BasePart> parts;
-    private BasePart link;
-    private final BasePart body;
+    BasePart link;
+    final BasePart body;
     
     Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
         super(newConfig, textures, assetManager);
@@ -630,7 +630,7 @@ class Cannon extends Part {
                 aimAngleLimit = currentConfig.getIntArray(new int[]{-360, 360}, "aimAngleLimit");
             }
             
-            aimingSpeed = currentConfig.getFloat(false, 10, "aimingSpeed");
+            aimingSpeed = currentConfig.getFloat(false, 50, "aimingSpeed");
             
             aimAnimationType = currentConfig.getString(false, "noAnimation", "aimAnimation");
             
@@ -732,6 +732,9 @@ class Cannon extends Part {
             barrels.get(i).draw(batch, delta);
         }
         super.draw(batch, delta);
+        for (int i = 0; i < barrels.size; i++) {
+            barrels.get(i).drawPowerUpEffect(batch);
+        }
     }
     
     @Override
@@ -822,8 +825,8 @@ class Barrel extends Entity {
             entitySprite = new Sprite(textures.findRegion(texture));
         }
         
-        width = config.getFloat(1, "width");
-        height = config.getFloat(1, "height");
+        width = config.getFloat(100, "width");
+        height = config.getFloat(100, "height");
         setSize(width, height);
         init();
         
@@ -898,11 +901,13 @@ class Barrel extends Entity {
     }
     
     void draw(SpriteBatch batch, float delta) {
-        if (powerDownActive) {
-            powerDownEffect.draw(batch);
-        }
-        if (drawBulletsOnTop) {
-            drawSprite(batch);
+        if (base.visible && base.health > 0 && base.link.health > 0 && base.body.health > 0) {
+            if (powerDownActive) {
+                powerDownEffect.draw(batch);
+            }
+            if (drawBulletsOnTop) {
+                drawSprite(batch);
+            }
         }
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update(delta);
@@ -912,11 +917,18 @@ class Barrel extends Entity {
                 bullets.removeIndex(i);
             }
         }
-        if (!drawBulletsOnTop) {
-            drawSprite(batch);
+        if (base.visible && base.health > 0 && base.link.health > 0 && base.body.health > 0) {
+            if (!drawBulletsOnTop) {
+                drawSprite(batch);
+            }
         }
-        if (powerUpActive && base.active) {
-            powerUpEffect.draw(batch);
+    }
+    
+    void drawPowerUpEffect(SpriteBatch batch) {
+        if (base.visible && base.health > 0 && base.link.health > 0 && base.body.health > 0) {
+            if (powerUpActive && base.active) {
+                powerUpEffect.draw(batch);
+            }
         }
     }
     
@@ -938,12 +950,12 @@ class Barrel extends Entity {
     }
     
     void update(float delta) {
-    
+        
         animationPosition += delta;
         
         rotation = base.rotation + base.movementRotation;
-        x = base.x + base.originX - width / 2f + MathUtils.cosDeg(rotation + offsetAngle) * offsetDistance + MathUtils.cosDeg(rotation) * currentRecoilOffset;
-        y = base.y + base.originY - height / 2f + MathUtils.sinDeg(rotation + offsetAngle) * offsetDistance + MathUtils.sinDeg(rotation) * currentRecoilOffset;
+        x = base.x + base.movementOffsetX + base.originX - width / 2f + MathUtils.cosDeg(rotation + offsetAngle) * offsetDistance + MathUtils.cosDeg(rotation) * currentRecoilOffset;
+        y = base.y + base.movementOffsetY + base.originY - height / 2f + MathUtils.sinDeg(rotation + offsetAngle) * offsetDistance + MathUtils.sinDeg(rotation) * currentRecoilOffset;
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         
