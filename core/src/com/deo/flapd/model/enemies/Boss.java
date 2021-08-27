@@ -109,16 +109,16 @@ public class Boss {
                         JsonValue toAdd = new JsonValue(JsonValue.ValueType.object);
                         toAdd.setName("barrels");
                         JsonValue toAdd_mainBarrel = new JsonValue(JsonValue.ValueType.object);
-                        toAdd_mainBarrel.setName("main");
+                        toAdd_mainBarrel.setName(config.name);
                         toAdd_mainBarrel.addChild("texture", new JsonValue(config.getString("noTexture", "texture")));
                         float width = config.getFloat(false, 1, "width");
                         float height = config.getFloat(false, 1, "height");
-                        float originX = width/2f;
-                        float originY = height/2f;
-                        if(!config.getString(false, "standard","originX").equals("standard")){
+                        float originX = width / 2f;
+                        float originY = height / 2f;
+                        if (!config.getString(false, "standard", "originX").equals("standard")) {
                             originX = config.getFloat(0.5f, "originX");
                         }
-                        if(!config.getString(false, "standard","originY").equals("standard")){
+                        if (!config.getString(false, "standard", "originY").equals("standard")) {
                             originY = config.getFloat(0.5f, "originX");
                         }
                         toAdd_mainBarrel.addChild("width", new JsonValue(width));
@@ -285,6 +285,7 @@ class BasePart extends Entity {
     
     Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
+    boolean hasAnimation;
     
     AssetManager assetManager;
     
@@ -296,7 +297,6 @@ class BasePart extends Entity {
     JsonEntry currentConfig;
     ProgressBar healthBar;
     Player player;
-    boolean hasAnimation;
     boolean collisionEnabled;
     boolean hasCollision;
     boolean visible = true;
@@ -648,7 +648,7 @@ class Cannon extends Part {
                 aimTextures[7] = aimTexturesJsonValue.getString("down_left", "down_left");
             }
         }
-    
+        
         JsonEntry barrelsJsonEntry = currentConfig.get(false, "barrels");
         barrels = new Array<>();
         for (int i = 0; i < barrelsJsonEntry.size; i++) {
@@ -753,6 +753,10 @@ class Cannon extends Part {
 
 class Barrel extends Entity {
     
+    Animation<TextureRegion> barrelAnimation;
+    private float animationPosition;
+    boolean hasAnimation;
+    
     float[] bulletOffset;
     float bulletOffsetAngle;
     float bulletOffsetDistance;
@@ -797,8 +801,6 @@ class Barrel extends Entity {
     
     Cannon base;
     
-    // TODO: 26/8/2021 implement animations
-    
     Barrel(TextureAtlas textures, JsonEntry config, Cannon base) {
         
         bullets = new Array<>();
@@ -808,7 +810,18 @@ class Barrel extends Entity {
         
         this.base = base;
         
-        entitySprite = new Sprite(textures.findRegion(config.getString("noTexture", "texture")));
+        hasAnimation = config.getBooleanWithFallback(baseConfig, false, false, "hasAnimation");
+        String texture = config.getString("noTexture", "texture");
+        if (hasAnimation) {
+            entitySprite = new Sprite();
+            barrelAnimation = new Animation<>(
+                    config.getFloatWithFallback(baseConfig, true, 1, "frameDuration"),
+                    textures.findRegions(config.name + "_" + texture),
+                    Animation.PlayMode.LOOP);
+        } else {
+            entitySprite = new Sprite(textures.findRegion(texture));
+        }
+        
         width = config.getFloat(1, "width");
         height = config.getFloat(1, "height");
         setSize(width, height);
@@ -877,12 +890,19 @@ class Barrel extends Entity {
         
     }
     
+    void drawSprite(SpriteBatch batch) {
+        if (hasAnimation) {
+            entitySprite.setRegion(barrelAnimation.getKeyFrame(animationPosition));
+        }
+        entitySprite.draw(batch);
+    }
+    
     void draw(SpriteBatch batch, float delta) {
         if (powerDownActive) {
             powerDownEffect.draw(batch);
         }
         if (drawBulletsOnTop) {
-            entitySprite.draw(batch);
+            drawSprite(batch);
         }
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update(delta);
@@ -893,7 +913,7 @@ class Barrel extends Entity {
             }
         }
         if (!drawBulletsOnTop) {
-            entitySprite.draw(batch);
+            drawSprite(batch);
         }
         if (powerUpActive && base.active) {
             powerUpEffect.draw(batch);
@@ -918,6 +938,9 @@ class Barrel extends Entity {
     }
     
     void update(float delta) {
+    
+        animationPosition += delta;
+        
         rotation = base.rotation + base.movementRotation;
         x = base.x + base.originX - width / 2f + MathUtils.cosDeg(rotation + offsetAngle) * offsetDistance + MathUtils.cosDeg(rotation) * currentRecoilOffset;
         y = base.y + base.originY - height / 2f + MathUtils.sinDeg(rotation + offsetAngle) * offsetDistance + MathUtils.sinDeg(rotation) * currentRecoilOffset;
