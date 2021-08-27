@@ -27,7 +27,7 @@ import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Main extends Game {
-
+    
     private SpriteBatch batch;
     private PostProcessor blurProcessor;
     
@@ -40,43 +40,43 @@ public class Main extends Game {
         
         clearLog();
         Date date = new Date();
-        log("|-new session-|"+"  "+DateFormat.getDateTimeInstance().format(date)+"\n", INFO);
-
+        log("|-new session-|" + "  " + DateFormat.getDateTimeInstance().format(date) + "\n", INFO);
+        
         ShaderLoader.BasePath = "shaders/";
-        blurProcessor = new PostProcessor( false, false, Gdx.app.getType() == Application.ApplicationType.Desktop );
-        Bloom bloom = new Bloom( (int)(Gdx.graphics.getWidth() * 0.25f), (int)(Gdx.graphics.getHeight() * 0.25f) );
+        blurProcessor = new PostProcessor(false, false, Gdx.app.getType() == Application.ApplicationType.Desktop);
+        Bloom bloom = new Bloom((int) (Gdx.graphics.getWidth() * 0.25f), (int) (Gdx.graphics.getHeight() * 0.25f));
         bloom.setBlurPasses(2);
         blurProcessor.addEffect(bloom);
-
+        
         FileHandleResolver resolver = new InternalFileHandleResolver();
-        assetManager.setLoader(BitmapFont.class,".fnt", new BitmapFontLoader(resolver));
-
+        assetManager.setLoader(BitmapFont.class, ".fnt", new BitmapFontLoader(resolver));
+        
         assetManager.load("fonts/font.fnt", BitmapFont.class);
         assetManager.load("fonts/font_white.fnt", BitmapFont.class);
         assetManager.load("fonts/font2.fnt", BitmapFont.class);
         assetManager.load("fonts/font2(old).fnt", BitmapFont.class);
-
+        
         while (!assetManager.isFinished()) {
             assetManager.update();
         }
-
+        
         this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor, new MusicManager(assetManager)));
     }
-
+    
     @Override
-    public void render(){
-        try{
+    public void render() {
+        try {
             super.render();
-        }catch (Exception e){
+        } catch (Exception e) {
             logException(e);
-            log("global error occurred, dump of preferences\n"+getPrefs()+"\n", CRITICAL_ERROR);
+            log("global error occurred, dump of preferences\n" + getPrefs() + "\n", CRITICAL_ERROR);
             log("force exiting", INFO);
             Gdx.app.exit();
         }
     }
-
+    
     @Override
-    public void dispose(){
+    public void dispose() {
         batch.dispose();
         assetManager.dispose();
         blurProcessor.dispose();

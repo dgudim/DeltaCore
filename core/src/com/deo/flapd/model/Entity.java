@@ -31,10 +31,9 @@ public class Entity {
     public Rectangle entityHitBox;
     
     public void init() {
-        entitySprite.setSize(width, height);
         entitySprite.setOrigin(originX, originY);
-        entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
+        entitySprite.setBounds(x, y, width, height);
         entityHitBox = entitySprite.getBoundingRectangle();
     }
     

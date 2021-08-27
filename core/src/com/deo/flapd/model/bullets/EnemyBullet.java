@@ -83,9 +83,9 @@ public class EnemyBullet extends Entity {
         if (data.isLaser) {
             entitySprite.setColor(color);
             float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
-            entitySprite.setSize(data.width, scaledHeight);
             entitySprite.setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
+            entitySprite.setSize(data.width, scaledHeight);
         } else {
             super.updateEntity(delta);
         }
