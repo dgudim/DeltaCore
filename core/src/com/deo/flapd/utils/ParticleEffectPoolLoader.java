@@ -51,10 +51,13 @@ public class ParticleEffectPoolLoader {
     public ParticleEffectPoolLoader() {
         log("preparing particle pool", INFO);
         long time = TimeUtils.millis();
+        int totalParticles = 0;
         for (String[] pathAndName : allParticleEffects) {
-            effectCollections.add(new PooledParticleEffectCollection(pathAndName[0], getInteger(pathAndName[0]), pathAndName[1]));
+            int particlesToPreload = getInteger("pool_" + pathAndName[0]) == 0 ? 1 : getInteger("pool_" + pathAndName[0]);
+            effectCollections.add(new PooledParticleEffectCollection(pathAndName[0], particlesToPreload, pathAndName[1]));
+            totalParticles += particlesToPreload;
         }
-        log("prepared particle pool in " + TimeUtils.timeSinceMillis(time) + "ms", INFO);
+        log("prepared particle pool in " + TimeUtils.timeSinceMillis(time) + "ms, total particles: " + totalParticles, INFO);
     }
     
     public ParticleEffectPool.PooledEffect getParticleEffectByName(String name) {
