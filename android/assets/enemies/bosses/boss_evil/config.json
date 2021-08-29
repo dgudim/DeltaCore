@@ -97,7 +97,7 @@
       "drops": {
         "items": {
           "timer": 2,
-          "rarity": [4, 5],
+          "rarity": [1, 4],
           "count": [3, 5]
         },
         "money": {
@@ -106,7 +106,7 @@
         },
         "bonuses": {
           "type": [2, 4],
-          "chance": 90
+          "chance": 30
         }
       }
     },
