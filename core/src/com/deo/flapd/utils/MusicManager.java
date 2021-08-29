@@ -2,11 +2,13 @@ package com.deo.flapd.utils;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
 
 public class MusicManager {
     
@@ -45,13 +47,13 @@ public class MusicManager {
         log("playing " + songName, INFO);
         music.setVolume(0);
         currentVolume = 0;
-        music.setOnCompletionListener(new Music.OnCompletionListener() {
-            @Override
-            public void onCompletion(Music music) {
-                isWaitingForNewSong = true;
-            }
-        });
-        music.play();
+        music.setOnCompletionListener(music -> isWaitingForNewSong = true);
+        try{
+            music.play();
+        }catch (GdxRuntimeException e){
+            isWaitingForNewSong = true;
+            logException(e);
+        }
     }
     
     public void resume() {
@@ -70,7 +72,16 @@ public class MusicManager {
             loadNextMusic();
             sourceChanged = false;
         } else {
-            if (!isWaitingForNewSong) {
+            if (isWaitingForNewSong) {
+                if (currentDelay < delayBetweenSongs) {
+                    currentDelay += delta;
+                } else {
+                    currentDelay = 0;
+                    currentVolume = 0;
+                    isWaitingForNewSong = false;
+                    loadNextMusic();
+                }
+            } else {
                 if (targetVolume - currentVolume > 0.5 * delta) {
                     currentVolume = clamp(currentVolume + delta, 0, 1);
                     resume();
@@ -82,15 +93,6 @@ public class MusicManager {
                 }
                 if (music.isPlaying() && currentVolume <= 0.008) {
                     music.pause();
-                }
-            } else {
-                if (currentDelay < delayBetweenSongs) {
-                    currentDelay += delta;
-                } else {
-                    currentDelay = 0;
-                    currentVolume = 0;
-                    isWaitingForNewSong = false;
-                    loadNextMusic();
                 }
             }
         }
