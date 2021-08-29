@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.log;
@@ -45,7 +46,8 @@ public class ParticleEffectPoolLoader {
             {"particles/laser_powerup_red.p", " "},
             {"particles/particle_nowind.p", " "},
             {"particles/particle_nowind2.p", " "},
-            {"particles/smoke.p", " "}
+            {"particles/smoke.p", " "},
+            {"particles/explosion_station_core.p", "core explosion"}
     };
     
     public ParticleEffectPoolLoader() {
@@ -66,6 +68,7 @@ public class ParticleEffectPoolLoader {
                 return effectCollections.get(i).obtainEffect();
             }
         }
+        log("no particle effect with name: "+name, ERROR);
         return null;
     }
     
@@ -75,6 +78,7 @@ public class ParticleEffectPoolLoader {
                 return effectCollections.get(i).obtainEffect();
             }
         }
+        log("no particle effect with path: "+path, ERROR);
         return null;
     }
     
