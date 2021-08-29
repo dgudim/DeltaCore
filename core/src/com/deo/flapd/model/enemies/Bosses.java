@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.utils.MusicManager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,20 +14,18 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Bosses {
     
-    private final AssetManager assetManager;
     public static Array<Boss> bosses;
     public static final String[] bossNames = new String[]{"boss_ship", "boss_evil", "boss_star_destroyer", "boss_ufo", "boss_station"};
     static final ExecutorService secondThread = Executors.newFixedThreadPool(10);
     static boolean stopThread = false;
     
-    public Bosses(AssetManager assetManager) {
-        this.assetManager = assetManager;
+    public Bosses() {
         bosses = new Array<>();
     }
     
-    public void loadBosses() {
+    public void loadBosses(AssetManager assetManager, MusicManager musicManager) {
         for (String bossName : bossNames) {
-            bosses.add(new Boss(bossName, assetManager));
+            bosses.add(new Boss(bossName, assetManager, musicManager));
         }
     }
     

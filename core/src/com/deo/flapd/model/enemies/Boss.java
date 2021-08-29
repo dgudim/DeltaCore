@@ -29,6 +29,7 @@ import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.MusicManager;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -70,7 +71,10 @@ public class Boss {
     
     public String bossName;
     
-    Boss(String bossName, AssetManager assetManager) {
+    String bossMusic;
+    MusicManager musicManager;
+    
+    Boss(String bossName, AssetManager assetManager, MusicManager musicManager) {
         log("------------------------------------------------------\n", DEBUG);
         log("---------loading " + bossName, DEBUG);
         long genTime = TimeUtils.millis();
@@ -86,6 +90,8 @@ public class Boss {
         hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
         spawnScore = bossConfig.getInt(-1, "spawnConditions", "score") + getRandomInRange(-bossConfig.getInt(0, "spawnConditions", "randomness"), bossConfig.getInt(0, "spawnConditions", "randomness"));
         spawnAt = bossConfig.getIntArray(new int[]{500, 500}, "spawnAt");
+        bossMusic = bossConfig.getString("", "music");
+        this.musicManager = musicManager;
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
             String type = bossConfig.get("parts", i).getString("part", "type");
             switch (type) {
@@ -244,6 +250,9 @@ public class Boss {
         hasAlreadySpawned = true;
         putBoolean("boss_spawned_" + bossName, true);
         GameLogic.bossWave = true;
+        if(!bossMusic.equals("")){
+            musicManager.setNewMusicSource(bossMusic, 1);
+        }
         phases.get(0).activate();
     }
     
@@ -268,6 +277,8 @@ public class Boss {
         body.x = 1500;
         body.y = 1500;
         GameLogic.bossWave = false;
+    
+        this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         
         for (int i = 0; i < animations.size; i++) {
             animations.get(i).reset();

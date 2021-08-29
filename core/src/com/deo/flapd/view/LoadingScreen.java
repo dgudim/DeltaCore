@@ -186,6 +186,8 @@ public class LoadingScreen implements Screen {
         assetManager.load("music/ambient3.ogg", Music.class);
         assetManager.load("music/ambient4.ogg", Music.class);
         assetManager.load("music/ambient5.ogg", Music.class);
+    
+        assetManager.load("music/killswitch.ogg", Music.class);
     }
     
     @Override

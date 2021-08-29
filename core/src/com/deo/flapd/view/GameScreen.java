@@ -107,8 +107,8 @@ public class GameScreen implements Screen {
         enemies = new Enemies(assetManager);
         enemies.loadEnemies();
         
-        bosses = new Bosses(assetManager);
-        bosses.loadBosses();
+        bosses = new Bosses();
+        bosses.loadBosses(assetManager, musicManager);
         
         player = new Player(assetManager, 0, 204, newGame, enemies);
         

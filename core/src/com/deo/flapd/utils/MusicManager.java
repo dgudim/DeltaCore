@@ -9,8 +9,12 @@ import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.MusicManager.SourceType.COLLECTION;
+import static com.deo.flapd.utils.MusicManager.SourceType.SINGLE;
 
 public class MusicManager {
+    
+    enum SourceType{SINGLE, COLLECTION}
     
     private Music music;
     private String musicPath;
@@ -20,17 +24,26 @@ public class MusicManager {
     private float currentDelay;
     private boolean isWaitingForNewSong = true;
     private float currentVolume;
-    
+    private SourceType sourceType;
     public float targetVolume;
     private boolean sourceChanged;
     
     private final AssetManager assetManager;
+    
     public void setNewMusicSource(final String musicPath, int minMusicIndex, int maxMusicIndex, float delayBetweenSongs) {
         this.musicPath = musicPath;
         this.minMusicIndex = minMusicIndex;
         this.maxMusicIndex = maxMusicIndex;
         this.delayBetweenSongs = delayBetweenSongs;
         sourceChanged = true;
+        sourceType = COLLECTION;
+    }
+    
+    public void setNewMusicSource(final String musicPath, float delayBetweenSongs) {
+        this.musicPath = musicPath;
+        this.delayBetweenSongs = delayBetweenSongs;
+        sourceChanged = true;
+        sourceType = SINGLE;
     }
     
     public MusicManager(AssetManager assetManager) {
@@ -38,16 +51,22 @@ public class MusicManager {
     }
     
     private void loadNextMusic() {
-        String songName = musicPath + getRandomInRange(minMusicIndex, maxMusicIndex) + ".ogg";
+        String path;
+        if(sourceType.equals(COLLECTION)){
+            path = musicPath + getRandomInRange(minMusicIndex, maxMusicIndex) + ".ogg";
+        }else{
+            path = musicPath;
+        }
         isWaitingForNewSong = false;
+        currentDelay = 0;
         if(music != null){
             music.stop();
         }
-        music = assetManager.get(songName, Music.class);
-        log("playing " + songName, INFO);
+        music = assetManager.get(path, Music.class);
+        log("playing " + path, INFO);
         music.setVolume(0);
         currentVolume = 0;
-        music.setOnCompletionListener(music -> isWaitingForNewSong = true);
+        music.setOnCompletionListener(music -> { isWaitingForNewSong = true; });
         try{
             music.play();
         }catch (GdxRuntimeException e){
@@ -76,17 +95,14 @@ public class MusicManager {
                 if (currentDelay < delayBetweenSongs) {
                     currentDelay += delta;
                 } else {
-                    currentDelay = 0;
-                    currentVolume = 0;
-                    isWaitingForNewSong = false;
                     loadNextMusic();
                 }
             } else {
-                if (targetVolume - currentVolume > 0.5 * delta) {
+                if (targetVolume > currentVolume) {
                     currentVolume = clamp(currentVolume + delta, 0, 1);
                     resume();
                     music.setVolume(currentVolume);
-                } else if (targetVolume - currentVolume < -0.5 * delta) {
+                } else if (targetVolume < currentVolume) {
                     currentVolume = clamp(currentVolume - delta, 0, 1);
                     resume();
                     music.setVolume(currentVolume);
