@@ -16,7 +16,7 @@ public class Bosses {
     private final AssetManager assetManager;
     public static Array<Boss> bosses;
     public static final String[] bossNames = new String[]{"boss_ship", "boss_evil", "boss_star_destroyer", "boss_ufo", "boss_station"};
-    static final ExecutorService secondThread = Executors.newSingleThreadExecutor();
+    static final ExecutorService secondThread = Executors.newFixedThreadPool(10);
     static boolean stopThread = false;
     
     public Bosses(AssetManager assetManager) {

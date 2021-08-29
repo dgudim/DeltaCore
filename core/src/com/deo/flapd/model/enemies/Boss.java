@@ -359,7 +359,7 @@ class BasePart extends Entity {
         maxHealth = health;
         width = currentConfig.getFloat(1, "width");
         height = currentConfig.getFloat(1, "height");
-        layer = currentConfig.getInt(0, "layer");
+        layer = currentConfig.getInt(false, 0, "layer");
         
         if (hasCollision && !type.equals("shield")) {
             itemRarity = currentConfig.getIntArray(new int[]{1, 2}, "drops", "items", "rarity");
@@ -834,9 +834,9 @@ class Barrel extends Entity {
         offsetAngle = MathUtils.atan2(offset[1], offset[0]) * MathUtils.radiansToDegrees;
         offsetDistance = getDistanceBetweenTwoPoints(0, 0, offset[0], offset[1]);
         
-        float fireRateRandomness = config.getFloatWithFallback(baseConfig, true, 0, "fireRate", "randomness");
-        fireRate = config.getFloatWithFallback(baseConfig, true, 1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
-        fireTimer = -config.getFloatWithFallback(baseConfig, true, 0, "fireRate", "initialDelay");
+        float fireRateRandomness = config.getFloatWithFallback(baseConfig, false, 0, "fireRate", "randomness");
+        fireRate = config.getFloatWithFallback(baseConfig, false, 1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
+        fireTimer = -config.getFloatWithFallback(baseConfig, false, 0, "fireRate", "initialDelay");
         
         bulletData = new BulletData(config.getWithFallBack(baseConfig.get(true, "bullet"), false, "bullet"));
         
@@ -986,40 +986,43 @@ class Barrel extends Entity {
     
     void shoot() {
         
-        secondThread.execute(() -> {
-            try {
-                int bulletsShot = 0;
-                if (powerUpEffect != null) {
-                    powerUpActive = true;
-                    powerUpEffect.reset(false);
-                }
-                Thread.sleep((int) (powerUpEffectShootDelay * 1000));
-                powerUpActive = false;
-                if (burstSpacing < 100 && base.soundVolume > 0) {
-                    shootingSound.play();
-                }
-                while (true) {
-                    if (!is_paused) {
-                        Thread.sleep(burstSpacing);
-                        Gdx.app.postRunnable(Barrel.this::spawnBullet);
-                        bulletsShot++;
-                        if (bulletsShot >= bulletsPerShot) {
+        if(base.x <= -base.width - 20){
+            base.active = false;
+            base.rotation = 0;
+        }else {
+            secondThread.execute(() -> {
+                try {
+                    int bulletsShot = 0;
+                    if (powerUpEffect != null) {
+                        powerUpActive = true;
+                        powerUpEffect.reset(false);
+                    }
+                    Thread.sleep((int) (powerUpEffectShootDelay * 1000));
+                    powerUpActive = false;
+                    if (burstSpacing < 100 && base.soundVolume > 0) {
+                        shootingSound.play();
+                    }
+                    while (true) {
+                        if (!is_paused) {
+                            Thread.sleep(burstSpacing);
+                            Gdx.app.postRunnable(Barrel.this::spawnBullet);
+                            bulletsShot++;
+                            if (bulletsShot >= bulletsPerShot) {
+                                break;
+                            }
+                        } else if (stopThread) {
                             break;
                         }
-                    } else if (stopThread) {
-                        break;
                     }
+                    if (powerDownEffect != null) {
+                        powerDownActive = true;
+                        powerDownEffect.reset(false);
+                    }
+                } catch (InterruptedException e) {
+                    log("Burst thread interrupted", DEBUG);
                 }
-                if (powerDownEffect != null) {
-                    powerDownActive = true;
-                    powerDownEffect.reset(false);
-                }
-            } catch (InterruptedException e) {
-                log("Burst thread interrupted", DEBUG);
-            }
-        });
-        
-        
+            });
+        }
     }
     
     void spawnBullet() {
@@ -1196,14 +1199,8 @@ class Movement {
                     break;
                 }
                 case ("rotateRelativeTo"): {
-                    if (relativeTarget.equals(body)) {
-                        target.movementOffsetX = body.originX - target.originX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
-                        target.movementOffsetY = body.originY - target.originY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
-                    } else {
-                        // TODO: 21/8/2021 probably doesn't work, fix this
-                        target.movementOffsetX = relativeTarget.offsetX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
-                        target.movementOffsetY = relativeTarget.offsetY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
-                    }
+                    target.movementOffsetX = relativeTarget.originX - target.originX + relativeTarget.movementOffsetX + MathUtils.cosDeg(progress + angleOffset) * currentRadius;
+                    target.movementOffsetY = relativeTarget.originX - target.originX + relativeTarget.movementOffsetY + MathUtils.sinDeg(progress + angleOffset) * currentRadius;
                     if (progress < moveBy) {
                         progress = clamp(progress + speed * delta * 10, 0, moveBy);
                     }
