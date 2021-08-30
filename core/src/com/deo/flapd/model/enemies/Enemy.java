@@ -342,7 +342,6 @@ class EnemyData {
     float explosionScale;
     String shootingSound;
     
-    float[] bulletOffset;
     float bulletOffsetAngle;
     float bulletOffsetDistance;
     
@@ -356,9 +355,6 @@ class EnemyData {
     float width;
     float height;
     
-    int fireEffectCount;
-    int[] fireOffsetsX;
-    int[] fireOffsetsY;
     String[] fireEffects;
     float[] fireScales;
     Array<ParticleEffectPool.PooledEffect> fireParticleEffects;
@@ -376,7 +372,7 @@ class EnemyData {
     
     String hitColor;
     
-    int[] spawnHeight;
+    private final int[] spawnHeight;
     
     int[] scoreSpawnConditions;
     
@@ -409,7 +405,6 @@ class EnemyData {
     
     String droneSpawnSound;
     
-    int[] droneSpawnOffset;
     float droneAngle;
     float droneDistance;
     
@@ -427,9 +422,6 @@ class EnemyData {
     
     EnemyData(JsonEntry enemyInfo) {
         
-        fireParticleEffects = new Array<>();
-        fireParticleEffectAngles = new Array<>();
-        fireParticleEffectDistances = new Array<>();
         this.enemyInfo = enemyInfo;
         
         name = enemyInfo.name;
@@ -443,11 +435,13 @@ class EnemyData {
         
         x = 805;
         y = 0;
+    
+        fireParticleEffects = new Array<>();
+        fireParticleEffectAngles = new Array<>();
+        fireParticleEffectDistances = new Array<>();
+    
+        int fireEffectCount = enemyInfo.getInt(1, "fire", "count");
         
-        fireEffectCount = enemyInfo.getInt(1, "fire", "count");
-        
-        fireOffsetsX = new int[fireEffectCount];
-        fireOffsetsY = new int[fireEffectCount];
         fireEffects = new String[fireEffectCount];
         fireScales = new float[fireEffectCount];
         fireParticleEffects.setSize(fireEffectCount);
@@ -461,12 +455,11 @@ class EnemyData {
         onBossWave = enemyInfo.getBoolean(false, "spawnConditions", "bossWave");
         
         for (int i = 0; i < fireEffectCount; i++) {
-            fireOffsetsX[i] = enemyInfo.getIntArray(new int[]{0, 0}, "fire", "offset" + i)[0];
-            fireOffsetsY[i] = enemyInfo.getIntArray(new int[]{0, 0}, "fire", "offset" + i)[1];
+            float[] fireOffset = enemyInfo.getFloatArray(new float[]{0, 0}, "fire", "offset" + i);
             fireEffects[i] = enemyInfo.getString("particles/fire_engine_left_blue.p", "fire", "effect" + i);
             fireScales[i] = enemyInfo.getFloat(1, "fire", "scale" + i);
-            fireParticleEffectAngles.set(i, MathUtils.atan2(fireOffsetsY[i], fireOffsetsX[i]) * MathUtils.radiansToDegrees);
-            fireParticleEffectDistances.set(i, getDistanceBetweenTwoPoints(0, 0, fireOffsetsX[i], fireOffsetsY[i]));
+            fireParticleEffectAngles.set(i, MathUtils.atan2(fireOffset[1], fireOffset[0]) * MathUtils.radiansToDegrees);
+            fireParticleEffectDistances.set(i, getDistanceBetweenTwoPoints(0, 0, fireOffset[0], fireOffset[1]));
         }
         
         hasAnimation = texture.endsWith(".atlas");
@@ -494,7 +487,7 @@ class EnemyData {
         if (spawnsBullets) {
             shootingSound = enemyInfo.getString("sfx/gun1.ogg", "shootSound");
     
-            bulletOffset = enemyInfo.getFloatArray(new float[]{0, 0}, "bulletOffset");
+            float[] bulletOffset = enemyInfo.getFloatArray(new float[]{0, 0}, "bulletOffset");
             bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
             bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, bulletOffset[0], bulletOffset[1]);
     
@@ -514,7 +507,7 @@ class EnemyData {
             dronesPerSpawn = enemyInfo.getInt(1, "dronesPerSpawn");
             droneType = enemyInfo.getString(name, "droneType");
             droneSpawnSound = enemyInfo.getString("sfx/gun3.ogg", "droneSpawnSound");
-            droneSpawnOffset = enemyInfo.getIntArray(new int[]{0, 0}, "droneSpawnOffset");
+            int[] droneSpawnOffset = enemyInfo.getIntArray(new int[]{0, 0}, "droneSpawnOffset");
             droneAngle = MathUtils.atan2(droneSpawnOffset[1], droneSpawnOffset[0]) * MathUtils.radiansToDegrees;
             droneDistance = getDistanceBetweenTwoPoints(0, 0, droneSpawnOffset[0], droneSpawnOffset[1]);
         }

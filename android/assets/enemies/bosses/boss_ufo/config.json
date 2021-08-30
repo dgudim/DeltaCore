@@ -12,7 +12,7 @@
       "width": 208,
       "height": 98,
       "hasAnimation": true,
-      "texture": "phase1",
+      "texture": "body_phase1",
       "frameDuration": 0.07,
       "layer": 1
     },
@@ -121,7 +121,7 @@
         "enableCollisions": false,
         "showHealthBar": false,
         "active": false,
-        "changeTexture": "dead",
+        "changeTexture": "body_dead",
         "frameDuration": 0.07,
         "move": {
           "moveLinearY": {
@@ -155,7 +155,7 @@
         "showHealthBar": false,
         "visible": false,
         "active": false,
-        "changeTexture": "phase1",
+        "changeTexture": "body_phase1",
         "frameDuration": 0.07,
         "move": false
       },

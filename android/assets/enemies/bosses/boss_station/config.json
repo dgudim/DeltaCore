@@ -322,7 +322,8 @@
           "fireRate": {
             "initialDelay": 0,
             "baseRate": 0.7
-          }
+          },
+          "drawOnTop": true
         },
         "right": {
           "texture": "rocket_launcher_right_barrel",
@@ -332,7 +333,8 @@
           "fireRate": {
             "initialDelay": 0.7,
             "baseRate": 0.7
-          }
+          },
+          "drawOnTop": true
         }
       },
       "bullet": {

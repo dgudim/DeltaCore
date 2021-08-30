@@ -93,6 +93,13 @@
       "explosionEffect": "particles/explosion_evil_small.p",
       "explosionScale": 0.9,
       "explosionSound": "sfx/explosion.ogg",
+      "effects": {
+        "count": 1,
+        "effect0": "particles/fire2.p",
+        "offset0": [0, 0],
+        "scale0": 1.3,
+        "drawOnTop0": false
+      },
       "layer": 0,
       "drops": {
         "items": {
@@ -152,6 +159,7 @@
       "width": 128,
       "height": 128,
       "canAim": true,
+      "aimingSpeed": 100,
       "aimAngleLimit": [-360, 360],
       "aimAnimation": "textureChange",
       "aimAnimationTextures": {
@@ -177,6 +185,11 @@
         "color": "ff0000ff",
         "screenShakeOnHit": 3,
         "screenShakeDuration": 0.001
+      },
+      "barrels": {
+        "mainBarrel": {
+          "drawOnTop": true
+        }
       },
       "bulletSpread": 0.7,
       "bulletOffset": [0, 0],

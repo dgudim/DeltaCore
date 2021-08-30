@@ -17,7 +17,7 @@
       "originX": "standard",
       "originY": "standard",
       "hasAnimation": true,
-      "texture": "phase1",
+      "texture": "body_phase1",
       "frameDuration": 0.1,
       "explosionEffect": "particles/explosion_destroyer.p",
       "explosionScale": 1,
@@ -191,7 +191,7 @@
       "bodyChangePhase": {
         "target": "body",
         "active": true,
-        "changeTexture": "phase2",
+        "changeTexture": "body_phase2",
         "frameDuration": 0.0334,
         "ai": {
           "xBounds": [400, 800],
@@ -221,7 +221,7 @@
     "thirdPhase": {
       "bodyChangePhase": {
         "target": "body",
-        "changeTexture": "phase3",
+        "changeTexture": "body_phase3",
         "frameDuration": 0.0334,
         "move": {
           "shake": {
@@ -288,7 +288,7 @@
     "RESET": {
       "bodyReset": {
         "target": "body",
-        "changeTexture": "phase1",
+        "changeTexture": "body_phase1",
         "frameDuration": 0.1
       },
       "triggers": {

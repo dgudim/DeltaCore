@@ -115,7 +115,7 @@ public class Boss {
                         JsonValue toAdd = new JsonValue(JsonValue.ValueType.object);
                         toAdd.setName("barrels");
                         JsonValue toAdd_mainBarrel = new JsonValue(JsonValue.ValueType.object);
-                        toAdd_mainBarrel.setName(config.name);
+                        toAdd_mainBarrel.setName("barrel_" + config.name);
                         toAdd_mainBarrel.addChild("texture", new JsonValue(config.getString("noTexture", "texture")));
                         float width = config.getFloat(false, 1, "width");
                         float height = config.getFloat(false, 1, "height");
@@ -133,6 +133,7 @@ public class Boss {
                         toAdd_mainBarrel_offset.addChild(new JsonValue(width / 2f - originX));
                         toAdd_mainBarrel_offset.addChild(new JsonValue(height / 2f - originY));
                         toAdd_mainBarrel.addChild("offset", toAdd_mainBarrel_offset);
+                        toAdd_mainBarrel.addChild("drawOnTop", new JsonValue(true));
                         toAdd.addChild(toAdd_mainBarrel);
                         if (!config.getString("noTexture", "texture").equals("noTexture")) {
                             config.jsonValue.get("texture").set("noTexture");
@@ -250,7 +251,7 @@ public class Boss {
         hasAlreadySpawned = true;
         putBoolean("boss_spawned_" + bossName, true);
         GameLogic.bossWave = true;
-        if(!bossMusic.equals("")){
+        if (!bossMusic.equals("")) {
             musicManager.setNewMusicSource(bossMusic, 1);
         }
         phases.get(0).activate();
@@ -277,7 +278,7 @@ public class Boss {
         body.x = 1500;
         body.y = 1500;
         GameLogic.bossWave = false;
-    
+        
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         
         for (int i = 0; i < animations.size; i++) {
@@ -295,7 +296,7 @@ public class Boss {
 class BasePart extends Entity {
     
     Animation<TextureRegion> enemyAnimation;
-    private float animationPosition;
+    float animationPosition;
     boolean hasAnimation;
     
     AssetManager assetManager;
@@ -317,6 +318,13 @@ class BasePart extends Entity {
     
     ParticleEffectPool.PooledEffect explosionEffect;
     boolean exploded;
+    
+    boolean hasEffects;
+    int effectCount;
+    Array<ParticleEffectPool.PooledEffect> particleEffects;
+    Array<Float> particleEffectAngles;
+    Array<Float> particleEffectDistances;
+    boolean[] effectLayerFlags;
     
     TextureAtlas textures;
     
@@ -389,6 +397,34 @@ class BasePart extends Entity {
             log("creating explosion effect for " + newConfig.name, DEBUG);
         }
         
+        hasEffects = currentConfig.get("effects").isObject();
+        
+        if (hasEffects) {
+            effectCount = currentConfig.getInt(0, "effects", "count");
+            
+            particleEffects = new Array<>();
+            particleEffectAngles = new Array<>();
+            particleEffectDistances = new Array<>();
+            
+            effectLayerFlags = new boolean[effectCount];
+            
+            for (int i = 0; i < effectCount; i++) {
+                float[] effectOffset = currentConfig.getFloatArray(new float[]{0, 0}, "effects", "offset" + i);
+                particleEffectAngles.add(MathUtils.atan2(effectOffset[1], effectOffset[0]) * MathUtils.radiansToDegrees);
+                particleEffectDistances.add(getDistanceBetweenTwoPoints(0, 0, effectOffset[0], effectOffset[1]));
+                effectLayerFlags[i] = currentConfig.getBoolean(false, "effects", "drawOnTop" + i);
+                
+                ParticleEffectPool.PooledEffect effect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/fire2.p", "effects", "effect" + i));
+                effect.scaleEffect(currentConfig.getFloat(1, "effects", "scale" + i));
+                effect.setPosition(
+                        x + width / 2f + MathUtils.cosDeg(
+                                rotation + particleEffectAngles.get(i)) * particleEffectDistances.get(i),
+                        y + height / 2f + MathUtils.sinDeg(
+                                rotation + particleEffectAngles.get(i)) * particleEffectDistances.get(i));
+                particleEffects.add(effect);
+            }
+        }
+        
         soundVolume = getFloat("soundVolume");
         String texture = currentConfig.getString("noTexture", "texture");
         hasAnimation = currentConfig.getBoolean(false, false, "hasAnimation");
@@ -397,7 +433,7 @@ class BasePart extends Entity {
             entitySprite = new Sprite();
             enemyAnimation = new Animation<>(
                     currentConfig.getFloat(1, "frameDuration"),
-                    textures.findRegions(name + "_" + texture),
+                    textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
         } else {
             entitySprite = new Sprite(textures.findRegion(texture));
@@ -430,15 +466,35 @@ class BasePart extends Entity {
         healthBar.setPosition(width / 2 + x + movementOffsetX - 12.5f, y + movementOffsetY - 7);
     }
     
+    void drawEffects(SpriteBatch batch, float delta, boolean top) {
+        if (hasEffects) {
+            for (int i = 0; i < particleEffects.size; i++) {
+                if (effectLayerFlags[i] == top) {
+                    particleEffects.get(i).draw(batch, delta);
+                }
+            }
+        }
+    }
+    
+    void drawSpriteWithEffects(SpriteBatch batch, float delta) {
+        if (hasAnimation) {
+            entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+        }
+        drawEffects(batch, delta, false);
+        entitySprite.draw(batch);
+        drawEffects(batch, delta, true);
+    }
+    
+    void drawHealthBar(SpriteBatch batch) {
+        if (showHealthBar) {
+            healthBar.draw(batch, 1);
+        }
+    }
+    
     void draw(SpriteBatch batch, float delta) {
         if (visible) {
-            if (hasAnimation) {
-                entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
-            }
-            entitySprite.draw(batch);
-            if (showHealthBar) {
-                healthBar.draw(batch, 1);
-            }
+            drawSpriteWithEffects(batch, delta);
+            drawHealthBar(batch);
         }
         if (exploded) {
             explosionEffect.draw(batch);
@@ -451,6 +507,10 @@ class BasePart extends Entity {
         shapeRenderer.rect(entityHitBox.x, entityHitBox.y, entityHitBox.width, entityHitBox.height);
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.circle(x + originX + movementOffsetX, y + originY + movementOffsetY, 5);
+        shapeRenderer.setColor(Color.YELLOW);
+        for (int i = 0; i < particleEffects.size; i++) {
+            drawParticleEffectBounds(shapeRenderer, particleEffects.get(i));
+        }
     }
     
     @Override
@@ -468,7 +528,7 @@ class BasePart extends Entity {
         }
     }
     
-    void update(float delta) {
+    void updateEntityAndHealthBar(float delta) {
         updateEntity(delta);
         
         animationPosition += delta;
@@ -478,6 +538,24 @@ class BasePart extends Entity {
             healthBar.setPosition(width / 2 + x + movementOffsetX - 12.5f, y + movementOffsetY - 7);
             healthBar.act(delta);
         }
+    }
+    
+    void updateEffects(float delta) {
+        if (hasEffects) {
+            for (int i = 0; i < particleEffects.size; i++) {
+                particleEffects.get(i).setPosition(
+                        x + movementOffsetX + originX + MathUtils.cosDeg(
+                                rotation + movementRotation + particleEffectAngles.get(i)) * particleEffectDistances.get(i),
+                        y + movementOffsetY + originY + MathUtils.sinDeg(
+                                rotation + movementRotation + particleEffectAngles.get(i)) * particleEffectDistances.get(i));
+            }
+        }
+        if (exploded) {
+            explosionEffect.update(delta);
+        }
+    }
+    
+    void updateHealth() {
         if (hasCollision && collisionEnabled && health > 0) {
             health -= player.bullet.overlaps(entityHitBox, true);
         }
@@ -489,9 +567,12 @@ class BasePart extends Entity {
                 }
             }
         }
-        if (exploded) {
-            explosionEffect.update(delta);
-        }
+    }
+    
+    void update(float delta) {
+        updateEntityAndHealthBar(delta);
+        updateHealth();
+        updateEffects(delta);
     }
     
     void setTargetPlayer(Player player) {
@@ -501,6 +582,12 @@ class BasePart extends Entity {
     void dispose() {
         if (hasCollision && !type.equals("shield")) {
             explosionEffect.free();
+        }
+        if (hasEffects) {
+            for (int i = 0; i < particleEffects.size; i++) {
+                particleEffects.get(i).free();
+            }
+            particleEffects.clear();
         }
     }
     
@@ -589,10 +676,8 @@ class Part extends BasePart {
     @Override
     void draw(SpriteBatch batch, float delta) {
         if (visible && health > 0 && link.health > 0 && body.health > 0) {
-            entitySprite.draw(batch);
-            if (showHealthBar) {
-                healthBar.draw(batch, 1);
-            }
+            drawSpriteWithEffects(batch, delta);
+            drawHealthBar(batch);
         }
         if (exploded) {
             explosionEffect.draw(batch);
@@ -607,14 +692,8 @@ class Shield extends Part {
     }
     
     @Override
-    protected void update(float delta) {
-        updateEntity(delta);
+    void updateHealth() {
         entitySprite.setAlpha(health / maxHealth);
-        if (showHealthBar) {
-            healthBar.setValue(health);
-            healthBar.setPosition(width / 2 + x + movementOffsetX - 12.5f, y + movementOffsetY - 7);
-            healthBar.act(delta);
-        }
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
             health = clamp(health - player.bullet.overlaps(entityHitBox, true), 1, maxHealth);
         }
@@ -670,35 +749,20 @@ class Cannon extends Part {
     }
     
     @Override
-    protected void updateEntity(float delta) {
-        entitySprite.setPosition(x + movementOffsetX, y + movementOffsetY);
-        entitySprite.setRotation(rotation + movementRotation);
-        entitySprite.setColor(color);
-        if (health > 0) {
-            entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
-            if (regeneration > 0 && maxHealth > 0) {
-                health = clamp(health + regeneration * delta, 0, maxHealth);
-            }
-        } else {
-            entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
-        }
-    }
-    
-    @Override
     protected void update(float delta) {
         super.update(delta);
         if (active) {
             if (canAim) {
                 currentAimAngle = lerpAngleWithConstantSpeed(currentAimAngle, clamp(MathUtils.radiansToDegrees * MathUtils.atan2(
-                        y + originY - (player.bounds.getY() + player.bounds.getHeight() / 2),
-                        x + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)),
+                        y + movementOffsetY + originY - (player.bounds.getY() + player.bounds.getHeight() / 2),
+                        x + movementOffsetX + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)),
                         aimAngleLimit[0], aimAngleLimit[1]), aimingSpeed, delta);
                 
                 switch (aimAnimationType) {
                     case ("textureChange"):
                         
                         String texture;
-                        if (currentAimAngle >= -22.5 && currentAimAngle <= 22.5) {
+                        if ((currentAimAngle >= 0 && currentAimAngle <= 22.5) || (currentAimAngle >= 337.5 && currentAimAngle <= 360)) {
                             texture = aimTextures[1];
                         } else if (currentAimAngle >= 22.5 && currentAimAngle <= 67.5) {
                             texture = aimTextures[7];
@@ -706,11 +770,11 @@ class Cannon extends Part {
                             texture = aimTextures[3];
                         } else if (currentAimAngle >= 112.5 && currentAimAngle <= 157.5) {
                             texture = aimTextures[6];
-                        } else if ((currentAimAngle >= 157.5 && currentAimAngle <= 180) || (currentAimAngle >= -180 && currentAimAngle <= -157.5)) {
+                        } else if ((currentAimAngle >= 157.5 && currentAimAngle <= 202.5)) {
                             texture = aimTextures[0];
-                        } else if (currentAimAngle >= -157.5 && currentAimAngle <= -112.5) {
+                        } else if (currentAimAngle >= 202.5 && currentAimAngle <= 247.5) {
                             texture = aimTextures[4];
-                        } else if (currentAimAngle >= -112.5 && currentAimAngle <= -67.5) {
+                        } else if (currentAimAngle >= 247.5 && currentAimAngle <= 292.5) {
                             texture = aimTextures[2];
                         } else {
                             texture = aimTextures[5];
@@ -720,7 +784,7 @@ class Cannon extends Part {
                             float frameDuration = Float.parseFloat(atlasAndFrameDuration[1]);
                             enemyAnimation = new Animation<>(
                                     frameDuration,
-                                    textures.findRegions(name + "_" + atlasAndFrameDuration[0]),
+                                    textures.findRegions(atlasAndFrameDuration[0]),
                                     Animation.PlayMode.LOOP);
                         } else {
                             entitySprite.setRegion(textures.findRegion(texture));
@@ -738,13 +802,41 @@ class Cannon extends Part {
     }
     
     @Override
-    void draw(SpriteBatch batch, float delta) {
-        for (int i = 0; i < barrels.size; i++) {
-            barrels.get(i).draw(batch, delta);
+    void drawSpriteWithEffects(SpriteBatch batch, float delta) {
+        boolean draw = visible && health > 0 && link.health > 0 && body.health > 0;
+        if (draw) {
+            if (hasAnimation) {
+                entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            }
+            drawEffects(batch, delta, false);
         }
-        super.draw(batch, delta);
+        drawBarrels(batch, delta, draw, false);
+        if (draw) {
+            entitySprite.draw(batch);
+        }
+        drawBarrels(batch, delta, draw, true);
+        if (draw) {
+            drawEffects(batch, delta, true);
+            drawHealthBar(batch);
+        }
+        
+    }
+    
+    void drawBarrels(SpriteBatch batch, float delta, boolean draw, boolean onTop) {
         for (int i = 0; i < barrels.size; i++) {
-            barrels.get(i).drawPowerUpEffect(batch);
+            if (barrels.get(i).drawBarrelOnTop == onTop) {
+                barrels.get(i).draw(batch, delta, draw);
+            }
+        }
+    }
+    
+    @Override
+    void draw(SpriteBatch batch, float delta) {
+        
+        drawSpriteWithEffects(batch, delta);
+        
+        if (exploded) {
+            explosionEffect.draw(batch);
         }
     }
     
@@ -783,6 +875,7 @@ class Barrel extends Entity {
     float fireTimer;
     
     boolean drawBulletsOnTop;
+    boolean drawBarrelOnTop;
     
     BulletData bulletData;
     Array<EnemyBullet> bullets;
@@ -822,15 +915,17 @@ class Barrel extends Entity {
         JsonEntry baseConfig = base.currentConfig;
         drawBulletsOnTop = config.getBooleanWithFallback(baseConfig, false, false, "drawBulletsOnTop");
         
+        drawBarrelOnTop = config.getBoolean(false, false, "drawOnTop");
+        
         this.base = base;
         
         hasAnimation = config.getBooleanWithFallback(baseConfig, false, false, "hasAnimation");
-        String texture = config.getString("noTexture", "texture");
+        String texture = config.getString(false, "noTexture", "texture");
         if (hasAnimation) {
             entitySprite = new Sprite();
             barrelAnimation = new Animation<>(
                     config.getFloatWithFallback(baseConfig, true, 1, "frameDuration"),
-                    textures.findRegions(config.name + "_" + texture),
+                    textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
         } else {
             entitySprite = new Sprite(textures.findRegion(texture));
@@ -892,7 +987,6 @@ class Barrel extends Entity {
             recoilReturnSpeed = config.getFloatWithFallback(baseConfig, true, 10, "recoilReturnSpeed");
         }
         
-        
         if (hasPowerUpEffect) {
             powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(powerUpEffectPath);
             powerUpEffect.scaleEffect(powerUpScale);
@@ -904,20 +998,23 @@ class Barrel extends Entity {
         
     }
     
-    void drawSprite(SpriteBatch batch) {
+    void drawSpriteSpriteWithEffects(SpriteBatch batch) {
         if (hasAnimation) {
             entitySprite.setRegion(barrelAnimation.getKeyFrame(animationPosition));
         }
         entitySprite.draw(batch);
+        if (powerUpActive) {
+            powerUpEffect.draw(batch);
+        }
     }
     
-    void draw(SpriteBatch batch, float delta) {
-        if (base.visible && base.health > 0 && base.link.health > 0 && base.body.health > 0) {
+    void draw(SpriteBatch batch, float delta, boolean draw) {
+        if (draw) {
             if (powerDownActive) {
                 powerDownEffect.draw(batch);
             }
             if (drawBulletsOnTop) {
-                drawSprite(batch);
+                drawSpriteSpriteWithEffects(batch);
             }
         }
         for (int i = 0; i < bullets.size; i++) {
@@ -928,17 +1025,9 @@ class Barrel extends Entity {
                 bullets.removeIndex(i);
             }
         }
-        if (base.visible && base.health > 0 && base.link.health > 0 && base.body.health > 0) {
+        if (draw) {
             if (!drawBulletsOnTop) {
-                drawSprite(batch);
-            }
-        }
-    }
-    
-    void drawPowerUpEffect(SpriteBatch batch) {
-        if (base.visible && base.health > 0 && base.link.health > 0 && base.body.health > 0) {
-            if (powerUpActive && base.active) {
-                powerUpEffect.draw(batch);
+                drawSpriteSpriteWithEffects(batch);
             }
         }
     }
@@ -997,10 +1086,10 @@ class Barrel extends Entity {
     
     void shoot() {
         
-        if(base.x <= -base.width - 20){
+        if (base.x <= -base.width - 20) {
             base.active = false;
             base.rotation = 0;
-        }else {
+        } else {
             secondThread.execute(() -> {
                 try {
                     int bulletsShot = 0;
@@ -1039,9 +1128,9 @@ class Barrel extends Entity {
     void spawnBullet() {
         BulletData newBulletData = new BulletData(base.currentConfig.get("bullet"));
         
-        float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(rotation + bulletOffsetAngle) * bulletOffsetDistance;
-        float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(rotation + bulletOffsetAngle) * bulletOffsetDistance;
-        float newRot = rotation;
+        float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
+        float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
+        float newRot = base.currentAimAngle;
         
         newRot += getRandomInRange(-10, 10) * bulletSpread;
         
@@ -1094,13 +1183,9 @@ class Movement {
     
     private final Array<Movement> animations;
     
-    private final BasePart body;
-    
-    Movement(JsonEntry movementConfig, String target, Array<BasePart> parts, Array<Movement> animations, BasePart body) {
+    Movement(JsonEntry movementConfig, String target, Array<BasePart> parts, Array<Movement> animations) {
         
         log("loading movement: " + movementConfig.name, DEBUG);
-        
-        this.body = body;
         
         this.animations = animations;
         for (int i = 0; i < parts.size; i++) {
@@ -1416,7 +1501,7 @@ class Action {
             movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
-                Movement movement = new Movement(actionValue.get("move", i), target, parts, animations, boss.body);
+                Movement movement = new Movement(actionValue.get("move", i), target, parts, animations);
                 animations.add(movement);
                 movements.add(movement);
             }
@@ -1439,7 +1524,7 @@ class Action {
             if (target.hasAnimation) {
                 target.enemyAnimation = new Animation<>(
                         frameDuration,
-                        target.textures.findRegions(target.name + "_" + changeTexture),
+                        target.textures.findRegions(changeTexture),
                         Animation.PlayMode.LOOP);
             } else {
                 target.entitySprite.setRegion(target.textures.findRegion(changeTexture));
