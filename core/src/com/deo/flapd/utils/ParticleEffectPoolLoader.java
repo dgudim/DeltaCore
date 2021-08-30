@@ -47,7 +47,8 @@ public class ParticleEffectPoolLoader {
             {"particles/particle_nowind.p", " "},
             {"particles/particle_nowind2.p", " "},
             {"particles/smoke.p", " "},
-            {"particles/explosion_station_core.p", "core explosion"}
+            {"particles/explosion_station_core.p", "core explosion"},
+            {"particles/fire_big.p", "fire for destroyer boss"}
     };
     
     public ParticleEffectPoolLoader() {

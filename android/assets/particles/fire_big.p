@@ -118,18 +118,7 @@ scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
 - Wind - 
-active: true
-lowMin: 100.0
-lowMax: 100.0
-highMin: 300.0
-highMax: 300.0
-relative: false
-scalingCount: 2
-scaling0: 1.0
-scaling1: 0.0
-timelineCount: 2
-timeline0: 0.0
-timeline1: 0.29791272
+active: false
 - Gravity - 
 active: false
 - Tint - 
@@ -292,15 +281,15 @@ timeline0: 0.0
 active: true
 lowMin: 100.0
 lowMax: 100.0
-highMin: 300.0
-highMax: 300.0
+highMin: 0.0
+highMax: 0.0
 relative: false
 scalingCount: 2
 scaling0: 1.0
-scaling1: 0.0
+scaling1: 1.0
 timelineCount: 2
 timeline0: 0.0
-timeline1: 0.29981026
+timeline1: 0.5
 - Gravity - 
 active: false
 - Tint - 

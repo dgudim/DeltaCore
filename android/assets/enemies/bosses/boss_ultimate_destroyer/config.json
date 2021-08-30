@@ -1,0 +1,449 @@
+{
+  "textures": "bossUltimateDestroyer.atlas",
+  "spawnAt": [850, 170],
+  "spawnConditions": {
+    "score": 25000,
+    "randomness": 1000
+  },
+  "parts": {
+    "body": {
+      "type": "basePart",
+      "health": 10000,
+      "regeneration": 70,
+      "hasCollision": true,
+      "width": 324,
+      "height": 188,
+      "hasAnimation": true,
+      "texture": "ultimate_destroyer",
+      "frameDuration": 0.1,
+      "explosionEffect": "particles/explosion_destroyer.p",
+      "explosionScale": 1,
+      "explosionSound": "sfx/explosion.ogg",
+      "layer": 1,
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [3, 7],
+          "count": [1, 5]
+        },
+        "money": {
+          "timer": 0.9,
+          "count": [3, 20]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 100
+        }
+      },
+      "effects": {
+        "count": 1,
+        "effect0": "particles/fire_big.p",
+        "offset0": [90, -3],
+        "scale0": 0.3,
+        "drawOnTop0": false
+      }
+    },
+    "minigun": {
+      "type": "cannon",
+      "drawBulletsOnTop": false,
+      "hasCollision": true,
+      "health": 5000,
+      "width": 146,
+      "height": 42,
+      "originX": 103,
+      "hasAnimation": true,
+      "frameDuration": 100000,
+      "texture": "ultimate_minigun",
+      "canAim": true,
+      "aimAnimation": "rotate",
+      "aimAngleLimit": [-10, 10],
+      "bullet": {
+        "hasCollisionWithPlayerBullets": false,
+        "texture": "bullet_minigun",
+        "speed": 400,
+        "damage": 4,
+        "trail": "particles/bullet_trail_left_yellow.p",
+        "trailScale": 0.3,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion3_2.p",
+        "explosionScale": 0.3,
+        "height": 8,
+        "width": 8
+      },
+      "barrels": {
+        "main1": {
+          "offset": [-100, 10],
+          "fireRate": {
+            "initialDelay": 1
+          }
+        },
+        "main2": {
+          "offset": [-100, 0],
+          "fireRate": {
+            "initialDelay": 5
+          }
+        },
+        "main3": {
+          "offset": [-100, -10],
+          "fireRate": {
+            "initialDelay": 7
+          }
+        }
+      },
+      "aimingSpeed": 10,
+      "layer": 2,
+      "offset": {
+        "relativeTo": "body",
+        "X": 30,
+        "Y": 5
+      },
+      "bulletSpread": 1,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun4.ogg",
+      "fireRate": {
+        "baseRate": 3,
+        "randomness": 1
+      },
+      "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
+      "explosionSound": "sfx/explosion.ogg",
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 4],
+          "count": [1, 3]
+        },
+        "money": {
+          "timer": 0.9,
+          "count": [3, 10]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 100
+        }
+      }
+    },
+    "artillery": {
+      "type": "cannon",
+      "drawBulletsOnTop": false,
+      "health": 6000,
+      "width": 146,
+      "height": 42,
+      "originX": 103,
+      "hasAnimation": true,
+      "hasCollision": true,
+      "frameDuration": 100000,
+      "texture": "ultimate_artillery",
+      "canAim": true,
+      "aimAnimation": "rotate",
+      "aimAngleLimit": [-10, 10],
+      "bullet": {
+        "hasCollisionWithPlayerBullets": false,
+        "texture": "bullet_shotgun",
+        "speed": 210,
+        "damage": 15,
+        "trail": "particles/bullet_trail_left_yellow.p",
+        "trailScale": 1,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion3_2.p",
+        "explosionScale": 0.3,
+        "height": 12,
+        "width": 12
+      },
+      "barrels": {
+        "main": {
+          "offset": [-98, 3]
+        }
+      },
+      "aimingSpeed": 10,
+      "layer": 2,
+      "offset": {
+        "relativeTo": "body",
+        "X": 30,
+        "Y": 150
+      },
+      "bulletSpread": 1,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/gun2.ogg",
+      "fireRate": {
+        "baseRate": 3
+      },
+      "shootingKeyFrame": 1,
+      "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
+      "explosionSound": "sfx/explosion.ogg",
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 4],
+          "count": [1, 3]
+        },
+        "money": {
+          "timer": 0.9,
+          "count": [3, 10]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 100
+        }
+      }
+    },
+    "laser": {
+      "type": "cannon",
+      "drawBulletsOnTop": false,
+      "health": 7000,
+      "width": 110,
+      "height": 38,
+      "hasCollision": true,
+      "hasAnimation": true,
+      "frameDuration": 0.05,
+      "texture": "ultimate_laser",
+      "canAim": true,
+      "aimAnimation": "rotate",
+      "aimAngleLimit": [-360, 360],
+      "bullet": {
+        "isLaser": true,
+        "texture": "bullet_laser",
+        "fadeOutTimer": 1.3,
+        "damage": 0.05,
+        "height": 20,
+        "color": "ff0000ff",
+        "screenShakeOnHit": 5,
+        "screenShakeDuration": 0.001
+      },
+      "powerUpEffect": "particles/laser_powerup_red.p",
+      "powerUpShootDelay": 1.1,
+      "powerUpEffectOffset": [-5, 0],
+      "powerUpEffectScale": 0.7,
+      "barrels": {
+        "main": {
+          "offset": [-50, 0]
+        }
+      },
+      "aimingSpeed": 20,
+      "layer": 1,
+      "offset": {
+        "relativeTo": "body",
+        "X": -5,
+        "Y": 20
+      },
+      "bulletSpread": 0,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 1,
+      "shootSound": "sfx/laser.ogg",
+      "fireRate": {
+        "baseRate": 0.5
+      },
+      "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
+      "explosionSound": "sfx/explosion.ogg",
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 5],
+          "count": [1, 4]
+        },
+        "money": {
+          "timer": 0.9,
+          "count": [3, 13]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 100
+        }
+      }
+    },
+    "rocketLauncher": {
+      "type": "cannon",
+      "drawBulletsOnTop": false,
+      "health": 6000,
+      "width": 80,
+      "height": 42,
+      "hasCollision": true,
+      "texture": "ultimate_rocket_launcher",
+      "canAim": true,
+      "aimAnimation": "rotate",
+      "aimAngleLimit": [-360, 360],
+      "bullet": {
+        "hasCollisionWithPlayerBullets": true,
+        "texture": "missile",
+        "speed": 100,
+        "damage": 7,
+        "homing": true,
+        "homingSpeed": 100,
+        "explosionTimer": 3,
+        "trail": "particles/bullet_trail_left_yellow.p",
+        "trailScale": 0.3,
+        "trailOffset": [0, 0],
+        "explosionEffect": "particles/explosion.p",
+        "explosionScale": 0.3,
+        "height": 4,
+        "width": 6
+      },
+      "barrels": {
+        "main": {
+          "offset": [-40, 0]
+        }
+      },
+      "aimingSpeed": 50,
+      "layer": 2,
+      "offset": {
+        "relativeTo": "body",
+        "X": 30,
+        "Y": 100
+      },
+      "bulletSpread": 8,
+      "bulletOffset": [0, 0],
+      "bulletsPerShot": 5,
+      "shootSound": "sfx/gun3.ogg",
+      "fireRate": {
+        "baseRate": 1
+      },
+      "explosionEffect": "particles/explosion.p",
+      "explosionScale": 1,
+      "explosionSound": "sfx/explosion.ogg",
+      "drops": {
+        "items": {
+          "timer": 1.3,
+          "rarity": [1, 6],
+          "count": [1, 4]
+        },
+        "money": {
+          "timer": 0.9,
+          "count": [3, 13]
+        },
+        "bonuses": {
+          "type": [1, 3],
+          "chance": 100
+        }
+      }
+    }
+  },
+  "groups": {
+    "cannons": "minigun, artillery, laser, rocketLauncher"
+  },
+  "phases": {
+    "initializingPhase": {
+      "bodyInit": {
+        "target": "body",
+        "move": {
+          "moveLinearX": {
+            "moveBy": -190,
+            "speed": 5
+          },
+          "moveLinearX": {
+            "moveBy": -210,
+            "speed": 5
+          }
+        }
+      }
+    },
+    "inPlacePhase": {
+      "minigunInPlace": {
+        "target": "minigun",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "active": true,
+        "changeTexture": "ultimate_minigun",
+        "frameDuration": 0.05
+      },
+      "artilleryInPlace": {
+        "target": "artillery",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "active": true,
+        "changeTexture": "ultimate_artillery",
+        "frameDuration": 0.07
+      },
+      "laserInPlace": {
+        "target": "laser",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "active": true
+      },
+      "rocketLauncherInPlace": {
+        "target": "rocketLauncher",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "active": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionX",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 510
+        }
+      }
+    },
+    "2ndPhase": {
+      "bodyActivate": {
+        "target": "body",
+        "enableCollisions": true,
+        "showHealthBar": true,
+        "active": true
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "laser",
+          "value": 0
+        }
+      }
+    },
+    "deathAnimationPhase": {
+      "bodyDie": {
+        "target": "body",
+        "enableCollisions": false,
+        "showHealthBar": false,
+        "active": false,
+        "move": {
+          "moveLinearY": {
+            "moveBy": -1300,
+            "speed": 5,
+            "stopPreviousAnimations": true
+          },
+          "moveLinearX": {
+            "moveBy": -100,
+            "speed": 1
+          },
+          "rotate": {
+            "moveBy": 360,
+            "speed": 1
+          }
+        }
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "health",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": 0
+        }
+      }
+    },
+    "RESET": {
+      "minigunReset": {
+        "target": "minigun",
+        "changeTexture": "ultimate_minigun",
+        "frameDuration": 100000
+      },
+      "artilleryReset": {
+        "target": "artillery",
+        "changeTexture": "ultimate_artillery",
+        "frameDuration": 100000
+      },
+      "triggers": {
+        "trigger0": {
+          "triggerType": "positionY",
+          "triggerModifier": "<=",
+          "target": "body",
+          "value": -300
+        }
+      }
+    }
+  }
+}

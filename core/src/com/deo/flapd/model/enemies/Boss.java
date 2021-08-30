@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -48,6 +49,7 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.view.GameScreen.is_paused;
 import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
@@ -90,7 +92,7 @@ public class Boss {
         hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
         spawnScore = bossConfig.getInt(-1, "spawnConditions", "score") + getRandomInRange(-bossConfig.getInt(0, "spawnConditions", "randomness"), bossConfig.getInt(0, "spawnConditions", "randomness"));
         spawnAt = bossConfig.getIntArray(new int[]{500, 500}, "spawnAt");
-        bossMusic = bossConfig.getString("", "music");
+        bossMusic = bossConfig.getString(false, "", "music");
         this.musicManager = musicManager;
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
             String type = bossConfig.get("parts", i).getString("part", "type");
@@ -117,6 +119,8 @@ public class Boss {
                         JsonValue toAdd_mainBarrel = new JsonValue(JsonValue.ValueType.object);
                         toAdd_mainBarrel.setName("barrel_" + config.name);
                         toAdd_mainBarrel.addChild("texture", new JsonValue(config.getString("noTexture", "texture")));
+                        toAdd_mainBarrel.addChild("hasAnimation", new JsonValue(config.getBoolean(false, false, "hasAnimation")));
+                        toAdd_mainBarrel.addChild("frameDuration", new JsonValue(config.getFloat(false, 1, "frameDuration")));
                         float width = config.getFloat(false, 1, "width");
                         float height = config.getFloat(false, 1, "height");
                         float originX = width / 2f;
@@ -133,12 +137,13 @@ public class Boss {
                         toAdd_mainBarrel_offset.addChild(new JsonValue(width / 2f - originX));
                         toAdd_mainBarrel_offset.addChild(new JsonValue(height / 2f - originY));
                         toAdd_mainBarrel.addChild("offset", toAdd_mainBarrel_offset);
-                        toAdd_mainBarrel.addChild("drawOnTop", new JsonValue(true));
                         toAdd.addChild(toAdd_mainBarrel);
                         if (!config.getString("noTexture", "texture").equals("noTexture")) {
                             config.jsonValue.get("texture").set("noTexture");
                         }
-                        
+                        if (config.get(false, "hasAnimation").isBoolean()) {
+                            config.jsonValue.get("hasAnimation").set(false);
+                        }
                         config.addValue(new JsonEntry(toAdd));
                     }
                     
@@ -279,7 +284,9 @@ public class Boss {
         body.y = 1500;
         GameLogic.bossWave = false;
         
-        this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
+        if (!bossMusic.equals("")) {
+            this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
+        }
         
         for (int i = 0; i < animations.size; i++) {
             animations.get(i).reset();
@@ -397,7 +404,7 @@ class BasePart extends Entity {
             log("creating explosion effect for " + newConfig.name, DEBUG);
         }
         
-        hasEffects = currentConfig.get("effects").isObject();
+        hasEffects = currentConfig.get(false, "effects").isObject();
         
         if (hasEffects) {
             effectCount = currentConfig.getInt(0, "effects", "count");
@@ -508,8 +515,10 @@ class BasePart extends Entity {
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.circle(x + originX + movementOffsetX, y + originY + movementOffsetY, 5);
         shapeRenderer.setColor(Color.YELLOW);
-        for (int i = 0; i < particleEffects.size; i++) {
-            drawParticleEffectBounds(shapeRenderer, particleEffects.get(i));
+        if (hasEffects) {
+            for (int i = 0; i < particleEffects.size; i++) {
+                drawParticleEffectBounds(shapeRenderer, particleEffects.get(i));
+            }
         }
     }
     
@@ -920,7 +929,8 @@ class Barrel extends Entity {
         
         this.base = base;
         
-        hasAnimation = config.getBooleanWithFallback(baseConfig, false, false, "hasAnimation");
+        hasAnimation = config.getBoolean(false, false, "hasAnimation");
+        shootingKeyFrame = config.getIntWithFallback(baseConfig, false, -1, "shootingKeyFrame");
         String texture = config.getString(false, "noTexture", "texture");
         if (hasAnimation) {
             entitySprite = new Sprite();
@@ -928,13 +938,12 @@ class Barrel extends Entity {
                     config.getFloatWithFallback(baseConfig, true, 1, "frameDuration"),
                     textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
-            shootingKeyFrame = config.getInt(false, -1, "shootingKeyFrame");
         } else {
             entitySprite = new Sprite(textures.findRegion(texture));
         }
         
-        width = config.getFloat(100, "width");
-        height = config.getFloat(100, "height");
+        width = config.getFloat(false, 0, "width");
+        height = config.getFloat(false, 0, "height");
         setSize(width, height);
         init();
         
@@ -1075,12 +1084,17 @@ class Barrel extends Entity {
                 powerDownEffect.update(delta);
             }
             if (fireTimer >= 1 && base.health > 0) {
-                if (hasAnimation && shootingKeyFrame != -1) {
-                    if (barrelAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame) {
-                        shoot();
-                        fireTimer = 0;
+                boolean shoot;
+                if ((hasAnimation || base.hasAnimation) && shootingKeyFrame != -1) {
+                    if (barrelAnimation != null) {
+                        shoot = barrelAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
+                    } else {
+                        shoot = base.enemyAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
                     }
                 } else {
+                    shoot = true;
+                }
+                if (shoot) {
                     shoot();
                     fireTimer = 0;
                 }
@@ -1109,7 +1123,11 @@ class Barrel extends Entity {
                     Thread.sleep((int) (powerUpEffectShootDelay * 1000));
                     powerUpActive = false;
                     if (burstSpacing < 100 && base.soundVolume > 0) {
-                        shootingSound.play();
+                        try{
+                            shootingSound.play(base.soundVolume);
+                        }catch (GdxRuntimeException e){
+                            logException(e);
+                        }
                     }
                     while (true) {
                         if (!is_paused) {
@@ -1145,7 +1163,7 @@ class Barrel extends Entity {
         
         bullets.add(new EnemyBullet(base.assetManager, newBulletData, base.player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
         if (burstSpacing >= 100 && base.soundVolume > 0) {
-            shootingSound.play();
+            shootingSound.play(base.soundVolume);
         }
         currentRecoilOffset = recoil;
     }
@@ -1226,7 +1244,7 @@ class Movement {
             shakePeriod = movementConfig.getFloat(0.3f, "shakePeriod");
         } else {
             speed = movementConfig.getFloat(100, "speed");
-            String moveByRaw = movementConfig.getString("inf", "moveBy").trim();
+            String moveByRaw = movementConfig.getString(false, "inf", "moveBy").trim();
             if (moveByRaw.equals("inf")) {
                 moveBy = Integer.MAX_VALUE;
             } else if (moveByRaw.endsWith("%")) {
@@ -1484,7 +1502,6 @@ class Action {
         if (this.target.hasAnimation && !changeTexture.equals("false")) {
             frameDuration = actionValue.getFloat(this.target.enemyAnimation.getFrameDuration(), "frameDuration");
         }
-        int movementCount;
         
         if (boss.hasAi && this.target.equals(boss.body)) {
             hasAiSettingsChange = actionValue.get(false, "ai").isObject();
@@ -1507,7 +1524,7 @@ class Action {
             }
         }
         if (actionValue.get(false, "move").isObject()) {
-            movementCount = actionValue.get("move").size;
+            int movementCount = actionValue.get("move").size;
             hasMovement = true;
             for (int i = 0; i < movementCount; i++) {
                 Movement movement = new Movement(actionValue.get("move", i), target, parts, animations);

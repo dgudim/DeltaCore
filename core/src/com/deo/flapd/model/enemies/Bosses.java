@@ -15,7 +15,7 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 public class Bosses {
     
     public static Array<Boss> bosses;
-    public static final String[] bossNames = new String[]{"boss_ship", "boss_evil", "boss_star_destroyer", "boss_ufo", "boss_station"};
+    public static final String[] bossNames = new String[]{"boss_ship", "boss_evil", "boss_star_destroyer", "boss_ufo", "boss_station", "boss_ultimate_destroyer"};
     static final ExecutorService secondThread = Executors.newFixedThreadPool(10);
     static boolean stopThread = false;
     

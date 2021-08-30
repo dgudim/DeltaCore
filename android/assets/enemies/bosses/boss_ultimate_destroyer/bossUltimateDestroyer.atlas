@@ -1,0 +1,187 @@
+
+bossUltimateDestroyer.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ultimate_destroyer
+  rotate: false
+  xy: 1, 151
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 1
+ultimate_destroyer
+  rotate: false
+  xy: 1, 55
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 10
+ultimate_destroyer
+  rotate: false
+  xy: 165, 151
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 2
+ultimate_destroyer
+  rotate: false
+  xy: 165, 55
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 3
+ultimate_destroyer
+  rotate: false
+  xy: 329, 151
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 4
+ultimate_destroyer
+  rotate: false
+  xy: 329, 55
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 5
+ultimate_destroyer
+  rotate: false
+  xy: 493, 151
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 6
+ultimate_destroyer
+  rotate: false
+  xy: 493, 55
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 7
+ultimate_destroyer
+  rotate: false
+  xy: 657, 151
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 8
+ultimate_destroyer
+  rotate: false
+  xy: 657, 55
+  size: 162, 94
+  orig: 162, 94
+  offset: 0, 0
+  index: 9
+ultimate_artillery
+  rotate: false
+  xy: 1, 37
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 1
+ultimate_artillery
+  rotate: false
+  xy: 821, 229
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 2
+ultimate_artillery
+  rotate: false
+  xy: 1, 19
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 3
+ultimate_artillery
+  rotate: false
+  xy: 85, 37
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 4
+ultimate_artillery
+  rotate: false
+  xy: 821, 211
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 5
+ultimate_artillery
+  rotate: false
+  xy: 905, 229
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 6
+ultimate_artillery
+  rotate: false
+  xy: 1, 1
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 7
+ultimate_artillery
+  rotate: false
+  xy: 85, 19
+  size: 82, 16
+  orig: 82, 16
+  offset: 0, 0
+  index: 8
+ultimate_minigun
+  rotate: false
+  xy: 169, 32
+  size: 73, 21
+  orig: 73, 21
+  offset: 0, 0
+  index: 1
+ultimate_minigun
+  rotate: false
+  xy: 821, 188
+  size: 73, 21
+  orig: 73, 21
+  offset: 0, 0
+  index: 2
+ultimate_minigun
+  rotate: false
+  xy: 244, 32
+  size: 73, 21
+  orig: 73, 21
+  offset: 0, 0
+  index: 3
+ultimate_minigun
+  rotate: false
+  xy: 821, 165
+  size: 73, 21
+  orig: 73, 21
+  offset: 0, 0
+  index: 4
+ultimate_laser
+  rotate: false
+  xy: 319, 34
+  size: 55, 19
+  orig: 55, 19
+  offset: 0, 0
+  index: 1
+ultimate_laser
+  rotate: false
+  xy: 821, 144
+  size: 55, 19
+  orig: 55, 19
+  offset: 0, 0
+  index: 2
+ultimate_laser
+  rotate: false
+  xy: 376, 34
+  size: 55, 19
+  orig: 55, 19
+  offset: 0, 0
+  index: 3
+ultimate_rocket_launcher
+  rotate: false
+  xy: 821, 121
+  size: 40, 21
+  orig: 40, 21
+  offset: 0, 0
+  index: -1
