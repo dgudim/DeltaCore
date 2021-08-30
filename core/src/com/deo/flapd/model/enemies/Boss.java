@@ -862,6 +862,7 @@ class Barrel extends Entity {
     Animation<TextureRegion> barrelAnimation;
     private float animationPosition;
     boolean hasAnimation;
+    int shootingKeyFrame;
     
     float[] bulletOffset;
     float bulletOffsetAngle;
@@ -927,6 +928,7 @@ class Barrel extends Entity {
                     config.getFloatWithFallback(baseConfig, true, 1, "frameDuration"),
                     textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
+            shootingKeyFrame = config.getInt(false, -1, "shootingKeyFrame");
         } else {
             entitySprite = new Sprite(textures.findRegion(texture));
         }
@@ -1073,8 +1075,15 @@ class Barrel extends Entity {
                 powerDownEffect.update(delta);
             }
             if (fireTimer >= 1 && base.health > 0) {
-                shoot();
-                fireTimer = 0;
+                if (hasAnimation && shootingKeyFrame != -1) {
+                    if (barrelAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame) {
+                        shoot();
+                        fireTimer = 0;
+                    }
+                } else {
+                    shoot();
+                    fireTimer = 0;
+                }
             } else {
                 fireTimer += delta * fireRate;
             }
