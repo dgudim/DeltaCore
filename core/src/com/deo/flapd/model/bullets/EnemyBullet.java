@@ -21,23 +21,21 @@ import static java.lang.StrictMath.min;
 
 public class EnemyBullet extends Entity {
     
-    private BulletData data;
+    private final BulletData data;
     
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
     private boolean explosionStarted;
     
-    private Player player;
-    private Bullet playerBullet;
+    private final Player player;
+    private final Bullet playerBullet;
     
     public EnemyBullet(AssetManager assetManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)
             throw new IllegalArgumentException("no bullet texture with name: " + bulletData.texture);
+        
         entitySprite = new Sprite(assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture));
-        initBullet(bulletData, player, x, y, rotation, hasCollisionWithPlayerBullets);
-    }
-    
-    private void initBullet(BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+        
         this.hasCollisionWithPlayerBullets = hasCollisionWithPlayerBullets;
         
         data = bulletData;
@@ -138,7 +136,7 @@ public class EnemyBullet extends Entity {
         if (!data.isLaser) {
             super.drawDebug(shapeRenderer);
             shapeRenderer.setColor(Color.YELLOW);
-            drawParticleEffectBounds(shapeRenderer,  data.trailParticleEffect);
+            drawParticleEffectBounds(shapeRenderer, data.trailParticleEffect);
         } else {
             shapeRenderer.rectLine(x, y, x + MathUtils.cosDeg(rotation) * width, y + MathUtils.sinDeg(rotation) * width, height);
         }
@@ -208,7 +206,7 @@ public class EnemyBullet extends Entity {
     public void dispose() {
         if (!data.isLaser) {
             data.explosionParticleEffect.free();
-            if(!explosionStarted){
+            if (!explosionStarted) {
                 data.trailParticleEffect.free();
             }
         }

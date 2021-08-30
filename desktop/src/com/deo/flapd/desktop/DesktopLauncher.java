@@ -12,6 +12,7 @@ public class DesktopLauncher {
         config.height = 720;
         config.title = "Deltacore";
         config.fullscreen = false;
+        config.audioDeviceSimultaneousSources = 32;
         new LwjglApplication(new Main(), config);
     }
 }

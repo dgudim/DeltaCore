@@ -205,9 +205,9 @@ public class Enemy extends Entity {
             animationPosition += delta;
             
             float damage = playerBullet.overlaps(entityHitBox, true);
-            if(damage>0){
+            if (damage > 0) {
                 color = Color.valueOf(data.hitColor);
-                health-=damage;
+                health -= damage;
                 GameLogic.score += 30 + 10 * (damage / 50 - 1);
             }
             
@@ -435,11 +435,11 @@ class EnemyData {
         
         x = 805;
         y = 0;
-    
+        
         fireParticleEffects = new Array<>();
         fireParticleEffectAngles = new Array<>();
         fireParticleEffectDistances = new Array<>();
-    
+        
         int fireEffectCount = enemyInfo.getInt(1, "fire", "count");
         
         fireEffects = new String[fireEffectCount];
@@ -486,11 +486,11 @@ class EnemyData {
         
         if (spawnsBullets) {
             shootingSound = enemyInfo.getString("sfx/gun1.ogg", "shootSound");
-    
+            
             float[] bulletOffset = enemyInfo.getFloatArray(new float[]{0, 0}, "bulletOffset");
             bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
             bulletOffsetDistance = getDistanceBetweenTwoPoints(0, 0, bulletOffset[0], bulletOffset[1]);
-    
+            
             bulletsPerShot = enemyInfo.getInt(1, "bulletsPerShot");
             bulletSpread = enemyInfo.getFloat(0, "bulletSpread");
             

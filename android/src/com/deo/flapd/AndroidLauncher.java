@@ -14,7 +14,7 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useCompass = false;
 		config.useGyroscope = false;
 		config.hideStatusBar = true;
-		config.maxSimultaneousSounds = 16;
+		config.maxSimultaneousSounds = 32;
 		initialize(new Main(), config);
 	}
 }

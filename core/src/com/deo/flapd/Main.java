@@ -80,6 +80,8 @@ public class Main extends Game {
         batch.dispose();
         assetManager.dispose();
         blurProcessor.dispose();
-        particleEffectPoolLoader.dispose();
+        if (particleEffectPoolLoader != null) {
+            particleEffectPoolLoader.dispose();
+        }
     }
 }
