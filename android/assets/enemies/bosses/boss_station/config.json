@@ -3,7 +3,7 @@
   "spawnAt": [850, 0],
   "music": "music/killswitch.ogg",
   "spawnConditions": {
-    "score": 30000,
+    "score": 35000,
     "randomness": 1000
   },
   "parts": {
@@ -14,7 +14,18 @@
       "texture": "dark_station",
       "explosionEffect": "particles/explosion_station.p",
       "explosionScale": 4,
-      "explosionSound": "sfx/explosion.ogg"
+      "explosionSound": "sfx/explosion.ogg",
+      "effects": {
+        "count": 2,
+        "effect0": "particles/fire_big.p",
+        "offset0": [800, 78],
+        "scale0": 2.5,
+        "drawOnTop0": false,
+        "effect1": "particles/fire_big.p",
+        "offset1": [800, -127],
+        "scale1": 2.5,
+        "drawOnTop1": false
+      }
     },
     "ventFan": {
       "type": "part",
