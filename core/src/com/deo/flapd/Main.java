@@ -72,7 +72,6 @@ public class Main extends Game {
             log("global error occurred, dump of preferences\n" + getPrefs() + "\n", CRITICAL_ERROR);
             log("force exiting", INFO);
             Gdx.app.exit();
-            Gdx.app.exit();
         }
     }
     
