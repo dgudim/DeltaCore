@@ -302,10 +302,6 @@ public class Boss {
 
 class BasePart extends Entity {
     
-    Animation<TextureRegion> enemyAnimation;
-    float animationPosition;
-    boolean hasAnimation;
-    
     AssetManager assetManager;
     
     float movementOffsetX = 0;
@@ -438,7 +434,7 @@ class BasePart extends Entity {
         
         if (hasAnimation) {
             entitySprite = new Sprite();
-            enemyAnimation = new Animation<>(
+            entityAnimation = new Animation<>(
                     currentConfig.getFloat(1, "frameDuration"),
                     textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
@@ -485,7 +481,7 @@ class BasePart extends Entity {
     
     void drawSpriteWithEffects(SpriteBatch batch, float delta) {
         if (hasAnimation) {
-            entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
         }
         drawEffects(batch, delta, false);
         entitySprite.draw(batch);
@@ -527,14 +523,7 @@ class BasePart extends Entity {
         entitySprite.setPosition(x + movementOffsetX, y + movementOffsetY);
         entitySprite.setRotation(rotation + movementRotation);
         entitySprite.setColor(color);
-        if (health > 0) {
-            entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
-            if (regeneration > 0 && maxHealth > 0) {
-                health = clamp(health + regeneration * delta, 0, maxHealth);
-            }
-        } else {
-            entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
-        }
+        super.updateHealth(delta);
     }
     
     void updateEntityAndHealthBar(float delta) {
@@ -791,7 +780,7 @@ class Cannon extends Part {
                         if (hasAnimation) {
                             String[] atlasAndFrameDuration = texture.replace(" ", "").split(",");
                             float frameDuration = Float.parseFloat(atlasAndFrameDuration[1]);
-                            enemyAnimation = new Animation<>(
+                            entityAnimation = new Animation<>(
                                     frameDuration,
                                     textures.findRegions(atlasAndFrameDuration[0]),
                                     Animation.PlayMode.LOOP);
@@ -815,7 +804,7 @@ class Cannon extends Part {
         boolean draw = visible && health > 0 && link.health > 0 && body.health > 0;
         if (draw) {
             if (hasAnimation) {
-                entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+                entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
             }
             drawEffects(batch, delta, false);
         }
@@ -868,9 +857,8 @@ class Cannon extends Part {
 
 class Barrel extends Entity {
     
-    Animation<TextureRegion> barrelAnimation;
-    private float animationPosition;
-    boolean hasAnimation;
+    String name;
+    
     int shootingKeyFrame;
     
     float[] bulletOffset;
@@ -921,6 +909,9 @@ class Barrel extends Entity {
     Barrel(TextureAtlas textures, JsonEntry config, Cannon base) {
         
         bullets = new Array<>();
+        name = config.name;
+        
+        active = true;
         
         JsonEntry baseConfig = base.currentConfig;
         drawBulletsOnTop = config.getBooleanWithFallback(baseConfig, false, false, "drawBulletsOnTop");
@@ -934,7 +925,7 @@ class Barrel extends Entity {
         String texture = config.getString(false, "noTexture", "texture");
         if (hasAnimation) {
             entitySprite = new Sprite();
-            barrelAnimation = new Animation<>(
+            entityAnimation = new Animation<>(
                     config.getFloatWithFallback(baseConfig, true, 1, "frameDuration"),
                     textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
@@ -1011,7 +1002,7 @@ class Barrel extends Entity {
     
     void drawSpriteSpriteWithEffects(SpriteBatch batch) {
         if (hasAnimation) {
-            entitySprite.setRegion(barrelAnimation.getKeyFrame(animationPosition));
+            entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
         }
         entitySprite.draw(batch);
         if (powerUpActive) {
@@ -1070,7 +1061,7 @@ class Barrel extends Entity {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         
-        if (base.active) {
+        if (base.active && active) {
             if (powerUpActive) {
                 float newX = x + width / 2f + MathUtils.cosDeg(rotation + powerUpOffsetAngle) * powerUpOffsetDistance;
                 float newY = y + height / 2f + MathUtils.sinDeg(rotation + powerUpOffsetAngle) * powerUpOffsetDistance;
@@ -1086,10 +1077,10 @@ class Barrel extends Entity {
             if (fireTimer >= 1 && base.health > 0) {
                 boolean shoot;
                 if ((hasAnimation || base.hasAnimation) && shootingKeyFrame != -1) {
-                    if (barrelAnimation != null) {
-                        shoot = barrelAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
+                    if (entityAnimation != null) {
+                        shoot = entityAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
                     } else {
-                        shoot = base.enemyAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
+                        shoot = base.entityAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
                     }
                 } else {
                     shoot = true;
@@ -1111,6 +1102,7 @@ class Barrel extends Entity {
         
         if (base.x <= -base.width - 20) {
             base.active = false;
+            active = false;
             base.rotation = 0;
         } else {
             secondThread.execute(() -> {
@@ -1123,9 +1115,9 @@ class Barrel extends Entity {
                     Thread.sleep((int) (powerUpEffectShootDelay * 1000));
                     powerUpActive = false;
                     if (burstSpacing < 100 && base.soundVolume > 0) {
-                        try{
+                        try {
                             shootingSound.play(base.soundVolume);
-                        }catch (GdxRuntimeException e){
+                        } catch (GdxRuntimeException e) {
                             logException(e);
                         }
                     }
@@ -1196,7 +1188,7 @@ class Movement {
     private float speed;
     private float progress;
     private boolean active;
-    private BasePart target;
+    private final BasePart target;
     
     private BasePart relativeTarget;
     private float radiusExpansionRate;
@@ -1210,17 +1202,12 @@ class Movement {
     
     private final Array<Movement> animations;
     
-    Movement(JsonEntry movementConfig, String target, Array<BasePart> parts, Array<Movement> animations) {
+    Movement(JsonEntry movementConfig, BasePart target, Array<BasePart> parts, Array<Movement> animations) {
         
         log("loading movement: " + movementConfig.name, DEBUG);
         
         this.animations = animations;
-        for (int i = 0; i < parts.size; i++) {
-            if (parts.get(i).name.equals(target)) {
-                this.target = parts.get(i);
-                break;
-            }
-        }
+        this.target = target;
         
         stopPreviousAnimations = movementConfig.getBoolean(false, false, "stopPreviousAnimations");
         
@@ -1445,7 +1432,7 @@ class Action {
     boolean active;
     String changeTexture;
     float frameDuration;
-    BasePart target;
+    Entity target;
     Array<Movement> movements;
     boolean hasMovement;
     JsonEntry config;
@@ -1485,10 +1472,34 @@ class Action {
             target = predeterminedTarget;
         }
         log("loading action: " + actionValue.name + ", target: " + target, DEBUG);
+        String targetBarrel = "";
+        if (target.startsWith("barrel:")) {
+            String[] split = target.trim().replace("barrel:", "").split(":");
+            target = split[0];
+            targetBarrel = split[1];
+        }
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).name.equals(target)) {
                 this.target = parts.get(i);
                 break;
+            }
+        }
+        if (target.startsWith("barrel:")) {
+            if (this.target instanceof Cannon) {
+                Cannon castTarget = (Cannon) this.target;
+                for (int i = 0; i < castTarget.barrels.size; i++) {
+                    if (castTarget.barrels.get(i).name.equals(targetBarrel)) {
+                        this.target = castTarget.barrels.get(i);
+                        break;
+                    }
+                }
+                if (!(this.target instanceof Barrel)) {
+                    log("didn't find barrel " + targetBarrel + " in " + target, ERROR);
+                    this.target = null;
+                }
+            } else {
+                log(this.target + " is not a cannon", ERROR);
+                this.target = null;
             }
         }
         if (this.target == null) {
@@ -1500,7 +1511,7 @@ class Action {
         active = actionValue.getBoolean(false, false, "active");
         changeTexture = actionValue.getString(false, "false", "changeTexture");
         if (this.target.hasAnimation && !changeTexture.equals("false")) {
-            frameDuration = actionValue.getFloat(this.target.enemyAnimation.getFrameDuration(), "frameDuration");
+            frameDuration = actionValue.getFloat(this.target.entityAnimation.getFrameDuration(), "frameDuration");
         }
         
         if (boss.hasAi && this.target.equals(boss.body)) {
@@ -1526,10 +1537,15 @@ class Action {
         if (actionValue.get(false, "move").isObject()) {
             int movementCount = actionValue.get("move").size;
             hasMovement = true;
-            for (int i = 0; i < movementCount; i++) {
-                Movement movement = new Movement(actionValue.get("move", i), target, parts, animations);
-                animations.add(movement);
-                movements.add(movement);
+            if(this.target instanceof BasePart){
+                for (int i = 0; i < movementCount; i++) {
+                    Movement movement = new Movement(actionValue.get("move", i), (BasePart) this.target, parts, animations);
+                    animations.add(movement);
+                    movements.add(movement);
+                }
+            }else{
+                log("cant load movements for non BasePath entities" + target, ERROR);
+                hasMovement = false;
             }
         } else {
             log("no movement for " + actionValue.name + ", target: " + target, DEBUG);
@@ -1543,22 +1559,37 @@ class Action {
                 movements.get(i).start();
             }
         }
-        if (target.hasCollision) {
-            target.collisionEnabled = config.get(false, "enableCollisions").isNull() ? target.collisionEnabled : enableCollisions;
-        }
-        if (!changeTexture.equals("false")) {
-            if (target.hasAnimation) {
-                target.enemyAnimation = new Animation<>(
-                        frameDuration,
-                        target.textures.findRegions(changeTexture),
-                        Animation.PlayMode.LOOP);
-            } else {
-                target.entitySprite.setRegion(target.textures.findRegion(changeTexture));
+        
+        TextureAtlas textures = null;
+        if(target instanceof BasePart){
+            BasePart castTarget = (BasePart)target;
+            if (castTarget.hasCollision) {
+                castTarget.collisionEnabled = config.get(false, "enableCollisions").isNull() ? castTarget.collisionEnabled : enableCollisions;
+            }
+            castTarget.visible = config.get(false, "visible").isNull() ? castTarget.visible : visible;
+            castTarget.showHealthBar = config.get(false, "showHealthBar").isNull() ? castTarget.showHealthBar : showHealthBar;
+            if (!changeTexture.equals("false")) {
+                textures = castTarget.textures;
+            }
+        }else{
+            Barrel castTarget = (Barrel)target;
+            if (!changeTexture.equals("false")) {
+                textures = castTarget.base.textures;
             }
         }
-        target.visible = config.get(false, "visible").isNull() ? target.visible : visible;
+        
+        if (!changeTexture.equals("false")) {
+            if (target.hasAnimation) {
+                target.entityAnimation = new Animation<>(
+                        frameDuration,
+                        textures.findRegions(changeTexture),
+                        Animation.PlayMode.LOOP);
+            } else {
+                target.entitySprite.setRegion(textures.findRegion(changeTexture));
+            }
+        }
+        
         target.active = config.get(false, "active").isNull() ? target.active : active;
-        target.showHealthBar = config.get(false, "showHealthBar").isNull() ? target.showHealthBar : showHealthBar;
         if (boss.hasAi && target.equals(boss.body)) {
             if (hasAiSettingsChange) {
                 boss.bossAi.setSettings(dodgeBullets, bulletDodgeSpeed,
