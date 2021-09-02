@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -49,9 +48,6 @@ public class Enemy extends Entity {
     
     private final float difficulty;
     
-    private Animation<TextureRegion> enemyAnimation;
-    private float animationPosition;
-    
     private final Enemies enemies;
     
     private final Player player;
@@ -63,6 +59,7 @@ public class Enemy extends Entity {
         this.data = data;
         this.enemies = enemies;
         this.player = player;
+        hasAnimation = data.hasAnimation;
         playerBounds = this.player.bounds;
         playerBullet = this.player.bullet;
         difficulty = getFloat("difficulty");
@@ -79,9 +76,9 @@ public class Enemy extends Entity {
         volume = getFloat("soundVolume");
         
         bullets = new Array<>();
-        if (data.hasAnimation) {
+        if (hasAnimation) {
             entitySprite = new Sprite();
-            enemyAnimation = new Animation<>(data.frameDuration, assetManager.get(data.texture, TextureAtlas.class).findRegions(data.name), Animation.PlayMode.LOOP);
+            entityAnimation = new Animation<>(data.frameDuration, assetManager.get(data.texture, TextureAtlas.class).findRegions(data.name), Animation.PlayMode.LOOP);
         } else {
             entitySprite = new Sprite(assetManager.get("enemies/enemies.atlas", TextureAtlas.class).findRegion(data.texture));
         }
@@ -111,10 +108,10 @@ public class Enemy extends Entity {
     }
     
     void draw(SpriteBatch batch) {
-        if (!isDead && !data.hasAnimation) {
+        if (!isDead && !hasAnimation) {
             entitySprite.draw(batch);
-        } else if (data.hasAnimation && !isDead) {
-            entitySprite.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+        } else if (hasAnimation && !isDead) {
+            entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
             entitySprite.draw(batch);
         }
     }

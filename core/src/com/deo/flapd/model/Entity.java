@@ -1,7 +1,9 @@
 package com.deo.flapd.model;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -28,6 +30,9 @@ public class Entity {
     public Color color = Color.WHITE;
     
     public Sprite entitySprite;
+    public boolean hasAnimation;
+    public Animation<TextureRegion> entityAnimation;
+    public float animationPosition;
     public Rectangle entityHitBox;
     
     public void init() {
@@ -54,6 +59,10 @@ public class Entity {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
         entitySprite.setColor(color);
+        updateHealth(delta);
+    }
+    
+    protected void updateHealth(float delta){
         if (health > 0) {
             entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
             if (regeneration > 0 && maxHealth > 0) {
