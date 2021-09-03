@@ -1473,7 +1473,8 @@ class Action {
         }
         log("loading action: " + actionValue.name + ", target: " + target, DEBUG);
         String targetBarrel = "";
-        if (target.startsWith("barrel:")) {
+        boolean targetIsBarrel = target.startsWith("barrel:");
+        if (targetIsBarrel) {
             String[] split = target.trim().replace("barrel:", "").split(":");
             target = split[0];
             targetBarrel = split[1];
@@ -1484,7 +1485,7 @@ class Action {
                 break;
             }
         }
-        if (target.startsWith("barrel:")) {
+        if (targetIsBarrel) {
             if (this.target instanceof Cannon) {
                 Cannon castTarget = (Cannon) this.target;
                 for (int i = 0; i < castTarget.barrels.size; i++) {
