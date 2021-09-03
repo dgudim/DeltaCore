@@ -21,6 +21,7 @@ import java.util.Date;
 import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.clearLog;
+import static com.deo.flapd.utils.DUtils.flushLogBuffer;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
@@ -77,6 +78,7 @@ public class Main extends Game {
     
     @Override
     public void dispose() {
+        flushLogBuffer();
         batch.dispose();
         assetManager.dispose();
         blurProcessor.dispose();

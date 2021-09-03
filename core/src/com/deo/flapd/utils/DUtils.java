@@ -30,7 +30,6 @@ import java.util.Map;
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.NORMAL;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
 
@@ -42,30 +41,41 @@ public class DUtils {
     private static final String pcRootDir = "!DeltaCore/";
     private static final String currentRootDir = getRootDir();
     public static boolean logging = prefs.getBoolean("logging");
-    String logBuffer;
+    private static String lastLine = "";
+    private static String logBuffer = "";
+    private static final float logBufferSizeFlushThreshold = 500;
+    private static final FileHandle logFile = Gdx.files.external(currentRootDir + "lastLog.txt");
     
     private static String getRootDir() {
         return Gdx.app.getType() == Application.ApplicationType.Android ? androidRootDir : pcRootDir;
     }
     
+    public enum LogLevel {DEBUG, INFO, WARNING, ERROR, CRITICAL_ERROR}
+    
     public static void log(String contents, LogLevel logLevel) {
-        String logLevelStr = "[" + logLevel + "]: ";
-        FileHandle file = Gdx.files.external(currentRootDir + "logFull.txt");
-        file.writeString(logLevelStr + contents + "\n", true);
-        FileHandle file2 = Gdx.files.external(currentRootDir + "log.txt");
-        file2.writeString(logLevelStr + contents + "\n", true);
+        contents = "[" + logLevel + "]: " + contents;
+        if (contents.equals(lastLine)) {
+            logBuffer += " + 1";
+        } else {
+            logBuffer += "\n" + contents;
+        }
+        lastLine = contents;
+        if (logBuffer.length() >= logBufferSizeFlushThreshold) {
+            flushLogBuffer();
+        }
+    }
+    
+    public static void flushLogBuffer() {
+        logFile.writeString(logBuffer, true);
+        logBuffer = "";
+        lastLine = "";
     }
     
     public static void clearLog() {
-        FileHandle file = Gdx.files.external(currentRootDir + "log.txt");
-        FileHandle file2 = Gdx.files.external(currentRootDir + "logFull.txt");
+        FileHandle file = Gdx.files.external(currentRootDir + "lastLog.txt");
         file.writeString("", false);
-        if (file2.file().length() > 3145728) {
-            FileHandle file3 = Gdx.files.external(currentRootDir + "logFull(old).txt");
-            file3.writeString(file2.readString(), false);
-            file2.writeString("", false);
-            log("log too big, creating second file", INFO);
-        }
+        logBuffer = "";
+        lastLine = "";
     }
     
     public static int getRandomInRange(int min, int max) {
@@ -446,6 +456,4 @@ public class DUtils {
         priceArray[1] = (int) MathUtils.clamp((Math.ceil(priceArray[1] / 2f) - 1) * priceCoefficient, 0, 100);
         return priceArray;
     }
-    
-    public enum LogLevel {DEBUG, INFO, WARNING, ERROR, CRITICAL_ERROR}
 }
