@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
+import static com.deo.flapd.utils.DUtils.ItemTextureModifier.NORMAL;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
@@ -41,6 +42,7 @@ public class DUtils {
     private static final String pcRootDir = "!DeltaCore/";
     private static final String currentRootDir = getRootDir();
     public static boolean logging = prefs.getBoolean("logging");
+    String logBuffer;
     
     private static String getRootDir() {
         return Gdx.app.getType() == Application.ApplicationType.Android ? androidRootDir : pcRootDir;
@@ -302,8 +304,14 @@ public class DUtils {
         }
     }
     
-    public static String getItemCodeNameByName(String name) {
-        return itemNames.getString("ohno", name);
+    public enum ItemTextureModifier {NORMAL, DISABLED, OVER, ENABLED}
+    
+    public static String getItemTextureNameByName(String name) {
+        return getItemTextureNameByName(name, NORMAL);
+    }
+    
+    public static String getItemTextureNameByName(String name, ItemTextureModifier itemTextureModifier) {
+        return itemNames.getString("ohno", name) + (itemTextureModifier.equals(NORMAL) ? "" : ("_" + itemTextureModifier.name().toLowerCase()));
     }
     
     public static void updateCamera(OrthographicCamera camera, Viewport viewport, int width, int height) {

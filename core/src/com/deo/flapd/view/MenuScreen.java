@@ -50,7 +50,7 @@ import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.initNewGame;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
@@ -648,7 +648,7 @@ public class MenuScreen implements Screen {
         hasAnimation = shipConfig.getBoolean(false, "hasAnimation");
         
         if (!hasAnimation) {
-            Ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+            Ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
         } else {
             Ship = new Sprite();
             enemyAnimation = new Animation<>(

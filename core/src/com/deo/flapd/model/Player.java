@@ -19,7 +19,7 @@ import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 
 public class Player {
@@ -116,7 +116,7 @@ public class Player {
                             .findRegions(shipConfig.getString("", "animation")),
                     Animation.PlayMode.LOOP);
         } else {
-            ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemCodeNameByName(getString("currentArmour"))));
+            ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
         }
         
         String[] params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");

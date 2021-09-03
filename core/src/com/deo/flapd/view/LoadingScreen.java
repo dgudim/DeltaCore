@@ -31,7 +31,7 @@ import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
@@ -74,7 +74,7 @@ public class LoadingScreen implements Screen {
             JsonEntry tree = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
             for (int i = 0; i < tree.size; i++) {
                 if (tree.getString("part", i, "type").equals("basePart")) {
-                    putBoolean("unlocked_" + getItemCodeNameByName(tree.get(i).name), true);
+                    putBoolean("unlocked_" + getItemTextureNameByName(tree.get(i).name), true);
                     if (tree.getString("noSaveToLocation", i, "saveTo").equals("noSaveToLocation")) {
                         log("No save to location specified for " + tree.get(i) + " (item at index " + i + ")", WARNING);
                     }

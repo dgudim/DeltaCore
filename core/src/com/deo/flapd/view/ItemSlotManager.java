@@ -33,11 +33,14 @@ import com.deo.flapd.view.dialogues.SellScrapDialogue;
 import java.util.concurrent.TimeUnit;
 
 import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
+import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
+import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
 import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemCodeNameByName;
+import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getLong;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
@@ -133,8 +136,8 @@ public class ItemSlotManager {
         slotManagerMode = INVENTORY;
         boolean nextRow = false;
         for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.getString("noCategory", i, "category").equals("recepies") && getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)) > 0) {
-                addInventorySlot(treeJson.get(i).name, getInteger("item_" + getItemCodeNameByName(treeJson.get(i).name)), nextRow);
+            if (treeJson.getString("noCategory", i, "category").equals("recepies") && getInteger("item_" + getItemTextureNameByName(treeJson.get(i).name)) > 0) {
+                addInventorySlot(treeJson.get(i).name, getInteger("item_" + getItemTextureNameByName(treeJson.get(i).name)), nextRow);
                 nextRow = !nextRow;
             }
         }
@@ -198,10 +201,10 @@ public class ItemSlotManager {
         slotStyle.over = slotSkin.getDrawable("slot_over");
         slotStyle.down = slotSkin.getDrawable("slot_enabled");
         
-        Image imageUp_scaled = new Image(this.items.findRegion(getItemCodeNameByName(result)));
-        Image imageOver_scaled = new Image(this.items.findRegion("over_" + getItemCodeNameByName(result)));
-        Image imageDisabled_scaled = new Image(this.items.findRegion("disabled_" + getItemCodeNameByName(result)));
-        Image imageDown_scaled = new Image(this.items.findRegion("enabled_" + getItemCodeNameByName(result)));
+        Image imageUp_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result)));
+        Image imageOver_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, OVER)));
+        Image imageDisabled_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, DISABLED)));
+        Image imageDown_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, ENABLED)));
         
         float heightBefore = imageUp_scaled.getHeight();
         float widthBefore = imageUp_scaled.getWidth();
@@ -225,11 +228,11 @@ public class ItemSlotManager {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
                     log("error drawing " +
-                            getItemCodeNameByName(result) +
-                            "\n" + items.findRegion(getItemCodeNameByName(result)) +
-                            "\n" + items.findRegion("over_" + getItemCodeNameByName(result)) +
-                            "\n" + items.findRegion("enabled_" + getItemCodeNameByName(result)) +
-                            "\n" + items.findRegion("disabled_" + getItemCodeNameByName(result)), CRITICAL_ERROR);
+                            getItemTextureNameByName(result) +
+                            "\nnormal: " + items.findRegion(getItemTextureNameByName(result)) +
+                            "\nover: " + items.findRegion(getItemTextureNameByName(result, OVER)) +
+                            "\nenabled: " + items.findRegion(getItemTextureNameByName(result, ENABLED)) +
+                            "\ndisabled: " + items.findRegion(getItemTextureNameByName(result, DISABLED)), CRITICAL_ERROR);
                 }
             }
         };
