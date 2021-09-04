@@ -27,6 +27,8 @@ public class EnemyBullet extends Entity {
     private boolean explosionFinished = false;
     private boolean explosionStarted;
     
+    private final boolean hasCollisionWithPlayerBullets;
+    
     private final Player player;
     private final Bullet playerBullet;
     
@@ -152,7 +154,7 @@ public class EnemyBullet extends Entity {
             }
         }
         
-        if (overlaps(player.bounds)) {
+        if (overlaps(player.entityHitBox)) {
             player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1));
             GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);
             explode();
@@ -171,8 +173,8 @@ public class EnemyBullet extends Entity {
                 if (data.isHoming) {
                     rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                             MathUtils.radiansToDegrees * MathUtils.atan2(
-                                    y - (player.bounds.getY() + player.bounds.getHeight() / 2f),
-                                    x - (player.bounds.getX() + player.bounds.getWidth() / 2f)),
+                                    y - (player.y + player.height / 2f),
+                                    x - (player.x + player.width / 2f)),
                             data.homingSpeed, delta);
                     data.explosionTimer -= delta;
                 }

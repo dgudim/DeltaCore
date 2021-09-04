@@ -60,7 +60,7 @@ public class Enemy extends Entity {
         this.enemies = enemies;
         this.player = player;
         hasAnimation = data.hasAnimation;
-        playerBounds = this.player.bounds;
+        playerBounds = this.player.entityHitBox;
         playerBullet = this.player.bullet;
         difficulty = getFloat("difficulty");
         
@@ -157,8 +157,8 @@ public class Enemy extends Entity {
                 
                 rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
-                                y - (player.bounds.getY() + player.bounds.getHeight() / 2f),
-                                x - (player.bounds.getX() + player.bounds.getWidth() / 2f)),
+                                y - (player.y + player.height / 2f),
+                                x - (player.x + player.width / 2f)),
                         data.homingSpeed, delta);
                 x -= MathUtils.cosDeg(rotation) * speed * 2 * delta;
                 y -= MathUtils.sinDeg(rotation) * speed * 2 * delta;
@@ -225,7 +225,7 @@ public class Enemy extends Entity {
                 kill();
             }
             
-            if (overlaps(player.repellentField.getBoundingRectangle()) && player.Charge >= player.bonusPowerConsumption * delta) {
+            if (overlaps(player.repellentField.getBoundingRectangle()) && player.charge >= player.bonusPowerConsumption * delta) {
                 float shipWidth = playerBounds.getWidth();
                 float shipHeight = playerBounds.getWidth();
                 float shipX = playerBounds.getX();
@@ -251,7 +251,7 @@ public class Enemy extends Entity {
                 } else if (y + height < shipY) {
                     y -= 50 * delta;
                 }
-                player.Charge -= player.bonusPowerConsumption * delta;
+                player.charge -= player.bonusPowerConsumption * delta;
             }
             
         }

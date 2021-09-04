@@ -40,7 +40,7 @@ public class Checkpoint {
 
         this.player = player;
 
-        shipBounds = this.player.bounds;
+        shipBounds = this.player.entityHitBox;
 
         random = new Random();
     
@@ -103,7 +103,7 @@ public class Checkpoint {
             checkpoint_blue.draw(batch);
         }
 
-        if (shipBounds.overlaps(bounds.getBoundingRectangle()) && player.Health > 0 && !checkpointState) {
+        if (shipBounds.overlaps(bounds.getBoundingRectangle()) && player.health > 0 && !checkpointState) {
             checkpointState = true;
             destination_posY = 900;
             destination_posX = bounds.getX();
@@ -111,9 +111,9 @@ public class Checkpoint {
             putInteger("enemiesKilled", GameLogic.enemiesKilled);
             putInteger("moneyEarned", GameLogic.moneyEarned);
             putInteger("Score", GameLogic.score);
-            putFloat("Health", player.Health);
-            putFloat("Shield", player.Shield);
-            putFloat("Charge", player.Charge);
+            putFloat("Health", player.health);
+            putFloat("Shield", player.shieldCharge);
+            putFloat("Charge", player.charge);
             for(int i = 0; i< Bosses.bosses.size; i++){
                 putBoolean("boss_spawned_"+Bosses.bossNames[i], Bosses.bosses.get(i).hasAlreadySpawned);
             }

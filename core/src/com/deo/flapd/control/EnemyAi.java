@@ -46,14 +46,14 @@ public class EnemyAi {
         this.player = player;
         this.targetEntity = targetEntity;
         playerBullet = player.bullet;
-        playerBounds = player.bounds;
+        playerBounds = player.entityHitBox;
     }
     
     public void update(float delta) {
         if (targetEntity.active) {
             if (followPlayer) {
-                playerLastHealthDifference = (player.Health + player.Shield - playerLastHealth) / delta;
-                playerLastHealth = player.Health + player.Shield;
+                playerLastHealthDifference = (player.health + player.shieldCharge - playerLastHealth) / delta;
+                playerLastHealth = player.health + player.shieldCharge;
                 if (playerLastHealthDifference >= 0) {
                     playerNotDamagedTimer += delta;
                 } else {

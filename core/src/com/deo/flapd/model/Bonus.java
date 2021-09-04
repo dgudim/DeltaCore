@@ -16,16 +16,19 @@ import com.deo.flapd.model.enemies.Bosses;
 
 import java.util.Random;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
 
 public class Bonus {
     
+    enum BonusType {HEALTH, SHIELD, CHARGE, PART, BULLETS, BOSS}
+    
     private final Rectangle playerBounds;
     private final Player player;
     private static Array<Rectangle> bonuses;
-    private static Array<Integer> types;
+    private static Array<BonusType> types;
     private static Array<Float> anglesY;
     private final Array<ParticleEffectPool.PooledEffect> explosions;
     private final Sprite bonus_health;
@@ -51,7 +54,7 @@ public class Bonus {
         this.bosses = bosses;
         
         this.player = player;
-        playerBounds = this.player.bounds;
+        playerBounds = this.player.entityHitBox;
         
         uiScale = getFloat("ui");
         
@@ -107,7 +110,7 @@ public class Bonus {
         bonus.setSize(width, height);
         
         bonuses.add(bonus);
-        types.add(type);
+        types.add(BonusType.values()[type]);
         anglesY.add(random.nextFloat() * 2 - 1);
     }
     
@@ -115,89 +118,76 @@ public class Bonus {
         
         for (int i = 0; i < bonuses.size; i++) {
             
-            Rectangle bonus = bonuses.get(i);
-            Integer type = types.get(i);
+            Rectangle bonusBounds = bonuses.get(i);
+            BonusType type = types.get(i);
             
             float angleY = anglesY.get(i);
             
             switch (type) {
-                case (0):
-                    this.bonus_charge.setPosition(bonus.x, bonus.y);
+                case CHARGE:
+                default:
+                    this.bonus_charge.setPosition(bonusBounds.x, bonusBounds.y);
                     this.bonus_charge.draw(batch);
                     break;
-                case (1):
-                    this.bonus_shield.setPosition(bonus.x, bonus.y);
+                case SHIELD:
+                    this.bonus_shield.setPosition(bonusBounds.x, bonusBounds.y);
                     this.bonus_shield.draw(batch);
                     break;
-                case (2):
-                    this.bonus_health.setPosition(bonus.x, bonus.y);
+                case HEALTH:
+                    this.bonus_health.setPosition(bonusBounds.x, bonusBounds.y);
                     this.bonus_health.draw(batch);
                     break;
-                case (3):
-                    this.bonus_bullets.setPosition(bonus.x, bonus.y);
+                case BULLETS:
+                    this.bonus_bullets.setPosition(bonusBounds.x, bonusBounds.y);
                     this.bonus_bullets.draw(batch);
                     break;
-                case (4):
-                    this.bonus_part.setPosition(bonus.x, bonus.y);
+                case PART:
+                    this.bonus_part.setPosition(bonusBounds.x, bonusBounds.y);
                     this.bonus_part.draw(batch);
                     break;
-                case (5):
-                    this.boss.setPosition(bonus.x, bonus.y);
+                case BOSS:
+                    this.boss.setPosition(bonusBounds.x, bonusBounds.y);
                     this.boss.draw(batch);
                     break;
             }
             
-            bonus.y -= angleY * 15 * delta;
-            bonus.x -= 50 * delta;
+            bonusBounds.y -= angleY * 15 * delta;
+            bonusBounds.x -= 50 * delta;
             
-            if (player.magnetField.getBoundingRectangle().overlaps(bonus) && player.Charge >= player.bonusPowerConsumption * delta) {
-                bonus.x = MathUtils.lerp(bonus.x, playerBounds.getX() + playerBounds.getWidth() / 2, delta / 2);
-                bonus.y = MathUtils.lerp(bonus.y, playerBounds.getY() + playerBounds.getHeight() / 2, delta / 2);
-                player.Charge -= player.bonusPowerConsumption * delta;
+            if (player.magnetField.getBoundingRectangle().overlaps(bonusBounds) && player.charge >= player.bonusPowerConsumption * delta) {
+                bonusBounds.x = MathUtils.lerp(bonusBounds.x, playerBounds.getX() + playerBounds.getWidth() / 2, delta / 2);
+                bonusBounds.y = MathUtils.lerp(bonusBounds.y, playerBounds.getY() + playerBounds.getHeight() / 2, delta / 2);
+                player.charge -= player.bonusPowerConsumption * delta;
             }
             
-            if (bonus.y < -height || bonus.y > 480 || bonus.x < -width || bonus.x > 800) {
+            if (bonusBounds.y < -height || bonusBounds.y > 480 || bonusBounds.x < -width || bonusBounds.x > 800) {
                 removeBonus(i, false);
-            } else if (bonus.overlaps(playerBounds)) {
-                if (type == 0) {
-                    removeBonus(i, true);
-                    if (player.Charge <= player.chargeCapacity * player.chargeCapacityMultiplier - 5) {
-                        player.Charge += 5;
-                    } else {
-                        player.Charge = player.chargeCapacity * player.chargeCapacityMultiplier;
-                    }
-                }
-                if (type == 1) {
-                    removeBonus(i, true);
-                    if (player.Shield <= player.shieldStrength - 15) {
-                        player.Shield += 15;
-                    } else {
-                        player.Shield = player.shieldStrength;
-                    }
-                }
-                if (type == 2) {
-                    removeBonus(i, true);
-                    if (player.healthCapacity * player.healthMultiplier >= player.Health + 15) {
-                        player.Health += 15;
-                    } else {
-                        player.Health = player.healthCapacity * player.healthMultiplier;
-                    }
-                }
-                if (type == 3) {
-                    removeBonus(i, true);
-                    if (GameLogic.bonuses_collected < 10) {
-                        GameLogic.bonuses_collected += 1;
-                    } else {
+            } else if (bonusBounds.overlaps(playerBounds)) {
+                removeBonus(i, true);
+                switch (type) {
+                    case CHARGE:
+                    default:
+                        player.charge = clamp(player.charge + 5, -1000, player.chargeCapacityMultiplier);
+                        break;
+                    case SHIELD:
+                        player.shieldCharge = clamp(player.shieldCharge + 15, -1000, player.shieldStrength);
+                        break;
+                    case HEALTH:
+                        player.health = clamp(player.health + 15, -1000, player.healthCapacity * player.healthMultiplier);
+                        break;
+                    case BULLETS:
+                        if (GameLogic.bonuses_collected < 10) {
+                            GameLogic.bonuses_collected += 1;
+                        } else {
+                            addInteger("cogs", 1);
+                        }
+                        break;
+                    case PART:
                         addInteger("cogs", 1);
-                    }
-                }
-                if (type == 4) {
-                    removeBonus(i, true);
-                    addInteger("cogs", 1);
-                }
-                if (type == 5) {
-                    removeBonus(i, true);
-                    bosses.spawnRandomBoss();
+                        break;
+                    case BOSS:
+                        bosses.spawnRandomBoss();
+                        break;
                 }
             }
         }
@@ -232,19 +222,19 @@ public class Bonus {
         if (explode) {
             String path;
             switch (types.get(i)) {
-                case (1):
-                default:
+                case PART:
                     path = "particles/explosion4.p";
                     break;
-                case (2):
-                case (5):
+                case HEALTH:
+                case BOSS:
                     path = "particles/explosion4_1.p";
                     break;
-                case (0):
-                case (3):
+                case CHARGE:
+                case BULLETS:
+                default:
                     path = "particles/explosion4_2.p";
                     break;
-                case (4):
+                case SHIELD:
                     path = "particles/explosion4_3.p";
                     break;
             }

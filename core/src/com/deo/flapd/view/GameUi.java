@@ -348,13 +348,13 @@ public class GameUi {
         }
         
         batch.begin();
-        Color healthColor = new Color().fromHsv(player.Health / (player.healthCapacity * player.healthMultiplier) * 120, 1, 1);
-        Color shieldColor = new Color().fromHsv(220 - player.Shield / (player.shieldStrength * player.shieldStrengthMultiplier) * 40, 1, 1);
+        Color healthColor = new Color().fromHsv(player.health / (player.healthCapacity * player.healthMultiplier) * 120, 1, 1);
+        Color shieldColor = new Color().fromHsv(220 - player.shieldCharge / (player.shieldStrength * player.shieldStrengthMultiplier) * 40, 1, 1);
         healthProgressBar.setColor(healthColor.r, healthColor.g, healthColor.b, transparency ? 0.5f : 1);
         shieldProgressBar.setColor(shieldColor.r, shieldColor.g, shieldColor.b, transparency ? 0.5f : 1);
-        healthProgressBar.setValue(player.Health);
-        shieldProgressBar.setValue(player.Shield);
-        chargeProgressBar.setValue(player.Charge);
+        healthProgressBar.setValue(player.health);
+        shieldProgressBar.setValue(player.shieldCharge);
+        chargeProgressBar.setValue(player.charge);
         
         if (transparency) {
             font_main.setColor(0, 0, 0, 0.7f);
@@ -362,7 +362,7 @@ public class GameUi {
             font_main.setColor(0, 0, 0, 1);
         }
         
-        if (player.exploded && player.explosionEffect.isComplete()) {
+        if (player.isDead && player.explosionEffect.isComplete()) {
             game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor, player, musicManager));
         }
     }

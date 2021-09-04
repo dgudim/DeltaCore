@@ -26,7 +26,6 @@ public class Entity {
     public float speed;
     public boolean isDead = false;
     public boolean active = true;
-    public boolean hasCollisionWithPlayerBullets = true;
     public Color color = Color.WHITE;
     
     public Sprite entitySprite;
@@ -64,7 +63,7 @@ public class Entity {
     
     protected void updateHealth(float delta){
         if (health > 0) {
-            entityHitBox.setPosition(entitySprite.getX(), entitySprite.getY());
+            entityHitBox.setPosition(x, y);
             if (regeneration > 0 && maxHealth > 0) {
                 health = clamp(health + regeneration * delta, 0, maxHealth);
             }

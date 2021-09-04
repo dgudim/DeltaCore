@@ -752,8 +752,8 @@ class Cannon extends Part {
         if (active) {
             if (canAim) {
                 currentAimAngle = lerpAngleWithConstantSpeed(currentAimAngle, clamp(MathUtils.radiansToDegrees * MathUtils.atan2(
-                        y + movementOffsetY + originY - (player.bounds.getY() + player.bounds.getHeight() / 2),
-                        x + movementOffsetX + originX - (player.bounds.getX() + player.bounds.getWidth() / 2)),
+                        y + movementOffsetY + originY - (player.y + player.height / 2),
+                        x + movementOffsetX + originX - (player.x + player.width / 2)),
                         aimAngleLimit[0], aimAngleLimit[1]), aimingSpeed, delta);
                 
                 switch (aimAnimationType) {

@@ -3,16 +3,12 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.enemies.Enemies;
@@ -22,11 +18,8 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 
-public class Player {
+public class Player extends Entity {
     
-    public Rectangle bounds;
-    public float rotation;
-    private final Sprite ship;
     private final Sprite shield;
     Sprite magnetField;
     public Sprite repellentField;
@@ -42,13 +35,11 @@ public class Player {
     private float green2;
     private float blue2;
     
-    public boolean exploded;
-    
     private final Sound explosion;
     
     private final float soundVolume;
     
-    public float Health, Shield, Charge;
+    public float shieldCharge, charge;
     
     private float shieldRegenerationSpeed;
     private float shieldPowerConsumption;
@@ -63,10 +54,6 @@ public class Player {
     public float healthMultiplier = 1;
     
     public float bonusPowerConsumption;
-    
-    private Animation<TextureRegion> enemyAnimation;
-    private float animationPosition;
-    private final boolean hasAnimation;
     
     private final float[] fireOffsetsX;
     private final float[] fireOffsetsY;
@@ -103,20 +90,17 @@ public class Player {
             fires.add(fire);
         }
         
-        float height = shipConfig.getFloat(1, "height");
-        float width = shipConfig.getFloat(1, "width");
-        
         hasAnimation = shipConfig.getBoolean(false, "hasAnimation");
         
         if (hasAnimation) {
-            ship = new Sprite();
-            enemyAnimation = new Animation<TextureRegion>(
+            entitySprite = new Sprite();
+            entityAnimation = new Animation<>(
                     shipConfig.getFloat(1, "frameDuration"),
                     assetManager.get("player/animations/" + shipConfig.getString("", "animation") + ".atlas", TextureAtlas.class)
                             .findRegions(shipConfig.getString("", "animation")),
                     Animation.PlayMode.LOOP);
         } else {
-            ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
+            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
         }
         
         String[] params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");
@@ -203,25 +187,23 @@ public class Player {
         
         shield = new Sprite(fields.findRegion(treeJson.getString("explosion2", getString("currentShield"), "usesEffect")));
         
-        bounds = new Rectangle(0, 0, width, height);
-        
         if (!newGame) {
-            Shield = MathUtils.clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
-            Health = MathUtils.clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
-            Charge = MathUtils.clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
-            bounds.setPosition(getFloat("ShipX"), getFloat("ShipY"));
+            shieldCharge = MathUtils.clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
+            health = MathUtils.clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
+            charge = MathUtils.clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
         } else {
-            Shield = shieldStrength * shieldStrengthMultiplier;
-            Health = healthCapacity * healthMultiplier;
-            Charge = chargeCapacity * chargeCapacityMultiplier;
-            bounds.setPosition(x, y);
+            shieldCharge = shieldStrength * shieldStrengthMultiplier;
+            health = healthCapacity * healthMultiplier;
+            charge = chargeCapacity * chargeCapacityMultiplier;
         }
         
-        ship.setOrigin(width / 2f, height / 2f);
+        this.x = x;
+        this.y = y;
+        setSize(shipConfig.getFloat(1, "width"), shipConfig.getFloat(1, "height"));
+        init();
+        
         shield.setOrigin((width + 30) / 2f, (height + 30) / 2f);
         
-        ship.setSize(width, height);
-        ship.setPosition(x, y);
         shield.setSize(width + 30, height + 30);
         shield.setPosition(x, y - 10);
         
@@ -239,7 +221,7 @@ public class Player {
         red2 = 1;
         green2 = 1;
         blue2 = 1;
-        exploded = false;
+        
         soundVolume = getFloat("soundVolume");
         
         explosion = assetManager.get("sfx/explosion.ogg");
@@ -248,16 +230,16 @@ public class Player {
     }
     
     public void drawEffects(SpriteBatch batch, float delta) {
-        if (!exploded) {
+        if (!isDead) {
             
             for (int i = 0; i < fires.size; i++) {
-                fires.get(i).setPosition(bounds.getX() + fireOffsetsX[i], bounds.getY() + fireOffsetsY[i]);
+                fires.get(i).setPosition(x + fireOffsetsX[i], y + fireOffsetsY[i]);
                 fires.get(i).draw(batch, delta);
             }
             
-            damage_fire.setPosition(bounds.getX() + 10, bounds.getY() + 25);
+            damage_fire.setPosition(x + 10, y + 25);
             
-            int fireLevel = (Health < 70 ? 1 : 0) + (Health < 50 ? 1 : 0) + (Health < 30 ? 1 : 0);
+            int fireLevel = (health < 70 ? 1 : 0) + (health < 50 ? 1 : 0) + (health < 30 ? 1 : 0);
             for (int i = 0; i < fireLevel; i++) {
                 damage_fire.draw(batch, delta / (float) fireLevel);
             }
@@ -268,16 +250,21 @@ public class Player {
         bullet.draw(batch, delta);
     }
     
+    @Override
+    protected void updateEntity(float delta) {
+        entitySprite.setPosition(x, y);
+        entitySprite.setRotation(rotation);
+        entitySprite.setColor(red, green, blue, 1);
+        updateHealth(delta);
+    }
+    
     public void drawSprites(SpriteBatch batch, float delta) {
-        if (!exploded) {
-            ship.setPosition(bounds.getX(), bounds.getY());
+        if (!isDead) {
+            updateEntity(delta);
             
-            magnetField.setPosition(bounds.getX() + bounds.getWidth() / 2 - magnetField.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 - magnetField.getHeight() / 2);
-            repellentField.setPosition(bounds.getX() + bounds.getWidth() / 2 - repellentField.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 - repellentField.getHeight() / 2);
-            aimRadius.setPosition(bounds.getX() + bounds.getWidth() / 2 - aimRadius.getWidth() / 2, bounds.getY() + bounds.getHeight() / 2 - aimRadius.getHeight() / 2);
-            
-            ship.setRotation(rotation);
-            ship.setColor(red, green, blue, 1);
+            magnetField.setPosition(x + width / 2 - magnetField.getWidth() / 2, y + height / 2 - magnetField.getHeight() / 2);
+            repellentField.setPosition(x + width / 2 - repellentField.getWidth() / 2, y + height / 2 - repellentField.getHeight() / 2);
+            aimRadius.setPosition(x + width / 2 - aimRadius.getWidth() / 2, y + height / 2 - aimRadius.getHeight() / 2);
             
             if (red < 1) {
                 red = red + 5 * delta;
@@ -289,41 +276,41 @@ public class Player {
                 blue = blue + 5 * delta;
             }
             
-            magnetField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
-            repellentField.draw(batch, Charge / (chargeCapacity * chargeCapacityMultiplier));
+            magnetField.draw(batch, charge / (chargeCapacity * chargeCapacityMultiplier));
+            repellentField.draw(batch, charge / (chargeCapacity * chargeCapacityMultiplier));
             aimRadius.draw(batch, 1);
             
             if (hasAnimation) {
-                ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+                entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
                 animationPosition += delta;
             }
             
-            ship.draw(batch);
+            entitySprite.draw(batch);
             
-            if (Charge + powerGeneration * delta < chargeCapacity * chargeCapacityMultiplier) {
-                Charge += powerGeneration * delta;
+            if (charge + powerGeneration * delta < chargeCapacity * chargeCapacityMultiplier) {
+                charge += powerGeneration * delta;
             } else {
-                Charge = chargeCapacity * chargeCapacityMultiplier;
+                charge = chargeCapacity * chargeCapacityMultiplier;
             }
-            if (Shield < shieldStrength * shieldStrengthMultiplier && Charge >= shieldPowerConsumption * delta) {
-                Shield += shieldRegenerationSpeed * delta;
-                Charge -= shieldPowerConsumption * delta;
+            if (shieldCharge < shieldStrength * shieldStrengthMultiplier && charge >= shieldPowerConsumption * delta) {
+                shieldCharge += shieldRegenerationSpeed * delta;
+                charge -= shieldPowerConsumption * delta;
             }
             
-            if (Health <= 0 && !exploded) {
+            if (health <= 0 && !isDead) {
                 explode();
             }
             
         } else {
-            bounds.set(0, 0, 0, 0);
+            entityHitBox.set(0, 0, 0, 0);
         }
     }
     
     public void drawShield(SpriteBatch batch, float delta) {
-        if (!exploded) {
-            shield.setPosition(bounds.getX() - 20, bounds.getY() - 15);
+        if (!isDead) {
+            shield.setPosition(x - 20, y - 15);
             shield.setRotation(rotation);
-            shield.setColor(red2, green2, blue2, MathUtils.clamp(Shield/100, 0, 1));
+            shield.setColor(red2, green2, blue2, MathUtils.clamp(shieldCharge / 100, 0, 1));
             shield.draw(batch);
             
             if (red2 < 1) {
@@ -337,11 +324,6 @@ public class Player {
             }
             
         }
-    }
-    
-    public void drawDebug(ShapeRenderer shapeRenderer){
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
     
     public void dispose() {
@@ -369,23 +351,23 @@ public class Player {
     }
     
     public void takeDamage(float damage) {
-        if (Shield >= damage) {
-            Shield -= damage;
+        if (shieldCharge >= damage) {
+            shieldCharge -= damage;
             set_color(1, 0, 1, true);
         } else {
-            Health = Health - (damage - Shield) / 5;
-            Shield = 0;
+            health -= (damage - shieldCharge) / 5;
+            shieldCharge = 0;
             set_color(1, 0, 1, false);
         }
     }
     
     public void explode() {
-        explosionEffect.setPosition(bounds.getX() + 25.6f, bounds.getY() + 35.2f);
+        explosionEffect.setPosition(x + 25.6f, y + 35.2f);
         explosionEffect.start();
-        exploded = true;
-        Health = -1000;
-        Shield = -1000;
-        Charge = -1000;
+        isDead = true;
+        health = -1000;
+        shieldCharge = -1000;
+        charge = -1000;
         if (soundVolume > 0) {
             explosion.play(soundVolume / 100);
         }

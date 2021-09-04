@@ -86,7 +86,7 @@ public class Bullet {
     public Bullet(AssetManager assetManager, Player player, Enemies enemies, boolean newGame) {
         
         this.player = player;
-        playerBounds = this.player.bounds;
+        playerBounds = this.player.entityHitBox;
         
         this.enemies = enemies;
         
@@ -219,7 +219,7 @@ public class Bullet {
     public void Spawn(float damageMultiplier, boolean is_charged) {
         
         if (!isLaser) {
-            if (player.Charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {
+            if (player.charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {
                 for (int i = 0; i < bulletsPerShot; i++) {
                     Rectangle bullet = new Rectangle();
                     
@@ -237,14 +237,14 @@ public class Bullet {
                     bullets.add(bullet);
                     explosionQueue.add(false);
                     remove_Bullet.add(false);
-                    if (player.Charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
+                    if (player.charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
                         types.add(true);
                         damages.add(damage * damageMultiplier);
-                        player.Charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
+                        player.charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
                     } else {
                         types.add(false);
                         damages.add(damage);
-                        player.Charge -= powerConsumption / bulletsPerShot;
+                        player.charge -= powerConsumption / bulletsPerShot;
                     }
                     
                     float degree = player.rotation;
@@ -429,8 +429,8 @@ public class Bullet {
             currentDuration -= delta * 1000;
         } else {
             if (currentDuration < laserDuration) {
-                if (player.Charge >= powerConsumption * delta * 10) {
-                    player.Charge -= powerConsumption * delta * 10;
+                if (player.charge >= powerConsumption * delta * 10) {
+                    player.charge -= powerConsumption * delta * 10;
                     currentDuration += delta * 500;
                 }
             }
