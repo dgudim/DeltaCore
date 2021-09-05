@@ -1284,7 +1284,7 @@ processor3
   orig: 48, 48
   offset: 0, 0
   index: -1
-mingun
+minigun
   rotate: false
   xy: 1346, 437
   size: 56, 21
@@ -1368,7 +1368,7 @@ category_laser_disabled
   orig: 46, 46
   offset: 0, 0
   index: -1
-mingun_disabled
+minigun_disabled
   rotate: false
   xy: 1363, 240
   size: 56, 21
@@ -1473,7 +1473,7 @@ category_rockets
   orig: 46, 46
   offset: 0, 0
   index: -1
-mingun_enabled
+minigun_enabled
   rotate: false
   xy: 1416, 192
   size: 56, 21
@@ -1557,7 +1557,7 @@ ore_disabled
   orig: 40, 40
   offset: 0, 0
   index: -1
-mingun_over
+minigun_over
   rotate: false
   xy: 1573, 684
   size: 56, 21

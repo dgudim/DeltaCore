@@ -3,17 +3,18 @@ package com.deo.flapd.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
@@ -28,12 +29,8 @@ public class Player extends Entity {
     private final ParticleEffect damage_fire;
     public ParticleEffect explosionEffect;
     
-    private float red;
-    private float green;
-    private float blue;
-    private float red2;
-    private float green2;
-    private float blue2;
+    private final Color shieldColor;
+    private final Color shipColor;
     
     private final Sound explosion;
     
@@ -64,6 +61,9 @@ public class Player extends Entity {
     public int bulletsShot;
     
     public Player(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
+        
+        shieldColor = new Color(1, 1, 1, 1);
+        shipColor = new Color(1, 1, 1, 1);
         
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
         
@@ -188,9 +188,9 @@ public class Player extends Entity {
         shield = new Sprite(fields.findRegion(treeJson.getString("explosion2", getString("currentShield"), "usesEffect")));
         
         if (!newGame) {
-            shieldCharge = MathUtils.clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
-            health = MathUtils.clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
-            charge = MathUtils.clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
+            shieldCharge = clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
+            health = clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
+            charge = clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
         } else {
             shieldCharge = shieldStrength * shieldStrengthMultiplier;
             health = healthCapacity * healthMultiplier;
@@ -214,13 +214,6 @@ public class Player extends Entity {
         explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
         
         damage_fire.start();
-        
-        red = 1;
-        green = 1;
-        blue = 1;
-        red2 = 1;
-        green2 = 1;
-        blue2 = 1;
         
         soundVolume = getFloat("soundVolume");
         
@@ -254,7 +247,7 @@ public class Player extends Entity {
     protected void updateEntity(float delta) {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
-        entitySprite.setColor(red, green, blue, 1);
+        entitySprite.setColor(shipColor);
         updateHealth(delta);
     }
     
@@ -266,15 +259,9 @@ public class Player extends Entity {
             repellentField.setPosition(x + width / 2 - repellentField.getWidth() / 2, y + height / 2 - repellentField.getHeight() / 2);
             aimRadius.setPosition(x + width / 2 - aimRadius.getWidth() / 2, y + height / 2 - aimRadius.getHeight() / 2);
             
-            if (red < 1) {
-                red = red + 5 * delta;
-            }
-            if (green < 1) {
-                green = green + 5 * delta;
-            }
-            if (blue < 1) {
-                blue = blue + 5 * delta;
-            }
+            shipColor.r = clamp(shipColor.r + 3.5f * delta, 0, 1);
+            shipColor.g = clamp(shipColor.g + 3.5f * delta, 0, 1);
+            shipColor.b = clamp(shipColor.b + 3.5f * delta, 0, 1);
             
             magnetField.draw(batch, charge / (chargeCapacity * chargeCapacityMultiplier));
             repellentField.draw(batch, charge / (chargeCapacity * chargeCapacityMultiplier));
@@ -310,19 +297,12 @@ public class Player extends Entity {
         if (!isDead) {
             shield.setPosition(x - 20, y - 15);
             shield.setRotation(rotation);
-            shield.setColor(red2, green2, blue2, MathUtils.clamp(shieldCharge / 100, 0, 1));
+            shield.setColor(shieldColor.r, shieldColor.g, shieldColor.b, clamp(shieldCharge / 100, 0, 1));
             shield.draw(batch);
             
-            if (red2 < 1) {
-                red2 = red2 + 5 * delta;
-            }
-            if (green2 < 1) {
-                green2 = green2 + 5 * delta;
-            }
-            if (blue2 < 1) {
-                blue2 = blue2 + 5 * delta;
-            }
-            
+            shieldColor.r = clamp(shieldColor.r + 3.5f * delta, 0, 1);
+            shieldColor.g = clamp(shieldColor.g + 3.5f * delta, 0, 1);
+            shieldColor.b = clamp(shieldColor.b + 3.5f * delta, 0, 1);
         }
     }
     
@@ -338,26 +318,22 @@ public class Player extends Entity {
         bullet.dispose();
     }
     
-    private void set_color(float red1, float green1, float blue1, boolean shield) {
-        if (!shield) {
-            red = red1;
-            green = green1;
-            blue = blue1;
+    private void set_tintRed(boolean shield) {
+        if (shield) {
+            shieldColor.set(Color.RED);
         } else {
-            red2 = red1;
-            green2 = green1;
-            blue2 = blue1;
+            shipColor.set(Color.RED);
         }
     }
     
     public void takeDamage(float damage) {
         if (shieldCharge >= damage) {
             shieldCharge -= damage;
-            set_color(1, 0, 1, true);
+            set_tintRed(true);
         } else {
             health -= (damage - shieldCharge) / 5;
             shieldCharge = 0;
-            set_color(1, 0, 1, false);
+            set_tintRed(false);
         }
     }
     

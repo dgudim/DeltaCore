@@ -167,7 +167,7 @@ public class Bonus {
                 switch (type) {
                     case CHARGE:
                     default:
-                        player.charge = clamp(player.charge + 5, -1000, player.chargeCapacityMultiplier);
+                        player.charge = clamp(player.charge + 5, -1000, player.chargeCapacity * player.chargeCapacityMultiplier);
                         break;
                     case SHIELD:
                         player.shieldCharge = clamp(player.shieldCharge + 15, -1000, player.shieldStrength);

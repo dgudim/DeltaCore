@@ -24,6 +24,8 @@ public class JsonEntry {
         size = value.size;
     }
     
+    // TODO: 5/9/2021 rewrite
+    
     /**
      * Returns the child at the specified index. This requires walking the linked list to the specified entry, see
      * {@link JsonValue} for how to iterate efficiently.
@@ -80,7 +82,7 @@ public class JsonEntry {
     public JsonEntry getWithFallBack(JsonEntry fallback, boolean showWarnings, String... keys) {
         JsonEntry entry = this;
         for (String key : keys) {
-            if (entry.get(showWarnings, key).isNull()) {
+            if (entry.isNull()) {
                 return fallback;
             }
             entry = entry.get(showWarnings, key);
