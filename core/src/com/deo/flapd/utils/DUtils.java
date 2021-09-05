@@ -447,7 +447,7 @@ public class DUtils {
             int[] itemCounts = treeJson.getIntArray(new int[]{}, result, "itemCounts");
             for (int i = 0; i < items.length; i++) {
                 int[] buffer = getPrice(items[i], treeJson, priceCoefficient);
-                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(1, result, "resultCount") * itemCounts[i]);
+                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(1, result, "resultCount") * itemCounts[i] / 3f);
                 priceArray[1] += buffer[1] + 1;
             }
         } else {

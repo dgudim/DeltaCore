@@ -24,7 +24,7 @@
       "width": 62,
       "height": 18,
       "originX": 46,
-      "originY": 14,
+
       "canAim": true,
       "aimAngleLimit": [-30, 30],
       "aimAnimation": "rotate",
@@ -54,7 +54,7 @@
         "Y": -10
       },
       "bulletSpread": 0.5,
-      "bulletOffset": [-41, -2.5],
+      "bulletOffset": [-37, 0],
       "bulletsPerShot": 1,
       "shootSound": "sfx/gun3.ogg",
       "fireRate": {
