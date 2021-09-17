@@ -523,11 +523,23 @@ class BasePart extends Entity {
         entitySprite.setPosition(x + movementOffsetX, y + movementOffsetY);
         entitySprite.setRotation(rotation + movementRotation);
         entitySprite.setColor(color);
-        super.updateHealth(delta);
+    }
+    
+    @Override
+    protected void updateHealth(float delta) {
+        if (health > 0) {
+            entityHitBox.setPosition(x + movementOffsetX, y + movementOffsetY);
+            if (regeneration > 0 && maxHealth > 0) {
+                health = clamp(health + regeneration * delta, 0, maxHealth);
+            }
+        } else {
+            entityHitBox.setPosition(-1000, -1000).setSize(0, 0);
+        }
     }
     
     void updateEntityAndHealthBar(float delta) {
         updateEntity(delta);
+        updateHealth(delta);
         
         animationPosition += delta;
         
@@ -553,7 +565,7 @@ class BasePart extends Entity {
         }
     }
     
-    void updateHealth() {
+    void updateCollisions() {
         if (hasCollision && collisionEnabled && health > 0) {
             health -= player.bullet.overlaps(entityHitBox, true);
         }
@@ -569,7 +581,7 @@ class BasePart extends Entity {
     
     void update(float delta) {
         updateEntityAndHealthBar(delta);
-        updateHealth();
+        updateCollisions();
         updateEffects(delta);
     }
     
@@ -690,7 +702,7 @@ class Shield extends Part {
     }
     
     @Override
-    void updateHealth() {
+    void updateCollisions() {
         entitySprite.setAlpha(health / maxHealth);
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
             health = clamp(health - player.bullet.overlaps(entityHitBox, true), 1, maxHealth);
