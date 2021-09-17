@@ -3,87 +3,101 @@ bossEvil.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-shield
-  rotate: false
-  xy: 1, 195
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-evil_base
-  rotate: false
-  xy: 1, 65
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_center
-  rotate: false
-  xy: 259, 323
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_down
-  rotate: false
-  xy: 389, 323
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_down_left
-  rotate: false
-  xy: 519, 323
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_down_right
-  rotate: false
-  xy: 649, 323
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_left
-  rotate: false
-  xy: 779, 323
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_right
-  rotate: false
-  xy: 131, 65
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_up
-  rotate: false
-  xy: 261, 193
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_up_left
-  rotate: false
-  xy: 391, 193
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_up_right
-  rotate: false
-  xy: 521, 193
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-evil_cannon
+DeadEye
   rotate: false
   xy: 1, 1
-  size: 62, 62
-  orig: 62, 62
+  size: 54, 52
+  orig: 54, 52
   offset: 0, 0
-  index: -1
+  index: 1
+DeadEye
+  rotate: false
+  xy: 57, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 2
+DeadEye
+  rotate: false
+  xy: 57, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 6
+DeadEye
+  rotate: false
+  xy: 113, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 3
+DeadEye
+  rotate: false
+  xy: 113, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 5
+DeadEye
+  rotate: false
+  xy: 169, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 4
+Eye
+  rotate: false
+  xy: 225, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 1
+Eye
+  rotate: false
+  xy: 281, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 2
+Eye
+  rotate: false
+  xy: 337, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 3
+Eye
+  rotate: false
+  xy: 393, 1
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: 4
+EyeDrone
+  rotate: false
+  xy: 449, 29
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: 1
+EyeDrone
+  rotate: false
+  xy: 449, 3
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: 2
+EyeDrone
+  rotate: false
+  xy: 475, 29
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: 3
+EyeDrone
+  rotate: false
+  xy: 475, 3
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: 4
