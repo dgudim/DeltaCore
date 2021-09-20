@@ -1,22 +1,27 @@
 package com.deo.flapd.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.badlogic.gdx.math.MathUtils.lerp;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.readObjectFromFile;
 import static com.deo.flapd.utils.MusicManager.SourceType.COLLECTION;
 import static com.deo.flapd.utils.MusicManager.SourceType.SINGLE;
 
 public class MusicManager {
     
-    enum SourceType{SINGLE, COLLECTION}
+    enum SourceType {SINGLE, COLLECTION}
     
     private Music music;
+    private Array<Float> amplitude;
     private String musicPath;
     private int minMusicIndex;
     private int maxMusicIndex;
@@ -52,25 +57,34 @@ public class MusicManager {
     
     private void loadNextMusic() {
         String path;
-        if(sourceType.equals(COLLECTION)){
-            path = musicPath + getRandomInRange(minMusicIndex, maxMusicIndex) + ".ogg";
-        }else{
+        String amplitudePath;
+        if (sourceType.equals(COLLECTION)) {
+            path = musicPath + getRandomInRange(minMusicIndex, maxMusicIndex);
+            amplitudePath = path + ".snc";
+            path += ".ogg";
+        } else {
             path = musicPath;
+            amplitudePath = path.replace(".ogg", "") + ".snc";
         }
         isWaitingForNewSong = false;
         currentDelay = 0;
-        if(music != null){
+        if (music != null) {
             music.stop();
+            amplitude = null;
         }
+        amplitude = (Array<Float>) readObjectFromFile(Gdx.files.internal(amplitudePath));
         music = assetManager.get(path, Music.class);
         log("playing " + path, INFO);
         music.setVolume(0);
         currentVolume = 0;
-        music.setOnCompletionListener(music -> { isWaitingForNewSong = true; });
-        try{
-            music.play();
-        }catch (GdxRuntimeException e){
+        music.setOnCompletionListener(music -> {
             isWaitingForNewSong = true;
+        });
+        try {
+            music.play();
+        } catch (GdxRuntimeException e) {
+            isWaitingForNewSong = true;
+            amplitude = null;
             logException(e);
         }
     }
@@ -83,6 +97,18 @@ public class MusicManager {
     
     public void setVolume(float volume) {
         targetVolume = volume;
+    }
+    
+    public float getAmplitude() {
+        if (music != null && amplitude != null) {
+            int pos = (int) (music.getPosition() * 10);
+            pos = clamp(pos, 0, amplitude.size - 2);
+            float lerpPos = ((int) (music.getPosition() * 100) - pos * 10) / 10f;
+            float amplitudeCurr = amplitude.get(pos);
+            float amplitudeNext = amplitude.get(pos + 1);
+            return lerp(amplitudeCurr, amplitudeNext, lerpPos);
+        }
+        return 0;
     }
     
     public void update(float delta) {

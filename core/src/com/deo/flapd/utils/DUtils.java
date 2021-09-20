@@ -205,6 +205,20 @@ public class DUtils {
         return "error";
     }
     
+    public static Object readObjectFromFile(FileHandle file){
+        try {
+            FileInputStream f = new FileInputStream(file.file());
+            ObjectInputStream s = new ObjectInputStream(f);
+            Object obj = s.readObject();
+            prefs.flush();
+            s.close();
+            return obj;
+        } catch (Exception e) {
+            logException(e);
+            return null;
+        }
+    }
+    
     public static void loadPrefsFromFile() throws FileNotFoundException {
         
         FileHandle file = Gdx.files.external(currentRootDir + "saveGame.save");
