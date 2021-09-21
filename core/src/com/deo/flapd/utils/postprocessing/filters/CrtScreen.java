@@ -21,16 +21,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 public final class CrtScreen extends Filter<CrtScreen> {
 	private float elapsedSecs, offset, zoom;
 	private float cdRedCyan, cdBlueYellow;
-	private Vector2 chromaticDispersion;
+	private final Vector2 chromaticDispersion;
 	private final Vector3 vtint;
 	private final Color tint;
 	private float distortion;
-	private boolean dodistortion;
+	private final boolean dodistortion;
 	private RgbMode mode;
 
 	public enum RgbMode {
@@ -66,7 +66,7 @@ public final class CrtScreen extends Filter<CrtScreen> {
 		// @on
 
 		private final String mnemonic;
-		private int elementSize;
+		private final int elementSize;
 
 		Param(String m, int elementSize) {
 			this.mnemonic = m;

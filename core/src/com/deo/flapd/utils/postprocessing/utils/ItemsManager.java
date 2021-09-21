@@ -1,5 +1,5 @@
 
-package com.deo.flapd.utils;
+package com.deo.flapd.utils.postprocessing.utils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;

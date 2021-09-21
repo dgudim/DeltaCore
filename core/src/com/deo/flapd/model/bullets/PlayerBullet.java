@@ -1,4 +1,4 @@
-package com.deo.flapd.model;
+package com.deo.flapd.model.bullets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.Entity;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
@@ -23,7 +25,7 @@ import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 
-public class Bullet {
+public class PlayerBullet {
     
     // TODO: 7/22/2021 rework this crap
     private final Player player;
@@ -83,7 +85,7 @@ public class Bullet {
     private final float[] gunOffsetsX;
     private final float[] gunOffsetsY;
     
-    public Bullet(AssetManager assetManager, Player player, Enemies enemies, boolean newGame) {
+    public PlayerBullet(AssetManager assetManager, Player player, Enemies enemies, boolean newGame) {
         
         this.player = player;
         playerBounds = this.player.entityHitBox;

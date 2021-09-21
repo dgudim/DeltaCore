@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.overlays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.dialogues.PurchaseDialogue;
 import com.deo.flapd.view.dialogues.SellScrapDialogue;
@@ -48,8 +49,8 @@ import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
-import static com.deo.flapd.view.SlotManagerMode.INVENTORY;
-import static com.deo.flapd.view.SlotManagerMode.SHOP;
+import static com.deo.flapd.view.overlays.SlotManagerMode.INVENTORY;
+import static com.deo.flapd.view.overlays.SlotManagerMode.SHOP;
 import static java.lang.StrictMath.sqrt;
 
 enum SlotManagerMode {INVENTORY, SHOP}
@@ -59,7 +60,7 @@ public class ItemSlotManager {
     private final BitmapFont font;
     private final Table table;
     private final Table inventory;
-    Group holderGroup;
+    public Group holderGroup;
     private final Skin slotSkin;
     private final TextureAtlas items;
     private final ScrollPane scrollPane;
@@ -70,7 +71,7 @@ public class ItemSlotManager {
     
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
-    ItemSlotManager(AssetManager assetManager) {
+    public ItemSlotManager(AssetManager assetManager) {
         
         slotSkin = new Skin();
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
@@ -97,7 +98,7 @@ public class ItemSlotManager {
         holderGroup.addActor(inventory);
     }
     
-    void addShopSlots() {
+    public void addShopSlots() {
         long timeSnap = millis();
         slotManagerMode = SHOP;
         int slotCount;
@@ -131,7 +132,7 @@ public class ItemSlotManager {
         log("added shop slots in " + TimeUtils.timeSinceMillis(timeSnap) + "ms", INFO);
     }
     
-    void addInventorySlots() {
+    public void addInventorySlots() {
         long timeSnap = millis();
         slotManagerMode = INVENTORY;
         boolean nextRow = false;
@@ -340,7 +341,7 @@ public class ItemSlotManager {
         }
     }
     
-    void attach(Stage stage) {
+    public void attach(Stage stage) {
         stage.addActor(holderGroup);
         this.stage = stage;
     }

@@ -1,4 +1,4 @@
-package com.deo.flapd.model;
+package com.deo.flapd.model.loot;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Bosses;
 
 import java.util.Random;
@@ -19,7 +20,7 @@ import java.util.Random;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Bonus {
     

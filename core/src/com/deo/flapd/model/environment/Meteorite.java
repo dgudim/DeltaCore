@@ -1,22 +1,16 @@
-package com.deo.flapd.model.enemies;
+package com.deo.flapd.model.environment;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deo.flapd.model.Entity;
 
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
-public class Meteorite extends Entity {
+public class Meteorite extends EnvironmentalEffect {
     
     private final float flyingDirection;
     private final float rotationSpeed;
     public float radius;
-    private final ParticleEffectPool.PooledEffect trail;
-    
-    public boolean remove;
     
     public Meteorite(AssetManager assetManager, float x, float flyingDirection, float radius) {
         
@@ -31,23 +25,16 @@ public class Meteorite extends Entity {
         
         super.init();
         
-        trail = particleEffectPoolLoader.getParticleEffectByPath("particles/particle_nowind.p");
-        trail.scaleEffect(radius / 25);
-        trail.setPosition(x + originX, y + originY);
+        effect = particleEffectPoolLoader.getParticleEffectByPath("particles/particle_nowind.p");
+        effect.scaleEffect(radius / 25);
+        effect.setPosition(x + originX, y + originY);
         
         this.flyingDirection = flyingDirection;
         this.radius = radius;
         
     }
     
-    public void drawEffect(SpriteBatch batch) {
-        trail.draw(batch);
-    }
-    
-    public void draw(SpriteBatch batch) {
-        entitySprite.draw(batch);
-    }
-    
+    @Override
     public void update(float delta) {
         updateEntity(delta);
         
@@ -56,14 +43,9 @@ public class Meteorite extends Entity {
         
         rotation += rotationSpeed * delta;
         
-        trail.setPosition(x + originX, y + originY);
-        trail.update(delta);
+        effect.setPosition(x + originX, y + originY);
+        effect.update(delta);
         
         remove = x < -radius - 300 || x > 1110 || y < -300;
     }
-    
-    public void dispose() {
-        trail.free();
-    }
-    
 }

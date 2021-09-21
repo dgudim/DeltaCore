@@ -2,9 +2,9 @@ package com.deo.flapd.control;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.model.bullets.PlayerBullet;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
@@ -26,7 +26,7 @@ public class EnemyAi {
     float playerInsideEntityMaxTime;
     
     Player player;
-    Bullet playerBullet;
+    PlayerBullet playerBullet;
     Entity targetEntity;
     Rectangle playerBounds;
     

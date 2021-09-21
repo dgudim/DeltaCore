@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -58,7 +58,7 @@ public class GameOverScreen implements Screen {
     
     private final MusicManager musicManager;
     
-    GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
+    public GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
         
         this.game = game;
         this.musicManager = musicManager;
@@ -98,7 +98,7 @@ public class GameOverScreen implements Screen {
         stage = new Stage(viewport, batch);
         
         Skin buttonSkin = new Skin();
-        buttonSkin.addRegions((TextureAtlas) assetManager.get("GameOverScreenButtons/GameOverButtons.atlas"));
+        buttonSkin.addRegions(assetManager.get("GameOverScreenButtons/GameOverButtons.atlas"));
         
         Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
         buttonStyle.down = buttonSkin.getDrawable("restart_e");

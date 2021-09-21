@@ -2,7 +2,7 @@
 package com.deo.flapd.utils.postprocessing.filters;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 /** Motion blur filter that draws the last frame (motion filter included) with a lower opacity.
  * @author Toni Sagrista */
@@ -16,8 +16,8 @@ public class MotionFilter extends Filter<MotionFilter> {
 		Texture("u_texture0", 0), LastFrame("u_texture1", 0), BlurOpacity("u_blurOpacity", 0);
 		// @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+		private final String mnemonic;
+		private final int elementSize;
 
 		Param(String mnemonic, int arrayElementSize) {
 			this.mnemonic = mnemonic;

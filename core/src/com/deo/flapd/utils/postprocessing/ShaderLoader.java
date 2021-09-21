@@ -1,4 +1,4 @@
-package com.deo.flapd.utils;
+package com.deo.flapd.utils.postprocessing;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;

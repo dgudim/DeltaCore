@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.overlays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -45,10 +45,10 @@ public class Tree {
     private final Array<Array<Node>> nodes;
     private final float height;
     private int branchCount;
-    ScrollPane treeScrollView;
+    public ScrollPane treeScrollView;
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
-    Tree(AssetManager assetManager, float x, float y, float width, float height) {
+    public Tree(AssetManager assetManager, float x, float y, float width, float height) {
         this.height = height;
         treeTable = new Table();
         treeTable.setTransform(true);
@@ -161,11 +161,11 @@ public class Tree {
         return treeJson.getStringArray(new String[]{}, result, "items");
     }
     
-    void hide() {
+    public void hide() {
         treeScrollView.setVisible(false);
     }
     
-    void attach(Stage stage) {
+    public void attach(Stage stage) {
         stage.addActor(treeScrollView);
     }
     

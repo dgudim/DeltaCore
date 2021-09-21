@@ -16,7 +16,7 @@
 
 package com.deo.flapd.utils.postprocessing.filters;
 
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 public final class Threshold extends Filter<Threshold> {
 
@@ -25,8 +25,8 @@ public final class Threshold extends Filter<Threshold> {
 		Texture("u_texture0", 0), Threshold("treshold", 0), ThresholdInvTx("tresholdInvTx", 0);
 		// @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+		private final String mnemonic;
+		private final int elementSize;
 
 		Param(String mnemonic, int elementSize) {
 			this.mnemonic = mnemonic;

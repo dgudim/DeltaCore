@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.deo.flapd.utils.ItemsManager;
+import com.deo.flapd.utils.postprocessing.utils.ItemsManager;
 import com.deo.flapd.utils.postprocessing.utils.PingPongBuffer;
 
 /** Provides a way to capture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to

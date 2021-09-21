@@ -1,4 +1,4 @@
-package com.deo.flapd.model;
+package com.deo.flapd.model.loot;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;

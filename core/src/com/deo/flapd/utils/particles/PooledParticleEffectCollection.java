@@ -1,4 +1,4 @@
-package com.deo.flapd.utils;
+package com.deo.flapd.utils.particles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;

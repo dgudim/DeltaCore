@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -13,16 +13,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.Bonus;
 import com.deo.flapd.model.Checkpoint;
-import com.deo.flapd.model.Drops;
-import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
+import com.deo.flapd.model.environment.EnvironmentalEffects;
+import com.deo.flapd.model.loot.Bonus;
+import com.deo.flapd.model.loot.Drops;
+import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.view.overlays.GameUi;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -37,7 +38,7 @@ public class GameScreen implements Screen {
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
     
-    private final Meteorites meteorites;
+    private final EnvironmentalEffects environmentalEffects;
     private final UraniumCell uraniumCell;
     private final Checkpoint checkpoint;
     
@@ -79,7 +80,7 @@ public class GameScreen implements Screen {
     private float previousShakeOffsetY;
     private float cameraZoomOffset;
     
-    GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, boolean newGame) {
+    public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, boolean newGame) {
         
         this.game = game;
         this.musicManager = musicManager;
@@ -123,11 +124,11 @@ public class GameScreen implements Screen {
         
         gameUi = new GameUi(viewport, game, batch, assetManager, blurProcessor, player, musicManager);
         
-        meteorites = new Meteorites(assetManager);
+        environmentalEffects = new EnvironmentalEffects(assetManager);
         
         checkpoint = new Checkpoint(assetManager, player);
         
-        gameLogic = new GameLogic(player, newGame, game, meteorites, checkpoint);
+        gameLogic = new GameLogic(player, newGame, game, environmentalEffects, checkpoint);
         
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         this.musicManager.setVolume(getFloat("musicVolume") / 100f);
@@ -180,9 +181,9 @@ public class GameScreen implements Screen {
         
         batch.draw(bg1, 0, 0, (int) (movement * 50), -240, 800, 720);
         batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
-        meteorites.update(delta);
-        meteorites.drawEffects(batch);
-        meteorites.drawBase(batch);
+        environmentalEffects.update(delta);
+        environmentalEffects.drawEffects(batch);
+        environmentalEffects.drawBase(batch);
         
         bosses.draw(batch, delta);
         bosses.update(delta);
@@ -315,7 +316,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         
         gameUi.dispose();
-        meteorites.dispose();
+        environmentalEffects.dispose();
         
         player.dispose();
         

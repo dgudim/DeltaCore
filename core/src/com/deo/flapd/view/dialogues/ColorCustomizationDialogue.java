@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.deo.flapd.view.UIComposer;
+import com.deo.flapd.utils.ui.UIComposer;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class ColorCustomizationDialogue extends Dialogue {
     

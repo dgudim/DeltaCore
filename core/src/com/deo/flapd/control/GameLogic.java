@@ -4,10 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.JsonReader;
-import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Checkpoint;
-import com.deo.flapd.model.Meteorites;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.model.bullets.PlayerBullet;
+import com.deo.flapd.model.environment.EnvironmentalEffects;
 import com.deo.flapd.utils.JsonEntry;
 
 import java.util.Random;
@@ -42,18 +42,18 @@ public class GameLogic {
     
     private final Game game;
     
-    private final Bullet playerBullet;
-    private final Meteorites meteorites;
+    private final PlayerBullet playerBullet;
+    private final EnvironmentalEffects environmentalEffects;
     private final Checkpoint checkpoint;
     
-    public GameLogic(Player player, boolean newGame, Game game, Meteorites meteorites, Checkpoint checkpoint) {
+    public GameLogic(Player player, boolean newGame, Game game, EnvironmentalEffects environmentalEffects, Checkpoint checkpoint) {
         this.player = player;
         random = new Random();
         
         this.game = game;
         
         playerBullet = this.player.bullet;
-        this.meteorites = meteorites;
+        this.environmentalEffects = environmentalEffects;
         this.checkpoint = checkpoint;
         
         difficulty = getFloat("difficulty");
@@ -145,7 +145,7 @@ public class GameLogic {
         }
         
         if (getRandomBoolean(0.05f) && delta > 0) {
-            meteorites.Spawn(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(10) + 5);
+            environmentalEffects.spawnMeteorite(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(10) + 5);
         }
         
         if (!bossWave) {

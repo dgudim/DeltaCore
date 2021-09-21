@@ -8,15 +8,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.deo.flapd.model.Bullet;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.DUtils;
-import com.deo.flapd.view.GameScreen;
+import com.deo.flapd.view.screens.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.min;
 
 public class EnemyBullet extends Entity {
@@ -30,7 +29,7 @@ public class EnemyBullet extends Entity {
     private final boolean hasCollisionWithPlayerBullets;
     
     private final Player player;
-    private final Bullet playerBullet;
+    private final PlayerBullet playerBullet;
     
     public EnemyBullet(AssetManager assetManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)

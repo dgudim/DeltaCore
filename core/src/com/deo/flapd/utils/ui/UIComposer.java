@@ -1,10 +1,9 @@
-package com.deo.flapd.view;
+package com.deo.flapd.utils.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -79,7 +78,7 @@ public class UIComposer {
         }
         if (!dependencies.contains(dependency, false)) {
             dependencies.add(dependency);
-            textures.addRegions((TextureAtlas) assetManager.get(dependency));
+            textures.addRegions(assetManager.get(dependency));
         }
         switch (treeJson.getString("noStyleSpecified", style, "type")) {
             case ("buttonStyle"):
@@ -327,7 +326,7 @@ public class UIComposer {
         Table cell = new Table();
         final Slider slider = addSlider(style, min, max, step);
         slider.setValue(getFloat(valueKey));
-        final Label textLabel = addText(text + String.format(Locale.ROOT, "%.1f", getFloat(valueKey)) + postText, (BitmapFont) assetManager.get("fonts/font2(old).fnt"), 0.48f);
+        final Label textLabel = addText(text + String.format(Locale.ROOT, "%.1f", getFloat(valueKey)) + postText, assetManager.get("fonts/font2(old).fnt"), 0.48f);
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -355,7 +354,7 @@ public class UIComposer {
     public Table addButton(String style, String text, float fontScale) {
         Table table = new Table();
         table.add(addButton(style));
-        table.add(addText(text, (BitmapFont) assetManager.get("fonts/font2(old).fnt"), fontScale));
+        table.add(addText(text, assetManager.get("fonts/font2(old).fnt"), fontScale));
         return table;
     }
     

@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.overlays;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -27,6 +27,9 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.view.screens.GameOverScreen;
+import com.deo.flapd.view.screens.GameScreen;
+import com.deo.flapd.view.screens.MenuScreen;
 
 import java.util.Locale;
 
@@ -34,7 +37,7 @@ import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
-import static com.deo.flapd.view.GameScreen.is_paused;
+import static com.deo.flapd.view.screens.GameScreen.is_paused;
 
 
 public class GameUi {
@@ -49,8 +52,8 @@ public class GameUi {
     private final ProgressBar shieldProgressBar;
     private final ProgressBar chargeProgressBar;
     
-    boolean is_firing;
-    boolean is_firing_secondary;
+    public boolean is_firing;
+    public boolean is_firing_secondary;
     
     private final BitmapFont font_numbers;
     private final BitmapFont font_white;
@@ -378,11 +381,11 @@ public class GameUi {
         putInteger("money", GameLogic.money);
     }
     
-    float getDeltaX() {
+    public float getDeltaX() {
         return deltaX;
     }
     
-    float getDeltaY() {
+    public float getDeltaY() {
         return deltaY;
     }
 }

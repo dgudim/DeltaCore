@@ -13,14 +13,14 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.Bonus;
-import com.deo.flapd.model.Bullet;
-import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
+import com.deo.flapd.model.bullets.PlayerBullet;
+import com.deo.flapd.model.loot.Bonus;
+import com.deo.flapd.model.loot.Drops;
+import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 
@@ -29,7 +29,7 @@ import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.lerpToColor;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Enemy extends Entity {
     
@@ -52,7 +52,7 @@ public class Enemy extends Entity {
     
     private final Player player;
     private final Rectangle playerBounds;
-    private final Bullet playerBullet;
+    private final PlayerBullet playerBullet;
     
     Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, Player player) {
         this.assetManager = assetManager;

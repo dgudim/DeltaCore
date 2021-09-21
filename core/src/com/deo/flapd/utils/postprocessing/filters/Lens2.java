@@ -17,7 +17,7 @@ package com.deo.flapd.utils.postprocessing.filters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 /** Lens flare effect as described in John Chapman's article (without lens dirt or diffraction starburst). Lens color image
  * (lenscolor.png) is located in src/main/resources/ folder.
@@ -25,7 +25,7 @@ import com.deo.flapd.utils.ShaderLoader;
  *      href="http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html">http://john-chapman-graphics.blogspot.co.uk/2013/02/pseudo-lens-flare.html</a>
  * @author Toni Sagrista **/
 public final class Lens2 extends Filter<Lens2> {
-	private Vector2 viewportInverse;
+	private final Vector2 viewportInverse;
 	private int ghosts;
 	private float haloWidth;
 	private Texture lensColorTexture;
@@ -36,8 +36,8 @@ public final class Lens2 extends Filter<Lens2> {
 			"u_haloWidth", 0);
 		// @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+		private final String mnemonic;
+		private final int elementSize;
 
 		Param(String mnemonic, int arrayElementSize) {
 			this.mnemonic = mnemonic;

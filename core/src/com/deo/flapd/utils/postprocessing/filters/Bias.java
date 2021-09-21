@@ -16,7 +16,7 @@
 
 package com.deo.flapd.utils.postprocessing.filters;
 
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 /** Bias filter. Adapted for lensflare2 effect.
  * @see <a
@@ -30,8 +30,8 @@ public final class Bias extends Filter<Bias> {
 		Texture("u_texture0", 0), Bias("u_bias", 0);
 		// @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+		private final String mnemonic;
+		private final int elementSize;
 
 		Param(String mnemonic, int elementSize) {
 			this.mnemonic = mnemonic;

@@ -22,13 +22,13 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.control.EnemyAi;
 import com.deo.flapd.control.GameLogic;
-import com.deo.flapd.model.Bonus;
-import com.deo.flapd.model.Drops;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.model.UraniumCell;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
+import com.deo.flapd.model.loot.Bonus;
+import com.deo.flapd.model.loot.Drops;
+import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
 
@@ -51,8 +51,8 @@ import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.view.GameScreen.is_paused;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.GameScreen.is_paused;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.abs;
 
 public class Boss {

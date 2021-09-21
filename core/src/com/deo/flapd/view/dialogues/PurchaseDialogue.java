@@ -26,8 +26,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.view.ItemSlotManager;
-import com.deo.flapd.view.UIComposer;
+import com.deo.flapd.utils.ui.UIComposer;
+import com.deo.flapd.view.overlays.ItemSlotManager;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;

@@ -19,12 +19,12 @@ package com.deo.flapd.utils.postprocessing.filters;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 public final class CameraBlur extends Filter<CameraBlur> {
 
 	private Texture normaldepth = null;
-	private Vector2 viewport = new Vector2();
+	private final Vector2 viewport = new Vector2();
 
 	public enum Param implements Parameter {
 		// @formatter:off
@@ -34,7 +34,7 @@ public final class CameraBlur extends Filter<CameraBlur> {
 		// @formatter:on
 
 		private final String mnemonic;
-		private int elementSize;
+		private final int elementSize;
 
 		Param(String m, int elementSize) {
 			this.mnemonic = m;

@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.overlays;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.utils.ui.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.putInteger;
@@ -34,7 +35,7 @@ public class CategoryManager extends Actor{
     private final String style;
     private final boolean useTbg;
 
-    CategoryManager(AssetManager assetManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey){
+    public CategoryManager(AssetManager assetManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey){
 
         buttons = new Table();
 
@@ -42,7 +43,7 @@ public class CategoryManager extends Actor{
         overrideActors = new Array<>();
 
         Skin mainSkin = new Skin();
-        mainSkin.addRegions((TextureAtlas)assetManager.get("menuButtons/menuButtons.atlas"));
+        mainSkin.addRegions(assetManager.get("menuButtons/menuButtons.atlas"));
 
         uiComposer = new UIComposer(assetManager);
         uiComposer.loadStyles(style);
@@ -73,11 +74,11 @@ public class CategoryManager extends Actor{
         buttons.addActor(Tbackground);
     }
 
-    Button addCategory(Actor whatToOpen, String name){
+    public Button addCategory(Actor whatToOpen, String name){
         return addCategory(whatToOpen, name, this.fontScale);
     }
 
-    Button addCategory(Actor whatToOpen, String name, float fontScale){
+    public Button addCategory(Actor whatToOpen, String name, float fontScale){
         TextButton category = uiComposer.addTextButton(style, name, fontScale);
         targets.add(whatToOpen);
 
@@ -100,7 +101,7 @@ public class CategoryManager extends Actor{
         return category;
     }
 
-    Button addCloseButton(){
+    public Button addCloseButton(){
         TextButton category = uiComposer.addTextButton(style, "back", fontScale);
 
         category.addListener(new ClickListener(){
@@ -119,11 +120,11 @@ public class CategoryManager extends Actor{
         buttons.setBounds(x, y, buttonWidth, height);
     }
 
-    void setBackgroundBounds(float x, float y, float width, float height){
+    public void setBackgroundBounds(float x, float y, float width, float height){
         background.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
     }
 
-    void setTableBackgroundBounds(float x, float y, float width, float height){
+    public void setTableBackgroundBounds(float x, float y, float width, float height){
         Tbackground.setBounds(x-buttons.getX(), y-buttons.getY(), width, height);
     }
 
@@ -151,7 +152,7 @@ public class CategoryManager extends Actor{
         Tbackground.setVisible(false);
     }
 
-    void attach(Stage stage){
+    public void attach(Stage stage){
         stage.addActor(buttons);
     }
 
@@ -176,7 +177,7 @@ public class CategoryManager extends Actor{
         return buttons.isVisible();
     }
 
-    void addOverrideActor(Actor actorToOverride){
+    public void addOverrideActor(Actor actorToOverride){
         overrideActors.add(actorToOverride);
     }
 

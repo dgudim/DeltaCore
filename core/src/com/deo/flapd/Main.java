@@ -10,10 +10,10 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deo.flapd.utils.MusicManager;
-import com.deo.flapd.utils.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
-import com.deo.flapd.view.LoadingScreen;
+import com.deo.flapd.view.screens.LoadingScreen;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -25,7 +25,7 @@ import static com.deo.flapd.utils.DUtils.flushLogBuffer;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Main extends Game {
     

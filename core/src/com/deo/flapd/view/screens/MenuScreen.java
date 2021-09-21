@@ -1,4 +1,4 @@
-package com.deo.flapd.view;
+package com.deo.flapd.view.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -40,7 +40,11 @@ import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
+import com.deo.flapd.view.overlays.CategoryManager;
+import com.deo.flapd.view.overlays.ItemSlotManager;
+import com.deo.flapd.view.overlays.Tree;
 
 import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
@@ -61,7 +65,7 @@ import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
-import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class MenuScreen implements Screen {
     

@@ -16,7 +16,7 @@
 
 package com.deo.flapd.utils.postprocessing.filters;
 
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 public final class Convolve1D extends Filter<Convolve1D> {
 	public enum Param implements Parameter {
@@ -24,8 +24,8 @@ public final class Convolve1D extends Filter<Convolve1D> {
 		Texture("u_texture0", 0), SampleWeights("SampleWeights", 1), SampleOffsets("SampleOffsets", 2 /* vec2 */);
 		// @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+		private final String mnemonic;
+		private final int elementSize;
 
 		Param(String mnemonic, int arrayElementSize) {
 			this.mnemonic = mnemonic;

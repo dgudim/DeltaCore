@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
@@ -22,9 +23,9 @@ import static com.deo.flapd.utils.DUtils.getString;
 public class Player extends Entity {
     
     private final Sprite shield;
-    Sprite magnetField;
+    public Sprite magnetField;
     public Sprite repellentField;
-    Sprite aimRadius;
+    public Sprite aimRadius;
     
     private final ParticleEffect damage_fire;
     public ParticleEffect explosionEffect;
@@ -57,7 +58,7 @@ public class Player extends Entity {
     
     private final Array<ParticleEffect> fires;
     
-    public Bullet bullet;
+    public PlayerBullet bullet;
     public int bulletsShot;
     
     public Player(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
@@ -219,7 +220,7 @@ public class Player extends Entity {
         
         explosion = assetManager.get("sfx/explosion.ogg");
         
-        bullet = new Bullet(assetManager, this, enemies, newGame);
+        bullet = new PlayerBullet(assetManager, this, enemies, newGame);
     }
     
     public void drawEffects(SpriteBatch batch, float delta) {

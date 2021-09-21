@@ -16,7 +16,7 @@
 
 package com.deo.flapd.utils.postprocessing.filters;
 
-import com.deo.flapd.utils.ShaderLoader;
+import com.deo.flapd.utils.postprocessing.ShaderLoader;
 
 public class Copy extends Filter<Copy> {
 	public enum Param implements Parameter {
@@ -25,7 +25,7 @@ public class Copy extends Filter<Copy> {
 		// @formatter:on
 
 		private final String mnemonic;
-		private int elementSize;
+		private final int elementSize;
 
 		Param(String m, int elementSize) {
 			this.mnemonic = m;
