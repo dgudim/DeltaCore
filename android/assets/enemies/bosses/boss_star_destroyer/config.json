@@ -1,6 +1,7 @@
 {
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
+  "music": "music/vhs.ogg",
   "spawnConditions": {
     "score": 19000,
     "randomness": 1000
@@ -75,8 +76,9 @@
       "shootSound": "sfx/gun2.ogg",
       "fireRate": {
         "initialDelay": 0,
-        "baseRate": 0.3,
-        "randomness": 0
+        "baseRate": 5,
+        "randomness": 0,
+        "triggerOnVolume": 0.7
       }
     },
     "cannonBottom": {
@@ -87,11 +89,6 @@
           "relativeTo": "body",
           "X": 140,
           "Y": 34
-        },
-        "fireRate": {
-          "initialDelay": 0.3,
-          "baseRate": 0.3,
-          "randomness": 0
         }
       }
     },
