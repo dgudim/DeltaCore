@@ -190,27 +190,22 @@ public class DUtils {
     public static String savePrefsToFile() {
         
         FileHandle file = Gdx.files.external(currentRootDir + "saveGame.save");
-        file.writeString("", false);
         
         try {
-            FileOutputStream f = new FileOutputStream(file.file());
-            ObjectOutputStream s = new ObjectOutputStream(f);
+            ObjectOutputStream s = new ObjectOutputStream(file.write(false));
             s.writeObject(prefs.get());
             s.close();
             return file.file().getPath();
         } catch (Exception e) {
             logException(e);
+            return "error";
         }
-        
-        return "error";
     }
     
     public static Object readObjectFromFile(FileHandle file){
         try {
-            FileInputStream f = new FileInputStream(file.file());
-            ObjectInputStream s = new ObjectInputStream(f);
+            ObjectInputStream s = new ObjectInputStream(file.read());
             Object obj = s.readObject();
-            prefs.flush();
             s.close();
             return obj;
         } catch (Exception e) {
@@ -224,8 +219,7 @@ public class DUtils {
         FileHandle file = Gdx.files.external(currentRootDir + "saveGame.save");
         
         try {
-            FileInputStream f = new FileInputStream(file.file());
-            ObjectInputStream s = new ObjectInputStream(f);
+            ObjectInputStream s = new ObjectInputStream(file.read());
             prefs.put((Map<String, ?>) s.readObject());
             prefs.flush();
             s.close();

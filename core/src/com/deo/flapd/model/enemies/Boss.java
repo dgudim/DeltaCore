@@ -1192,6 +1192,7 @@ class Barrel extends Entity {
 class Movement {
     
     private float moveBy;
+    private boolean musicSync;
     
     private float lastShakeXPos;
     private float lastShakeYPos;
@@ -1216,8 +1217,11 @@ class Movement {
     private final boolean stopPreviousAnimations;
     
     private final Array<Movement> animations;
+    private final Boss boss;
     
-    Movement(JsonEntry movementConfig, BasePart target, Array<BasePart> parts, Array<Movement> animations) {
+    Movement(JsonEntry movementConfig, BasePart target, Array<BasePart> parts, Array<Movement> animations, Boss boss) {
+        
+        this.boss = boss;
         
         log("loading movement: " + movementConfig.name, DEBUG);
         
@@ -1239,6 +1243,8 @@ class Movement {
             targetRadius = movementConfig.getFloat(100, "targetRadius");
             angleOffset = movementConfig.getFloat(0, "angleOffset");
         }
+        
+        musicSync = movementConfig.getBoolean(false, false, "musicSync");
         
         if (type.equals("shake")) {
             shakeIntensityX = movementConfig.getFloat(10, "shakeIntensityX");
@@ -1288,6 +1294,7 @@ class Movement {
     }
     
     void update(float delta) {
+        delta *= musicSync ? (boss.musicManager.getAmplitude() * 7 + 0.5) : 1;
         if (active) {
             
             if ((type.equals("moveLinearX") || type.equals("moveLinearY") || type.equals("rotate"))) {
@@ -1555,7 +1562,7 @@ class Action {
             hasMovement = true;
             if (this.target instanceof BasePart) {
                 for (int i = 0; i < movementCount; i++) {
-                    Movement movement = new Movement(actionValue.get("move", i), (BasePart) this.target, parts, animations);
+                    Movement movement = new Movement(actionValue.get("move", i), (BasePart) this.target, parts, animations, boss);
                     animations.add(movement);
                     movements.add(movement);
                 }
