@@ -3,8 +3,9 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.util.ArrayList;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.lerp;
@@ -21,7 +22,7 @@ public class MusicManager {
     enum SourceType {SINGLE, COLLECTION}
     
     private Music music;
-    private Array<Float> amplitude;
+    private ArrayList<Float> amplitude;
     private String musicPath;
     private int minMusicIndex;
     private int maxMusicIndex;
@@ -72,7 +73,7 @@ public class MusicManager {
             music.stop();
             amplitude = null;
         }
-        amplitude = (Array<Float>) readObjectFromFile(Gdx.files.internal(amplitudePath));
+        amplitude = (ArrayList<Float>) readObjectFromFile(Gdx.files.internal(amplitudePath));
         music = assetManager.get(path, Music.class);
         log("playing " + path, INFO);
         music.setVolume(0);
@@ -101,11 +102,11 @@ public class MusicManager {
     
     public float getAmplitude() {
         if (music != null && amplitude != null) {
-            int pos = (int) (music.getPosition() * 10);
-            pos = clamp(pos, 0, amplitude.size - 2);
-            float lerpPos = ((int) (music.getPosition() * 100) - pos * 10) / 10f;
-            float amplitudeCurr = amplitude.get(pos);
-            float amplitudeNext = amplitude.get(pos + 1);
+            int arrayPos = (int) (music.getPosition() * 1000);
+            arrayPos = clamp(arrayPos, 0, amplitude.size() - 2);
+            float lerpPos = (music.getPosition() * 1000_000 - arrayPos * 1000) / 1000f;
+            float amplitudeCurr = amplitude.get(arrayPos);
+            float amplitudeNext = amplitude.get(arrayPos + 1);
             return lerp(amplitudeCurr, amplitudeNext, lerpPos);
         }
         return 0;

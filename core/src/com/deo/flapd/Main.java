@@ -46,7 +46,6 @@ public class Main extends Game {
         ShaderLoader.BasePath = "shaders/";
         blurProcessor = new PostProcessor(false, false, Gdx.app.getType() == Application.ApplicationType.Desktop);
         Bloom bloom = new Bloom((int) (Gdx.graphics.getWidth() * 0.25f), (int) (Gdx.graphics.getHeight() * 0.25f));
-        bloom.setBlurPasses(2);
         blurProcessor.addEffect(bloom);
         
         FileHandleResolver resolver = new InternalFileHandleResolver();

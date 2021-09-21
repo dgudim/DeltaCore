@@ -106,7 +106,7 @@ public class Boss {
                     }
                     break;
                 case ("part"):
-                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
                     break;
                 case ("cannon"):
                     
@@ -147,23 +147,23 @@ public class Boss {
                         config.addValue(new JsonEntry(toAdd));
                     }
                     
-                    parts.add(new Cannon(config, bossAtlas, parts, body, assetManager));
+                    parts.add(new Cannon(config, bossAtlas, parts, this, assetManager));
                     break;
                 case ("shield"):
-                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
                     break;
                 case ("clone"):
                     String copyFrom = bossConfig.get("parts", i).getString(parts.get(0).name, "copyFrom");
                     String cloneType = bossConfig.getString("part", "parts", copyFrom, "type");
                     switch (cloneType) {
                         case ("part"):
-                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
                             break;
                         case ("shield"):
-                            parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, body, assetManager));
+                            parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
                             break;
                         default:
                             log("Can't copy base part", WARNING);
@@ -644,14 +644,14 @@ class Part extends BasePart {
     
     private final Array<BasePart> parts;
     BasePart link;
-    final BasePart body;
+    final Boss boss;
     
-    Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
+    Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, AssetManager assetManager) {
         super(newConfig, textures, assetManager);
         this.parts = parts;
-        link = body;
-        this.body = body;
-        String relativeTo = currentConfig.getString(false, body.name, "offset", "relativeTo");
+        link = boss.body;
+        this.boss = boss;
+        String relativeTo = currentConfig.getString(false, boss.body.name, "offset", "relativeTo");
         offsetX = currentConfig.getFloat(false, 0, "offset", "X");
         offsetY = currentConfig.getFloat(false, 0, "offset", "Y");
         
@@ -685,7 +685,7 @@ class Part extends BasePart {
     
     @Override
     void draw(SpriteBatch batch, float delta) {
-        if (visible && health > 0 && link.health > 0 && body.health > 0) {
+        if (visible && health > 0 && link.health > 0 && boss.body.health > 0) {
             drawSpriteWithEffects(batch, delta);
             drawHealthBar(batch);
         }
@@ -697,8 +697,8 @@ class Part extends BasePart {
 
 class Shield extends Part {
     
-    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
-        super(newConfig, textures, parts, body, assetManager);
+    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, AssetManager assetManager) {
+        super(newConfig, textures, parts, boss, assetManager);
     }
     
     @Override
@@ -721,8 +721,8 @@ class Cannon extends Part {
     
     Array<Barrel> barrels;
     
-    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, BasePart body, AssetManager assetManager) {
-        super(partConfig, textures, parts, body, assetManager);
+    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, AssetManager assetManager) {
+        super(partConfig, textures, parts, boss, assetManager);
         
         canAim = currentConfig.getBoolean(false, false, "canAim");
         if (canAim) {
@@ -813,7 +813,7 @@ class Cannon extends Part {
     
     @Override
     void drawSpriteWithEffects(SpriteBatch batch, float delta) {
-        boolean draw = visible && health > 0 && link.health > 0 && body.health > 0;
+        boolean draw = visible && health > 0 && link.health > 0 && boss.body.health > 0;
         if (draw) {
             if (hasAnimation) {
                 entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
@@ -882,6 +882,7 @@ class Barrel extends Entity {
     float bulletSpread;
     
     float fireRate;
+    float triggerVolume;
     float fireTimer;
     
     boolean drawBulletsOnTop;
@@ -957,6 +958,8 @@ class Barrel extends Entity {
         float fireRateRandomness = config.getFloatWithFallback(baseConfig, false, 0, "fireRate", "randomness");
         fireRate = config.getFloatWithFallback(baseConfig, false, 1, "fireRate", "baseRate") + getRandomInRange((int) (-fireRateRandomness * 10), (int) (fireRateRandomness * 10)) / 10f;
         fireTimer = -config.getFloatWithFallback(baseConfig, false, 0, "fireRate", "initialDelay");
+        
+        triggerVolume = config.getFloatWithFallback(baseConfig, false, 2, "fireRate", "triggerOnVolume");
         
         bulletData = new BulletData(config.getWithFallBack(baseConfig.get(true, "bullet"), false, "bullet"));
         
@@ -1087,14 +1090,14 @@ class Barrel extends Entity {
                 powerDownEffect.update(delta);
             }
             if (fireTimer >= 1 && base.health > 0) {
-                boolean shoot;
+                boolean shoot = false;
                 if ((hasAnimation || base.hasAnimation) && shootingKeyFrame != -1) {
                     if (entityAnimation != null) {
                         shoot = entityAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
                     } else {
                         shoot = base.entityAnimation.getKeyFrameIndex(animationPosition) == shootingKeyFrame;
                     }
-                } else {
+                } else if (triggerVolume > 1 || base.boss.musicManager.getAmplitude() >= triggerVolume) {
                     shoot = true;
                 }
                 if (shoot) {
@@ -1550,13 +1553,13 @@ class Action {
         if (actionValue.get(false, "move").isObject()) {
             int movementCount = actionValue.get("move").size;
             hasMovement = true;
-            if(this.target instanceof BasePart){
+            if (this.target instanceof BasePart) {
                 for (int i = 0; i < movementCount; i++) {
                     Movement movement = new Movement(actionValue.get("move", i), (BasePart) this.target, parts, animations);
                     animations.add(movement);
                     movements.add(movement);
                 }
-            }else{
+            } else {
                 log("cant load movements for non BasePath entities" + target, ERROR);
                 hasMovement = false;
             }
@@ -1574,8 +1577,8 @@ class Action {
         }
         
         TextureAtlas textures = null;
-        if(target instanceof BasePart){
-            BasePart castTarget = (BasePart)target;
+        if (target instanceof BasePart) {
+            BasePart castTarget = (BasePart) target;
             if (castTarget.hasCollision) {
                 castTarget.collisionEnabled = config.get(false, "enableCollisions").isNull() ? castTarget.collisionEnabled : enableCollisions;
             }
@@ -1584,8 +1587,8 @@ class Action {
             if (!changeTexture.equals("false")) {
                 textures = castTarget.textures;
             }
-        }else{
-            Barrel castTarget = (Barrel)target;
+        } else {
+            Barrel castTarget = (Barrel) target;
             if (!changeTexture.equals("false")) {
                 textures = castTarget.base.textures;
             }
