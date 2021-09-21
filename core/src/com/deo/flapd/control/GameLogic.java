@@ -147,6 +147,10 @@ public class GameLogic {
         if (getRandomBoolean(0.05f) && delta > 0) {
             environmentalEffects.spawnMeteorite(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(10) + 5);
         }
+    
+        if (getRandomBoolean(0.005f) && delta > 0) {
+            environmentalEffects.spawnFallingShip(random.nextInt(480));
+        }
         
         if (!bossWave) {
             if (score > lastCheckpoint + 9000) {

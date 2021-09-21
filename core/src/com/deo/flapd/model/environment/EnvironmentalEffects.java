@@ -20,8 +20,8 @@ public class EnvironmentalEffects {
     }
     
     public void spawnFallingShip(float x) {
-        //Meteorite meteorite = new Meteorite(assetManager, x, flyingDirection, radius);
-        //environmentalEffects.add(meteorite);
+        FallingShip fallingShip = new FallingShip(assetManager, x);
+        environmentalEffects.add(fallingShip);
     }
     
     public void update(float delta){

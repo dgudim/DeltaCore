@@ -23,7 +23,7 @@ public class Meteorite extends EnvironmentalEffect {
         this.x = x;
         y = 480;
         
-        super.init();
+        init();
         
         effect = particleEffectPoolLoader.getParticleEffectByPath("particles/particle_nowind.p");
         effect.scaleEffect(radius / 25);
@@ -46,6 +46,6 @@ public class Meteorite extends EnvironmentalEffect {
         effect.setPosition(x + originX, y + originY);
         effect.update(delta);
         
-        remove = x < -radius - 300 || x > 1110 || y < -300;
+        remove = x < -radius * 2 - 300 || x > 1110 || y < -300;
     }
 }

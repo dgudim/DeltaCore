@@ -178,12 +178,12 @@ public class GameScreen implements Screen {
             postProcessor.capture();
         }
         batch.begin();
-        
-        batch.draw(bg1, 0, 0, (int) (movement * 50), -240, 800, 720);
-        batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
+    
         environmentalEffects.update(delta);
         environmentalEffects.drawEffects(batch);
         environmentalEffects.drawBase(batch);
+        batch.draw(bg1, 0, 0, (int) (movement * 50), -240, 800, 720);
+        batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
         
         bosses.draw(batch, delta);
         bosses.update(delta);
