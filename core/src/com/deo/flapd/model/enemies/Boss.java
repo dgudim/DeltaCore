@@ -1192,7 +1192,7 @@ class Barrel extends Entity {
 class Movement {
     
     private float moveBy;
-    private boolean musicSync;
+    private final boolean musicSync;
     
     private float lastShakeXPos;
     private float lastShakeYPos;
@@ -1294,7 +1294,7 @@ class Movement {
     }
     
     void update(float delta) {
-        delta *= musicSync ? (boss.musicManager.getAmplitude() * 7 + 0.5) : 1;
+        delta *= musicSync ? boss.musicManager.getAmplitude() : 1;
         if (active) {
             
             if ((type.equals("moveLinearX") || type.equals("moveLinearY") || type.equals("rotate"))) {

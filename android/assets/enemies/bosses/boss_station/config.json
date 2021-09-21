@@ -1,6 +1,6 @@
 {
   "textures": "bossStation.atlas",
-  "spawnAt": [850, 0],
+  "spawnAt": [810, 0],
   "music": "music/killswitch.ogg",
   "spawnConditions": {
     "score": 35000,
@@ -947,12 +947,13 @@
         "target": "body",
         "move": {
           "moveLinearX": {
-            "moveBy": "-40%",
-            "speed": 6
+            "moveBy": "-30%",
+            "speed": 6,
+            "musicSync": true
           },
           "moveLinearX": {
             "moveBy": "-310%",
-            "speed": 1,
+            "speed": 2,
             "musicSync": true
           }
         }

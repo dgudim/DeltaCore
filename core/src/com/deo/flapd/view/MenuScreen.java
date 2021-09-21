@@ -42,7 +42,6 @@ import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 
-import static com.badlogic.gdx.math.MathUtils.sin;
 import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
@@ -63,11 +62,8 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 import static com.deo.flapd.view.LoadingScreen.particleEffectPoolLoader;
-import static java.lang.Math.abs;
 
 public class MenuScreen implements Screen {
-    
-    private float lamp_animation;
     
     private final SpriteBatch batch;
     
@@ -506,8 +502,7 @@ public class MenuScreen implements Screen {
         
         musicManager.update(delta);
         
-        lamp_animation += delta;
-        Lamp.setColor(1, 1, 1, abs(sin(lamp_animation)));
+        Lamp.setColor(1, 1, 1, musicManager.getAmplitude());
         Lamp.draw(batch, 1);
         
         batch.end();

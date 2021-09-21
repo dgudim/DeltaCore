@@ -73,7 +73,7 @@ public class MusicManager {
             music.stop();
             amplitude = null;
         }
-        amplitude = (ArrayList<Float>) readObjectFromFile(Gdx.files.internal(amplitudePath));
+        new Thread(() -> amplitude = (ArrayList<Float>) readObjectFromFile(Gdx.files.internal(amplitudePath))).start();
         music = assetManager.get(path, Music.class);
         log("playing " + path, INFO);
         music.setVolume(0);
@@ -109,7 +109,7 @@ public class MusicManager {
             float amplitudeNext = amplitude.get(arrayPos + 1);
             return lerp(amplitudeCurr, amplitudeNext, lerpPos);
         }
-        return 0;
+        return 1;
     }
     
     public void update(float delta) {
