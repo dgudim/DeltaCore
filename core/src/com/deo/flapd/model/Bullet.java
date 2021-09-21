@@ -292,9 +292,9 @@ public class Bullet {
         }
     }
     
-    public float overlaps(Rectangle hitBox, boolean explode){
-        for(int i = 0; i<bullets.size; i++){
-            if(bullets.get(i).overlaps(hitBox) && !remove_Bullet.get(i)){
+    public float overlaps(Rectangle hitBox, boolean explode) {
+        for (int i = 0; i < bullets.size; i++) {
+            if (bullets.get(i).overlaps(hitBox) && !remove_Bullet.get(i)) {
                 removeBullet(i, explode);
                 return damages.get(i);
             }

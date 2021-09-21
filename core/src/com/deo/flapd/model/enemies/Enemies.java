@@ -10,6 +10,9 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.JsonEntry;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
@@ -19,19 +22,19 @@ public class Enemies {
     
     JsonEntry enemiesJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/enemies.json")));
     private final Array<EnemyData> enemies;
-    private final Array<String> enemyNames;
     public Array<Enemy> enemyEntities;
     
     private final float difficulty;
     
     private Player player;
     
+    static final ExecutorService enemySpawnThread = Executors.newFixedThreadPool(3);
+    
     public Enemies(AssetManager assetManager) {
         
         this.assetManager = assetManager;
         
         enemies = new Array<>();
-        enemyNames = new Array<>();
         enemyEntities = new Array<>();
         
         difficulty = getFloat("difficulty");
@@ -43,14 +46,15 @@ public class Enemies {
         for (int i = 0; i < enemyTypeCount; i++) {
             EnemyData enemyData = new EnemyData(enemiesJson.get(i));
             enemies.add(enemyData);
-            enemyNames.add(enemyData.name);
         }
     }
     
     private void SpawnEnemy(EnemyData data) {
-        data = data.clone();
-        data.health *= difficulty;
-        enemyEntities.add(new Enemy(assetManager, data, this, player));
+        enemySpawnThread.submit(() -> {
+            EnemyData enemyDataClone = data.clone();
+            data.health *= difficulty;
+            enemyEntities.add(new Enemy(assetManager, enemyDataClone, Enemies.this, player));
+        });
     }
     
     public void draw(SpriteBatch batch) {
