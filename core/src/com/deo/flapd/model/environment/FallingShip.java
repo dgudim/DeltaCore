@@ -31,8 +31,8 @@ public class FallingShip extends EnvironmentalEffect {
     public void update(float delta) {
         updateEntity(delta);
         
-        x += 43 * delta * (rtl ? -1 : 1);
-        y -= 43 * delta;
+        x += 30 * delta * (rtl ? -1 : 1);
+        y -= 30 * delta;
         
         effect.setPosition(x + originX, y + originY);
         effect.update(delta);
