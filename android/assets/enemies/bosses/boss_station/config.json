@@ -952,7 +952,8 @@
           },
           "moveLinearX": {
             "moveBy": "-310%",
-            "speed": 1
+            "speed": 1,
+            "musicSync": true
           }
         }
       },

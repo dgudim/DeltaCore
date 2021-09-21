@@ -2,7 +2,7 @@
   "textures": "bossShip.atlas",
   "spawnAt": [850, 130],
   "spawnConditions": {
-    "score": -9000,
+    "score": 9000,
     "randomness": 1000
   },
   "parts": {
