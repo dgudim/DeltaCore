@@ -37,12 +37,9 @@ import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
-import static com.deo.flapd.utils.DUtils.getPrice;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class SellScrapDialogue extends Dialogue {
-    
-    private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+public class SellScrapDialogue extends MoneyDialogue {
     
     public SellScrapDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
         
@@ -79,6 +76,7 @@ public class SellScrapDialogue extends Dialogue {
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
         
+        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         final String[] items = treeJson.getStringArray(new String[]{}, item, "items");
         final int[] itemCounts = treeJson.getIntArray(new int[]{}, item, "itemCounts");
         for (int i = 0; i < itemCounts.length; i++) {

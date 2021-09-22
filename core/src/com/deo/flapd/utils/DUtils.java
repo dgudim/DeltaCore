@@ -18,9 +18,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.enemies.Bosses;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -445,23 +443,5 @@ public class DUtils {
     
     public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffectPool.PooledEffect particleEffect) {
         shapeRenderer.rectLine(particleEffect.getBoundingBox().getCenterX() - particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getCenterX() + particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getHeight());
-    }
-    
-    public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {
-        JsonEntry price = treeJson.get(result, "price");
-        int[] priceArray = new int[]{0, 0};
-        if (price.asString().equals("auto")) {
-            String[] items = treeJson.getStringArray(new String[]{}, result, "items");
-            int[] itemCounts = treeJson.getIntArray(new int[]{}, result, "itemCounts");
-            for (int i = 0; i < items.length; i++) {
-                int[] buffer = getPrice(items[i], treeJson, priceCoefficient);
-                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(1, result, "resultCount") * itemCounts[i] / 3f);
-                priceArray[1] += buffer[1] + 1;
-            }
-        } else {
-            return new int[]{price.asInt(), 0};
-        }
-        priceArray[1] = (int) MathUtils.clamp((Math.ceil(priceArray[1] / 2f) - 1) * priceCoefficient, 0, 100);
-        return priceArray;
     }
 }

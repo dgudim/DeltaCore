@@ -32,12 +32,11 @@ import com.deo.flapd.view.overlays.ItemSlotManager;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
-import static com.deo.flapd.utils.DUtils.getPrice;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
-public class PurchaseDialogue extends Dialogue {
+public class PurchaseDialogue extends MoneyDialogue {
     
     public PurchaseDialogue(final AssetManager assetManager, final Stage stage, final String result, int availableQuantity) {
         new PurchaseDialogue(assetManager, stage, result, availableQuantity, 1, null, null);
