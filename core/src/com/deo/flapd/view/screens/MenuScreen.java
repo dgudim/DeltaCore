@@ -517,7 +517,7 @@ public class MenuScreen implements Screen {
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "V 0.1.4", 5, 35, 150, 1, false);
+        font_main.draw(batch, "", 5, 35, 150, 1, false);
         
         for (int i = 0; i < verticalFillingThreshold; i++) {
             FillTexture.setPosition(0, -72 * (i + 1));

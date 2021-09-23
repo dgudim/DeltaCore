@@ -16,8 +16,9 @@ buildscript {
 
 allprojects {
 
-    version = '1.0'
+
     ext {
+        version_global = "0.1.4"
         appName = "Deltacore"
         gdxVersion = '1.10.0'
         roboVMVersion = '2.3.7'
@@ -25,6 +26,8 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
     }
+
+    version = version_global
 
     repositories {
         mavenLocal()
@@ -57,13 +60,11 @@ project(":android") {
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
