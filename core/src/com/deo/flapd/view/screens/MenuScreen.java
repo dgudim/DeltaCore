@@ -47,6 +47,7 @@ import com.deo.flapd.view.overlays.ItemSlotManager;
 import com.deo.flapd.view.overlays.Tree;
 
 import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.deo.flapd.Main.VERSION_NAME;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.addInteger;
@@ -517,7 +518,7 @@ public class MenuScreen implements Screen {
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
-        font_main.draw(batch, "", 5, 35, 150, 1, false);
+        font_main.draw(batch, VERSION_NAME, 5, 35, 150, 1, false);
         
         for (int i = 0; i < verticalFillingThreshold; i++) {
             FillTexture.setPosition(0, -72 * (i + 1));

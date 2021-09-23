@@ -9,17 +9,21 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.PropertiesUtils;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
 import com.deo.flapd.view.screens.LoadingScreen;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.clearLog;
 import static com.deo.flapd.utils.DUtils.flushLogBuffer;
 import static com.deo.flapd.utils.DUtils.getPrefs;
@@ -34,8 +38,19 @@ public class Main extends Game {
     
     private AssetManager assetManager;
     
+    public static String VERSION_NAME;
+    
     @Override
     public void create() {
+        ObjectMap<String, String> map = new ObjectMap<>();
+        try {
+            PropertiesUtils.load(map, Gdx.files.internal("version.properties").reader());
+            VERSION_NAME = map.get("buildversion");
+        } catch (IOException e) {
+            VERSION_NAME = "unspecified";
+            log("Build version is not specified", WARNING);
+        }
+        
         batch = new SpriteBatch();
         assetManager = new AssetManager();
         

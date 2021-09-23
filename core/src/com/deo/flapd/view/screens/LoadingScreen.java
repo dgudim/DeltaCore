@@ -26,6 +26,7 @@ import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.overlays.Tree;
 
+import static com.deo.flapd.Main.VERSION_NAME;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
@@ -252,6 +253,8 @@ public class LoadingScreen implements Screen {
         main.getData().setScale(0.5f);
         main.setColor(Color.ORANGE);
         main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 47, 800, 1, false);
+        main.getData().setScale(0.3f);
+        main.draw(batch, VERSION_NAME, 2, 478);
         assetManager.update();
         batch.end();
         

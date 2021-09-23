@@ -16,9 +16,7 @@ buildscript {
 
 allprojects {
 
-
     ext {
-        version_global = "0.1.4"
         appName = "Deltacore"
         gdxVersion = '1.10.0'
         roboVMVersion = '2.3.7'
@@ -26,8 +24,6 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
     }
-
-    version = version_global
 
     repositories {
         mavenLocal()
@@ -41,7 +37,6 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java-library"
-
 
     dependencies {
         implementation project(":core")
