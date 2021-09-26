@@ -2,6 +2,7 @@ package com.deo.flapd.utils.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -39,9 +40,14 @@ public class UIComposer {
     Array<String> checkBoxStyleNames;
     
     private final AssetManager assetManager;
+    private final Sound clickSound;
+    private final float soundVolume;
     
     public UIComposer(AssetManager assetManager) {
         this.assetManager = assetManager;
+        clickSound = assetManager.get("sfx/click.ogg");
+        soundVolume = getFloat("soundVolume");
+        
         buttonStyles = new Array<>();
         checkBoxStyleNames = new Array<>();
         checkBoxStyles = new Array<>();
@@ -308,6 +314,7 @@ public class UIComposer {
         final CheckBox checkBox = new CheckBox(text, checkBoxStyles.get(checkBoxStyleNames.indexOf(style, false)));
         checkBox.getLabel().setFontScale(0.48f);
         checkBox.getImageCell().padRight(5);
+        addClickSoundListener(checkBox);
         return checkBox;
     }
     
@@ -348,7 +355,9 @@ public class UIComposer {
     public Button addButton(String style) {
         if (buttonStyleNames.indexOf(style, false) == -1)
             throw new IllegalArgumentException("Style not loaded: " + style);
-        return new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false)));
+        Button button = new Button(buttonStyles.get(buttonStyleNames.indexOf(style, false)));
+        addClickSoundListener(button);
+        return button;
     }
     
     public Table addButton(String style, String text, float fontScale) {
@@ -364,6 +373,7 @@ public class UIComposer {
         TextButton button = new TextButton(text, (TextButton.TextButtonStyle) buttonStyles.get(buttonStyleNames.indexOf(style, false)));
         button.getLabel().setSize(5, 5);
         button.getLabel().setFontScale(fontScale);
+        addClickSoundListener(button);
         return button;
     }
     
@@ -373,6 +383,9 @@ public class UIComposer {
         cell.getCells().get(0).getActor().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (soundVolume > 0) {
+                    clickSound.play(soundVolume / 100f);
+                }
                 Gdx.net.openURI(link);
             }
         });
@@ -384,6 +397,17 @@ public class UIComposer {
         scrollPane.setBounds(x, y, width, height);
         scrollPane.setScrollingDisabled(!horizontal, !vertical);
         return scrollPane;
+    }
+    
+    private void addClickSoundListener(Actor actor) {
+        actor.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (soundVolume > 0) {
+                    clickSound.play(soundVolume / 100f);
+                }
+            }
+        });
     }
     
 }
