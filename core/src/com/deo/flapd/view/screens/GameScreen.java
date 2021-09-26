@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,7 +26,10 @@ import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.overlays.GameUi;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
+import static com.deo.flapd.utils.DUtils.drawBg;
+import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.updateCamera;
@@ -34,7 +38,7 @@ public class GameScreen implements Screen {
     
     private final Texture bg1;
     private final Texture bg2;
-    private final Texture FillTexture;
+    private final Texture fillTexture;
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
     
@@ -80,6 +84,13 @@ public class GameScreen implements Screen {
     private float previousShakeOffsetY;
     private float cameraZoomOffset;
     
+    private float warpTime = 0;
+    private float warpSpeed = 70;
+    private float previousFireMotionScale = 1;
+    private final Sound ftlFlightSound;
+    private long soundId = -1;
+    private final float soundVolume = getFloat("soundVolume");
+    
     public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, boolean newGame) {
         
         this.game = game;
@@ -100,7 +111,7 @@ public class GameScreen implements Screen {
         
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
         bg2 = assetManager.get("backgrounds/bg_layer2.png");
-        FillTexture = assetManager.get("screenFill.png");
+        fillTexture = assetManager.get("screenFill.png");
         
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
@@ -132,6 +143,11 @@ public class GameScreen implements Screen {
         
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         this.musicManager.setVolume(getFloat("musicVolume") / 100f);
+        
+        ftlFlightSound = assetManager.get("sfx/ftl_flight.ogg");
+        if (soundVolume > 0) {
+            soundId = ftlFlightSound.play(soundVolume, 0.5f, 0);
+        }
         
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
@@ -178,12 +194,31 @@ public class GameScreen implements Screen {
             postProcessor.capture();
         }
         batch.begin();
-    
+        batch.enableBlending();
+        
         environmentalEffects.update(delta);
         environmentalEffects.drawEffects(batch);
         environmentalEffects.drawBase(batch);
-        batch.draw(bg1, 0, 0, (int) (movement * 50), -240, 800, 720);
-        batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
+        
+        if (warpSpeed > 0) {
+            warpTime += delta;
+            player.scaleFireMotion((1 / previousFireMotionScale) * (warpSpeed / 17.5f + 1));
+            previousFireMotionScale = warpSpeed / 17.5f + 1;
+            player.setPositionAndRotation(player.x + delta * warpSpeed * 3, player.y, player.rotation);
+            if (soundVolume > 0) {
+                ftlFlightSound.setPitch(soundId, (float) (0.5 + warpSpeed / 46.67));
+            }
+        }else if(soundId != -1){
+            ftlFlightSound.stop();
+            soundId = -1;
+        }
+        
+        drawBg(batch, bg1, bg2, warpSpeed, movement);
+        if (warpTime > 1 && warpSpeed > 0) {
+            warpSpeed = clamp(warpSpeed - delta * 100, 0, warpSpeed);
+        }
+        
+        movement += delta * (warpSpeed + 1);
         
         bosses.draw(batch, delta);
         bosses.update(delta);
@@ -208,24 +243,12 @@ public class GameScreen implements Screen {
         drops.draw(batch, delta);
         uraniumCell.draw(batch, delta);
         
-        gameUi.draw();
-        
-        movement += delta;
+        if (warpSpeed == 0) {
+            gameUi.draw();
+        }
         
         if (drawScreenExtenders) {
-            for (int i = 0; i < verticalFillingThreshold; i++) {
-                batch.draw(FillTexture, 0, -72 * (i + 1), 456, 72);
-                batch.draw(FillTexture, 456, -72 * (i + 1), 456, 72);
-                batch.draw(FillTexture, 0, 408 + 72 * (i + 1), 456, 72);
-                batch.draw(FillTexture, 456, 408 + 72 * (i + 1), 456, 72);
-            }
-            
-            for (int i = 0; i < horizontalFillingThreshold; i++) {
-                for (int i2 = 0; i2 < 7; i2++) {
-                    batch.draw(FillTexture, -456 - 456 * i, 408 - i2 * 72, 456, 72);
-                    batch.draw(FillTexture, 800 + 456 * i, 408 - i2 * 72, 456, 72);
-                }
-            }
+            drawScreenExtenders(batch, fillTexture, verticalFillingThreshold, horizontalFillingThreshold);
         }
         
         batch.end();
