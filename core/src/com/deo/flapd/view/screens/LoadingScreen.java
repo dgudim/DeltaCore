@@ -166,7 +166,6 @@ public class LoadingScreen implements Screen {
         
         assetManager.load("backgrounds/bg_layer1.png", Texture.class);
         assetManager.load("backgrounds/bg_layer2.png", Texture.class);
-        assetManager.load("backgrounds/bg_menu.png", Texture.class);
         
         assetManager.load("screenFill.png", Texture.class);
         
@@ -179,6 +178,9 @@ public class LoadingScreen implements Screen {
         assetManager.load("sfx/gun3.ogg", Sound.class);
         assetManager.load("sfx/gun4.ogg", Sound.class);
         assetManager.load("sfx/laser.ogg", Sound.class);
+        assetManager.load("sfx/click.ogg", Sound.class);
+        assetManager.load("sfx/ftl.ogg", Sound.class);
+        assetManager.load("sfx/ftl_flight.ogg", Sound.class);
         
         assetManager.load("music/main1.ogg", Music.class);
         assetManager.load("music/main2.ogg", Music.class);
