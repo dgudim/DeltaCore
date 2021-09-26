@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -46,12 +48,15 @@ import com.deo.flapd.view.overlays.CategoryManager;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 import com.deo.flapd.view.overlays.Tree;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.deo.flapd.Main.VERSION_NAME;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.clearPrefs;
+import static com.deo.flapd.utils.DUtils.drawBg;
+import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
@@ -76,32 +81,38 @@ public class MenuScreen implements Screen {
     private final Viewport viewport;
     
     private final Image MenuBg;
-    private final Texture Bg;
-    private Sprite Ship;
+    private final Texture bg1;
+    private final Texture bg2;
+    private Sprite ship;
     
     private Animation<TextureRegion> enemyAnimation;
     private float animationPosition;
     private boolean hasAnimation;
     private final JsonEntry shipConfigs;
     
-    private final Image FillTexture;
+    private final Texture fillTexture;
     
-    private final Image Lamp;
+    private final Image lamp;
     
     private final BitmapFont font_main;
     
-    private final Stage Menu;
-    private final Stage ShopStage;
+    private final Stage menu;
+    private final Stage shopStage;
     
     private float movement;
     
     private final InputMultiplexer multiplexer;
     
     private final MusicManager musicManager;
+    private final Sound ftlFlightSound;
+    private long soundId;
+    private final float soundVolume = getFloat("soundVolume");
     
     private final Game game;
     
     private final Array<ParticleEffectPool.PooledEffect> fires;
+    private final Array<Float> fireOffsetsX;
+    private final Array<Float> fireOffsetsY;
     
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
@@ -124,49 +135,58 @@ public class MenuScreen implements Screen {
     
     private final String currentShipTexture;
     
+    private float warpTime = 0;
+    private float warpSpeed = 0;
+    private boolean warpAnimationActive = false;
+    private boolean newGameAfterWarp = true;
+    private float previousFireMotionScale = 1;
+    
     public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, final MusicManager musicManager) {
         long genTime = TimeUtils.millis();
         log("time to generate menu", INFO);
         
         this.game = game;
-        
         this.blurProcessor = blurProcessor;
-        
         this.assetManager = assetManager;
+        this.batch = batch;
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        
-        this.batch = batch;
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
+        ftlFlightSound = assetManager.get("sfx/ftl_flight.ogg");
+        
         TextureAtlas menuUiAtlas = assetManager.get("ui/menuUi.atlas", TextureAtlas.class);
         
         MenuBg = new Image(menuUiAtlas.findRegion("menuBg"));
-        Lamp = new Image(menuUiAtlas.findRegion("lamp"));
+        lamp = new Image(menuUiAtlas.findRegion("lamp"));
         MenuBg.setBounds(0, 0, 800, 480);
         
         font_main = assetManager.get("fonts/font2(old).fnt");
         
-        Bg = assetManager.get("backgrounds/bg_menu.png");
-        Bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        bg1 = assetManager.get("backgrounds/bg_layer1.png");
+        bg2 = assetManager.get("backgrounds/bg_layer2.png");
         
-        FillTexture = new Image(assetManager.get("screenFill.png", Texture.class));
-        FillTexture.setSize(456, 72);
+        bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        
+        fillTexture = assetManager.get("screenFill.png");
         
         currentShipTexture = getString("currentArmour");
         
         shipConfigs = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")));
         
         fires = new Array<>();
+        fireOffsetsX = new Array<>();
+        fireOffsetsY = new Array<>();
         
         initializeShip();
         
         Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
         buildNumber.setBounds(5, 5, 150, 50);
         
-        Lamp.setBounds(730, 430, 15, 35);
+        lamp.setBounds(730, 430, 15, 35);
         
         long uiGenTime = millis();
         
@@ -258,9 +278,9 @@ public class MenuScreen implements Screen {
         
         musicVolumeS = (Slider) musicVolumeT.getCells().get(0).getActor();
         
-        Menu = new Stage(viewport, batch);
+        menu = new Stage(viewport, batch);
         
-        Menu.addActor(buildNumber);
+        menu.addActor(buildNumber);
         
         ScrollPane infoText = (ScrollPane) uiComposer.addScrollText(
                 "[#00ff55]Made by Deoxys\n" +
@@ -335,29 +355,29 @@ public class MenuScreen implements Screen {
         menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
         
-        menuCategoryManager.attach(Menu);
-        Menu.addActor(infoText);
-        Menu.addActor(playScreenTable);
-        Menu.addActor(moreTable);
-        Menu.addActor(settingsPane);
-        workshopCategoryManager.attach(Menu);
+        menuCategoryManager.attach(menu);
+        menu.addActor(infoText);
+        menu.addActor(playScreenTable);
+        menu.addActor(moreTable);
+        menu.addActor(settingsPane);
+        workshopCategoryManager.attach(menu);
         infoText.setVisible(false);
         moreTable.setVisible(false);
         playScreenTable.setVisible(false);
         settingsPane.setVisible(false);
         
-        craftingTree.attach(Menu);
-        blackMarket.attach(Menu);
-        inventory.attach(Menu);
+        craftingTree.attach(menu);
+        blackMarket.attach(menu);
+        inventory.attach(menu);
         
-        ShopStage = new Stage(viewport, batch);
+        shopStage = new Stage(viewport, batch);
         
         lastFireEffect = " ";
         updateFire();
         
         multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(Menu);
-        multiplexer.addProcessor(ShopStage);
+        multiplexer.addProcessor(menu);
+        multiplexer.addProcessor(shopStage);
         
         difficultyControl.addListener(new ChangeListener() {
             @Override
@@ -369,11 +389,11 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
+                new ConfirmationDialogue(assetManager, menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame();
-                        game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, true));
+                        startWarpAnimation(menuCategoryManager, true);
                     }
                 });
             }
@@ -383,7 +403,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (getFloat("Health") > 0) {
-                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, false));
+                    startWarpAnimation(menuCategoryManager, false);
                 }
             }
         });
@@ -449,7 +469,7 @@ public class MenuScreen implements Screen {
         
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             if (!isConfirmationDialogActive) {
-                new ConfirmationDialogue(assetManager, Menu, "Are you sure you want to quit?", new ClickListener() {
+                new ConfirmationDialogue(assetManager, menu, "Are you sure you want to quit?", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         Gdx.app.exit();
@@ -474,13 +494,37 @@ public class MenuScreen implements Screen {
         }
         
         batch.begin();
+        batch.enableBlending();
         
-        movement += (200 * delta);
-        if (movement > 2880) {
-            movement = 0;
+        movement += delta * (warpSpeed + 1);
+        if (warpAnimationActive) {
+            warpTime += delta;
+            if (soundVolume > 0) {
+                ftlFlightSound.setPitch(soundId, (float) (0.5 + warpSpeed / 46.67));
+            }
+            if (warpTime > 0.7) {
+                warpSpeed = clamp(warpSpeed + delta * 50, 0, 70);
+                if (warpSpeed == 70 && warpTime > 3) {
+                    if (soundVolume > 0) {
+                        assetManager.get("sfx/ftl.ogg", Sound.class).play(soundVolume / 100f);
+                    }
+                    warpAnimationActive = false;
+                    if (soundVolume > 0) {
+                        ftlFlightSound.stop();
+                    }
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, newGameAfterWarp));
+                }
+            }
+            scaleFireMotion((1 / previousFireMotionScale) * (warpSpeed / 17.5f + 1));
+            previousFireMotionScale = warpSpeed / 17.5f + 1;
+            ship.setX(ship.getX() + warpSpeed * delta * 5);
+            for (int i = 0; i < fires.size; i++) {
+                fires.get(i).setPosition(ship.getX() + fireOffsetsX.get(i), ship.getY() + fireOffsetsY.get(i));
+            }
         }
         
-        batch.draw(Bg, 0, 0, (int) movement, -240, 800, 720);
+        batch.setColor(1, 1, 1, 1);
+        drawBg(batch, bg1, bg2, warpSpeed, movement);
         
         for (int i = 0; i < fires.size; i++) {
             fires.get(i).draw(batch, delta);
@@ -493,52 +537,34 @@ public class MenuScreen implements Screen {
         }
         
         if (hasAnimation) {
-            Ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
+            ship.setRegion(enemyAnimation.getKeyFrame(animationPosition));
             animationPosition += delta;
         }
-        Ship.draw(batch);
+        ship.draw(batch);
         
         batch.end();
-        ShopStage.draw();
-        ShopStage.act(delta);
+        shopStage.draw();
+        shopStage.act(delta);
         batch.begin();
         
         MenuBg.draw(batch, 1);
         
         musicManager.update(delta);
         
-        Lamp.setColor(1, 1, 1, musicManager.getAmplitude());
-        Lamp.draw(batch, 1);
+        lamp.setColor(1, 1, 1, musicManager.getAmplitude());
+        lamp.draw(batch, 1);
         
         batch.end();
         
-        Menu.draw();
-        Menu.act(delta);
+        menu.draw();
+        menu.act(delta);
         
         batch.begin();
         font_main.getData().setScale(0.35f);
         font_main.setColor(Color.GOLD);
         font_main.draw(batch, VERSION_NAME, 5, 35, 150, 1, false);
         
-        for (int i = 0; i < verticalFillingThreshold; i++) {
-            FillTexture.setPosition(0, -72 * (i + 1));
-            FillTexture.draw(batch, 1);
-            FillTexture.setPosition(456, -72 * (i + 1));
-            FillTexture.draw(batch, 1);
-            FillTexture.setPosition(0, 408 + 72 * (i + 1));
-            FillTexture.draw(batch, 1);
-            FillTexture.setPosition(456, 408 + 72 * (i + 1));
-            FillTexture.draw(batch, 1);
-        }
-        
-        for (int i = 0; i < horizontalFillingThreshold; i++) {
-            for (int i2 = 0; i2 < 7; i2++) {
-                FillTexture.setPosition(-456 - 456 * i, 408 - i2 * 72);
-                FillTexture.draw(batch, 1);
-                FillTexture.setPosition(800 + 456 * i, 408 - i2 * 72);
-                FillTexture.draw(batch, 1);
-            }
-        }
+        drawScreenExtenders(batch, fillTexture, verticalFillingThreshold, horizontalFillingThreshold);
         batch.end();
     }
     
@@ -583,12 +609,28 @@ public class MenuScreen implements Screen {
     
     @Override
     public void dispose() {
-        Menu.dispose();
-        ShopStage.dispose();
+        menu.dispose();
+        shopStage.dispose();
         for (int i = 0; i < fires.size; i++) {
             fires.get(i).free();
         }
         fires.clear();
+    }
+    
+    public void startWarpAnimation(CategoryManager categoryManager, boolean newGameAfterWarp) {
+        categoryManager.closeAll();
+        categoryManager.setTouchable(Touchable.disabled);
+        warpAnimationActive = true;
+        this.newGameAfterWarp = newGameAfterWarp;
+        if (soundVolume > 0) {
+            soundId = ftlFlightSound.play(soundVolume, 0.5f, 0);
+        }
+    }
+    
+    public void scaleFireMotion(float motionScale) {
+        for (int i = 0; i < fires.size; i++) {
+            fires.get(i).scaleEffect(1, motionScale);
+        }
     }
     
     private void loadFire() {
@@ -605,7 +647,9 @@ public class MenuScreen implements Screen {
         
         for (int i = 0; i < fireCount; i++) {
             ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + fireEffect + ".p");
-            fire.setPosition(Ship.getX() + shipConfig.getFloat(0, "fires", "fire" + i + "OffsetX"), Ship.getY() + shipConfig.getFloat(0, "fires", "fire" + i + "OffsetY"));
+            fireOffsetsX.add(shipConfig.getFloat(0, "fires", "fire" + i + "OffsetX"));
+            fireOffsetsY.add(shipConfig.getFloat(0, "fires", "fire" + i + "OffsetY"));
+            fire.setPosition(ship.getX() + fireOffsetsX.get(i), ship.getY() + fireOffsetsY.get(i));
             fires.add(fire);
         }
         lastFireEffect = fireEffect;
@@ -648,9 +692,9 @@ public class MenuScreen implements Screen {
         hasAnimation = shipConfig.getBoolean(false, "hasAnimation");
         
         if (!hasAnimation) {
-            Ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
+            ship = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
         } else {
-            Ship = new Sprite();
+            ship = new Sprite();
             enemyAnimation = new Animation<>(
                     shipConfig.getFloat(3, "frameDuration"),
                     assetManager.get("player/animations/" + shipConfig.getString("noAnimation", "animation") + ".atlas", TextureAtlas.class)
@@ -661,7 +705,7 @@ public class MenuScreen implements Screen {
         float width = shipConfig.getFloat(1, "width");
         float height = shipConfig.getFloat(1, "height");
         
-        Ship.setBounds(258 - width / 2, 279 - height / 2, width, height);
+        ship.setBounds(50, 279 - height / 2, width, height);
     }
     
     private void setFireToDefault(String key) {
