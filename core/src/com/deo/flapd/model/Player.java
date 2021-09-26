@@ -223,6 +223,12 @@ public class Player extends Entity {
         bullet = new PlayerBullet(assetManager, this, enemies, newGame);
     }
     
+    public void scaleFireMotion(float motionScale){
+        for (int i = 0; i < fires.size; i++) {
+            fires.get(i).scaleEffect(1, motionScale);
+        }
+    }
+    
     public void drawEffects(SpriteBatch batch, float delta) {
         if (!isDead) {
             
@@ -346,7 +352,7 @@ public class Player extends Entity {
         shieldCharge = -1000;
         charge = -1000;
         if (soundVolume > 0) {
-            explosion.play(soundVolume / 100);
+            explosion.play(soundVolume / 100f);
         }
     }
 }
