@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -199,7 +200,7 @@ public class DUtils {
         }
     }
     
-    public static Object readObjectFromFile(FileHandle file){
+    public static Object readObjectFromFile(FileHandle file) {
         try {
             ObjectInputStream s = new ObjectInputStream(file.read());
             Object obj = s.readObject();
@@ -442,5 +443,38 @@ public class DUtils {
     
     public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffectPool.PooledEffect particleEffect) {
         shapeRenderer.rectLine(particleEffect.getBoundingBox().getCenterX() - particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getCenterX() + particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getHeight());
+    }
+    
+    public static void drawScreenExtenders(SpriteBatch batch, Texture fillTexture, int verticalFillingThreshold, int horizontalFillingThreshold) {
+        for (int i = 0; i < verticalFillingThreshold; i++) {
+            batch.draw(fillTexture, 0, -72 * (i + 1), 456, 72);
+            batch.draw(fillTexture, 456, -72 * (i + 1), 456, 72);
+            batch.draw(fillTexture, 0, 408 + 72 * (i + 1), 456, 72);
+            batch.draw(fillTexture, 456, 408 + 72 * (i + 1), 456, 72);
+        }
+        
+        for (int i = 0; i < horizontalFillingThreshold; i++) {
+            for (int i2 = 0; i2 < 7; i2++) {
+                batch.draw(fillTexture, -456 - 456 * i, 408 - i2 * 72, 456, 72);
+                batch.draw(fillTexture, 800 + 456 * i, 408 - i2 * 72, 456, 72);
+            }
+        }
+    }
+    
+    public static void drawBg(SpriteBatch batch, Texture bg1, Texture bg2, float warpSpeed, float movement) {
+        if (warpSpeed > 0) {
+            batch.setColor(1, 1, 1, 0.5f);
+        }
+        for (int i = 0; i < warpSpeed / 7 + 1; i++) {
+            batch.draw(bg1, 0, 0, (int) (movement * 50) - i * 3, -240, 800, 720);
+        }
+        if (warpSpeed > 0) {
+            batch.setColor(1, 1, 1, 1);
+        }
+        if (warpSpeed < 20) {
+            batch.setColor(1, 1, 1, (35 - warpSpeed) / 35f);
+            batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
+            batch.setColor(1, 1, 1, 1);
+        }
     }
 }
