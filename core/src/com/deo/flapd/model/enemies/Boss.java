@@ -618,7 +618,7 @@ class BasePart extends Entity {
             explosionEffect.setPosition(x + movementOffsetX + width / 2, y + movementOffsetY + height / 2);
             
             if (soundVolume > 0) {
-                explosionSound.play(soundVolume);
+                explosionSound.play(soundVolume / 100f);
             }
             
             exploded = true;
@@ -1131,7 +1131,7 @@ class Barrel extends Entity {
                     powerUpActive = false;
                     if (burstSpacing < 100 && base.soundVolume > 0) {
                         try {
-                            shootingSound.play(base.soundVolume);
+                            shootingSound.play(base.soundVolume / 100f);
                         } catch (GdxRuntimeException e) {
                             logException(e);
                         }
@@ -1170,7 +1170,7 @@ class Barrel extends Entity {
         
         bullets.add(new EnemyBullet(base.assetManager, newBulletData, base.player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
         if (burstSpacing >= 100 && base.soundVolume > 0) {
-            shootingSound.play(base.soundVolume);
+            shootingSound.play(base.soundVolume / 100f);
         }
         currentRecoilOffset = recoil;
     }

@@ -281,7 +281,7 @@ public class Enemy extends Entity {
             
             bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
         }
-        shootingSound.play(volume);
+        shootingSound.play(volume / 100f);
         data.millis = 0;
     }
     
@@ -293,7 +293,7 @@ public class Enemy extends Entity {
             droneData.health *= difficulty;
             enemies.enemyEntities.add(new Enemy(assetManager, droneData, enemies, player));
         }
-        shootingSound.play(volume);
+        shootingSound.play(volume / 100f);
         data.millis = 0;
     }
     
@@ -325,7 +325,7 @@ public class Enemy extends Entity {
         
         Drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
         
-        explosionSound.play(volume);
+        explosionSound.play(volume / 100f);
     }
 }
 

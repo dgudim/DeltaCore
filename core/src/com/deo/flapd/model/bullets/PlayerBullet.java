@@ -284,7 +284,7 @@ public class PlayerBullet {
                 }
                 
                 if (soundVolume > 0) {
-                    shot.play(soundVolume / 100);
+                    shot.play(soundVolume / 100f);
                 }
                 
                 millis = 0;
