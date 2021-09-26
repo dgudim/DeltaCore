@@ -125,11 +125,11 @@ public class MusicManager {
                     loadNextMusic();
                 }
             } else {
-                if (targetVolume > currentVolume) {
+                if (targetVolume - currentVolume > delta) {
                     currentVolume = clamp(currentVolume + delta, 0, 1);
                     resume();
                     music.setVolume(currentVolume);
-                } else if (targetVolume < currentVolume) {
+                } else if (targetVolume - currentVolume < -delta) {
                     currentVolume = clamp(currentVolume - delta, 0, 1);
                     resume();
                     music.setVolume(currentVolume);
