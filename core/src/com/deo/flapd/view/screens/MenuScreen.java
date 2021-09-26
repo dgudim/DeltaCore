@@ -106,7 +106,7 @@ public class MenuScreen implements Screen {
     private final MusicManager musicManager;
     private final Sound ftlFlightSound;
     private long soundId;
-    private final float soundVolume = getFloat("soundVolume");
+    private float soundVolume = getFloat("soundVolume");
     
     private final Game game;
     
@@ -277,6 +277,14 @@ public class MenuScreen implements Screen {
         moreTable.add(exportMessage).padTop(5).padBottom(5).width(510).row();
         
         musicVolumeS = (Slider) musicVolumeT.getCells().get(0).getActor();
+        
+        Slider soundVolumeS = (Slider) soundVolumeT.getCells().get(0).getActor();
+        soundVolumeS.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundVolume = soundVolumeS.getValue();
+            }
+        });
         
         menu = new Stage(viewport, batch);
         
@@ -623,7 +631,7 @@ public class MenuScreen implements Screen {
         warpAnimationActive = true;
         this.newGameAfterWarp = newGameAfterWarp;
         if (soundVolume > 0) {
-            soundId = ftlFlightSound.play(soundVolume, 0.5f, 0);
+            soundId = ftlFlightSound.play(soundVolume / 100f, 0.5f, 0);
         }
     }
     

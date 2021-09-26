@@ -446,6 +446,7 @@ public class DUtils {
     }
     
     public static void drawScreenExtenders(SpriteBatch batch, Texture fillTexture, int verticalFillingThreshold, int horizontalFillingThreshold) {
+        batch.setColor(1, 1, 1, 1);
         for (int i = 0; i < verticalFillingThreshold; i++) {
             batch.draw(fillTexture, 0, -72 * (i + 1), 456, 72);
             batch.draw(fillTexture, 456, -72 * (i + 1), 456, 72);

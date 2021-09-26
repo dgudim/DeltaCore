@@ -146,7 +146,7 @@ public class GameScreen implements Screen {
         
         ftlFlightSound = assetManager.get("sfx/ftl_flight.ogg");
         if (soundVolume > 0) {
-            soundId = ftlFlightSound.play(soundVolume, 0.5f, 0);
+            soundId = ftlFlightSound.play(soundVolume / 100f, 0.5f, 0);
         }
         
         enableShader = getBoolean("bloom");

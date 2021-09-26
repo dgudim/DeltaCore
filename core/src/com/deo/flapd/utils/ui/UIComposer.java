@@ -41,12 +41,10 @@ public class UIComposer {
     
     private final AssetManager assetManager;
     private final Sound clickSound;
-    private final float soundVolume;
     
     public UIComposer(AssetManager assetManager) {
         this.assetManager = assetManager;
         clickSound = assetManager.get("sfx/click.ogg");
-        soundVolume = getFloat("soundVolume");
         
         buttonStyles = new Array<>();
         checkBoxStyleNames = new Array<>();
@@ -383,6 +381,7 @@ public class UIComposer {
         cell.getCells().get(0).getActor().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                float soundVolume = getFloat("soundVolume");
                 if (soundVolume > 0) {
                     clickSound.play(soundVolume / 100f);
                 }
@@ -403,6 +402,7 @@ public class UIComposer {
         actor.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                float soundVolume = getFloat("soundVolume");
                 if (soundVolume > 0) {
                     clickSound.play(soundVolume / 100f);
                 }
