@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
@@ -104,6 +105,7 @@ public class MenuScreen implements Screen {
     private final InputMultiplexer multiplexer;
     
     private final MusicManager musicManager;
+    private final SoundManager soundManager;
     private final Sound ftlFlightSound;
     private long soundId;
     private float soundVolume = getFloat("soundVolume");
@@ -141,7 +143,7 @@ public class MenuScreen implements Screen {
     private boolean newGameAfterWarp = true;
     private float previousFireMotionScale = 1;
     
-    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, final MusicManager musicManager) {
+    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, final MusicManager musicManager, SoundManager soundManager) {
         long genTime = TimeUtils.millis();
         log("time to generate menu", INFO);
         
@@ -449,6 +451,7 @@ public class MenuScreen implements Screen {
             }
         });
         
+        this.soundManager = soundManager;
         this.musicManager = musicManager;
         this.musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
         this.musicManager.setVolume(getFloat("musicVolume") / 100f);
@@ -520,7 +523,7 @@ public class MenuScreen implements Screen {
                     if (soundVolume > 0) {
                         ftlFlightSound.stop();
                     }
-                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, newGameAfterWarp));
+                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, newGameAfterWarp));
                 }
             }
             scaleFireMotion((1 / previousFireMotionScale) * (warpSpeed / 17.5f + 1));

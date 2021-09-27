@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.overlays.Tree;
@@ -316,7 +317,7 @@ public class LoadingScreen implements Screen {
                 if (loadingState.equals(LoadingState.BUILDING_TREE)) {
                     craftingTree = new Tree(assetManager, 105, 65, 430, 410);
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
-                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
+                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, new SoundManager(assetManager)));
                 }
                 if (particleEffectPoolLoader == null) {
                     if(loadingState.equals(LoadingState.LOADING_PARTICLES)){

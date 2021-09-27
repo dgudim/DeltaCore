@@ -23,6 +23,7 @@ import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.overlays.GameUi;
 
@@ -91,7 +92,7 @@ public class GameScreen implements Screen {
     private long soundId = -1;
     private final float soundVolume = getFloat("soundVolume");
     
-    public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, boolean newGame) {
+    public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, SoundManager soundManager, boolean newGame) {
         
         this.game = game;
         this.musicManager = musicManager;
@@ -133,7 +134,7 @@ public class GameScreen implements Screen {
         
         drops = new Drops(assetManager, 48, getFloat("ui"));
         
-        gameUi = new GameUi(viewport, game, batch, assetManager, blurProcessor, player, musicManager);
+        gameUi = new GameUi(viewport, game, batch, assetManager, blurProcessor, player, musicManager, soundManager);
         
         environmentalEffects = new EnvironmentalEffects(assetManager);
         

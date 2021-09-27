@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -57,11 +58,13 @@ public class GameOverScreen implements Screen {
     private final AssetManager assetManager;
     
     private final MusicManager musicManager;
+    private final SoundManager soundManager;
     
-    public GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager) {
+    public GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager, SoundManager soundManager) {
         
         this.game = game;
         this.musicManager = musicManager;
+        this.soundManager = soundManager;
         
         this.batch = batch;
         this.blurProcessor = blurProcessor;
@@ -125,14 +128,14 @@ public class GameOverScreen implements Screen {
         menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
+                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
             }
         });
         
         restart.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, true));
+                game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, true));
                 GameScreen.is_paused = false;
             }
         });
@@ -150,7 +153,7 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager));
+            game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
         }
         
         Gdx.gl.glClearColor(0, 0, 0, 1);

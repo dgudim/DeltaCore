@@ -398,6 +398,11 @@ public class DUtils {
         
     }
     
+    public static String getNameFromPath(String path) {
+        int lastIndex = path.lastIndexOf(".");
+        return path.substring(path.lastIndexOf("/") + 1, lastIndex == -1 ? path.length() : lastIndex);
+    }
+    
     public static float convertPercentsToAbsoluteValue(String percentValue, float maxValue) {
         return Float.parseFloat(percentValue.replace("%", "").trim()) / 100f * maxValue;
     }
