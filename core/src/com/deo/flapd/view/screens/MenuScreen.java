@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -106,9 +105,6 @@ public class MenuScreen implements Screen {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
-    private final Sound ftlFlightSound;
-    private long soundId;
-    private float soundVolume = getFloat("soundVolume");
     
     private final Game game;
     
@@ -157,8 +153,6 @@ public class MenuScreen implements Screen {
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
-        ftlFlightSound = assetManager.get("sfx/ftl_flight.ogg");
-        
         TextureAtlas menuUiAtlas = assetManager.get("ui/menuUi.atlas", TextureAtlas.class);
         
         MenuBg = new Image(menuUiAtlas.findRegion("menuBg"));
@@ -192,7 +186,7 @@ public class MenuScreen implements Screen {
         
         long uiGenTime = millis();
         
-        UIComposer uiComposer = new UIComposer(assetManager);
+        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
         uiComposer.loadStyles("defaultLight", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
         
         Table playScreenTable = new Table();
@@ -284,7 +278,7 @@ public class MenuScreen implements Screen {
         soundVolumeS.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                soundVolume = soundVolumeS.getValue();
+                soundManager.notifyVolumeUpdated();
             }
         });
         
@@ -311,15 +305,15 @@ public class MenuScreen implements Screen {
         craftingTree.hide();
         craftingTree.update();
         
-        final ItemSlotManager blackMarket = new ItemSlotManager(assetManager);
+        final ItemSlotManager blackMarket = new ItemSlotManager(assetManager, soundManager);
         blackMarket.addShopSlots();
         blackMarket.setBounds(105, 70, 425, 400);
         
-        final ItemSlotManager inventory = new ItemSlotManager(assetManager);
+        final ItemSlotManager inventory = new ItemSlotManager(assetManager, soundManager);
         inventory.addInventorySlots();
         inventory.setBounds(105, 70, 425, 400);
         
-        workshopCategoryManager = new CategoryManager(assetManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
+        workshopCategoryManager = new CategoryManager(assetManager, soundManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
         workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting").addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -349,7 +343,7 @@ public class MenuScreen implements Screen {
         workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
         workshopCategoryManager.setVisible(false);
         
-        CategoryManager menuCategoryManager = new CategoryManager(assetManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
+        CategoryManager menuCategoryManager = new CategoryManager(assetManager, soundManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
         menuCategoryManager.addCategory(playScreenTable, "play").addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -399,7 +393,7 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(assetManager, menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
+                new ConfirmationDialogue(assetManager, soundManager, menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame();
@@ -480,7 +474,7 @@ public class MenuScreen implements Screen {
         
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             if (!isConfirmationDialogActive) {
-                new ConfirmationDialogue(assetManager, menu, "Are you sure you want to quit?", new ClickListener() {
+                new ConfirmationDialogue(assetManager, soundManager, menu, "Are you sure you want to quit?", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         Gdx.app.exit();
@@ -510,19 +504,13 @@ public class MenuScreen implements Screen {
         movement += delta * (warpSpeed + 1);
         if (warpAnimationActive) {
             warpTime += delta;
-            if (soundVolume > 0) {
-                ftlFlightSound.setPitch(soundId, (float) (0.5 + warpSpeed / 46.67));
-            }
+            soundManager.setPitch("ftl_flight", (float) (0.5 + warpSpeed / 46.67));
             if (warpTime > 0.7) {
                 warpSpeed = clamp(warpSpeed + delta * 50, 0, 70);
                 if (warpSpeed == 70 && warpTime > 3) {
-                    if (soundVolume > 0) {
-                        assetManager.get("sfx/ftl.ogg", Sound.class).play(soundVolume / 100f);
-                    }
+                    soundManager.playSound("ftl");
                     warpAnimationActive = false;
-                    if (soundVolume > 0) {
-                        ftlFlightSound.stop();
-                    }
+                    soundManager.stopSound("ftl_flight");
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, newGameAfterWarp));
                 }
             }
@@ -633,9 +621,7 @@ public class MenuScreen implements Screen {
         categoryManager.setTouchable(Touchable.disabled);
         warpAnimationActive = true;
         this.newGameAfterWarp = newGameAfterWarp;
-        if (soundVolume > 0) {
-            soundId = ftlFlightSound.play(soundVolume / 100f, 0.5f, 0);
-        }
+        soundManager.playSound("ftl_flight", 0.5f);
     }
     
     public void scaleFireMotion(float motionScale) {

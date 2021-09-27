@@ -194,7 +194,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("music/ambient4.ogg", Music.class);
         assetManager.load("music/ambient5.ogg", Music.class);
         assetManager.load("music/vhs.ogg", Music.class);
-    
+        
         assetManager.load("music/killswitch.ogg", Music.class);
     }
     
@@ -315,14 +315,15 @@ public class LoadingScreen implements Screen {
         try {
             if (assetManager.isFinished()) {
                 if (loadingState.equals(LoadingState.BUILDING_TREE)) {
-                    craftingTree = new Tree(assetManager, 105, 65, 430, 410);
+                    SoundManager soundManager = new SoundManager(assetManager);
+                    craftingTree = new Tree(assetManager, soundManager, 105, 65, 430, 410);
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
-                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, new SoundManager(assetManager)));
+                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
                 }
                 if (particleEffectPoolLoader == null) {
-                    if(loadingState.equals(LoadingState.LOADING_PARTICLES)){
+                    if (loadingState.equals(LoadingState.LOADING_PARTICLES)) {
                         particleEffectPoolLoader = new ParticleEffectPoolLoader();
-                    }else{
+                    } else {
                         setLoadingState(LoadingState.LOADING_PARTICLES);
                     }
                 } else {

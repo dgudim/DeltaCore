@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -80,8 +79,6 @@ public class GameUi {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
-    private final Sound clickSound;
-    private final float soundVolume;
     
     public GameUi(ScreenViewport viewport, final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager, final SoundManager soundManager) {
         
@@ -97,9 +94,6 @@ public class GameUi {
         uiScale = getFloat("ui");
         showFps = getBoolean("showFps");
         transparency = getBoolean("transparency");
-        
-        clickSound = assetManager.get("sfx/click.ogg");
-        soundVolume = getFloat("soundVolume");
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
         
@@ -284,9 +278,7 @@ public class GameUi {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 is_paused = true;
-                if (soundVolume > 0) {
-                    clickSound.play(soundVolume / 100f);
-                }
+                soundManager.playSound_noLink("click");
                 return true;
             }
         });
@@ -294,9 +286,7 @@ public class GameUi {
         continue_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (soundVolume > 0) {
-                    clickSound.play(soundVolume / 100f);
-                }
+                soundManager.playSound_noLink("click");
                 if (is_paused) {
                     is_paused = false;
                 }
@@ -306,9 +296,7 @@ public class GameUi {
         exit_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (soundVolume > 0) {
-                    clickSound.play(soundVolume / 100f);
-                }
+                soundManager.playSound_noLink("click");
                 if (is_paused) {
                     game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
                     is_paused = false;
@@ -319,9 +307,7 @@ public class GameUi {
         restart_button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (soundVolume > 0) {
-                    clickSound.play(soundVolume / 100f);
-                }
+                soundManager.playSound_noLink("click");
                 if (is_paused) {
                     game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, true));
                     is_paused = false;
@@ -338,9 +324,7 @@ public class GameUi {
         float delta = Gdx.graphics.getDeltaTime();
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            if (soundVolume > 0) {
-                clickSound.play(soundVolume / 100f);
-            }
+            soundManager.playSound_noLink("click");
             game.pause();
         }
         

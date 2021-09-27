@@ -2,7 +2,6 @@ package com.deo.flapd.utils.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -21,6 +20,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.SoundManager;
 
 import java.util.Locale;
 
@@ -40,11 +40,11 @@ public class UIComposer {
     Array<String> checkBoxStyleNames;
     
     private final AssetManager assetManager;
-    private final Sound clickSound;
+    SoundManager soundManager;
     
-    public UIComposer(AssetManager assetManager) {
+    public UIComposer(AssetManager assetManager, SoundManager soundManager) {
         this.assetManager = assetManager;
-        clickSound = assetManager.get("sfx/click.ogg");
+        this.soundManager = soundManager;
         
         buttonStyles = new Array<>();
         checkBoxStyleNames = new Array<>();
@@ -381,10 +381,7 @@ public class UIComposer {
         cell.getCells().get(0).getActor().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                float soundVolume = getFloat("soundVolume");
-                if (soundVolume > 0) {
-                    clickSound.play(soundVolume / 100f);
-                }
+                soundManager.playSound_noLink("click");
                 Gdx.net.openURI(link);
             }
         });
@@ -402,10 +399,7 @@ public class UIComposer {
         actor.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                float soundVolume = getFloat("soundVolume");
-                if (soundVolume > 0) {
-                    clickSound.play(soundVolume / 100f);
-                }
+                soundManager.playSound_noLink("click");
             }
         });
     }

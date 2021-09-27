@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
@@ -41,13 +42,13 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class SellScrapDialogue extends MoneyDialogue {
     
-    public SellScrapDialogue(final AssetManager assetManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
+    public SellScrapDialogue(final AssetManager assetManager, SoundManager soundManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
         
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        UIComposer uiComposer = new UIComposer(assetManager);
+        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen", "workshopPurple", "sliderDefaultSmall", "arrowRightSmall", "arrowLeftSmall");
         
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
@@ -107,7 +108,7 @@ public class SellScrapDialogue extends MoneyDialogue {
                 requirement.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new SellScrapDialogue(assetManager, stage, itemSlotManager, getInteger("item_" + getItemTextureNameByName(item)), items[finalI]);
+                        new SellScrapDialogue(assetManager, soundManager, stage, itemSlotManager, getInteger("item_" + getItemTextureNameByName(item)), items[finalI]);
                     }
                 });
                 

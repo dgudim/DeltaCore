@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class ColorCustomizationDialogue extends Dialogue {
     
     private final Dialog dialog;
     
-    ColorCustomizationDialogue(final AssetManager assetManager, final String particleEffect, final Stage stage) {
+    ColorCustomizationDialogue(final AssetManager assetManager, SoundManager soundManager, final String particleEffect, final Stage stage) {
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.13f);
@@ -58,7 +59,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         
         dialog = new Dialog("", dialogStyle);
         
-        UIComposer uiComposer = new UIComposer(assetManager);
+        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen", "sliderDefaultSmall");
         
         TextButton close = uiComposer.addTextButton("workshopRed", "cancel", 0.13f);
@@ -100,7 +101,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         item.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, "coloring crystal");
+                new CraftingDialogue(stage, assetManager, soundManager, "coloring crystal");
             }
         });
         
@@ -151,7 +152,7 @@ public class ColorCustomizationDialogue extends Dialogue {
                 writeFireColor(originalColors, particleEffect);
                 fire.free();
                 fire2.free();
-                new ColorCustomizationDialogue(assetManager, particleEffect, stage);
+                new ColorCustomizationDialogue(assetManager, soundManager, particleEffect, stage);
                 dialog.hide();
             }
         });

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -64,6 +63,7 @@ public class GameScreen implements Screen {
     private final Game game;
     
     private final MusicManager musicManager;
+    private final SoundManager soundManager;
     
     private final Bonus bonus;
     
@@ -87,15 +87,14 @@ public class GameScreen implements Screen {
     
     private float warpTime = 0;
     private float warpSpeed = 70;
+    private boolean warpSoundPlaying = true;
     private float previousFireMotionScale = 1;
-    private final Sound ftlFlightSound;
-    private long soundId = -1;
-    private final float soundVolume = getFloat("soundVolume");
     
     public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, SoundManager soundManager, boolean newGame) {
         
         this.game = game;
         this.musicManager = musicManager;
+        this.soundManager = soundManager;
         
         this.batch = batch;
         
@@ -145,14 +144,10 @@ public class GameScreen implements Screen {
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         this.musicManager.setVolume(getFloat("musicVolume") / 100f);
         
-        ftlFlightSound = assetManager.get("sfx/ftl_flight.ogg");
-        if (soundVolume > 0) {
-            soundId = ftlFlightSound.play(soundVolume / 100f, 0.5f, 0);
-        }
-        
         enableShader = getBoolean("bloom");
         postProcessor = blurProcessor;
-        
+    
+        soundManager.playSound("ftl_flight");
     }
     
     @Override
@@ -206,12 +201,10 @@ public class GameScreen implements Screen {
             player.scaleFireMotion((1 / previousFireMotionScale) * (warpSpeed / 17.5f + 1));
             previousFireMotionScale = warpSpeed / 17.5f + 1;
             player.setPositionAndRotation(player.x + delta * warpSpeed * 3, player.y, player.rotation);
-            if (soundVolume > 0) {
-                ftlFlightSound.setPitch(soundId, (float) (0.5 + warpSpeed / 46.67));
-            }
-        }else if(soundId != -1){
-            ftlFlightSound.stop();
-            soundId = -1;
+            soundManager.setPitch("ftl_flight", (float) (0.5 + warpSpeed / 46.67));
+        }else if(warpSoundPlaying){
+            soundManager.stopSound("ftl_flight");
+            warpSoundPlaying = false;
         }
         
         drawBg(batch, bg1, bg2, warpSpeed, movement);

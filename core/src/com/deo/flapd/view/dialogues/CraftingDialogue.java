@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.screens.LoadingScreen;
 
@@ -48,6 +49,7 @@ public class CraftingDialogue extends Dialogue {
     private final Dialog dialog;
     private final Stage stage;
     private final AssetManager assetManager;
+    private final SoundManager soundManager;
     private final int requestedQuantity;
     private final Array<TextButton> buyShortcuts;
     private Array<Label> tableLabels;
@@ -62,21 +64,22 @@ public class CraftingDialogue extends Dialogue {
     private final TextureAtlas itemAtlas;
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
-    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result) {
-        this(stage, assetManager, result, 1, false, null);
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, SoundManager soundManager, final String result) {
+        this(stage, assetManager, soundManager, result, 1, false, null);
     }
     
-    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity) {
-        this(stage, assetManager, result, requestedQuantity, false, null);
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, SoundManager soundManager, final String result, int requestedQuantity) {
+        this(stage, assetManager, soundManager, result, requestedQuantity, false, null);
     }
     
-    public CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, boolean showDescription) {
-        this(stage, assetManager, result, 1, showDescription, null);
+    public CraftingDialogue(final Stage stage, final AssetManager assetManager, SoundManager soundManager, final String result, boolean showDescription) {
+        this(stage, assetManager, soundManager, result, 1, showDescription, null);
     }
     
-    private CraftingDialogue(final Stage stage, final AssetManager assetManager, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue) {
+    private CraftingDialogue(final Stage stage, final AssetManager assetManager, SoundManager soundManager, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue) {
         this.stage = stage;
         this.assetManager = assetManager;
+        this.soundManager = soundManager;
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
         
@@ -90,7 +93,7 @@ public class CraftingDialogue extends Dialogue {
         font.getData().setScale(0.13f);
         font.getData().markupEnabled = true;
         
-        uiComposer = new UIComposer(assetManager);
+        uiComposer = new UIComposer(assetManager, soundManager);
         
         uiComposer.loadStyles("workshopGreen", "workshopRed", "workshopCyan", "workshopPurple", "questionButton", "sliderDefaultSmall");
         
@@ -142,7 +145,7 @@ public class CraftingDialogue extends Dialogue {
                         customize.addListener(new ClickListener() {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
-                                new ColorCustomizationDialogue(assetManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
+                                new ColorCustomizationDialogue(assetManager, soundManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
                             }
                         });
                         yes.setText("ok");
@@ -222,7 +225,7 @@ public class CraftingDialogue extends Dialogue {
                             customize.addListener(new ClickListener() {
                                 @Override
                                 public void clicked(InputEvent event, float x, float y) {
-                                    new ColorCustomizationDialogue(assetManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
+                                    new ColorCustomizationDialogue(assetManager, soundManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
                                 }
                             });
                             yes.setText("ok");
@@ -411,7 +414,7 @@ public class CraftingDialogue extends Dialogue {
                         quantities.add(slotsJson.getIntArray(new int[]{}, "productQuantities")[i]);
                     }
                     
-                    new PurchaseDialogue(assetManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
+                    new PurchaseDialogue(assetManager, soundManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
                             (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemTextureNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
                             CraftingDialogue.this);
                 }
@@ -420,7 +423,7 @@ public class CraftingDialogue extends Dialogue {
             item.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, items[finalI],
+                    new CraftingDialogue(stage, assetManager, soundManager, items[finalI],
                             (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemTextureNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
@@ -429,7 +432,7 @@ public class CraftingDialogue extends Dialogue {
             itemText.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, items[finalI],
+                    new CraftingDialogue(stage, assetManager, soundManager, items[finalI],
                             (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemTextureNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
@@ -486,7 +489,7 @@ public class CraftingDialogue extends Dialogue {
         question.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, result, true);
+                new CraftingDialogue(stage, assetManager, soundManager, result, true);
             }
         });
         
@@ -563,7 +566,7 @@ public class CraftingDialogue extends Dialogue {
             item.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(stage, assetManager, requiredItems[finalI], 1, false, CraftingDialogue.this);
+                    new CraftingDialogue(stage, assetManager, soundManager, requiredItems[finalI], 1, false, CraftingDialogue.this);
                     dialog.hide();
                 }
             });

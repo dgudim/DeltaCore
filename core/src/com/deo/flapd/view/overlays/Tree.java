@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
 
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
@@ -41,6 +42,7 @@ import static com.deo.flapd.utils.DUtils.log;
 public class Tree {
     
     private final AssetManager assetManager;
+    private final SoundManager soundManager;
     private final Table treeTable;
     private final Array<Array<Node>> nodes;
     private final float height;
@@ -48,13 +50,14 @@ public class Tree {
     public ScrollPane treeScrollView;
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
-    public Tree(AssetManager assetManager, float x, float y, float width, float height) {
+    public Tree(AssetManager assetManager, SoundManager soundManager, float x, float y, float width, float height) {
         this.height = height;
         treeTable = new Table();
         treeTable.setTransform(true);
         treeTable.setLayoutEnabled(false);
         nodes = new Array<>();
         this.assetManager = assetManager;
+        this.soundManager = soundManager;
         addBase();
         Array<Array<String>> items = new Array<>();
         Array<String> categories = new Array<>();
@@ -116,7 +119,7 @@ public class Tree {
     
     private void addBase() {
         Array<Node> base = new Array<>();
-        base.add(new Node(assetManager, "root", 5, height - 85, 70, 70, treeTable, treeJson));
+        base.add(new Node(assetManager, soundManager,"root", 5, height - 85, 70, 70, treeTable, treeJson));
         nodes.add(base);
     }
     
@@ -127,7 +130,7 @@ public class Tree {
             Array<Node> currentCategoryNodes = new Array<>();
             
             for (int i = 0; i < currentCategoryItems.size; i++) {
-                Node nextNode = new Node(assetManager, currentCategoryItems.get(i), root.node.getX() + 85, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
+                Node nextNode = new Node(assetManager, soundManager,currentCategoryItems.get(i), root.node.getX() + 85, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
                 addItems(categories, items, nextNode.name, nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -146,7 +149,7 @@ public class Tree {
             Array<Node> currentCategoryNodes = new Array<>();
             
             for (int i = 0; i < items.length; i++) {
-                Node nextNode = new Node(assetManager, items[i], root.node.getX() + 80, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
+                Node nextNode = new Node(assetManager, soundManager, items[i], root.node.getX() + 80, maxHeight - 55 * i, 50, 50, treeTable, treeJson);
                 loadCraftingRecipe(items[i], nextNode, maxHeight);
                 currentCategoryNodes.add(nextNode);
                 branchCount++;
@@ -190,7 +193,7 @@ class Node {
     private final JsonEntry treeJson;
     private float resultCount = 1;
     
-    Node(final AssetManager assetManager, final String item, float x, float y, float width, float height, final Table holder, JsonEntry treeJson) {
+    Node(final AssetManager assetManager, SoundManager soundManager, final String item, float x, float y, float width, float height, final Table holder, JsonEntry treeJson) {
         this.holder = holder;
         this.assetManager = assetManager;
         this.treeJson = treeJson;
@@ -242,7 +245,7 @@ class Node {
         node.addListener(new ActorGestureListener(20, 0.4f, 0.6f, 0.15f) {
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                new CraftingDialogue(holder.getStage(), assetManager, name, (int) Math.ceil((requestedQuantity - getInteger("item_" + getItemTextureNameByName(name))) / resultCount));
+                new CraftingDialogue(holder.getStage(), assetManager, soundManager, name, (int) Math.ceil((requestedQuantity - getInteger("item_" + getItemTextureNameByName(name))) / resultCount));
                 return true;
             }
             
