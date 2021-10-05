@@ -29,7 +29,6 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.screens.LoadingScreen;
 
@@ -51,8 +50,6 @@ public class CraftingDialogue extends Dialogue {
     private final Stage stage;
     
     private final CompositeManager compositeManager;
-    private final AssetManager assetManager;
-    private final SoundManager soundManager;
     
     private final int requestedQuantity;
     private final Array<TextButton> buyShortcuts;
@@ -83,8 +80,7 @@ public class CraftingDialogue extends Dialogue {
     private CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue) {
         this.stage = stage;
         this.compositeManager = compositeManager;
-        assetManager = compositeManager.getAssetManager();
-        soundManager = compositeManager.getSoundManager();
+        AssetManager assetManager = compositeManager.getAssetManager();
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
         

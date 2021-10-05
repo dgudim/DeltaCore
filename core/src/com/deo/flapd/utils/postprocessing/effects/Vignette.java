@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing.effects;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -22,9 +6,10 @@ import com.deo.flapd.utils.postprocessing.PostProcessorEffect;
 import com.deo.flapd.utils.postprocessing.filters.Vignetting;
 
 public final class Vignette extends PostProcessorEffect {
-	private Vignetting vignetting;
-	private boolean controlSaturation;
-	private float oneOnW, oneOnH;
+	private final Vignetting vignetting;
+	private final boolean controlSaturation;
+	private final float oneOnW;
+    private final float oneOnH;
 
 	public Vignette (int viewportWidth, int viewportHeight, boolean controlSaturation) {
 		this.controlSaturation = controlSaturation;

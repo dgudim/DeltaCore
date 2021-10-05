@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.dialogues.PurchaseDialogue;
@@ -70,7 +69,6 @@ public class ItemSlotManager {
     
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
-    private final SoundManager soundManager;
     
     private SlotManagerMode slotManagerMode;
     private final UIComposer uiComposer;
@@ -81,7 +79,6 @@ public class ItemSlotManager {
     
         this.compositeManager = compositeManager;
         assetManager = compositeManager.getAssetManager();
-        soundManager = compositeManager.getSoundManager();
         
         slotSkin = new Skin();
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));

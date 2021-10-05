@@ -9,7 +9,7 @@ import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class FallingShip extends EnvironmentalEffect {
     
-    boolean rtl = false;
+    boolean rtl;
     
     FallingShip(AssetManager assetManager, float x) {
         entitySprite = new Sprite((Texture) assetManager.get("fallingShip.png"));

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing.filters;
 
 import com.deo.flapd.utils.postprocessing.ShaderLoader;
@@ -39,20 +23,20 @@ public final class RadialBlur extends Filter<RadialBlur> {
 
 	public enum Param implements Parameter {
 		// @off
-		Texture("u_texture0", 0), 
-		BlurDiv("blur_div", 0), 
-		OffsetX("offset_x", 0), 
-		OffsetY("offset_y", 0),
+		Texture("u_texture0"),
+		BlurDiv("blur_div"),
+		OffsetX("offset_x"),
+		OffsetY("offset_y"),
 		// OneOnBlurLen( "one_on_blurlen", 0 ),
-		Zoom("zoom", 0), ;
+		Zoom("zoom"), ;
 		// @on
 
 		private final String mnemonic;
 		private final int elementSize;
 
-		Param(String mnemonic, int arrayElementSize) {
+		Param(String mnemonic) {
 			this.mnemonic = mnemonic;
-			this.elementSize = arrayElementSize;
+			this.elementSize = 0;
 		}
 
 		@Override

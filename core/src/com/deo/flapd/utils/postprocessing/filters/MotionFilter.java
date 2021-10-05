@@ -13,15 +13,15 @@ public class MotionFilter extends Filter<MotionFilter> {
 
 	public enum Param implements Parameter {
 		// @formatter:off
-		Texture("u_texture0", 0), LastFrame("u_texture1", 0), BlurOpacity("u_blurOpacity", 0);
+		Texture("u_texture0"), LastFrame("u_texture1"), BlurOpacity("u_blurOpacity");
 		// @formatter:on
 
 		private final String mnemonic;
 		private final int elementSize;
 
-		Param(String mnemonic, int arrayElementSize) {
+		Param(String mnemonic) {
 			this.mnemonic = mnemonic;
-			this.elementSize = arrayElementSize;
+			this.elementSize = 0;
 		}
 
 		@Override

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing.effects;
 
 import com.badlogic.gdx.Gdx;
@@ -34,10 +18,10 @@ import com.deo.flapd.utils.postprocessing.utils.PingPongBuffer;
 public final class CrtMonitor extends PostProcessorEffect {
 	private PingPongBuffer pingPongBuffer = null;
 	private FrameBuffer buffer = null;
-	private CrtScreen crt;
+	private final CrtScreen crt;
 	private Blur blur;
-	private Combine combine;
-	private boolean doblur;
+	private final Combine combine;
+	private final boolean doblur;
 
 	private boolean blending = false;
 	private int sfactor, dfactor;
@@ -167,7 +151,7 @@ public final class CrtMonitor extends PostProcessorEffect {
 		boolean blendingWasEnabled = PostProcessor.isStateEnabled(GL20.GL_BLEND);
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
-		Texture out = null;
+		Texture out;
 
 		if (doblur) {
 

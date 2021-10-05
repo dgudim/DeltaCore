@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing.filters;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -34,18 +18,18 @@ public final class Vignetting extends Filter<Vignetting> {
 
 	public enum Param implements Parameter {
 		// @formatter:off
-		Texture0("u_texture0", 0), TexLUT("u_texture1", 0), VignetteIntensity("VignetteIntensity", 0), VignetteX("VignetteX", 0), VignetteY(
-			"VignetteY", 0), Saturation("Saturation", 0), SaturationMul("SaturationMul", 0), LutIntensity("LutIntensity", 0), LutIndex(
-			"LutIndex", 0), LutIndex2("LutIndex2", 0), LutIndexOffset("LutIndexOffset", 0), LutStep("LutStep", 0), LutStepOffset(
-			"LutStepOffset", 0), CenterX("CenterX", 0), CenterY("CenterY", 0);
+		Texture0("u_texture0"), TexLUT("u_texture1"), VignetteIntensity("VignetteIntensity"), VignetteX("VignetteX"), VignetteY(
+			"VignetteY"), Saturation("Saturation"), SaturationMul("SaturationMul"), LutIntensity("LutIntensity"), LutIndex(
+			"LutIndex"), LutIndex2("LutIndex2"), LutIndexOffset("LutIndexOffset"), LutStep("LutStep"), LutStepOffset(
+			"LutStepOffset"), CenterX("CenterX"), CenterY("CenterY");
 		// @formatter:on
 
 		private final String mnemonic;
 		private final int elementSize;
 
-		Param(String m, int elementSize) {
+		Param(String m) {
 			this.mnemonic = m;
-			this.elementSize = elementSize;
+			this.elementSize = 0;
 		}
 
 		@Override

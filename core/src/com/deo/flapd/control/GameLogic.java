@@ -14,7 +14,6 @@ import java.util.Random;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomBoolean;
 import static com.deo.flapd.utils.DUtils.getString;
@@ -25,8 +24,6 @@ public class GameLogic {
     private final Player player;
     
     private final Random random;
-    
-    private final float difficulty;
     
     public static int bonuses_collected;
     
@@ -56,7 +53,7 @@ public class GameLogic {
         this.environmentalEffects = environmentalEffects;
         this.checkpoint = checkpoint;
         
-        difficulty = getFloat("difficulty");
+        //difficulty = getFloat("difficulty");
         // TODO: 5/6/2021 implement difficulty
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));

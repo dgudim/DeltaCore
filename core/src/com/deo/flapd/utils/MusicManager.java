@@ -78,9 +78,7 @@ public class MusicManager {
         log("playing " + path, INFO);
         music.setVolume(0);
         currentVolume = 0;
-        music.setOnCompletionListener(music -> {
-            isWaitingForNewSong = true;
-        });
+        music.setOnCompletionListener(music -> isWaitingForNewSong = true);
         try {
             music.play();
         } catch (GdxRuntimeException e) {

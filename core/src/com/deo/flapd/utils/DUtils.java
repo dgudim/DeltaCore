@@ -29,6 +29,7 @@ import java.util.Map;
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.NORMAL;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static java.lang.Math.*;
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
 
@@ -368,11 +369,7 @@ public class DUtils {
     public static float lerpWithConstantSpeed(float from, float to, float speed, float delta) {
         if (from + speed * delta < to) {
             return from + speed * delta;
-        } else if (from - speed * delta > to) {
-            return from - speed * delta;
-        } else {
-            return to;
-        }
+        } else return max(from - speed * delta, to);
     }
     
     public static float normaliseAngle(float angle, float start, float end) {
@@ -387,7 +384,7 @@ public class DUtils {
         from = normaliseAngle(from, 0, 360);
         to = normaliseAngle(to, 0, 360);
         
-        float distance1 = Math.abs(from - to);
+        float distance1 = abs(from - to);
         float distance2 = 360 - distance1;
         
         if (distance1 < distance2 && to > from || distance1 > distance2 && to < from) {
@@ -443,7 +440,7 @@ public class DUtils {
     public static float getDistanceBetweenTwoPoints(float x1, float y1, float x2, float y2) {
         final float x_delta = x2 - x1;
         final float y_delta = y2 - y1;
-        return (float) Math.sqrt(x_delta * x_delta + y_delta * y_delta);
+        return (float) sqrt(x_delta * x_delta + y_delta * y_delta);
     }
     
     public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffectPool.PooledEffect particleEffect) {

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing;
 
 import com.badlogic.gdx.Gdx;
@@ -51,15 +35,15 @@ public final class PostProcessor implements Disposable {
 	private static final Rectangle viewport = new Rectangle();
 	private static boolean hasViewport = false;
 
-	private boolean enabled = true;
-	private boolean capturing = false;
-	private boolean hasCaptured = false;
-	private boolean useDepth = false;
+	private boolean enabled;
+	private boolean capturing;
+	private boolean hasCaptured;
+	private final boolean useDepth;
 
 	private PostProcessorListener listener = null;
 
 	// maintains a per-frame updated list of enabled effects
-	private final Array<PostProcessorEffect> enabledEffects = new Array<PostProcessorEffect>(5);
+	private final Array<PostProcessorEffect> enabledEffects = new Array<>(5);
 
 	/** Construct a new PostProcessor with FBO dimensions set to the size of the screen */
 	public PostProcessor (boolean useDepth, boolean useAlphaChannel, boolean use32Bits) {

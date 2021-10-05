@@ -1,12 +1,12 @@
 
 package com.deo.flapd.utils.postprocessing;
 
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+
+import java.nio.ByteBuffer;
 
 /** Provides a simple mechanism to query OpenGL pipeline states. Note: state queries are costly and stall the pipeline, especially
  * on mobile devices!
@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Disposable;
  * @author bmanuel */
 public final class PipelineState implements Disposable {
 
-	private ByteBuffer byteBuffer;
+	private final ByteBuffer byteBuffer;
 
 	protected PipelineState () {
 		byteBuffer = BufferUtils.newByteBuffer(32);
@@ -22,17 +22,13 @@ public final class PipelineState implements Disposable {
 
 	public boolean isEnabled (int pname) {
 		boolean ret = false;
-
-		switch (pname) {
-		case GL20.GL_BLEND:
+		
+		if (pname == GL20.GL_BLEND) {
 			Gdx.gl20.glGetBooleanv(GL20.GL_BLEND, byteBuffer);
 			ret = (byteBuffer.get() == 1);
 			byteBuffer.clear();
-			break;
-		default:
-			ret = false;
 		}
-
+		
 		return ret;
 	}
 

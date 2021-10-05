@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing.filters;
 
 import com.badlogic.gdx.utils.IntMap;
@@ -53,8 +37,9 @@ public final class Blur extends MultipassFilter {
 	private int passes;
 
 	// fbo, textures
-	private float invWidth, invHeight;
-	private final IntMap<Convolve2D> convolve = new IntMap<Convolve2D>(Tap.values().length);
+	private final float invWidth;
+	private final float invHeight;
+	private final IntMap<Convolve2D> convolve = new IntMap<>(Tap.values().length);
 
 	public Blur (int width, int height) {
 		// precompute constants
@@ -226,35 +211,32 @@ public final class Blur extends MultipassFilter {
 	}
 
 	private void computeKernel (int blurRadius, float blurAmount, float[] outKernel) {
-		int radius = blurRadius;
-
+		
 		// float sigma = (float)radius / amount;
-		float sigma = blurAmount;
-
-		float twoSigmaSquare = 2.0f * sigma * sigma;
+		
+		float twoSigmaSquare = 2.0f * blurAmount * blurAmount;
 		float sigmaRoot = (float)Math.sqrt(twoSigmaSquare * Math.PI);
 		float total = 0.0f;
-		float distance = 0.0f;
-		int index = 0;
+		float distance;
+		int index;
 
-		for (int i = -radius; i <= radius; ++i) {
+		for (int i = -blurRadius; i <= blurRadius; ++i) {
 			distance = i * i;
-			index = i + radius;
+			index = i + blurRadius;
 			outKernel[index] = (float)Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
 			total += outKernel[index];
 		}
 
-		int size = (radius * 2) + 1;
+		int size = (blurRadius * 2) + 1;
 		for (int i = 0; i < size; ++i) {
 			outKernel[i] /= total;
 		}
 	}
 
 	private void computeOffsets (int blurRadius, float dx, float dy, float[] outOffsetH, float[] outOffsetV) {
-		int radius = blurRadius;
-
+		
 		final int X = 0, Y = 1;
-		for (int i = -radius, j = 0; i <= radius; ++i, j += 2) {
+		for (int i = -blurRadius, j = 0; i <= blurRadius; ++i, j += 2) {
 			outOffsetH[j + X] = i * dx;
 			outOffsetH[j + Y] = 0;
 

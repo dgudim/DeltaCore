@@ -25,7 +25,6 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
 
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
@@ -43,8 +42,6 @@ import static com.deo.flapd.utils.DUtils.log;
 public class Tree {
     
     private final CompositeManager compositeManager;
-    private final AssetManager assetManager;
-    private final SoundManager soundManager;
     
     private final Table treeTable;
     private final Array<Array<Node>> nodes;
@@ -56,8 +53,7 @@ public class Tree {
     public Tree(CompositeManager compositeManager, float x, float y, float width, float height) {
         this.height = height;
         this.compositeManager = compositeManager;
-        assetManager = compositeManager.getAssetManager();
-        soundManager = compositeManager.getSoundManager();
+        AssetManager assetManager = compositeManager.getAssetManager();
         
         treeTable = new Table();
         treeTable.setTransform(true);

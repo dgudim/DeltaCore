@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2012 bmanuel
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.deo.flapd.utils.postprocessing.utils;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -27,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
  * 
  * Subsequent {@link #capture()} calls will initiate writing to the next available buffer, returning the previously used one,
  * effectively ping-ponging between the two. Until {@link #end()} is called, chained rendering will be possible by retrieving the
- * necessary buffers via {@link #getSourceTexture()}, {@link #getSourceBuffer()}, {@link #getResultTexture()} or
+ * necessary buffers via , {@link #getSourceBuffer()}, {@link #getResultTexture()} or
  * {@link #getResultBuffer}.
  * 
  * When finished, {@link #end()} should be called to stop capturing. When the OpenGL context is lost, {@link #rebind()} should be
@@ -129,9 +113,7 @@ public final class PingPongBuffer {
 		bufResult = buffer2;
 	}
 
-	/** Starts and/or continue ping-ponging, begin capturing on the next available buffer, returns the result of the previous
-	 * {@link #capture()} call.
-	 * 
+	/** Starts and/or continue ping-ponging, begin capturing on the next available buffer, returns the result of the previous capture() call.
 	 * @return the Texture containing the result. */
 	public Texture capture () {
 		endPending();
