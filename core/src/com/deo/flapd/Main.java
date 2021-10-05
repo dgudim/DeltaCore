@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -37,7 +38,7 @@ public class Main extends Game {
     private SpriteBatch batch;
     private PostProcessor blurProcessor;
     
-    private AssetManager assetManager;
+    private CompositeManager compositeManager;
     
     public static String VERSION_NAME;
     
@@ -53,7 +54,7 @@ public class Main extends Game {
         }
         
         batch = new SpriteBatch();
-        assetManager = new AssetManager();
+        AssetManager assetManager = new AssetManager();
         
         clearLog();
         Date date = new Date();
@@ -76,7 +77,16 @@ public class Main extends Game {
             assetManager.update();
         }
         
-        this.setScreen(new LoadingScreen(this, batch, assetManager, blurProcessor, new MusicManager(assetManager)));
+        compositeManager = new CompositeManager();
+        compositeManager.setAssetManager(assetManager);
+        compositeManager.setBlurProcessor(blurProcessor);
+        compositeManager.setBloom(bloom);
+        compositeManager.setMusicManager(new MusicManager(assetManager));
+        compositeManager.setSoundManager(new SoundManager(assetManager));
+        compositeManager.setGame(this);
+        compositeManager.setBatch(batch);
+        
+        this.setScreen(new LoadingScreen(compositeManager));
     }
     
     @Override
@@ -95,7 +105,7 @@ public class Main extends Game {
     public void dispose() {
         flushLogBuffer();
         batch.dispose();
-        assetManager.dispose();
+        compositeManager.dispose();
         blurProcessor.dispose();
         if (particleEffectPoolLoader != null) {
             particleEffectPoolLoader.dispose();

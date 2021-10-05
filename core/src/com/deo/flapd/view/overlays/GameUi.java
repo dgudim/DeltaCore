@@ -25,9 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.SoundManager;
-import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.screens.GameOverScreen;
 import com.deo.flapd.view.screens.GameScreen;
 import com.deo.flapd.view.screens.MenuScreen;
@@ -70,25 +69,21 @@ public class GameUi {
     
     private final Game game;
     
-    private final AssetManager assetManager;
-    private final PostProcessor blurProcessor;
+    private final CompositeManager compositeManager;
     
     private final boolean transparency;
     
     private final Player player;
     
-    private final MusicManager musicManager;
     private final SoundManager soundManager;
     
-    public GameUi(ScreenViewport viewport, final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager, final SoundManager soundManager) {
+    public GameUi(ScreenViewport viewport, CompositeManager compositeManager, Player player) {
         
-        this.game = game;
-        this.musicManager = musicManager;
-        this.soundManager = soundManager;
-        
-        this.assetManager = assetManager;
-        this.blurProcessor = blurProcessor;
-        this.batch = batch;
+        this.compositeManager = compositeManager;
+        game = compositeManager.getGame();
+        soundManager = compositeManager.getSoundManager();
+        AssetManager assetManager = compositeManager.getAssetManager();
+        batch = compositeManager.getBatch();
         this.player = player;
         
         uiScale = getFloat("ui");
@@ -298,7 +293,7 @@ public class GameUi {
             public void clicked(InputEvent event, float x, float y) {
                 soundManager.playSound_noLink("click");
                 if (is_paused) {
-                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
+                    game.setScreen(new MenuScreen(compositeManager));
                     is_paused = false;
                 }
             }
@@ -309,7 +304,7 @@ public class GameUi {
             public void clicked(InputEvent event, float x, float y) {
                 soundManager.playSound_noLink("click");
                 if (is_paused) {
-                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, true));
+                    game.setScreen(new GameScreen(compositeManager, true));
                     is_paused = false;
                 }
             }
@@ -370,7 +365,7 @@ public class GameUi {
         }
         
         if (player.isDead && player.explosionEffect.isComplete()) {
-            game.setScreen(new GameOverScreen(game, batch, assetManager, blurProcessor, player, musicManager, soundManager));
+            game.setScreen(new GameOverScreen(compositeManager, player));
         }
     }
     

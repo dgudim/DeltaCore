@@ -27,8 +27,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
@@ -42,13 +42,15 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class SellScrapDialogue extends MoneyDialogue {
     
-    public SellScrapDialogue(final AssetManager assetManager, SoundManager soundManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
+    public SellScrapDialogue(CompositeManager compositeManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
+        
+        AssetManager assetManager = compositeManager.getAssetManager();
         
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
+        UIComposer uiComposer = new UIComposer(compositeManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen", "workshopPurple", "sliderDefaultSmall", "arrowRightSmall", "arrowLeftSmall");
         
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
@@ -108,7 +110,7 @@ public class SellScrapDialogue extends MoneyDialogue {
                 requirement.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new SellScrapDialogue(assetManager, soundManager, stage, itemSlotManager, getInteger("item_" + getItemTextureNameByName(item)), items[finalI]);
+                        new SellScrapDialogue(compositeManager, stage, itemSlotManager, getInteger("item_" + getItemTextureNameByName(item)), items[finalI]);
                     }
                 });
                 

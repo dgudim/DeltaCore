@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
@@ -66,23 +67,27 @@ public class ItemSlotManager {
     private final TextureAtlas items;
     private final ScrollPane scrollPane;
     private Stage stage;
+    
+    private final CompositeManager compositeManager;
     private final AssetManager assetManager;
     private final SoundManager soundManager;
+    
     private SlotManagerMode slotManagerMode;
     private final UIComposer uiComposer;
     
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
-    public ItemSlotManager(AssetManager assetManager, SoundManager soundManager) {
+    public ItemSlotManager(CompositeManager compositeManager) {
+    
+        this.compositeManager = compositeManager;
+        assetManager = compositeManager.getAssetManager();
+        soundManager = compositeManager.getSoundManager();
         
         slotSkin = new Skin();
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        uiComposer = new UIComposer(assetManager, soundManager);
+        uiComposer = new UIComposer(compositeManager);
         uiComposer.loadStyles("workshopGreen");
-        
-        this.assetManager = assetManager;
-        this.soundManager = soundManager;
         
         items = assetManager.get("items/items.atlas");
         
@@ -117,7 +122,7 @@ public class ItemSlotManager {
             update.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new ConfirmationDialogue(assetManager, soundManager, stage, "reset the shop for 3500?", new ClickListener() {
+                    new ConfirmationDialogue(compositeManager, stage, "reset the shop for 3500?", new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
                             if (getInteger("money") >= 3500) {
@@ -269,7 +274,7 @@ public class ItemSlotManager {
         addSlot(result, quantity, nextRow).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new PurchaseDialogue(assetManager, soundManager, stage, result, quantity, ItemSlotManager.this);
+                new PurchaseDialogue(compositeManager, stage, result, quantity, ItemSlotManager.this);
             }
         });
     }
@@ -278,7 +283,7 @@ public class ItemSlotManager {
         addSlot(result, quantity, nextRow).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new SellScrapDialogue(assetManager, soundManager, stage, ItemSlotManager.this, quantity, result);
+                new SellScrapDialogue(compositeManager, stage, ItemSlotManager.this, quantity, result);
             }
         });
     }

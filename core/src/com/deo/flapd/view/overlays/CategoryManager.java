@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.utils.SoundManager;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -38,7 +38,9 @@ public class CategoryManager extends Actor {
     private final String style;
     private final boolean useTbg;
     
-    public CategoryManager(AssetManager assetManager, SoundManager soundManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey) {
+    public CategoryManager(CompositeManager compositeManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey) {
+        
+        AssetManager assetManager = compositeManager.getAssetManager();
         
         buttons = new Table();
         
@@ -49,7 +51,7 @@ public class CategoryManager extends Actor {
         Skin mainSkin = new Skin();
         mainSkin.addRegions(assetManager.get("menuButtons/menuButtons.atlas"));
         
-        uiComposer = new UIComposer(assetManager, soundManager);
+        uiComposer = new UIComposer(compositeManager);
         uiComposer.loadStyles(style);
         this.style = style;
         

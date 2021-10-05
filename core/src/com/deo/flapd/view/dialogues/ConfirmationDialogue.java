@@ -13,17 +13,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.deo.flapd.utils.SoundManager;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
 public class ConfirmationDialogue extends Dialogue {
     
-    public ConfirmationDialogue(AssetManager assetManager, SoundManager soundManager, Stage stage, String message, InputListener okButtonListener, InputListener exitButtonListener) {
+    public ConfirmationDialogue(CompositeManager compositeManager, Stage stage, String message, InputListener okButtonListener, InputListener exitButtonListener) {
+        AssetManager assetManager = compositeManager.getAssetManager();
+        
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
+        UIComposer uiComposer = new UIComposer(compositeManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen");
         
         Window.WindowStyle dialogStyle = new Window.WindowStyle();
@@ -71,8 +73,8 @@ public class ConfirmationDialogue extends Dialogue {
         stage.addActor(dialog);
     }
     
-    public ConfirmationDialogue(AssetManager assetManager, SoundManager soundManager, Stage stage, String message, InputListener okButtonListener) {
-        new ConfirmationDialogue(assetManager, soundManager, stage, message, okButtonListener, new ClickListener());
+    public ConfirmationDialogue(CompositeManager compositeManager, Stage stage, String message, InputListener okButtonListener) {
+        new ConfirmationDialogue(compositeManager, stage, message, okButtonListener, new ClickListener());
     }
     
 }

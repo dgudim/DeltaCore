@@ -13,6 +13,8 @@ import static com.deo.flapd.utils.DUtils.log;
 
 public class SoundManager {
     
+    private final AssetManager assetManager;
+    
     String[] soundPaths = {"sfx/click.ogg", "sfx/explosion.ogg", "sfx/ftl.ogg", "sfx/ftl_flight.ogg",
             "sfx/gun1.ogg", "sfx/gun2.ogg", "sfx/gun3.ogg", "sfx/gun4.ogg", "sfx/laser.ogg"};
     HashMap<String, Sound> soundHandles;
@@ -20,14 +22,20 @@ public class SoundManager {
     float soundVolume;
     
     public SoundManager(AssetManager assetManager) {
+        this.assetManager = assetManager;
         soundHandles = new HashMap<>();
         soundIds = new HashMap<>();
         notifyVolumeUpdated();
+    }
+    
+    public void loadSounds(){
         for (String soundPath : soundPaths) {
             String name = getNameFromPath(soundPath);
-            log("Loaded sound " + name, DEBUG);
-            soundHandles.put(name, assetManager.get(soundPath));
-            soundIds.put(name, new Array<>());
+            if(!soundIds.containsKey(name)) {
+                log("Loaded sound " + name, DEBUG);
+                soundHandles.put(name, assetManager.get(soundPath));
+                soundIds.put(name, new Array<>());
+            }
         }
     }
     

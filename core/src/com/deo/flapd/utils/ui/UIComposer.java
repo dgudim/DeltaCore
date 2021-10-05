@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.SoundManager;
 
@@ -42,9 +43,9 @@ public class UIComposer {
     private final AssetManager assetManager;
     SoundManager soundManager;
     
-    public UIComposer(AssetManager assetManager, SoundManager soundManager) {
-        this.assetManager = assetManager;
-        this.soundManager = soundManager;
+    public UIComposer(CompositeManager compositeManager) {
+        this.assetManager = compositeManager.getAssetManager();
+        this.soundManager = compositeManager.getSoundManager();
         
         buttonStyles = new Array<>();
         checkBoxStyleNames = new Array<>();

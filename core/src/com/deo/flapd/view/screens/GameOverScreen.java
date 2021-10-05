@@ -21,8 +21,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.utils.MusicManager;
-import com.deo.flapd.utils.SoundManager;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -55,20 +54,15 @@ public class GameOverScreen implements Screen {
     private final boolean isNewHighScore;
     private final boolean enableShader;
     
-    private final AssetManager assetManager;
+    private final CompositeManager compositeManager;
     
-    private final MusicManager musicManager;
-    private final SoundManager soundManager;
-    
-    public GameOverScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, Player player, final MusicManager musicManager, SoundManager soundManager) {
+    public GameOverScreen(CompositeManager compositeManager, Player player) {
         
-        this.game = game;
-        this.musicManager = musicManager;
-        this.soundManager = soundManager;
-        
-        this.batch = batch;
-        this.blurProcessor = blurProcessor;
-        this.assetManager = assetManager;
+        this.compositeManager = compositeManager;
+        game = compositeManager.getGame();
+        batch = compositeManager.getBatch();
+        blurProcessor = compositeManager.getBlurProcessor();
+        AssetManager assetManager = compositeManager.getAssetManager();
         
         enableShader = getBoolean("bloom");
         score = GameLogic.score;
@@ -91,10 +85,6 @@ public class GameOverScreen implements Screen {
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
-        
-        while (!assetManager.isFinished()) {
-            assetManager.update();
-        }
         
         font_main = assetManager.get("fonts/font2(old).fnt");
         
@@ -128,14 +118,14 @@ public class GameOverScreen implements Screen {
         menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
+                game.setScreen(new MenuScreen(compositeManager));
             }
         });
         
         restart.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, true));
+                game.setScreen(new GameScreen(compositeManager, true));
                 GameScreen.is_paused = false;
             }
         });
@@ -153,7 +143,7 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
+            game.setScreen(new MenuScreen(compositeManager));
         }
         
         Gdx.gl.glClearColor(0, 0, 0, 1);

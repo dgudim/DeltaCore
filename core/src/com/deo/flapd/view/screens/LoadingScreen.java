@@ -20,9 +20,8 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.MusicManager;
-import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.overlays.Tree;
@@ -46,11 +45,11 @@ public class LoadingScreen implements Screen {
     
     enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, LOADING_PARTICLES, BUILDING_TREE}
     
+    private final CompositeManager compositeManager;
     private final AssetManager assetManager;
     public static ParticleEffectPoolLoader particleEffectPoolLoader;
     private final SpriteBatch batch;
     private final BitmapFont main;
-    private final MusicManager musicManager;
     private final Game game;
     private final OrthographicCamera camera;
     private final Viewport viewport;
@@ -65,7 +64,13 @@ public class LoadingScreen implements Screen {
     private LoadingState loadingState;
     private String loadingStateName;
     
-    public LoadingScreen(Game game, SpriteBatch batch, final AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager) {
+    public LoadingScreen(CompositeManager compositeManager) {
+        
+        this.compositeManager = compositeManager;
+        batch = compositeManager.getBatch();
+        blurProcessor = compositeManager.getBlurProcessor();
+        assetManager = compositeManager.getAssetManager();
+        game = compositeManager.getGame();
         
         if (getFloat("ui") <= 0) {
             putFloat("ui", 1);
@@ -91,16 +96,7 @@ public class LoadingScreen implements Screen {
         log("------------started loading------------", INFO);
         loadingTime = TimeUtils.millis();
         
-        this.batch = batch;
-        this.blurProcessor = blurProcessor;
-        
-        this.musicManager = musicManager;
-        
         main = new BitmapFont(Gdx.files.internal("fonts/font2(old).fnt"), false);
-        
-        this.assetManager = assetManager;
-        
-        this.game = game;
         
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
@@ -109,7 +105,6 @@ public class LoadingScreen implements Screen {
         viewport = new ScreenViewport(camera);
         
         ProgressBar.ProgressBarStyle loadingBarStyle = new ProgressBar.ProgressBarStyle();
-        
         loadingBarStyle.knob = constructFilledImageWithColor(0, 24, Color.valueOf("1979b5"));
         loadingBarStyle.knobBefore = constructFilledImageWithColor(100, 24, Color.valueOf("1979b5"));
         loadingBarStyle.background = constructFilledImageWithColor(800, 40, Color.BLACK);
@@ -315,10 +310,10 @@ public class LoadingScreen implements Screen {
         try {
             if (assetManager.isFinished()) {
                 if (loadingState.equals(LoadingState.BUILDING_TREE)) {
-                    SoundManager soundManager = new SoundManager(assetManager);
-                    craftingTree = new Tree(assetManager, soundManager, 105, 65, 430, 410);
+                    compositeManager.preloadSounds();
+                    craftingTree = new Tree(compositeManager, 105, 65, 430, 410);
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
-                    game.setScreen(new MenuScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager));
+                    game.setScreen(new MenuScreen(compositeManager));
                 }
                 if (particleEffectPoolLoader == null) {
                     if (loadingState.equals(LoadingState.LOADING_PARTICLES)) {

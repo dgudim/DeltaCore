@@ -21,6 +21,7 @@ import com.deo.flapd.model.environment.EnvironmentalEffects;
 import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -90,13 +91,14 @@ public class GameScreen implements Screen {
     private boolean warpSoundPlaying = true;
     private float previousFireMotionScale = 1;
     
-    public GameScreen(final Game game, SpriteBatch batch, AssetManager assetManager, PostProcessor blurProcessor, MusicManager musicManager, SoundManager soundManager, boolean newGame) {
+    public GameScreen(CompositeManager compositeManager, boolean newGame) {
         
-        this.game = game;
-        this.musicManager = musicManager;
-        this.soundManager = soundManager;
-        
-        this.batch = batch;
+        AssetManager assetManager = compositeManager.getAssetManager();
+        game = compositeManager.getGame();
+        musicManager = compositeManager.getMusicManager();
+        soundManager = compositeManager.getSoundManager();
+        batch = compositeManager.getBatch();
+        postProcessor = compositeManager.getBlurProcessor();
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
@@ -133,7 +135,7 @@ public class GameScreen implements Screen {
         
         drops = new Drops(assetManager, 48, getFloat("ui"));
         
-        gameUi = new GameUi(viewport, game, batch, assetManager, blurProcessor, player, musicManager, soundManager);
+        gameUi = new GameUi(viewport, compositeManager, player);
         
         environmentalEffects = new EnvironmentalEffects(assetManager);
         
@@ -145,8 +147,7 @@ public class GameScreen implements Screen {
         this.musicManager.setVolume(getFloat("musicVolume") / 100f);
         
         enableShader = getBoolean("bloom");
-        postProcessor = blurProcessor;
-    
+        
         soundManager.playSound("ftl_flight");
     }
     
@@ -202,7 +203,7 @@ public class GameScreen implements Screen {
             previousFireMotionScale = warpSpeed / 17.5f + 1;
             player.setPositionAndRotation(player.x + delta * warpSpeed * 3, player.y, player.rotation);
             soundManager.setPitch("ftl_flight", (float) (0.5 + warpSpeed / 46.67));
-        }else if(warpSoundPlaying){
+        } else if (warpSoundPlaying) {
             soundManager.stopSound("ftl_flight");
             warpSoundPlaying = false;
         }

@@ -25,8 +25,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
@@ -39,19 +39,21 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue extends MoneyDialogue {
     
-    public PurchaseDialogue(final AssetManager assetManager, SoundManager soundManager, final Stage stage, final String result, int availableQuantity) {
-        new PurchaseDialogue(assetManager, soundManager, stage, result, availableQuantity, 1, null, null);
+    public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity) {
+        new PurchaseDialogue(compositeManager, stage, result, availableQuantity, 1, null, null);
     }
     
-    public PurchaseDialogue(final AssetManager assetManager, SoundManager soundManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue) {
-        new PurchaseDialogue(assetManager, soundManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
+    public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue) {
+        new PurchaseDialogue(compositeManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
     }
     
-    public PurchaseDialogue(final AssetManager assetManager, SoundManager soundManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager) {
-        new PurchaseDialogue(assetManager, soundManager, stage, result, availableQuantity, 1, itemSlotManager, null);
+    public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager) {
+        new PurchaseDialogue(compositeManager, stage, result, availableQuantity, 1, itemSlotManager, null);
     }
     
-    public PurchaseDialogue(final AssetManager assetManager, SoundManager soundManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue) {
+    public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue) {
+        
+        AssetManager assetManager = compositeManager.getAssetManager();
         
         requestedQuantity = MathUtils.clamp(requestedQuantity, 1, availableQuantity);
         
@@ -61,7 +63,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
         
-        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
+        UIComposer uiComposer = new UIComposer(compositeManager);
         uiComposer.loadStyles("workshopRed", "workshopGreen", "sliderDefaultSmall", "questionButton");
         
         Window.WindowStyle dialogStyle = new Window.WindowStyle();
@@ -209,7 +211,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         question.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(stage, assetManager, soundManager, result, true);
+                new CraftingDialogue(compositeManager, stage, result, true);
             }
         });
         

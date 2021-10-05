@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
@@ -127,6 +128,7 @@ public class MenuScreen implements Screen {
     
     private String lastFireEffect;
     
+    private final CompositeManager compositeManager;
     private final AssetManager assetManager;
     
     private boolean isConfirmationDialogActive = false;
@@ -139,14 +141,17 @@ public class MenuScreen implements Screen {
     private boolean newGameAfterWarp = true;
     private float previousFireMotionScale = 1;
     
-    public MenuScreen(final Game game, final SpriteBatch batch, final AssetManager assetManager, final PostProcessor blurProcessor, final MusicManager musicManager, SoundManager soundManager) {
+    public MenuScreen(CompositeManager compositeManager) {
         long genTime = TimeUtils.millis();
         log("time to generate menu", INFO);
         
-        this.game = game;
-        this.blurProcessor = blurProcessor;
-        this.assetManager = assetManager;
-        this.batch = batch;
+        this.compositeManager = compositeManager;
+        game = compositeManager.getGame();
+        blurProcessor = compositeManager.getBlurProcessor();
+        assetManager = compositeManager.getAssetManager();
+        batch = compositeManager.getBatch();
+        soundManager = compositeManager.getSoundManager();
+        musicManager = compositeManager.getMusicManager();
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
@@ -186,7 +191,7 @@ public class MenuScreen implements Screen {
         
         long uiGenTime = millis();
         
-        UIComposer uiComposer = new UIComposer(assetManager, soundManager);
+        UIComposer uiComposer = new UIComposer(compositeManager);
         uiComposer.loadStyles("defaultLight", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
         
         Table playScreenTable = new Table();
@@ -252,7 +257,7 @@ public class MenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     loadPrefsFromFile();
-                    game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor, musicManager));
+                    game.setScreen(new LoadingScreen(compositeManager));
                 } catch (Exception e) {
                     exportMessage.setText("[#FF3300]" + e.getMessage());
                 }
@@ -263,7 +268,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clearPrefs();
-                game.setScreen(new LoadingScreen(game, batch, assetManager, blurProcessor, musicManager));
+                game.setScreen(new LoadingScreen(compositeManager));
             }
         });
         
@@ -305,15 +310,15 @@ public class MenuScreen implements Screen {
         craftingTree.hide();
         craftingTree.update();
         
-        final ItemSlotManager blackMarket = new ItemSlotManager(assetManager, soundManager);
+        final ItemSlotManager blackMarket = new ItemSlotManager(compositeManager);
         blackMarket.addShopSlots();
         blackMarket.setBounds(105, 70, 425, 400);
         
-        final ItemSlotManager inventory = new ItemSlotManager(assetManager, soundManager);
+        final ItemSlotManager inventory = new ItemSlotManager(compositeManager);
         inventory.addInventorySlots();
         inventory.setBounds(105, 70, 425, 400);
         
-        workshopCategoryManager = new CategoryManager(assetManager, soundManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
+        workshopCategoryManager = new CategoryManager(compositeManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
         workshopCategoryManager.addCategory(craftingTree.treeScrollView, "crafting").addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -343,7 +348,7 @@ public class MenuScreen implements Screen {
         workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
         workshopCategoryManager.setVisible(false);
         
-        CategoryManager menuCategoryManager = new CategoryManager(assetManager, soundManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
+        CategoryManager menuCategoryManager = new CategoryManager(compositeManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
         menuCategoryManager.addCategory(playScreenTable, "play").addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -393,7 +398,7 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(assetManager, soundManager, menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menu, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame();
@@ -445,15 +450,13 @@ public class MenuScreen implements Screen {
             }
         });
         
-        this.soundManager = soundManager;
-        this.musicManager = musicManager;
-        this.musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
-        this.musicManager.setVolume(getFloat("musicVolume") / 100f);
+        musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
+        musicManager.setVolume(getFloat("musicVolume") / 100f);
         musicVolumeS.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 putFloat("musicVolume", musicVolumeS.getValue());
-                MenuScreen.this.musicManager.setVolume(musicVolumeS.getValue() / 100f);
+                musicManager.setVolume(musicVolumeS.getValue() / 100f);
             }
         });
         
@@ -474,7 +477,7 @@ public class MenuScreen implements Screen {
         
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             if (!isConfirmationDialogActive) {
-                new ConfirmationDialogue(assetManager, soundManager, menu, "Are you sure you want to quit?", new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menu, "Are you sure you want to quit?", new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         Gdx.app.exit();
@@ -511,7 +514,7 @@ public class MenuScreen implements Screen {
                     soundManager.playSound("ftl");
                     warpAnimationActive = false;
                     soundManager.stopSound("ftl_flight");
-                    game.setScreen(new GameScreen(game, batch, assetManager, blurProcessor, musicManager, soundManager, newGameAfterWarp));
+                    game.setScreen(new GameScreen(compositeManager, newGameAfterWarp));
                 }
             }
             scaleFireMotion((1 / previousFireMotionScale) * (warpSpeed / 17.5f + 1));
