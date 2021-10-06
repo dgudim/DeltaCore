@@ -98,8 +98,7 @@ public class LoadingScreen implements Screen {
         
         main = new BitmapFont(Gdx.files.internal("fonts/font2(old).fnt"), false);
         
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setAutoShapeType(true);
+        shapeRenderer = compositeManager.getShapeRenderer();
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
@@ -311,7 +310,9 @@ public class LoadingScreen implements Screen {
             if (assetManager.isFinished()) {
                 if (loadingState.equals(LoadingState.BUILDING_TREE)) {
                     compositeManager.preloadSounds();
-                    craftingTree = new Tree(compositeManager, 105, 65, 430, 410);
+                    if(craftingTree == null){
+                        craftingTree = new Tree(compositeManager, 105, 65, 430, 410);
+                    }
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
                     game.setScreen(new MenuScreen(compositeManager));
                 }

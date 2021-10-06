@@ -9,6 +9,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.deo.flapd.utils.CompositeManager;
@@ -17,6 +18,7 @@ import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
+import com.deo.flapd.utils.postprocessing.effects.MotionBlur;
 import com.deo.flapd.view.screens.LoadingScreen;
 
 import java.io.IOException;
@@ -63,7 +65,10 @@ public class Main extends Game {
         ShaderLoader.BasePath = "shaders/";
         blurProcessor = new PostProcessor(false, false, Gdx.app.getType() == Application.ApplicationType.Desktop);
         Bloom bloom = new Bloom((int) (Gdx.graphics.getWidth() * 0.25f), (int) (Gdx.graphics.getHeight() * 0.25f));
+        MotionBlur motionBlur = new MotionBlur();
+        motionBlur.setBlurOpacity(0);
         blurProcessor.addEffect(bloom);
+        blurProcessor.addEffect(motionBlur);
         
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assetManager.setLoader(BitmapFont.class, ".fnt", new BitmapFontLoader(resolver));
@@ -81,10 +86,14 @@ public class Main extends Game {
         compositeManager.setAssetManager(assetManager);
         compositeManager.setBlurProcessor(blurProcessor);
         compositeManager.setBloom(bloom);
+        compositeManager.setMotionBlur(motionBlur);
         compositeManager.setMusicManager(new MusicManager(assetManager));
         compositeManager.setSoundManager(new SoundManager(assetManager));
         compositeManager.setGame(this);
         compositeManager.setBatch(batch);
+        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setAutoShapeType(true);
+        compositeManager.setShapeRenderer(shapeRenderer);
         
         this.setScreen(new LoadingScreen(compositeManager));
     }

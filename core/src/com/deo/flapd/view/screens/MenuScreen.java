@@ -575,6 +575,8 @@ public class MenuScreen implements Screen {
         updateCamera(camera, viewport, width, height);
         float targetHeight = viewport.getScreenHeight();
         float targetWidth = viewport.getScreenWidth();
+    
+        // TODO: 6/10/2021 generify
         
         float sourceHeight = 480.0f;
         float sourceWidth = 800.0f;

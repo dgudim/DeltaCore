@@ -127,7 +127,7 @@
     "requires": ["machine gun"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
-    "parameterValues": [20, 0.8, 2, 1450, 1, 0],
+    "parameterValues": [20, 0.8, 5, 1450, 1, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2",
     "usesTrail": false,
@@ -486,6 +486,19 @@
     "type": "part",
     "parameters": ["[#FEDE15]power consumption", "[#03B1FC]aim radius"],
     "parameterValues": [1, 610],
+    "saveTo": "currentBonus"
+  },
+  "chronos module": {
+    "items": ["energy cell", "iron sheet", "cyan crystal", "purple crystal", "processor mk3", "fiber cable"],
+    "itemCounts": [10, 5, 2, 2, 1, 5],
+    "resultCount": 1,
+    "description": "allows you to temporarily freeze time",
+    "isCraftable": true,
+    "category": "upgrades",
+    "requires": ["warp core"],
+    "type": "part",
+    "parameters": ["[#FEDE15]power consumption", "[#03B1FC]reload time"],
+    "parameterValues": [3, 120],
     "saveTo": "currentBonus"
   },
   "reinforced glass pane": {

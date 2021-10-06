@@ -717,7 +717,14 @@ Circuit_Board_disabled
   orig: 69, 50
   offset: 0, 0
   index: -1
-resistor_disabled
+resistor
+  rotate: false
+  xy: 939, 225
+  size: 70, 34
+  orig: 70, 34
+  offset: 0, 0
+  index: -1
+resistor_over
   rotate: false
   xy: 939, 225
   size: 70, 34
@@ -892,14 +899,14 @@ coil_copper
   orig: 24, 28
   offset: 0, 0
   index: -1
-resistor_enabled
+resistor_disabled
   rotate: false
   xy: 1011, 205
   size: 70, 34
   orig: 70, 34
   offset: 0, 0
   index: -1
-resistor_over
+resistor_enabled
   rotate: false
   xy: 1006, 169
   size: 70, 34
@@ -1550,11 +1557,18 @@ unstableCrystal_over
   orig: 46, 46
   offset: 0, 0
   index: -1
-ore_disabled
+chronosModule
   rotate: false
-  xy: 1909, 713
-  size: 40, 40
-  orig: 40, 40
+  xy: 1909, 709
+  size: 44, 44
+  orig: 44, 44
+  offset: 0, 0
+  index: -1
+chronosModule_disabled
+  rotate: false
+  xy: 1955, 705
+  size: 44, 44
+  orig: 44, 44
   offset: 0, 0
   index: -1
 minigun_over
@@ -1592,18 +1606,11 @@ laser_gun_over
   orig: 55, 16
   offset: 0, 0
   index: -1
-ore_enabled
+chronosModule_enabled
   rotate: false
-  xy: 1951, 709
-  size: 40, 40
-  orig: 40, 40
-  offset: 0, 0
-  index: -1
-ore_over
-  rotate: false
-  xy: 1993, 709
-  size: 40, 40
-  orig: 40, 40
+  xy: 2001, 705
+  size: 44, 44
+  orig: 44, 44
   offset: 0, 0
   index: -1
 shotgun_enabled
@@ -1613,23 +1620,23 @@ shotgun_enabled
   orig: 48, 18
   offset: 0, 0
   index: -1
-warp_ore_disabled
+chronosModule_over
   rotate: false
-  xy: 1909, 671
+  xy: 1909, 663
+  size: 44, 44
+  orig: 44, 44
+  offset: 0, 0
+  index: -1
+ore
+  rotate: false
+  xy: 1955, 663
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
-warp_ore_enabled
+ore_disabled
   rotate: false
-  xy: 1951, 667
-  size: 40, 40
-  orig: 40, 40
-  offset: 0, 0
-  index: -1
-warp_ore_over
-  rotate: false
-  xy: 1993, 667
+  xy: 1997, 663
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -1648,67 +1655,39 @@ shotgun_over
   orig: 48, 18
   offset: 0, 0
   index: -1
-glass_rod
+ore_enabled
   rotate: false
-  xy: 1681, 648
-  size: 38, 39
-  orig: 38, 39
+  xy: 1681, 647
+  size: 40, 40
+  orig: 40, 40
   offset: 0, 0
   index: -1
-glass_rod_disabled
+ore_over
   rotate: false
-  xy: 1681, 648
-  size: 38, 39
-  orig: 38, 39
+  xy: 1723, 647
+  size: 40, 40
+  orig: 40, 40
   offset: 0, 0
   index: -1
-glass_rod_enabled
+warp_ore
   rotate: false
-  xy: 1681, 648
-  size: 38, 39
-  orig: 38, 39
+  xy: 1765, 647
+  size: 40, 40
+  orig: 40, 40
   offset: 0, 0
   index: -1
-glass_rod_over
+warp_ore_disabled
   rotate: false
-  xy: 1681, 648
-  size: 38, 39
-  orig: 38, 39
+  xy: 1807, 647
+  size: 40, 40
+  orig: 40, 40
   offset: 0, 0
   index: -1
-gravity_engine
+warp_ore_enabled
   rotate: false
-  xy: 1721, 654
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: -1
-gravity_engine_disabled
-  rotate: false
-  xy: 1756, 654
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: -1
-gravity_engine_enabled
-  rotate: false
-  xy: 1791, 654
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: -1
-aiCard_disabled
-  rotate: false
-  xy: 1826, 655
-  size: 31, 32
-  orig: 31, 32
-  offset: 0, 0
-  index: -1
-gravity_engine_over
-  rotate: false
-  xy: 1859, 652
-  size: 33, 33
-  orig: 33, 33
+  xy: 1849, 645
+  size: 40, 40
+  orig: 40, 40
   offset: 0, 0
   index: -1
 cable_fiber
@@ -1718,11 +1697,67 @@ cable_fiber
   orig: 16, 16
   offset: 0, 0
   index: -1
+cable_fiber_disabled
+  rotate: false
+  xy: 1891, 669
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 gravity_core
   rotate: false
   xy: 1078, 169
   size: 26, 26
   orig: 26, 26
+  offset: 0, 0
+  index: -1
+warp_ore_over
+  rotate: false
+  xy: 1106, 167
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+glass_rod
+  rotate: false
+  xy: 1148, 168
+  size: 38, 39
+  orig: 38, 39
+  offset: 0, 0
+  index: -1
+glass_rod_disabled
+  rotate: false
+  xy: 1148, 168
+  size: 38, 39
+  orig: 38, 39
+  offset: 0, 0
+  index: -1
+glass_rod_enabled
+  rotate: false
+  xy: 1148, 168
+  size: 38, 39
+  orig: 38, 39
+  offset: 0, 0
+  index: -1
+glass_rod_over
+  rotate: false
+  xy: 1148, 168
+  size: 38, 39
+  orig: 38, 39
+  offset: 0, 0
+  index: -1
+gravity_engine
+  rotate: false
+  xy: 1104, 132
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+gravity_engine_disabled
+  rotate: false
+  xy: 1107, 97
+  size: 33, 33
+  orig: 33, 33
   offset: 0, 0
   index: -1
 bolt
@@ -1760,11 +1795,11 @@ coil_copper_disabled
   orig: 24, 28
   offset: 0, 0
   index: -1
-ironSheet
+gravity_engine_enabled
   rotate: false
-  xy: 1573, 652
-  size: 33, 30
-  orig: 33, 30
+  xy: 1573, 649
+  size: 33, 33
+  orig: 33, 33
   offset: 0, 0
   index: -1
 bonus_warp
@@ -1781,114 +1816,107 @@ gravity_core_disabled
   orig: 26, 26
   offset: 0, 0
   index: -1
-aiCard_enabled
+gravity_engine_over
   rotate: false
-  xy: 1532, 620
-  size: 31, 32
-  orig: 31, 32
+  xy: 1532, 619
+  size: 33, 33
+  orig: 33, 33
   offset: 0, 0
   index: -1
-ironSheet_disabled
+ironSheet
   rotate: false
-  xy: 1565, 620
+  xy: 1567, 617
   size: 33, 30
   orig: 33, 30
   offset: 0, 0
   index: -1
-resistor
+ironSheet_disabled
   rotate: false
-  xy: 1532, 601
-  size: 35, 17
-  orig: 35, 17
-  offset: 0, 0
-  index: -1
-cable_disabled
-  rotate: false
-  xy: 1525, 567
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-aiCard_over
-  rotate: false
-  xy: 1569, 586
-  size: 31, 32
-  orig: 31, 32
-  offset: 0, 0
-  index: -1
-cable_enabled
-  rotate: false
-  xy: 1106, 175
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-cable_over
-  rotate: false
-  xy: 1140, 175
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-bonus_laser_enabled
-  rotate: false
-  xy: 1174, 179
-  size: 28, 28
-  orig: 28, 28
+  xy: 1532, 587
+  size: 33, 30
+  orig: 33, 30
   offset: 0, 0
   index: -1
 ironSheet_enabled
   rotate: false
-  xy: 1204, 165
+  xy: 1567, 585
   size: 33, 30
   orig: 33, 30
   offset: 0, 0
   index: -1
 ironSheet_over
   rotate: false
-  xy: 1239, 165
+  xy: 1525, 555
   size: 33, 30
   orig: 33, 30
   offset: 0, 0
   index: -1
-bonus_warp2
+cable_disabled
   rotate: false
-  xy: 1274, 174
-  size: 21, 21
-  orig: 21, 21
+  xy: 1522, 521
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
-bonus_laser_over
+cable_enabled
   rotate: false
-  xy: 1174, 149
-  size: 28, 28
-  orig: 28, 28
+  xy: 1522, 487
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cable_over
+  rotate: false
+  xy: 1560, 551
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cog
+  rotate: false
+  xy: 1556, 517
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 cog_disabled
   rotate: false
-  xy: 1204, 131
+  xy: 1556, 517
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 cog_enabled
   rotate: false
-  xy: 1204, 131
+  xy: 1556, 517
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 cog_over
   rotate: false
-  xy: 1204, 131
+  xy: 1556, 517
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 crystal
   rotate: false
-  xy: 1238, 131
+  xy: 1556, 483
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+crystal_disabled
+  rotate: false
+  xy: 1522, 453
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+crystal_enabled
+  rotate: false
+  xy: 1556, 449
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -1900,91 +1928,154 @@ cell1
   orig: 26, 18
   offset: 0, 0
   index: -1
-crystal_disabled
+aiCard_disabled
   rotate: false
   xy: 1410, 553
-  size: 32, 32
-  orig: 32, 32
+  size: 31, 32
+  orig: 31, 32
   offset: 0, 0
   index: -1
-crystal_enabled
+aiCard_enabled
   rotate: false
   xy: 1410, 519
-  size: 32, 32
-  orig: 32, 32
+  size: 31, 32
+  orig: 31, 32
   offset: 0, 0
   index: -1
 crystal_over
   rotate: false
-  xy: 1297, 153
+  xy: 1488, 433
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 energyCell
   rotate: false
-  xy: 1331, 153
+  xy: 1522, 419
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-bonus_warp2_disabled
-  rotate: false
-  xy: 1274, 151
-  size: 21, 21
-  orig: 21, 21
-  offset: 0, 0
-  index: -1
 energyCell_disabled
   rotate: false
-  xy: 1365, 137
+  xy: 1556, 415
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 energyCell_enabled
   rotate: false
-  xy: 1399, 137
+  xy: 1488, 399
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 energyCell_over
   rotate: false
-  xy: 1433, 137
+  xy: 1522, 385
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ironPlate
   rotate: false
-  xy: 1467, 137
+  xy: 1556, 381
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ironPlate_disabled
   rotate: false
-  xy: 1467, 137
+  xy: 1556, 381
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ironPlate_enabled
   rotate: false
-  xy: 1467, 137
+  xy: 1556, 381
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ironPlate_over
   rotate: false
-  xy: 1467, 137
+  xy: 1556, 381
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-bonus_warp2_enabled
+plastic
+  rotate: false
+  xy: 1488, 373
+  size: 32, 24
+  orig: 32, 24
+  offset: 0, 0
+  index: -1
+plastic_disabled
+  rotate: false
+  xy: 1488, 373
+  size: 32, 24
+  orig: 32, 24
+  offset: 0, 0
+  index: -1
+plastic_enabled
+  rotate: false
+  xy: 1488, 373
+  size: 32, 24
+  orig: 32, 24
+  offset: 0, 0
+  index: -1
+plastic_over
+  rotate: false
+  xy: 1488, 373
+  size: 32, 24
+  orig: 32, 24
+  offset: 0, 0
+  index: -1
+wire
+  rotate: false
+  xy: 1522, 351
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+wire_disabled
+  rotate: false
+  xy: 1556, 347
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+wire_enabled
+  rotate: false
+  xy: 1488, 339
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+gravity_core_enabled
+  rotate: false
+  xy: 1420, 311
+  size: 26, 26
+  orig: 26, 26
+  offset: 0, 0
+  index: -1
+wire_over
+  rotate: false
+  xy: 1522, 317
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+aiCard_over
+  rotate: false
+  xy: 1556, 313
+  size: 31, 32
+  orig: 31, 32
+  offset: 0, 0
+  index: -1
+bonus_warp2
   rotate: false
   xy: 163, 219
   size: 21, 21
@@ -2019,9 +2110,51 @@ energyCore_over
   orig: 12, 14
   offset: 0, 0
   index: -1
+blankCard_disabled
+  rotate: false
+  xy: 1188, 164
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+blankCard_enabled
+  rotate: false
+  xy: 1221, 164
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+blankCard_over
+  rotate: false
+  xy: 1254, 164
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+core_yellow
+  rotate: false
+  xy: 1287, 154
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+core_yellow_disabled
+  rotate: false
+  xy: 1320, 154
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
+core_yellow_enabled
+  rotate: false
+  xy: 1107, 64
+  size: 31, 31
+  orig: 31, 31
+  offset: 0, 0
+  index: -1
 cyanCrystal
   rotate: false
-  xy: 1894, 672
+  xy: 1353, 172
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
@@ -2061,389 +2194,340 @@ ironShard_over
   orig: 12, 13
   offset: 0, 0
   index: -1
-wire
-  rotate: false
-  xy: 882, 75
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-plastic
-  rotate: false
-  xy: 882, 49
-  size: 32, 24
-  orig: 32, 24
-  offset: 0, 0
-  index: -1
-plastic_disabled
-  rotate: false
-  xy: 882, 49
-  size: 32, 24
-  orig: 32, 24
-  offset: 0, 0
-  index: -1
-plastic_enabled
-  rotate: false
-  xy: 882, 49
-  size: 32, 24
-  orig: 32, 24
-  offset: 0, 0
-  index: -1
-plastic_over
-  rotate: false
-  xy: 882, 49
-  size: 32, 24
-  orig: 32, 24
-  offset: 0, 0
-  index: -1
-wire_disabled
-  rotate: false
-  xy: 884, 15
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-wire_enabled
-  rotate: false
-  xy: 916, 69
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-wire_over
-  rotate: false
-  xy: 950, 69
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 cell1_disabled
-  rotate: false
-  xy: 916, 49
-  size: 26, 18
-  orig: 26, 18
-  offset: 0, 0
-  index: -1
-blankCard_disabled
-  rotate: false
-  xy: 918, 16
-  size: 31, 31
-  orig: 31, 31
-  offset: 0, 0
-  index: -1
-cell1_enabled
-  rotate: false
-  xy: 944, 49
-  size: 26, 18
-  orig: 26, 18
-  offset: 0, 0
-  index: -1
-blankCard_enabled
-  rotate: false
-  xy: 951, 16
-  size: 31, 31
-  orig: 31, 31
-  offset: 0, 0
-  index: -1
-cell1_over
-  rotate: false
-  xy: 972, 49
-  size: 26, 18
-  orig: 26, 18
-  offset: 0, 0
-  index: -1
-blankCard_over
-  rotate: false
-  xy: 984, 16
-  size: 31, 31
-  orig: 31, 31
-  offset: 0, 0
-  index: -1
-cell2
-  rotate: false
-  xy: 1272, 131
-  size: 26, 18
-  orig: 26, 18
-  offset: 0, 0
-  index: -1
-core_yellow
-  rotate: false
-  xy: 1300, 120
-  size: 31, 31
-  orig: 31, 31
-  offset: 0, 0
-  index: -1
-upgrades_over
-  rotate: false
-  xy: 1333, 123
-  size: 26, 28
-  orig: 26, 28
-  offset: 0, 0
-  index: -1
-cell2_disabled
   rotate: false
   xy: 1574, 762
   size: 26, 18
   orig: 26, 18
   offset: 0, 0
   index: -1
-core_yellow_disabled
-  rotate: false
-  xy: 1396, 477
-  size: 31, 31
-  orig: 31, 31
-  offset: 0, 0
-  index: -1
-core_yellow_enabled
-  rotate: false
-  xy: 1361, 104
-  size: 31, 31
-  orig: 31, 31
-  offset: 0, 0
-  index: -1
 core_yellow_over
   rotate: false
-  xy: 1394, 104
+  xy: 882, 76
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 craftingCard
   rotate: false
-  xy: 1427, 104
+  xy: 915, 70
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 craftingCard_disabled
   rotate: false
-  xy: 1460, 104
+  xy: 948, 70
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
-cell2_enabled
+bonus_warp2_disabled
   rotate: false
-  xy: 1333, 103
+  xy: 981, 90
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+cell1_enabled
+  rotate: false
+  xy: 882, 56
   size: 26, 18
   orig: 26, 18
   offset: 0, 0
   index: -1
 craftingCard_enabled
   rotate: false
-  xy: 1559, 553
+  xy: 884, 23
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
+warp_core
+  rotate: false
+  xy: 884, 1
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+warp_core_disabled
+  rotate: false
+  xy: 910, 1
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
 craftingCard_over
   rotate: false
-  xy: 1592, 553
+  xy: 917, 37
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 nanobot_card
   rotate: false
-  xy: 1631, 636
+  xy: 950, 37
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
-bonus_warp2_over
-  rotate: false
-  xy: 1608, 638
-  size: 21, 21
-  orig: 21, 21
-  offset: 0, 0
-  index: -1
 nanobot_card_disabled
   rotate: false
-  xy: 1404, 444
+  xy: 936, 4
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
 nanobot_card_enabled
   rotate: false
-  xy: 1493, 104
+  xy: 969, 4
   size: 31, 31
   orig: 31, 31
+  offset: 0, 0
+  index: -1
+cell1_over
+  rotate: false
+  xy: 981, 70
+  size: 26, 18
+  orig: 26, 18
   offset: 0, 0
   index: -1
 nanobot_card_over
   rotate: false
-  xy: 1526, 534
+  xy: 983, 37
   size: 31, 31
   orig: 31, 31
   offset: 0, 0
   index: -1
+bonus_warp2_enabled
+  rotate: false
+  xy: 1009, 70
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+bonus_laser_enabled
+  rotate: false
+  xy: 1032, 63
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+bonus_laser_over
+  rotate: false
+  xy: 1002, 7
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+cable_fiber_enabled
+  rotate: false
+  xy: 1891, 651
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+cell2
+  rotate: false
+  xy: 1909, 643
+  size: 26, 18
+  orig: 26, 18
+  offset: 0, 0
+  index: -1
+cell2_disabled
+  rotate: false
+  xy: 1937, 643
+  size: 26, 18
+  orig: 26, 18
+  offset: 0, 0
+  index: -1
+cell2_enabled
+  rotate: false
+  xy: 1965, 643
+  size: 26, 18
+  orig: 26, 18
+  offset: 0, 0
+  index: -1
+cell2_over
+  rotate: false
+  xy: 1993, 643
+  size: 26, 18
+  orig: 26, 18
+  offset: 0, 0
+  index: -1
+upgrades_over
+  rotate: false
+  xy: 2021, 633
+  size: 26, 28
+  orig: 26, 28
+  offset: 0, 0
+  index: -1
 coil_copper_enabled
   rotate: false
-  xy: 1522, 504
+  xy: 1396, 480
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
 coil_copper_over
   rotate: false
-  xy: 1522, 474
+  xy: 1422, 489
   size: 24, 28
   orig: 24, 28
   offset: 0, 0
   index: -1
-cell2_over
-  rotate: false
-  xy: 1559, 533
-  size: 26, 18
-  orig: 26, 18
-  offset: 0, 0
-  index: -1
-gravity_core_enabled
-  rotate: false
-  xy: 1587, 525
-  size: 26, 26
-  orig: 26, 26
-  offset: 0, 0
-  index: -1
 gravity_core_over
   rotate: false
-  xy: 1548, 505
+  xy: 1448, 311
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
-warp_core
+bonus_warp2_over
   rotate: false
-  xy: 1548, 483
+  xy: 1459, 288
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+bonus_warp3
+  rotate: false
+  xy: 1459, 265
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+cable_fiber_over
+  rotate: false
+  xy: 1396, 462
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+warp_core_enabled
+  rotate: false
+  xy: 1062, 63
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+drone_engine
+  rotate: false
+  xy: 1088, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+warp_core_over
+  rotate: false
+  xy: 1476, 317
   size: 24, 20
   orig: 24, 20
   offset: 0, 0
   index: -1
 chip
   rotate: false
-  xy: 420, 55
+  xy: 1502, 328
   size: 18, 9
   orig: 18, 9
   offset: 0, 0
   index: -1
 chip_disabled
   rotate: false
-  xy: 440, 55
+  xy: 1502, 317
   size: 18, 9
   orig: 18, 9
   offset: 0, 0
   index: -1
-warp_core_disabled
-  rotate: false
-  xy: 1576, 503
-  size: 24, 20
-  orig: 24, 20
-  offset: 0, 0
-  index: -1
-warp_core_enabled
-  rotate: false
-  xy: 1574, 481
-  size: 24, 20
-  orig: 24, 20
-  offset: 0, 0
-  index: -1
-warp_core_over
-  rotate: false
-  xy: 1548, 461
-  size: 24, 20
-  orig: 24, 20
-  offset: 0, 0
-  index: -1
-bonus_warp3
-  rotate: false
-  xy: 1574, 458
-  size: 21, 21
-  orig: 21, 21
-  offset: 0, 0
-  index: -1
 bonus_warp3_disabled
   rotate: false
-  xy: 1602, 502
+  xy: 1482, 294
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 bonus_warp3_enabled
   rotate: false
-  xy: 1600, 479
+  xy: 1505, 294
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 bonus_warp3_over
   rotate: false
-  xy: 1597, 456
+  xy: 1482, 271
   size: 21, 21
   orig: 21, 21
-  offset: 0, 0
-  index: -1
-ore
-  rotate: false
-  xy: 1526, 452
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-cable_fiber_disabled
-  rotate: false
-  xy: 1434, 588
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-cyanCrystal_enabled
-  rotate: false
-  xy: 1444, 573
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-cyanCrystal_over
-  rotate: false
-  xy: 1444, 558
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-greenCrystal
-  rotate: false
-  xy: 1444, 543
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-greenCrystal_disabled
-  rotate: false
-  xy: 1444, 528
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-greenCrystal_enabled
-  rotate: false
-  xy: 1444, 513
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-warp_ore
-  rotate: false
-  xy: 1437, 491
-  size: 20, 20
-  orig: 20, 20
   offset: 0, 0
   index: -1
 bonus_warp_disabled
   rotate: false
-  xy: 1615, 530
+  xy: 1528, 294
   size: 21, 21
   orig: 21, 21
+  offset: 0, 0
+  index: -1
+bonus_warp_enabled
+  rotate: false
+  xy: 1505, 271
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+bonus_warp_over
+  rotate: false
+  xy: 1528, 271
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+aiChip
+  rotate: false
+  xy: 1551, 292
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+aiChip_disabled
+  rotate: false
+  xy: 1551, 271
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+aiChip_enabled
+  rotate: false
+  xy: 1572, 292
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+aiChip_over
+  rotate: false
+  xy: 1572, 271
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+chip_enabled
+  rotate: false
+  xy: 420, 55
+  size: 18, 9
+  orig: 18, 9
+  offset: 0, 0
+  index: -1
+chip_over
+  rotate: false
+  xy: 440, 55
+  size: 18, 9
+  orig: 18, 9
+  offset: 0, 0
+  index: -1
+drone_engine_disabled
+  rotate: false
+  xy: 1434, 588
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
 gun
@@ -2453,340 +2537,284 @@ gun
   orig: 9, 9
   offset: 0, 0
   index: -1
-bonus_warp_enabled
-  rotate: false
-  xy: 2024, 860
-  size: 21, 21
-  orig: 21, 21
-  offset: 0, 0
-  index: -1
-bonus_warp_over
-  rotate: false
-  xy: 2024, 837
-  size: 21, 21
-  orig: 21, 21
-  offset: 0, 0
-  index: -1
-aiChip
-  rotate: false
-  xy: 2024, 816
-  size: 19, 19
-  orig: 19, 19
-  offset: 0, 0
-  index: -1
-chip_enabled
-  rotate: false
-  xy: 984, 102
-  size: 18, 9
-  orig: 18, 9
-  offset: 0, 0
-  index: -1
-chip_over
-  rotate: false
-  xy: 984, 91
-  size: 18, 9
-  orig: 18, 9
-  offset: 0, 0
-  index: -1
-aiChip_disabled
-  rotate: false
-  xy: 984, 70
-  size: 19, 19
-  orig: 19, 19
-  offset: 0, 0
-  index: -1
-aiChip_enabled
-  rotate: false
-  xy: 1000, 49
-  size: 19, 19
-  orig: 19, 19
-  offset: 0, 0
-  index: -1
-aiChip_over
-  rotate: false
-  xy: 1005, 72
-  size: 19, 19
-  orig: 19, 19
-  offset: 0, 0
-  index: -1
-cable_fiber_enabled
-  rotate: false
-  xy: 1026, 75
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-cable_fiber_over
-  rotate: false
-  xy: 1044, 75
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-greenCrystal_over
-  rotate: false
-  xy: 1894, 657
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-cog
-  rotate: false
-  xy: 1909, 653
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-drone_engine
-  rotate: false
-  xy: 1927, 653
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-orangeCrystal
-  rotate: false
-  xy: 918, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-orangeCrystal_disabled
-  rotate: false
-  xy: 933, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-orangeCrystal_enabled
-  rotate: false
-  xy: 948, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-orangeCrystal_over
-  rotate: false
-  xy: 963, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-purpleCrystal
-  rotate: false
-  xy: 978, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-purpleCrystal_disabled
-  rotate: false
-  xy: 993, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-purpleCrystal_enabled
-  rotate: false
-  xy: 1008, 1
-  size: 13, 13
-  orig: 13, 13
-  offset: 0, 0
-  index: -1
-drone_engine_disabled
-  rotate: false
-  xy: 1600, 620
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
 drone_engine_enabled
   rotate: false
-  xy: 1602, 602
+  xy: 1891, 633
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-purpleCrystal_over
+cyanCrystal_enabled
   rotate: false
-  xy: 1664, 654
+  xy: 1353, 157
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 drone_engine_over
   rotate: false
-  xy: 1548, 443
+  xy: 1368, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fragment_core
   rotate: false
-  xy: 1625, 512
+  xy: 1386, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fragment_core_disabled
   rotate: false
-  xy: 1625, 494
+  xy: 1404, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fragment_core_enabled
   rotate: false
-  xy: 1623, 476
+  xy: 1422, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fragment_core_over
   rotate: false
-  xy: 1620, 458
+  xy: 1440, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 glassShard
   rotate: false
-  xy: 1945, 649
+  xy: 1458, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 glassShard_disabled
   rotate: false
-  xy: 1945, 649
+  xy: 1458, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 glassShard_enabled
   rotate: false
-  xy: 1945, 649
+  xy: 1458, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 glassShard_over
   rotate: false
-  xy: 1945, 649
+  xy: 1458, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+cyanCrystal_over
+  rotate: false
+  xy: 1016, 55
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
 green_coil
   rotate: false
-  xy: 1963, 649
+  xy: 1016, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 green_coil_disabled
   rotate: false
-  xy: 1981, 649
+  xy: 1608, 643
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 green_coil_enabled
   rotate: false
-  xy: 1999, 649
+  xy: 1476, 153
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 green_coil_over
   rotate: false
-  xy: 2017, 649
+  xy: 1602, 625
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 neon_coil
   rotate: false
-  xy: 1404, 426
+  xy: 1602, 607
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 neon_coil_disabled
   rotate: false
-  xy: 1403, 408
+  xy: 1602, 589
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 neon_coil_enabled
   rotate: false
-  xy: 1403, 390
+  xy: 1469, 247
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 neon_coil_over
   rotate: false
-  xy: 1422, 426
+  xy: 1469, 229
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ReinforcedIridiumIronPlate
   rotate: false
-  xy: 1421, 408
+  xy: 1487, 253
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ReinforcedIridiumIronPlate_disabled
   rotate: false
-  xy: 1421, 390
+  xy: 1505, 253
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ReinforcedIridiumIronPlate_enabled
   rotate: false
-  xy: 1407, 372
+  xy: 1487, 235
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ReinforcedIridiumIronPlate_over
   rotate: false
-  xy: 1407, 354
+  xy: 1523, 253
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 rubber
   rotate: false
-  xy: 1425, 372
+  xy: 1505, 235
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 rubber_disabled
   rotate: false
-  xy: 1425, 372
+  xy: 1505, 235
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 rubber_enabled
   rotate: false
-  xy: 1425, 372
+  xy: 1505, 235
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 rubber_over
   rotate: false
-  xy: 1425, 372
+  xy: 1505, 235
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+greenCrystal
+  rotate: false
+  xy: 1541, 256
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+greenCrystal_disabled
+  rotate: false
+  xy: 1523, 238
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+greenCrystal_enabled
+  rotate: false
+  xy: 1556, 256
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+greenCrystal_over
+  rotate: false
+  xy: 1571, 256
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+orangeCrystal
+  rotate: false
+  xy: 685, 50
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+orangeCrystal_disabled
+  rotate: false
+  xy: 700, 50
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+orangeCrystal_enabled
+  rotate: false
+  xy: 715, 50
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+orangeCrystal_over
+  rotate: false
+  xy: 1909, 628
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+purpleCrystal
+  rotate: false
+  xy: 1924, 628
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+purpleCrystal_disabled
+  rotate: false
+  xy: 1939, 628
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+purpleCrystal_enabled
+  rotate: false
+  xy: 1954, 628
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+purpleCrystal_over
+  rotate: false
+  xy: 1969, 628
+  size: 13, 13
+  orig: 13, 13
   offset: 0, 0
   index: -1
 gun_disabled

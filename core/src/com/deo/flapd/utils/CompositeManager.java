@@ -3,8 +3,10 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
+import com.deo.flapd.utils.postprocessing.effects.MotionBlur;
 
 public class CompositeManager {
     
@@ -14,12 +16,18 @@ public class CompositeManager {
     
     private PostProcessor blurProcessor;
     private Bloom bloom;
+    private MotionBlur motionBlur;
     
     private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
     
     private Game game;
     
     public CompositeManager() {
+    }
+    
+    public ShapeRenderer getShapeRenderer() {
+        return shapeRenderer;
     }
     
     public SpriteBatch getBatch() {
@@ -46,6 +54,10 @@ public class CompositeManager {
         return blurProcessor;
     }
     
+    public MotionBlur getMotionBlur() {
+        return motionBlur;
+    }
+    
     public Bloom getBloom() {
         return bloom;
     }
@@ -58,6 +70,10 @@ public class CompositeManager {
         this.bloom = bloom;
     }
     
+    public void setMotionBlur(MotionBlur motionBlur) {
+        this.motionBlur = motionBlur;
+    }
+    
     public void setAssetManager(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
@@ -68,6 +84,10 @@ public class CompositeManager {
     
     public void setSoundManager(SoundManager soundManager) {
         this.soundManager = soundManager;
+    }
+    
+    public void setShapeRenderer(ShapeRenderer shapeRenderer) {
+        this.shapeRenderer = shapeRenderer;
     }
     
     public void setBatch(SpriteBatch batch) {

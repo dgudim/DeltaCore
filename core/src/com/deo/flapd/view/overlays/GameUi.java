@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -33,11 +34,16 @@ import com.deo.flapd.view.screens.MenuScreen;
 
 import java.util.Locale;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.view.screens.GameScreen.globalDeltaMultiplier;
 import static com.deo.flapd.view.screens.GameScreen.is_paused;
+import static com.deo.flapd.view.screens.GameScreen.playerDeltaMultiplier;
 
 
 public class GameUi {
@@ -58,24 +64,27 @@ public class GameUi {
     private final BitmapFont font_numbers;
     private final BitmapFont font_white;
     private final BitmapFont font_main;
-    
     private final SpriteBatch batch;
-    
+    private final ShapeRenderer shapeRenderer;
     private final TextureRegion PauseBg;
     
     private final float uiScale;
-    
     private final boolean showFps;
-    
-    private final Game game;
-    
-    private final CompositeManager compositeManager;
-    
     private final boolean transparency;
     
-    private final Player player;
+    Image timeFreezeButton;
+    Image timeFreezeButton_disabled;
+    Image timeFreezeButton_active;
+    private final int maxTimeWarpCharge = 30000;
+    private float timeWarpCharge = 30000;
+    private boolean timeWarpAvailable = true;
+    private boolean timeWarpActive = false;
     
+    private final Game game;
+    private final CompositeManager compositeManager;
     private final SoundManager soundManager;
+    
+    private final Player player;
     
     public GameUi(ScreenViewport viewport, CompositeManager compositeManager, Player player) {
         
@@ -84,16 +93,22 @@ public class GameUi {
         soundManager = compositeManager.getSoundManager();
         AssetManager assetManager = compositeManager.getAssetManager();
         batch = compositeManager.getBatch();
+        shapeRenderer = compositeManager.getShapeRenderer();
         this.player = player;
         
         uiScale = getFloat("ui");
         showFps = getBoolean("showFps");
         transparency = getBoolean("transparency");
+        String currentBonus = getString("currentBonus");
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
         
         Image fireButton = new Image(gameUiAtlas.findRegion("firebutton"));
         Image weaponChangeButton = new Image(gameUiAtlas.findRegion("weaponbutton"));
+        timeFreezeButton = new Image(gameUiAtlas.findRegion("timeButton"));
+        timeFreezeButton_disabled = new Image(gameUiAtlas.findRegion("timeButton_reload"));
+        timeFreezeButton_active = new Image(gameUiAtlas.findRegion("timeButton_active"));
+        
         Image pause = new Image(gameUiAtlas.findRegion("pause"));
         Image levelScore = new Image(gameUiAtlas.findRegion("level_score_indicator"));
         Image money_display = new Image(gameUiAtlas.findRegion("money_display"));
@@ -106,6 +121,12 @@ public class GameUi {
         pause.setBounds(770 - 32 * (uiScale - 1), 450 - 32 * (uiScale - 1), 29 * uiScale, 29 * uiScale);
         levelScore.setBounds(516 - 284 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
         money_display.setBounds(374 - 426 * (uiScale - 1), 428 - 52 * (uiScale - 1), 142 * uiScale, 52 * uiScale);
+        
+        // TODO: 6/10/2021 fix this
+        timeFreezeButton.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
+        timeFreezeButton_disabled.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
+        timeFreezeButton_active.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
+        setWarpButtonState(WarpButtonState.AVAILABLE);
         
         heartIcon.setBounds(658 - 142 * (uiScale - 1), 410 - 70 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
         shieldIcon.setBounds(658 - 142 * (uiScale - 1), 432 - 48 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
@@ -122,12 +143,12 @@ public class GameUi {
         multiplexer.addProcessor(pauseStage);
         Gdx.input.setInputProcessor(multiplexer);
         
-        Table weaponControlls = new Table();
-        weaponControlls.bottom();
-        weaponControlls.add(weaponChangeButton).padRight(5);
-        weaponControlls.add(fireButton);
-        weaponControlls.row();
-        weaponControlls.setBounds(511 - 283 * (uiScale - 1.1f), 5, 283.5f * (uiScale - 0.1f), 69.75f * (uiScale - 0.1f));
+        Table weaponControls = new Table();
+        weaponControls.bottom();
+        weaponControls.add(weaponChangeButton).padRight(5);
+        weaponControls.add(fireButton);
+        weaponControls.row();
+        weaponControls.setBounds(511 - 283 * (uiScale - 1.1f), 5, 283.5f * (uiScale - 0.1f), 69.75f * (uiScale - 0.1f));
         
         TextButton.TextButtonStyle pauseButtonStyle = new TextButton.TextButtonStyle();
         pauseButtonStyle.font = font_buttons;
@@ -225,7 +246,12 @@ public class GameUi {
         stage.addActor(shieldProgressBar);
         stage.addActor(healthProgressBar);
         stage.addActor(chargeProgressBar);
-        stage.addActor(weaponControlls);
+        if (currentBonus.equals("chronos module")) {
+            stage.addActor(timeFreezeButton);
+            stage.addActor(timeFreezeButton_disabled);
+            stage.addActor(timeFreezeButton_active);
+        }
+        stage.addActor(weaponControls);
         stage.addActor(heartIcon);
         stage.addActor(shieldIcon);
         
@@ -265,6 +291,35 @@ public class GameUi {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 is_firing_secondary = false;
+            }
+        });
+        
+        timeFreezeButton_active.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setTimeWarpState(1,1, 0, false, false);
+                setWarpButtonState(WarpButtonState.DISABLED);
+            }
+        });
+        
+        timeFreezeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                new Thread(() -> {
+                    try {
+                        Gdx.app.postRunnable(() -> {
+                            setTimeWarpState(0.9f,0.07f, 0.97f, true, false);
+                            setWarpButtonState(WarpButtonState.ACTIVE);
+                        });
+                        Thread.sleep(maxTimeWarpCharge);
+                        Gdx.app.postRunnable(() -> {
+                            setTimeWarpState(1, 1, 0, false, false);
+                            setWarpButtonState(WarpButtonState.DISABLED);
+                        });
+                    } catch (InterruptedException e) {
+                        logException(e);
+                    }
+                }).start();
             }
         });
         
@@ -314,16 +369,29 @@ public class GameUi {
         
     }
     
-    public void draw() {
+    public void draw(float delta) {
         
-        float delta = Gdx.graphics.getDeltaTime();
+        batch.end();
+        
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.LIME);
+        shapeRenderer.rect(5, 480 - uiScale * 52.5f + 5, 66 * uiScale - 10, (52.5f * uiScale - 10) * (timeWarpCharge / (float) maxTimeWarpCharge));
+        shapeRenderer.end();
+        if (timeWarpActive) {
+            timeWarpCharge = clamp(timeWarpCharge - delta * 1000, 0, maxTimeWarpCharge);
+        } else {
+            timeWarpCharge = clamp(timeWarpCharge + delta * 300, 0, maxTimeWarpCharge);
+        }
+        if (!timeWarpAvailable && timeWarpCharge == maxTimeWarpCharge) {
+            timeWarpAvailable = true;
+            setWarpButtonState(WarpButtonState.AVAILABLE);
+        }
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             soundManager.playSound_noLink("click");
             game.pause();
         }
         
-        batch.end();
         stage.draw();
         stage.act(delta);
         batch.begin();
@@ -369,6 +437,22 @@ public class GameUi {
         }
     }
     
+    private enum WarpButtonState {AVAILABLE, ACTIVE, DISABLED}
+    
+    private void setWarpButtonState(WarpButtonState warpButtonState) {
+        timeFreezeButton.setVisible(warpButtonState == WarpButtonState.AVAILABLE);
+        timeFreezeButton_disabled.setVisible(warpButtonState == WarpButtonState.DISABLED);
+        timeFreezeButton_active.setVisible(warpButtonState == WarpButtonState.ACTIVE);
+    }
+    
+    private void setTimeWarpState(float playerDelta, float globalDelta, float motionBlurOpacity, boolean active, boolean available) {
+        compositeManager.getMotionBlur().setBlurOpacity(motionBlurOpacity);
+        globalDeltaMultiplier = globalDelta;
+        playerDeltaMultiplier = playerDelta;
+        timeWarpActive = active;
+        timeWarpAvailable = available;
+    }
+    
     public void dispose() {
         
         stage.dispose();
@@ -378,6 +462,8 @@ public class GameUi {
         font_white.dispose();
         
         putInteger("money", GameLogic.money);
+        
+        setTimeWarpState(1, 1, 0, false, true);
     }
     
     public float getDeltaX() {

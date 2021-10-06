@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -58,6 +57,8 @@ public class GameScreen implements Screen {
     private final ScreenViewport viewport;
     
     public static volatile boolean is_paused;
+    public static volatile float playerDeltaMultiplier = 1;
+    public static volatile float globalDeltaMultiplier = 1;
     
     private float movement;
     
@@ -104,12 +105,7 @@ public class GameScreen implements Screen {
         viewport = new ScreenViewport(camera);
         
         drawDebug = getBoolean("drawDebug");
-        if (drawDebug) {
-            Gdx.gl.glLineWidth(1);
-            shapeRenderer = new ShapeRenderer();
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.setAutoShapeType(true);
-        }
+        shapeRenderer = compositeManager.getShapeRenderer();
         
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
         bg2 = assetManager.get("backgrounds/bg_layer2.png");
@@ -158,6 +154,11 @@ public class GameScreen implements Screen {
     
     @Override
     public void render(float delta) {
+    
+        delta = is_paused ? 0 : delta;
+        float originalDelta = delta;
+        float playerDelta = delta * playerDeltaMultiplier;
+        delta *= globalDeltaMultiplier;
         
         if (screenShakeIntensityDuration > 0) {
             float nextShakeX = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
@@ -180,12 +181,11 @@ public class GameScreen implements Screen {
             previousShakeOffsetY = 0;
         }
         
-        delta = is_paused ? 0 : delta;
-        
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        shapeRenderer.setProjectionMatrix(camera.combined);
         
-        gameLogic.handleInput(delta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
+        gameLogic.handleInput(playerDelta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
         
         if (enableShader) {
             postProcessor.capture();
@@ -217,7 +217,8 @@ public class GameScreen implements Screen {
         
         bosses.draw(batch, delta);
         bosses.update(delta);
-        player.drawEffects(batch, delta);
+        player.drawEffects(batch, playerDelta);
+        player.drawBullets(batch, delta);
         enemies.drawEffects(batch, delta);
         checkpoint.drawEffects(batch, delta);
         
@@ -239,7 +240,7 @@ public class GameScreen implements Screen {
         uraniumCell.draw(batch, delta);
         
         if (warpSpeed == 0) {
-            gameUi.draw();
+            gameUi.draw(originalDelta);
         }
         
         if (drawScreenExtenders) {
@@ -250,7 +251,6 @@ public class GameScreen implements Screen {
         
         if (drawDebug) {
             shapeRenderer.begin();
-            shapeRenderer.setProjectionMatrix(camera.combined);
             bosses.drawDebug(shapeRenderer);
             player.drawDebug(shapeRenderer);
             enemies.drawDebug(shapeRenderer);
@@ -305,6 +305,8 @@ public class GameScreen implements Screen {
         
         int actualWidth = (int) (sourceWidth * scale);
         int actualHeight = (int) (sourceHeight * scale);
+        
+        Gdx.gl.glLineWidth(1 / camera.zoom);
         
         verticalFillingThreshold = (int) Math.ceil((targetHeight - actualHeight) / 144);
         horizontalFillingThreshold = (int) Math.ceil((targetWidth - actualWidth) / 912);

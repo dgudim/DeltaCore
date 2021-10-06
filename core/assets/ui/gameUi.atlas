@@ -80,30 +80,51 @@ bg_stick
   orig: 71, 71
   offset: 0, 0
   index: -1
+timeButton
+  rotate: false
+  xy: 1379, 928
+  size: 44, 35
+  orig: 44, 35
+  offset: 0, 0
+  index: -1
+timeButton_active
+  rotate: false
+  xy: 1721, 980
+  size: 44, 35
+  orig: 44, 35
+  offset: 0, 0
+  index: -1
+timeButton_reload
+  rotate: false
+  xy: 803, 606
+  size: 44, 35
+  orig: 44, 35
+  offset: 0, 0
+  index: -1
 knob
   rotate: false
-  xy: 1379, 931
+  xy: 685, 19
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 pause
   rotate: false
-  xy: 1721, 987
+  xy: 949, 699
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 heart_icon
   rotate: false
-  xy: 685, 33
+  xy: 1091, 803
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
 shield_icon
   rotate: false
-  xy: 803, 623
+  xy: 1237, 889
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
