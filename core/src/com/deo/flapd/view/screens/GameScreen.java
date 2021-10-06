@@ -219,6 +219,7 @@ public class GameScreen implements Screen {
         bosses.update(delta);
         player.drawEffects(batch, playerDelta);
         player.drawBullets(batch, delta);
+        player.updateBulletReload(playerDelta);
         enemies.drawEffects(batch, delta);
         checkpoint.drawEffects(batch, delta);
         

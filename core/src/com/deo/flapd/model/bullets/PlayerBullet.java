@@ -441,9 +441,10 @@ public class PlayerBullet {
             laser.setPosition(-100, -100);
             laserSaw.setVolume(0);
         }
-        
+    }
+    
+    public void updateReload(float delta){
         millis = millis + 50 * (GameLogic.bonuses_collected / 100.0f + 1) * delta * gunCount;
-        
     }
     
     public void dispose() {

@@ -127,7 +127,7 @@
     "requires": ["machine gun"],
     "type": "part",
     "parameters": ["[#DD2222]damage", "spread", "shooting speed", "bullet speed", "bullets per shot", "[#FEDE15]power consumption"],
-    "parameterValues": [20, 0.8, 5, 1450, 1, 0],
+    "parameterValues": [20, 0.8, 2, 1200, 1, 0],
     "saveTo": "currentCannon",
     "usesEffect": "explosion3_2",
     "usesTrail": false,

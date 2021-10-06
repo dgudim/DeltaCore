@@ -294,10 +294,10 @@ public class GameUi {
             }
         });
         
-        timeFreezeButton_active.addListener(new ClickListener(){
+        timeFreezeButton_active.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setTimeWarpState(1,1, 0, false, false);
+                setTimeWarpState(1, 1, 0, false, false);
                 setWarpButtonState(WarpButtonState.DISABLED);
             }
         });
@@ -308,7 +308,7 @@ public class GameUi {
                 new Thread(() -> {
                     try {
                         Gdx.app.postRunnable(() -> {
-                            setTimeWarpState(0.9f,0.07f, 0.97f, true, false);
+                            setTimeWarpState(0.5f, 0.07f, 0.97f, true, false);
                             setWarpButtonState(WarpButtonState.ACTIVE);
                         });
                         Thread.sleep(maxTimeWarpCharge);

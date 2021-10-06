@@ -247,10 +247,15 @@ public class Player extends Entity {
         } else {
             explosionEffect.draw(batch, delta);
         }
+        
     }
     
     public void drawBullets(SpriteBatch batch, float delta){
         bullet.draw(batch, delta);
+    }
+    
+    public void updateBulletReload(float delta){
+        bullet.updateReload(delta);
     }
     
     @Override
