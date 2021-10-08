@@ -39,10 +39,6 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue extends MoneyDialogue {
     
-    public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity) {
-        new PurchaseDialogue(compositeManager, stage, result, availableQuantity, 1, null, null);
-    }
-    
     public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue) {
         new PurchaseDialogue(compositeManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
     }
@@ -63,8 +59,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
         
-        UIComposer uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles("workshopRed", "workshopGreen", "sliderDefaultSmall", "questionButton");
+        UIComposer uiComposer = compositeManager.getUiComposer();
         
         Window.WindowStyle dialogStyle = new Window.WindowStyle();
         dialogStyle.titleFont = font;
@@ -75,10 +70,10 @@ public class PurchaseDialogue extends MoneyDialogue {
         yellowLabelStyle.font = font;
         yellowLabelStyle.fontColor = Color.YELLOW;
         
-        TextButton yes = uiComposer.addTextButton("workshopGreen", "buy", 0.12f);
-        TextButton no = uiComposer.addTextButton("workshopRed", "cancel", 0.12f);
-        yes.setBounds(86, 3, 39, 22);
-        no.setBounds(3, 3, 39, 22);
+        TextButton yes = uiComposer.addTextButton("workshopGreen", "buy", 0.48f);
+        TextButton no = uiComposer.addTextButton("workshopRed", "cancel", 0.48f);
+        yes.setBounds(344, 12, 156, 88);
+        no.setBounds(12, 12, 156, 88);
         
         no.addListener(new ClickListener() {
             @Override
@@ -87,28 +82,29 @@ public class PurchaseDialogue extends MoneyDialogue {
             }
         });
         
-        final Slider quantity = uiComposer.addSlider("sliderDefaultSmall", 1, availableQuantity, 1);
-        quantity.setBounds(46.5f, 6, 35, 10);
+        final Slider quantity = uiComposer.addSlider("sliderDefaultNormal", 1, availableQuantity, 1);
+        
+        quantity.setBounds(186, 24, 140, 40);
         quantity.setValue(requestedQuantity);
         
         final Label quantityText = new Label("quantity:" + requestedQuantity, yellowLabelStyle);
-        quantityText.setFontScale(0.1f);
-        quantityText.setPosition(49, 16);
-        quantityText.setSize(30, 10);
+        quantityText.setFontScale(0.4f);
+        quantityText.setPosition(196, 64);
+        quantityText.setSize(120, 40);
         quantityText.setAlignment(Align.center);
         
         Label topText = new Label("Price:", yellowLabelStyle);
-        topText.setPosition(19, 56);
-        topText.setFontScale(0.1f);
+        topText.setPosition(76, 224);
+        topText.setFontScale(0.4f);
         topText.setAlignment(Align.center);
         
         Image product = new Image(itemAtlas.findRegion(getItemTextureNameByName(result)));
-        product.setBounds(88, 40, 35, 25);
+        product.setBounds(352, 160, 140, 100);
         product.setScaling(Scaling.fit);
         
         final Label productName = new Label(result + " " + getInteger("item_" + getItemTextureNameByName(result)) + "+" + requestedQuantity, yellowLabelStyle);
-        productName.setFontScale(0.08f);
-        productName.setBounds(86, 29, 39, 10);
+        productName.setFontScale(0.32f);
+        productName.setBounds(344, 116, 156, 40);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
         
@@ -118,8 +114,8 @@ public class PurchaseDialogue extends MoneyDialogue {
         Table holder = new Table();
         final Label uraniumCells_text = new Label(getInteger("money") + "/" + price[0] * requestedQuantity, yellowLabelStyle);
         final Label cogs_text = new Label(getInteger("cogs") + "/" + price[1] * requestedQuantity, yellowLabelStyle);
-        uraniumCells_text.setFontScale(0.13f);
-        cogs_text.setFontScale(0.13f);
+        uraniumCells_text.setFontScale(0.52f);
+        cogs_text.setFontScale(0.52f);
         
         if (getInteger("money") < price[0] * requestedQuantity) {
             uraniumCells_text.setColor(Color.valueOf("#DD0000"));
@@ -131,18 +127,18 @@ public class PurchaseDialogue extends MoneyDialogue {
         
         final Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
-        holder.add(uraniumCell).size(10, 10);
-        holder.add(uraniumCells_text).padLeft(1);
-        requirements.add(holder).align(Align.left).padLeft(1).row();
+        holder.add(uraniumCell).size(40, 40);
+        holder.add(uraniumCells_text).padLeft(4);
+        requirements.add(holder).align(Align.left).padLeft(4).row();
         
         Table holder2 = new Table();
-        holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(10, 10);
-        holder2.add(cogs_text).padLeft(1);
+        holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(40, 40);
+        holder2.add(cogs_text).padLeft(4);
         if (price[1] > 0) {
-            requirements.add(holder2).align(Align.left).padLeft(1).padTop(1).row();
+            requirements.add(holder2).align(Align.left).padLeft(4).padTop(4).row();
         }
         requirements.align(Align.left);
-        requirements.setBounds(3, 28, 80, 39);
+        requirements.setBounds(12, 112, 320, 156);
         
         quantity.addListener(new ChangeListener() {
             @Override
@@ -206,7 +202,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         });
         
         Button question = uiComposer.addButton("questionButton");
-        question.setBounds(119, 61, 6, 6);
+        question.setBounds(476, 244, 24, 24);
         
         question.addListener(new ClickListener() {
             @Override
@@ -224,9 +220,8 @@ public class PurchaseDialogue extends MoneyDialogue {
         dialog.addActor(product);
         dialog.addActor(productName);
         dialog.addActor(question);
-        dialog.setScale(4);
-        dialog.setSize(128, 70);
-        dialog.setPosition(15, 130);
+        dialog.setSize(512, 280);
+        dialog.setPosition(15, 150);
         stage.addActor(dialog);
     }
 }

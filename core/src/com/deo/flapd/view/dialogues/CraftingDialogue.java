@@ -91,30 +91,28 @@ public class CraftingDialogue extends Dialogue {
         
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         font.setUseIntegerPositions(false);
-        font.getData().setScale(0.13f);
+        font.getData().setScale(0.52f);
         font.getData().markupEnabled = true;
         
-        uiComposer = new UIComposer(compositeManager);
-        
-        uiComposer.loadStyles("workshopGreen", "workshopRed", "workshopCyan", "workshopPurple", "questionButton", "sliderDefaultSmall");
+        uiComposer = compositeManager.getUiComposer();
         
         Skin buttonSkin = new Skin();
         buttonSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
         itemAtlas = assetManager.get("items/items.atlas");
         
-        TextButton yes = uiComposer.addTextButton("workshopGreen", "craft", 0.12f);
-        TextButton no = uiComposer.addTextButton("workshopRed", "cancel", 0.12f);
-        TextButton yes2 = uiComposer.addTextButton("workshopGreen", "ok", 0.12f);
-        TextButton yes3 = uiComposer.addTextButton("workshopGreen", "got you", 0.12f);
-        TextButton equip = uiComposer.addTextButton("workshopCyan", "equip", 0.12f);
-        TextButton customize = uiComposer.addTextButton("workshopPurple", "customize", 0.10f);
-        yes.setBounds(86, 3, 39, 22);
-        no.setBounds(3, 3, 39, 22);
-        yes2.setBounds(3, 3, 39, 22);
-        yes3.setBounds(45, 3, 38, 22);
-        equip.setBounds(45, 3, 38, 22);
-        customize.setBounds(3, 3, 39, 22);
+        TextButton yes = uiComposer.addTextButton("workshopGreen", "craft", 0.48f);
+        TextButton no = uiComposer.addTextButton("workshopRed", "cancel", 0.48f);
+        TextButton yes2 = uiComposer.addTextButton("workshopGreen", "ok", 0.48f);
+        TextButton yes3 = uiComposer.addTextButton("workshopGreen", "got you", 0.48f);
+        TextButton equip = uiComposer.addTextButton("workshopCyan", "equip", 0.48f);
+        TextButton customize = uiComposer.addTextButton("workshopPurple", "customize", 0.4f);
+        yes.setBounds(344, 12, 156, 88);
+        no.setBounds(12, 12, 156, 88);
+        yes2.setBounds(12, 12, 156, 88);
+        yes3.setBounds(180, 12, 152, 88);
+        equip.setBounds(180, 12, 152, 88);
+        customize.setBounds(12, 12, 156, 88);
         
         yellowLabelStyle = new Label.LabelStyle();
         yellowLabelStyle.font = font;
@@ -130,14 +128,14 @@ public class CraftingDialogue extends Dialogue {
         
         dialog.addActor(getProductImage());
         
-        quantity = uiComposer.addSlider("sliderDefaultSmall", 1, 50, 1);
+        quantity = uiComposer.addSlider("sliderDefaultNormal", 1, 50, 1);
         
         Label text = new Label("This is a base part", yellowLabelStyle);
-        text.setPosition(10, 61);
-        text.setFontScale(0.08f);
+        text.setPosition(40, 244);
+        text.setFontScale(0.32f);
         text.setAlignment(Align.center);
         
-        if (!showDescription && !getPartLockState()) {
+        if (!showDescription && !isPartLocked()) {
             switch (getType()) {
                 case ("baseCategory"):
                 case ("basePart"):
@@ -293,9 +291,8 @@ public class CraftingDialogue extends Dialogue {
             dialog.addActor(text);
             addButtons(yes, yes2);
         }
-        dialog.setScale(4);
-        dialog.setSize(128, 70);
-        dialog.setPosition(15, 130);
+        dialog.setSize(512, 280);
+        dialog.setPosition(15, 150);
         stage.addActor(dialog);
         
     }
@@ -346,7 +343,7 @@ public class CraftingDialogue extends Dialogue {
     
     private Image getProductImage() {
         Image product = new Image(itemAtlas.findRegion(getItemTextureNameByName(result)));
-        product.setBounds(88, 40, 35, 25);
+        product.setBounds(352, 160, 140, 100);
         product.setScaling(Scaling.fit);
         return product;
     }
@@ -386,20 +383,21 @@ public class CraftingDialogue extends Dialogue {
         for (int i = 0; i < items.length; i++) {
             final Table requirement = new Table();
             Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemTextureNameByName(items[i])) + "/" + itemCounts[i] * requestedQuantity, yellowLabelStyle);
-            itemText.setFontScale(0.1f);
+            itemText.setFontScale(0.4f);
             itemText.setWrap(true);
             if (itemCounts[i] * requestedQuantity > getInteger("item_" + getItemTextureNameByName(items[i]))) {
                 itemText.setColor(Color.valueOf("#DD0000"));
             }
             labels.add(itemText);
-            ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
-            itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i]))).getDrawable();
-            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], DISABLED))).getDrawable();
-            itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], ENABLED))).getDrawable();
-            itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], OVER))).getDrawable();
-            ImageButton item = new ImageButton(itemButtonStyle);
             
-            TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", "buy", 0.07f);
+            Button.ButtonStyle itemButtonStyle = new Button.ButtonStyle();
+            itemButtonStyle.up =  new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i]))).getDrawable();
+            itemButtonStyle.disabled = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], DISABLED))).getDrawable();
+            itemButtonStyle.down = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], ENABLED))).getDrawable();
+            itemButtonStyle.over = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], OVER))).getDrawable();
+            Button item = new Button(itemButtonStyle);
+            
+            TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", "buy", 0.21000001f);
             if (Jitems.indexOf(items[i], false) == -1) {
                 buyShortcut.setTouchable(Touchable.disabled);
                 buyShortcut.setColor(Color.GRAY);
@@ -440,17 +438,17 @@ public class CraftingDialogue extends Dialogue {
             });
             
             buyShortcuts.add(buyShortcut);
-            requirement.add(item).size(10, 10);
-            requirement.add(itemText).width(52).pad(1).padLeft(2);
-            requirement.add(buyShortcut).size(10, 5).padLeft(2);
-            ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
-            ingredientsTable.align(Align.left).padLeft(1);
+            requirement.add(item).size(40, 40);
+            requirement.add(itemText).width(208).pad(4).padLeft(8);
+            requirement.add(buyShortcut).size(40, 20).padLeft(8);
+            ingredientsTable.add(requirement).padTop(4).padBottom(4).align(Align.left).row();
+            ingredientsTable.align(Align.left).padLeft(4);
         }
         
         ScrollPane ingredients = new ScrollPane(ingredientsTable);
-        ingredients.setupOverscroll(5, 10, 30);
+        ingredients.setupOverscroll(20, 10, 30);
         
-        ingredients.setBounds(3, 28, 80, 39);
+        ingredients.setBounds(12, 112, 320, 156);
         dialog.addActor(ingredients);
         tableLabels = labels;
     }
@@ -460,7 +458,7 @@ public class CraftingDialogue extends Dialogue {
         addRequirementsTable();
         
         final Label quantityText = new Label("quantity:" + requestedQuantity, yellowLabelStyle);
-        quantityText.setFontScale(0.1f);
+        quantityText.setFontScale(0.4f);
         quantityText.setAlignment(Align.center);
         
         quantity.setValue(requestedQuantity);
@@ -476,8 +474,8 @@ public class CraftingDialogue extends Dialogue {
             }
         });
         
-        quantity.setBounds(46.5f, 6, 35, 10);
-        quantityText.setPosition(47, 17);
+        quantity.setBounds(186, 24, 140, 40);
+        quantityText.setPosition(188, 68);
         
         dialog.addActor(quantityText);
         dialog.addActor(quantity);
@@ -485,7 +483,7 @@ public class CraftingDialogue extends Dialogue {
     
     private void addQuestion() {
         Button question = uiComposer.addButton("questionButton");
-        question.setBounds(119, 61, 6, 6);
+        question.setBounds(476, 244, 24, 24);
         
         question.addListener(new ClickListener() {
             @Override
@@ -509,8 +507,8 @@ public class CraftingDialogue extends Dialogue {
     
     private Label addProductName() {
         Label productName = new Label(result, yellowLabelStyle);
-        productName.setFontScale(0.08f);
-        productName.setBounds(86, 29, 39, 10);
+        productName.setFontScale(0.32f);
+        productName.setBounds(344, 116, 156, 40);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
         dialog.addActor(productName);
@@ -522,16 +520,16 @@ public class CraftingDialogue extends Dialogue {
         if (showStats) {
             description.setText(description.getText() + getStats());
         }
-        description.setWidth(78);
+        description.setWidth(312);
         description.setWrap(true);
-        description.setFontScale(0.1f);
+        description.setFontScale(0.4f);
         ScrollPane descriptionPane = new ScrollPane(description);
-        descriptionPane.setupOverscroll(5, 10, 30);
-        descriptionPane.setBounds(4, 28, 78, 30);
+        descriptionPane.setupOverscroll(20, 10, 30);
+        descriptionPane.setBounds(16, 112, 312, 120);
         dialog.addActor(descriptionPane);
     }
     
-    private boolean getPartLockState() {
+    private boolean isPartLocked() {
         boolean locked = false;
         if (getType().equals("part")) {
             String[] requiredItems = treeJson.getStringArray(new String[]{}, result, "requires");
@@ -552,7 +550,7 @@ public class CraftingDialogue extends Dialogue {
         for (int i = 0; i < requiredItems.length; i++) {
             Table requirement = new Table();
             Label itemText = new Label(requiredItems[i], yellowLabelStyle);
-            itemText.setFontScale(0.1f);
+            itemText.setFontScale(0.4f);
             if (!getBoolean("unlocked_" + getItemTextureNameByName(requiredItems[i]))) {
                 itemText.setColor(Color.valueOf("#DD0000"));
             }
@@ -572,18 +570,18 @@ public class CraftingDialogue extends Dialogue {
                 }
             });
             
-            float scale = 20 / Math.max(item.getWidth(), item.getHeight());
+            float scale = 80 / Math.max(item.getWidth(), item.getHeight());
             float width = item.getWidth() * scale;
             float height = item.getHeight() * scale;
             
             requirement.add(item).size(width, height);
-            requirement.add(itemText).pad(1).padLeft(2).align(Align.center);
-            ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
-            ingredientsTable.align(Align.left).padLeft(1);
+            requirement.add(itemText).pad(4).padLeft(8).align(Align.center);
+            ingredientsTable.add(requirement).padTop(4).padBottom(4).align(Align.left).row();
+            ingredientsTable.align(Align.left).padLeft(4);
             ScrollPane ingredients = new ScrollPane(ingredientsTable);
-            ingredients.setupOverscroll(5, 10, 30);
+            ingredients.setupOverscroll(20, 10, 30);
             
-            ingredients.setBounds(3, 28, 80, 32);
+            ingredients.setBounds(12, 112, 320, 128);
             dialog.addActor(ingredients);
         }
     }
@@ -592,7 +590,7 @@ public class CraftingDialogue extends Dialogue {
         if (getString(saveTo()).equals(result)) {
             equip.setColor(Color.GREEN);
             equip.getLabel().setText("equipped");
-            equip.getLabel().setFontScale(0.11f);
+            equip.getLabel().setFontScale(0.44f);
         }
         
         equip.addListener(new ClickListener() {
@@ -601,7 +599,7 @@ public class CraftingDialogue extends Dialogue {
                 putString(saveTo(), result);
                 equip.setColor(Color.GREEN);
                 equip.getLabel().setText("equipped");
-                equip.getLabel().setFontScale(0.11f);
+                equip.getLabel().setFontScale(0.44f);
                 LoadingScreen.craftingTree.update();
             }
         });

@@ -39,6 +39,7 @@ import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 public class ColorCustomizationDialogue extends Dialogue {
     
     private final Dialog dialog;
+    public boolean drawFire = true;
     
     ColorCustomizationDialogue(CompositeManager compositeManager, final String particleEffect, final Stage stage) {
         
@@ -46,7 +47,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         
         BitmapFont font = assetManager.get("fonts/font2(old).fnt");
         font.setUseIntegerPositions(false);
-        font.getData().setScale(0.13f);
+        font.getData().setScale(0.13f * 2);
         font.getData().markupEnabled = true;
         
         Skin textures = new Skin();
@@ -62,36 +63,35 @@ public class ColorCustomizationDialogue extends Dialogue {
         
         dialog = new Dialog("", dialogStyle);
         
-        UIComposer uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles("workshopRed", "workshopGreen", "sliderDefaultSmall");
+        UIComposer uiComposer = compositeManager.getUiComposer();
         
-        TextButton close = uiComposer.addTextButton("workshopRed", "cancel", 0.13f);
-        TextButton ok = uiComposer.addTextButton("workshopGreen", "apply", 0.13f);
-        TextButton reset = uiComposer.addTextButton("workshopGreen", "reset", 0.08f);
+        TextButton close = uiComposer.addTextButton("workshopRed", "cancel", 0.455f);
+        TextButton ok = uiComposer.addTextButton("workshopGreen", "apply", 0.455f);
+        TextButton reset = uiComposer.addTextButton("workshopGreen", "reset", 0.28f);
         
-        close.setBounds(3, 3, 42, 25);
-        ok.setBounds(49, 3, 42, 25);
-        reset.setBounds(3, 71, 20, 7);
+        close.setBounds(10.5f, 10.5f, 147, 87.5f);
+        ok.setBounds(171.5f, 10.5f, 147, 87.5f);
+        reset.setBounds(10.5f, 248.5f, 70, 24.5f);
         
         close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 fire.free();
                 fire2.free();
+                drawFire = false;
                 dialog.hide();
             }
         });
-        
         TextureAtlas items = assetManager.get("items/items.atlas");
         Table crystal = new Table();
         ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
         itemButtonStyle.imageUp = new Image(items.findRegion("crystal")).getDrawable();
-        itemButtonStyle.imageDisabled = new Image(items.findRegion("disabled_crystal")).getDrawable();
-        itemButtonStyle.imageDown = new Image(items.findRegion("enabled_crystal")).getDrawable();
-        itemButtonStyle.imageOver = new Image(items.findRegion("over_crystal")).getDrawable();
+        itemButtonStyle.imageDisabled = new Image(items.findRegion("crystal_disabled")).getDrawable();
+        itemButtonStyle.imageDown = new Image(items.findRegion("crystal_enabled")).getDrawable();
+        itemButtonStyle.imageOver = new Image(items.findRegion("crystal_over")).getDrawable();
         ImageButton item = new ImageButton(itemButtonStyle);
-        crystal.add(item).size(10, 10);
-        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", assetManager.get("fonts/font2(old).fnt"), 0.13f);
+        crystal.add(item).size(35, 35);
+        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", assetManager.get("fonts/font2(old).fnt"), 0.455f);
         
         if (getInteger("item_crystal") < 1) {
             quantity.setColor(Color.RED);
@@ -111,28 +111,32 @@ public class ColorCustomizationDialogue extends Dialogue {
         Image Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion("ship")) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                fire.draw(batch);
-                fire2.draw(batch);
+                if(drawFire) {
+                    fire.draw(batch);
+                    fire2.draw(batch);
+                }
                 super.draw(batch, parentAlpha);
             }
             
             @Override
             public void act(float delta) {
-                fire.update(delta);
-                fire2.update(delta);
+                if(drawFire){
+                    fire.update(delta);
+                    fire2.update(delta);
+                }
                 super.act(delta);
             }
             
             @Override
             public void setPosition(float x, float y) {
                 super.setPosition(x, y);
-                fire.setPosition(x + 5, y + 12);
-                fire2.setPosition(x + 1, y + 27);
+                fire.setPosition(x + 17.5f, y + 42);
+                fire2.setPosition(x + 3.5f, y + 94.5f);
             }
         };
         
-        Ship.setSize(51.2f, 38.4f);
-        Ship.setPosition(35, 80);
+        Ship.setSize(179.2f, 134.4f);
+        Ship.setPosition(122.5f, 280);
         
         Table colorCustomisationTable = new Table();
         
@@ -186,31 +190,31 @@ public class ColorCustomizationDialogue extends Dialogue {
             colorChannels.add(channel);
             Table setHolder = new Table();
             
-            final Image colorSquare = new Image(constructFilledImageWithColor(10, 10, Color.WHITE));
+            final Image colorSquare = new Image(constructFilledImageWithColor(35, 35, Color.WHITE));
             colorSquare.setColor(new Color().add(colors[3 * i], colors[3 * i + 1], colors[3 * i + 2], 1));
             
             final Slider redSlider, greenSlider, blueSlider;
             
-            redSlider = uiComposer.addSlider("sliderDefaultSmall", 0, 1, 0.01f);
-            greenSlider = uiComposer.addSlider("sliderDefaultSmall", 0, 1, 0.01f);
-            blueSlider = uiComposer.addSlider("sliderDefaultSmall", 0, 1, 0.01f);
+            redSlider = uiComposer.addSlider("sliderDefaultNormal", 0, 1, 0.01f);
+            greenSlider = uiComposer.addSlider("sliderDefaultNormal", 0, 1, 0.01f);
+            blueSlider = uiComposer.addSlider("sliderDefaultNormal", 0, 1, 0.01f);
             
             redSlider.setValue(colors[3 * i]);
             greenSlider.setValue(colors[3 * i + 1]);
             blueSlider.setValue(colors[3 * i + 2]);
             
             final Table redSliderTable = new Table();
-            redSliderTable.add(uiComposer.addText("[#FF0000]R:", assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
-            redSliderTable.add(redSlider).width(35).padLeft(1);
+            redSliderTable.add(uiComposer.addText("[#FF0000]R:", assetManager.get("fonts/font2(old).fnt"), 0.455f)).padLeft(3.5f);
+            redSliderTable.add(redSlider).width(122.5f).padLeft(3.5f);
             
             Table greenSliderTable = new Table();
-            greenSliderTable.add(uiComposer.addText("[#00FF00]G:", assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
-            greenSliderTable.add(greenSlider).width(35).padLeft(1);
+            greenSliderTable.add(uiComposer.addText("[#00FF00]G:", assetManager.get("fonts/font2(old).fnt"), 0.455f)).padLeft(3.5f);
+            greenSliderTable.add(greenSlider).width(122.5f).padLeft(3.5f);
             greenSliderTable.add(colorSquare);
             
             Table blueSliderTable = new Table();
-            blueSliderTable.add(uiComposer.addText("[#0000FF]B:", assetManager.get("fonts/font2(old).fnt"), 0.13f)).padLeft(1);
-            blueSliderTable.add(blueSlider).width(35).padLeft(1);
+            blueSliderTable.add(uiComposer.addText("[#0000FF]B:", assetManager.get("fonts/font2(old).fnt"), 0.455f)).padLeft(3.5f);
+            blueSliderTable.add(blueSlider).width(122.5f).padLeft(3.5f);
             
             sliders.add(redSlider, greenSlider, blueSlider);
             
@@ -246,11 +250,11 @@ public class ColorCustomizationDialogue extends Dialogue {
             setHolder.add(greenSliderTable).align(Align.left).row();
             setHolder.add(blueSliderTable).align(Align.left).row();
             
-            colorCustomisationTable.add(setHolder).padRight(5);
+            colorCustomisationTable.add(setHolder).padRight(17.5f);
         }
         
         final ScrollPane colorCustomisationScrollPane = new ScrollPane(colorCustomisationTable);
-        colorCustomisationScrollPane.setBounds(3, 30, 88, 39);
+        colorCustomisationScrollPane.setBounds(10.5f, 105, 308, 136.5f);
         colorCustomisationScrollPane.setCancelTouchFocus(false);
         
         for (int i = 0; i < sliders.size; i++) {
@@ -267,10 +271,9 @@ public class ColorCustomizationDialogue extends Dialogue {
         dialog.addActor(close);
         dialog.addActor(colorCustomisationScrollPane);
         dialog.addActor(reset);
-        dialog.add(crystal).padRight(5).padBottom(73);
-        dialog.scaleBy(2);
-        dialog.setSize(94, 128);
-        dialog.setPosition(130, 78);
+        dialog.add(crystal).padRight(15).padBottom(245);
+        dialog.setSize(329, 448);
+        dialog.setPosition(180, 15);
         stage.addActor(dialog);
     }
     
@@ -289,8 +292,8 @@ public class ColorCustomizationDialogue extends Dialogue {
     private ParticleEffectPool.PooledEffect[] loadFire(String particleEffect) {
         ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + particleEffect + ".p");
         ParticleEffectPool.PooledEffect fire2 = particleEffectPoolLoader.getParticleEffectByPath("particles/" + particleEffect + ".p");
-        fire.scaleEffect(0.7f);
-        fire2.scaleEffect(0.7f);
+        fire.scaleEffect(2.45f);
+        fire2.scaleEffect(2.45f);
         return new ParticleEffectPool.PooledEffect[]{fire, fire2};
     }
     

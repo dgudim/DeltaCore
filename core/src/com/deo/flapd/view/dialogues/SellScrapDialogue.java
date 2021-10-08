@@ -50,8 +50,7 @@ public class SellScrapDialogue extends MoneyDialogue {
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        UIComposer uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles("workshopRed", "workshopGreen", "workshopPurple", "sliderDefaultSmall", "arrowRightSmall", "arrowLeftSmall");
+        UIComposer uiComposer = compositeManager.getUiComposer();
         
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
         
@@ -64,10 +63,10 @@ public class SellScrapDialogue extends MoneyDialogue {
         yellowLabelStyle.font = font;
         yellowLabelStyle.fontColor = Color.YELLOW;
         
-        final TextButton sell = uiComposer.addTextButton("workshopGreen", "sell", 0.12f);
-        TextButton cancel = uiComposer.addTextButton("workshopRed", "cancel", 0.12f);
-        sell.setBounds(86, 3, 39, 22);
-        cancel.setBounds(3, 3, 39, 22);
+        final TextButton sell = uiComposer.addTextButton("workshopGreen", "sell", 0.48f);
+        TextButton cancel = uiComposer.addTextButton("workshopRed", "cancel", 0.48f);
+        sell.setBounds(344, 12, 156, 88);
+        cancel.setBounds(12, 12, 156, 88);
         
         cancel.addListener(new ClickListener() {
             @Override
@@ -88,7 +87,7 @@ public class SellScrapDialogue extends MoneyDialogue {
         
         boolean isEndItem = false;
         
-        if (items[0].equals("")) {
+        if (items.length == 0) {
             isEndItem = true;
         }
         
@@ -96,7 +95,7 @@ public class SellScrapDialogue extends MoneyDialogue {
             for (int i = 0; i < items.length; i++) {
                 Table requirement = new Table();
                 Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemTextureNameByName(items[i])) + "+" + itemCounts[i], yellowLabelStyle);
-                itemText.setFontScale(0.07f);
+                itemText.setFontScale(0.28f);
                 itemText.setWrap(true);
                 labels.add(itemText);
                 ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
@@ -114,19 +113,19 @@ public class SellScrapDialogue extends MoneyDialogue {
                     }
                 });
                 
-                float scale = 7 / Math.max(itemImageButton.getWidth(), itemImageButton.getHeight());
+                float scale = 28 / Math.max(itemImageButton.getWidth(), itemImageButton.getHeight());
                 float width = itemImageButton.getWidth() * scale;
                 float height = itemImageButton.getHeight() * scale;
                 
                 requirement.add(itemImageButton).size(width, height);
-                requirement.add(itemText).pad(1).padLeft(2).width(37);
-                ingredientsTable.add(requirement).padTop(1).padBottom(1).align(Align.left).row();
-                ingredientsTable.align(Align.left).padLeft(1);
+                requirement.add(itemText).pad(4).padLeft(8).width(148);
+                ingredientsTable.add(requirement).padTop(4).padBottom(4).align(Align.left).row();
+                ingredientsTable.align(Align.left).padLeft(4);
             }
         }
         
         ScrollPane ingredients = new ScrollPane(ingredientsTable);
-        ingredients.setupOverscroll(5, 10, 30);
+        ingredients.setupOverscroll(20, 10, 30);
         ingredients.setScrollingDisabled(true, false);
         
         final int[] price = getPrice(item, treeJson, 1.5f);
@@ -136,31 +135,31 @@ public class SellScrapDialogue extends MoneyDialogue {
         Table holder = new Table();
         final Label uraniumCells_text = new Label(getInteger("money") + "+" + price[0], yellowLabelStyle);
         final Label cogs_text = new Label(getInteger("cogs") + "+" + price[1], yellowLabelStyle);
-        uraniumCells_text.setFontScale(0.08f);
-        cogs_text.setFontScale(0.08f);
+        uraniumCells_text.setFontScale(0.32f);
+        cogs_text.setFontScale(0.32f);
         
         final Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
-        holder.add(uraniumCell).size(7, 7);
-        holder.add(uraniumCells_text).padLeft(1);
-        requirements.add(holder).align(Align.left).padLeft(1).row();
+        holder.add(uraniumCell).size(28, 28);
+        holder.add(uraniumCells_text).padLeft(4);
+        requirements.add(holder).align(Align.left).padLeft(4).row();
         
         Table holder2 = new Table();
-        holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(7, 7);
-        holder2.add(cogs_text).padLeft(1);
+        holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(28, 28);
+        holder2.add(cogs_text).padLeft(4);
         if (price[1] > 0) {
-            requirements.add(holder2).align(Align.left).padLeft(1).padTop(1).row();
+            requirements.add(holder2).align(Align.left).padLeft(4).padTop(4).row();
         }
-        requirements.setBounds(80, 28, 45, 39);
+        requirements.setBounds(320, 112, 180, 156);
         requirements.align(Align.right).padRight(1);
         
-        ingredients.setBounds(3, 28, 45, 39);
+        ingredients.setBounds(12, 112, 180, 156);
         
         final CheckBox buy = uiComposer.addCheckBox("arrowRightSmall", "");
         final CheckBox scrap = uiComposer.addCheckBox("arrowLeftSmall", "");
         
-        buy.setBounds(66, 29, 10, 10);
-        scrap.setBounds(56, 29, 10, 10);
+        buy.setPosition(258, 116);
+        scrap.setPosition(218, 116);
         buy.setChecked(true);
         
         buy.addListener(new ClickListener() {
@@ -188,8 +187,8 @@ public class SellScrapDialogue extends MoneyDialogue {
         });
         
         Label endItem = new Label("", yellowLabelStyle);
-        endItem.setBounds(3, 28, 50, 39);
-        endItem.setFontScale(0.07f);
+        endItem.setBounds(12, 112, 200, 156);
+        endItem.setFontScale(0.28f);
         endItem.setWrap(true);
         endItem.setAlignment(Align.center);
         
@@ -206,27 +205,23 @@ public class SellScrapDialogue extends MoneyDialogue {
             endItem.setText("this item can't be scrapped");
         }
         
-        Label or = new Label("or", yellowLabelStyle);
-        or.setPosition(61.5f, 23);
-        or.setFontScale(0.1f);
-        
         Image product = new Image(itemAtlas.findRegion(getItemTextureNameByName(item)));
         product.setScaling(Scaling.fit);
-        product.setBounds(56.5f, 51, 15, 15);
+        product.setBounds(226, 204, 60, 60);
         
         final Label productName = new Label(item + " " + getInteger("item_" + getItemTextureNameByName(item)) + "-1", yellowLabelStyle);
-        productName.setFontScale(0.08f);
-        productName.setBounds(49, 41, 30, 8);
+        productName.setFontScale(0.32f);
+        productName.setBounds(196, 164, 120, 32);
         productName.setWrap(true);
         productName.setAlignment(Align.center);
         
-        final Slider quantity = uiComposer.addSlider("sliderDefaultSmall", 1, MathUtils.clamp(availableQuantity, 1, 9999), 1);
-        quantity.setBounds(46.5f, 6, 35, 10);
+        final Slider quantity = uiComposer.addSlider("sliderDefaultNormal", 1, MathUtils.clamp(availableQuantity, 1, 9999), 1);
+        quantity.setBounds(186, 24, 140, 40);
         
         final Label quantityText = new Label("quantity:1", yellowLabelStyle);
-        quantityText.setFontScale(0.1f);
-        quantityText.setPosition(49, 16);
-        quantityText.setSize(30, 10);
+        quantityText.setFontScale(0.4f);
+        quantityText.setPosition(196, 64);
+        quantityText.setSize(120, 40);
         quantityText.setAlignment(Align.center);
         
         quantity.addListener(new ChangeListener() {
@@ -266,7 +261,6 @@ public class SellScrapDialogue extends MoneyDialogue {
         
         dialog.addActor(product);
         dialog.addActor(productName);
-        dialog.addActor(or);
         dialog.addActor(buy);
         dialog.addActor(scrap);
         
@@ -274,9 +268,8 @@ public class SellScrapDialogue extends MoneyDialogue {
         dialog.addActor(cancel);
         dialog.addActor(quantityText);
         dialog.addActor(quantity);
-        dialog.setScale(4);
-        dialog.setSize(128, 70);
-        dialog.setPosition(15, 130);
+        dialog.setSize(512, 280);
+        dialog.setPosition(15, 150);
         stage.addActor(dialog);
     }
 }
