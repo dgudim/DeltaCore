@@ -5,113 +5,145 @@ filter: Nearest,Nearest
 repeat: none
 progressBarBg
   rotate: false
-  xy: 1, 165
-  size: 320, 80
-  orig: 320, 80
-  offset: 0, 0
-  index: -1
-checkBox_disabled
-  rotate: false
-  xy: 1, 83
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-checkBox_disabled_over
-  rotate: false
-  xy: 323, 165
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-checkBox_enabled
-  rotate: false
-  xy: 1, 1
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-checkBox_enabled_over
-  rotate: false
-  xy: 83, 83
-  size: 80, 80
-  orig: 80, 80
+  xy: 1, 195
+  size: 312, 56
+  split: 7, 7, 12, 12
+  orig: 312, 56
   offset: 0, 0
   index: -1
 arrowLeft
   rotate: false
-  xy: 405, 169
+  xy: 1, 117
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowLeft_disabled
   rotate: false
-  xy: 83, 5
+  xy: 1, 39
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowLeft_disabled_over
   rotate: false
-  xy: 165, 87
+  xy: 83, 117
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowLeft_over
   rotate: false
-  xy: 165, 9
+  xy: 83, 39
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowRight
   rotate: false
-  xy: 247, 87
+  xy: 165, 117
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowRight_disabled
   rotate: false
-  xy: 247, 9
+  xy: 165, 39
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowRight_disabled_over
   rotate: false
-  xy: 329, 87
+  xy: 247, 117
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
 arrowRight_over
   rotate: false
-  xy: 329, 9
+  xy: 247, 39
   size: 80, 76
   orig: 80, 76
   offset: 0, 0
   index: -1
+circle
+  rotate: false
+  xy: 329, 181
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+circle_active
+  rotate: false
+  xy: 329, 109
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+circle_enabled
+  rotate: false
+  xy: 401, 181
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+circle_over
+  rotate: false
+  xy: 401, 109
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
 progressBarKnob
   rotate: false
-  xy: 411, 87
-  size: 40, 80
-  orig: 40, 80
+  xy: 473, 171
+  size: 32, 80
+  split: 11, 11, 11, 11
+  orig: 32, 80
   offset: 0, 0
   index: -1
 progressBarKnob_enabled
   rotate: false
-  xy: 411, 5
-  size: 40, 80
-  orig: 40, 80
+  xy: 329, 27
+  size: 32, 80
+  split: 11, 11, 11, 11
+  orig: 32, 80
   offset: 0, 0
   index: -1
 progressBarKnob_over
   rotate: false
-  xy: 453, 87
-  size: 40, 80
-  orig: 40, 80
+  xy: 363, 27
+  size: 32, 80
+  split: 11, 11, 11, 11
+  orig: 32, 80
+  offset: 0, 0
+  index: -1
+checkBox_disabled
+  rotate: false
+  xy: 1, 1
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+checkBox_disabled_over
+  rotate: false
+  xy: 397, 71
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+checkBox_enabled
+  rotate: false
+  xy: 39, 1
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+checkBox_enabled_over
+  rotate: false
+  xy: 397, 33
+  size: 36, 36
+  orig: 36, 36
   offset: 0, 0
   index: -1
