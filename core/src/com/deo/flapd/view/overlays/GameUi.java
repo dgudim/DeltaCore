@@ -122,7 +122,6 @@ public class GameUi {
         levelScore.setBounds(516 - 284 * (uiScale - 1), 398 - 82 * (uiScale - 1), 142 * uiScale, 82 * uiScale);
         money_display.setBounds(374 - 426 * (uiScale - 1), 428 - 52 * (uiScale - 1), 142 * uiScale, 52 * uiScale);
         
-        // TODO: 6/10/2021 fix this
         timeFreezeButton.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
         timeFreezeButton_disabled.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
         timeFreezeButton_active.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
