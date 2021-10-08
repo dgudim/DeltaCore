@@ -72,6 +72,7 @@ public class GameUi {
     private final boolean showFps;
     private final boolean transparency;
     
+    boolean chronosModuleEnabled;
     Image timeFreezeButton;
     Image timeFreezeButton_disabled;
     Image timeFreezeButton_active;
@@ -237,6 +238,8 @@ public class GameUi {
             font_numbers.setColor(0, 1, 1, 1);
         }
         
+        chronosModuleEnabled = currentBonus.equals("chronos module");
+        
         stage.addActor(stats_indicator_panel);
         stage.addActor(pause);
         stage.addActor(levelScore);
@@ -245,7 +248,7 @@ public class GameUi {
         stage.addActor(shieldProgressBar);
         stage.addActor(healthProgressBar);
         stage.addActor(chargeProgressBar);
-        if (currentBonus.equals("chronos module")) {
+        if (chronosModuleEnabled) {
             stage.addActor(timeFreezeButton);
             stage.addActor(timeFreezeButton_disabled);
             stage.addActor(timeFreezeButton_active);
@@ -372,18 +375,20 @@ public class GameUi {
         
         batch.end();
         
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.LIME);
-        shapeRenderer.rect(5, 480 - uiScale * 52.5f + 5, 66 * uiScale - 10, (52.5f * uiScale - 10) * (timeWarpCharge / (float) maxTimeWarpCharge));
-        shapeRenderer.end();
-        if (timeWarpActive) {
-            timeWarpCharge = clamp(timeWarpCharge - delta * 1000, 0, maxTimeWarpCharge);
-        } else {
-            timeWarpCharge = clamp(timeWarpCharge + delta * 300, 0, maxTimeWarpCharge);
-        }
-        if (!timeWarpAvailable && timeWarpCharge == maxTimeWarpCharge) {
-            timeWarpAvailable = true;
-            setWarpButtonState(WarpButtonState.AVAILABLE);
+        if (chronosModuleEnabled) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.LIME);
+            shapeRenderer.rect(5, 480 - uiScale * 52.5f + 5, 66 * uiScale - 10, (52.5f * uiScale - 10) * (timeWarpCharge / (float) maxTimeWarpCharge));
+            shapeRenderer.end();
+            if (timeWarpActive) {
+                timeWarpCharge = clamp(timeWarpCharge - delta * 1000, 0, maxTimeWarpCharge);
+            } else {
+                timeWarpCharge = clamp(timeWarpCharge + delta * 300, 0, maxTimeWarpCharge);
+            }
+            if (!timeWarpAvailable && timeWarpCharge == maxTimeWarpCharge) {
+                timeWarpAvailable = true;
+                setWarpButtonState(WarpButtonState.AVAILABLE);
+            }
         }
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {

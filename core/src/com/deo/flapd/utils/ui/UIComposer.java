@@ -383,7 +383,6 @@ public class UIComposer {
         if (buttonStyleNames.indexOf(style, false) == -1)
             throw new IllegalArgumentException("Style not loaded: " + style);
         TextButton button = new TextButton(text, (TextButton.TextButtonStyle) buttonStyles.get(buttonStyleNames.indexOf(style, false)));
-        button.getLabel().setSize(5, 5);
         button.getLabel().setFontScale(fontScale);
         addClickSoundListener(button);
         return button;

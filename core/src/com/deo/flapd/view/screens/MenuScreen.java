@@ -188,7 +188,7 @@ public class MenuScreen implements Screen {
         Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
         buildNumber.setBounds(5, 5, 150, 50);
         
-        lamp.setBounds(730, 430, 15, 35);
+        lamp.setBounds(725, 430, 25, 35);
         
         long uiGenTime = millis();
         
@@ -201,9 +201,9 @@ public class MenuScreen implements Screen {
         TextButton continueGame = uiComposer.addTextButton("defaultLight", "continue", 0.4f);
         TextButton workshop = uiComposer.addTextButton("defaultLight", "workshop", 0.4f);
         final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, "Difficulty ", "X", "difficulty");
-        playScreenTable.add(newGame).padTop(5).padBottom(5).align(Align.left).row();
-        playScreenTable.add(continueGame).padTop(5).padBottom(5).align(Align.left).row();
-        playScreenTable.add(workshop).padTop(5).padBottom(5).align(Align.left).row();
+        playScreenTable.add(newGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
+        playScreenTable.add(continueGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
+        playScreenTable.add(workshop).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(difficultyT).padTop(5).padBottom(5).align(Align.left).row();
         final Slider difficultyControl = (Slider) difficultyT.getCells().get(0).getActor();
         difficultyT.getCells().get(1).getActor().setColor(new Color().fromHsv(120 - difficultyControl.getValue() * 20, 1.5f, 1).add(0, 0, 0, 1));

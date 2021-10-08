@@ -5,51 +5,51 @@ filter: Nearest,Nearest
 repeat: none
 menuBg
   rotate: false
-  xy: 1, 637
-  size: 640, 384
-  orig: 640, 384
+  xy: 1, 51
+  size: 320, 192
+  orig: 320, 192
   offset: 0, 0
   index: -1
 infoBg
   rotate: false
-  xy: 1, 315
-  size: 416, 320
-  orig: 416, 320
-  offset: 0, 0
-  index: -1
-treeBg
-  rotate: false
-  xy: 1, 1
-  size: 408, 312
-  orig: 408, 312
+  xy: 323, 163
+  size: 104, 80
+  orig: 104, 80
   offset: 0, 0
   index: -1
 infoBg2
   rotate: false
-  xy: 419, 315
-  size: 416, 320
-  orig: 416, 320
+  xy: 323, 81
+  size: 104, 80
+  orig: 104, 80
+  offset: 0, 0
+  index: -1
+treeBg
+  rotate: false
+  xy: 323, 1
+  size: 102, 78
+  orig: 102, 78
   offset: 0, 0
   index: -1
 greyishButton
   rotate: false
-  xy: 411, 263
-  size: 150, 50
-  orig: 150, 50
-  offset: 0, 0
-  index: -1
-lamp
-  rotate: false
-  xy: 643, 993
-  size: 12, 28
-  orig: 12, 28
+  xy: 429, 223
+  size: 60, 20
+  orig: 60, 20
   offset: 0, 0
   index: -1
 9bg
   rotate: false
-  xy: 411, 245
+  xy: 1, 33
   size: 16, 16
   split: 5, 5, 5, 5
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+lamp
+  rotate: false
+  xy: 429, 207
+  size: 10, 14
+  orig: 10, 14
   offset: 0, 0
   index: -1
