@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -83,8 +84,7 @@ public class ItemSlotManager {
         slotSkin = new Skin();
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles("workshopGreen");
+        uiComposer = compositeManager.getUiComposer();
         
         items = assetManager.get("items/items.atlas");
         
@@ -198,14 +198,14 @@ public class ItemSlotManager {
         ImageButton.ImageButtonStyle lockedSlotStyle;
         
         lockedSlotStyle = new ImageButton.ImageButtonStyle();
-        lockedSlotStyle.up = slotSkin.getDrawable("slot_disabled");
-        lockedSlotStyle.down = slotSkin.getDrawable("slot_disabled_down");
-        lockedSlotStyle.over = slotSkin.getDrawable("slot_disabled_over");
+        lockedSlotStyle.up = new NinePatchDrawable(slotSkin.getPatch("slot_disabled"));
+        lockedSlotStyle.down = new NinePatchDrawable(slotSkin.getPatch("slot_disabled_down"));
+        lockedSlotStyle.over = new NinePatchDrawable(slotSkin.getPatch("slot_disabled_over"));
         
         slotStyle = new ImageButton.ImageButtonStyle();
-        slotStyle.up = slotSkin.getDrawable("slot");
-        slotStyle.over = slotSkin.getDrawable("slot_over");
-        slotStyle.down = slotSkin.getDrawable("slot_enabled");
+        slotStyle.up = new NinePatchDrawable(slotSkin.getPatch("slot"));
+        slotStyle.over = new NinePatchDrawable(slotSkin.getPatch("slot_over"));
+        slotStyle.down = new NinePatchDrawable(slotSkin.getPatch("slot_enabled"));
         
         Image imageUp_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result)));
         Image imageOver_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, OVER)));
@@ -253,7 +253,7 @@ public class ItemSlotManager {
         quantityLabel.setBounds(133, 88, 50, 20);
         quantityLabel.setAlignment(Align.right);
         
-        slot.getImageCell().size(width, height).padBottom(5).row();
+        slot.getImageCell().size(width, height).padTop(25).row();
         slot.add(text).padRight(10).padLeft(10).padTop(10);
         slot.addActor(quantityLabel);
         
