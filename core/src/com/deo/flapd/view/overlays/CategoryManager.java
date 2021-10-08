@@ -51,8 +51,7 @@ public class CategoryManager extends Actor {
         Skin mainSkin = new Skin();
         mainSkin.addRegions(assetManager.get("menuButtons/menuButtons.atlas"));
         
-        uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles(style);
+        uiComposer = compositeManager.getUiComposer();
         this.style = style;
         
         this.background = new Image();

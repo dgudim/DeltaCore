@@ -25,8 +25,7 @@ public class ConfirmationDialogue extends Dialogue {
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        UIComposer uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles("workshopRed", "workshopGreen");
+        UIComposer uiComposer = compositeManager.getUiComposer();
         
         Window.WindowStyle dialogStyle = new Window.WindowStyle();
         dialogStyle.titleFont = font;

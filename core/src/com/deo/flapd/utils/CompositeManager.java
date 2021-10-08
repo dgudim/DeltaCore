@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
 import com.deo.flapd.utils.postprocessing.effects.MotionBlur;
+import com.deo.flapd.utils.ui.UIComposer;
 
 public class CompositeManager {
     
@@ -21,9 +22,15 @@ public class CompositeManager {
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     
+    private UIComposer uiComposer;
+    
     private Game game;
     
     public CompositeManager() {
+    }
+    
+    public UIComposer getUiComposer() {
+        return uiComposer;
     }
     
     public ShapeRenderer getShapeRenderer() {
@@ -60,6 +67,10 @@ public class CompositeManager {
     
     public Bloom getBloom() {
         return bloom;
+    }
+    
+    public void setUiComposer(UIComposer uiComposer) {
+        this.uiComposer = uiComposer;
     }
     
     public void setBlurProcessor(PostProcessor blurProcessor) {
