@@ -62,6 +62,7 @@ import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
 import static com.deo.flapd.utils.DUtils.initNewGame;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
 import static com.deo.flapd.utils.DUtils.log;
@@ -191,8 +192,7 @@ public class MenuScreen implements Screen {
         
         long uiGenTime = millis();
         
-        UIComposer uiComposer = new UIComposer(compositeManager);
-        uiComposer.loadStyles("defaultLight", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello");
+        UIComposer uiComposer = compositeManager.getUiComposer();
         
         Table playScreenTable = new Table();
         playScreenTable.align(Align.topLeft);
@@ -573,28 +573,9 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
-        float targetHeight = viewport.getScreenHeight();
-        float targetWidth = viewport.getScreenWidth();
-    
-        // TODO: 6/10/2021 generify
-        
-        float sourceHeight = 480.0f;
-        float sourceWidth = 800.0f;
-        
-        float targetRatio = targetHeight / targetWidth;
-        float sourceRatio = sourceHeight / sourceWidth;
-        float scale;
-        if (targetRatio > sourceRatio) {
-            scale = targetWidth / sourceWidth;
-        } else {
-            scale = targetHeight / sourceHeight;
-        }
-        
-        int actualWidth = (int) (sourceWidth * scale);
-        int actualHeight = (int) (sourceHeight * scale);
-        
-        verticalFillingThreshold = (int) Math.ceil((targetHeight - actualHeight) / 144);
-        horizontalFillingThreshold = (int) Math.ceil((targetWidth - actualWidth) / 912);
+        int[] fillingThresholds = getVerticalAndHorizontalFillingThresholds(viewport);
+        verticalFillingThreshold = fillingThresholds[0];
+        horizontalFillingThreshold = fillingThresholds[1];
     }
     
     @Override

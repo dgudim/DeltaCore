@@ -32,6 +32,7 @@ import static com.deo.flapd.utils.DUtils.drawBg;
 import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
@@ -47,7 +48,7 @@ public class GameScreen implements Screen {
     private final Checkpoint checkpoint;
     
     private final SpriteBatch batch;
-    private ShapeRenderer shapeRenderer;
+    private final ShapeRenderer shapeRenderer;
     
     private final Player player;
     private final GameUi gameUi;
@@ -288,29 +289,11 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
-        
-        float targetHeight = viewport.getScreenHeight();
-        float targetWidth = viewport.getScreenWidth();
-        
-        float sourceHeight = 480.0f;
-        float sourceWidth = 800.0f;
-        
-        float targetRatio = targetHeight / targetWidth;
-        float sourceRatio = sourceHeight / sourceWidth;
-        float scale;
-        if (targetRatio > sourceRatio) {
-            scale = targetWidth / sourceWidth;
-        } else {
-            scale = targetHeight / sourceHeight;
-        }
-        
-        int actualWidth = (int) (sourceWidth * scale);
-        int actualHeight = (int) (sourceHeight * scale);
-        
         Gdx.gl.glLineWidth(1 / camera.zoom);
-        
-        verticalFillingThreshold = (int) Math.ceil((targetHeight - actualHeight) / 144);
-        horizontalFillingThreshold = (int) Math.ceil((targetWidth - actualWidth) / 912);
+    
+        int[] fillingThresholds = getVerticalAndHorizontalFillingThresholds(viewport);
+        verticalFillingThreshold = fillingThresholds[0];
+        horizontalFillingThreshold = fillingThresholds[1];
     }
     
     public static void screenShake(float intensity, float duration) {

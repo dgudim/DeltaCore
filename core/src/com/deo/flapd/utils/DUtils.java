@@ -341,6 +341,28 @@ public class DUtils {
         camera.update();
     }
     
+    public static int[] getVerticalAndHorizontalFillingThresholds(Viewport viewport) {
+        float targetHeight = viewport.getScreenHeight();
+        float targetWidth = viewport.getScreenWidth();
+        
+        float sourceHeight = 480.0f;
+        float sourceWidth = 800.0f;
+        
+        float targetRatio = targetHeight / targetWidth;
+        float sourceRatio = sourceHeight / sourceWidth;
+        float scale;
+        if (targetRatio > sourceRatio) {
+            scale = targetWidth / sourceWidth;
+        } else {
+            scale = targetHeight / sourceHeight;
+        }
+        
+        int actualWidth = (int) (sourceWidth * scale);
+        int actualHeight = (int) (sourceHeight * scale);
+        
+        return new int[]{(int) Math.ceil((targetHeight - actualHeight) / 144), (int) Math.ceil((targetWidth - actualWidth) / 912)};
+    }
+    
     public static void logException(Exception e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
