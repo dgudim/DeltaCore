@@ -152,22 +152,22 @@
     "font": 0,
     "off": {
       "texture": "arrowRight_disabled",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "offOver":{
       "texture": "arrowRight_disabled_over",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "on":{
       "texture": "arrowRight",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "onOver":{
       "texture": "arrowRight_over",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "loadFrom": "shop/ui.atlas"
@@ -178,22 +178,22 @@
     "font": 0,
     "off": {
       "texture": "arrowLeft_disabled",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "offOver":{
       "texture": "arrowLeft_disabled_over",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "on":{
       "texture": "arrowLeft",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "onOver":{
       "texture": "arrowLeft_over",
-      "size": [10, 10],
+      "size": [40, 40],
       "fontColor": "default"
     },
     "loadFrom": "shop/ui.atlas"
@@ -203,7 +203,7 @@
     "type": "sliderStyle",
     "background": {
       "texture": "progressBarBg",
-      "size": [250, 62.5]
+      "size": ["default", 52.5]
     },
     "knob":{
       "texture": "progressBarKnob",
@@ -224,7 +224,7 @@
     "type": "sliderStyle",
     "background": {
       "texture": "progressBarBg",
-      "size": [230, 42.5]
+      "size": ["default", 32.5]
     },
     "knob":{
       "texture": "progressBarKnob",
@@ -237,27 +237,6 @@
     "knobOver":{
       "texture": "progressBarKnob_over",
       "size": [27.5, 42.5]
-    },
-    "loadFrom": "shop/ui.atlas"
-  },
-
-  "sliderDefaultSmall":{
-    "type": "sliderStyle",
-    "background": {
-      "texture": "progressBarBg",
-      "size": [35, 10]
-    },
-    "knob":{
-      "texture": "progressBarKnob",
-      "size": [6, 10]
-    },
-    "knobDown":{
-      "texture": "progressBarKnob_enabled",
-      "size": [6, 10]
-    },
-    "knobOver":{
-      "texture": "progressBarKnob_over",
-      "size": [6, 10]
     },
     "loadFrom": "shop/ui.atlas"
   },
