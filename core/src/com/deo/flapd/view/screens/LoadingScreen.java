@@ -24,6 +24,7 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
+import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.Tree;
 
 import static com.deo.flapd.Main.VERSION_NAME;
@@ -312,6 +313,14 @@ public class LoadingScreen implements Screen {
                     compositeManager.preloadSounds();
                     if(craftingTree == null){
                         craftingTree = new Tree(compositeManager, 105, 65, 430, 410);
+                    }
+                    if(compositeManager.getUiComposer() == null){
+                        UIComposer uiComposer = new UIComposer(compositeManager);
+                        uiComposer.loadStyles(
+                                "defaultLight", "defaultDark", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello",
+                                "workshopGreen", "workshopRed", "workshopCyan", "workshopPurple", "questionButton",
+                                "arrowRightSmall", "arrowLeftSmall", "questionButton");
+                        compositeManager.setUiComposer(uiComposer);
                     }
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
                     game.setScreen(new MenuScreen(compositeManager));
