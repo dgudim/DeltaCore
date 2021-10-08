@@ -16,17 +16,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.SoundManager;
 
 import java.util.Locale;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 
@@ -57,6 +61,9 @@ public class UIComposer {
     
     public void loadStyles(String... styleNames) {
         
+        log("Preparing to load styles...", DEBUG);
+        long time = TimeUtils.millis();
+        
         JsonEntry styles = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/styles.json")));
         
         Array<BitmapFont> fonts = new Array<>();
@@ -65,13 +72,16 @@ public class UIComposer {
         Skin textures = new Skin();
         
         for (String fontName : fontNames) {
+            log("Loading font: " + fontName, DEBUG);
             BitmapFont font = assetManager.get(fontName);
             font.setUseIntegerPositions(false);
             fonts.add(font);
         }
         for (String styleName : styleNames) {
+            log("Loading style: " + styleName, DEBUG);
             loadStyle(styles, styleName, textures, dependencies, fonts);
         }
+        log("Loaded " + styleNames.length + " styles in " + TimeUtils.timeSinceMillis(time) + "ms", DEBUG);
     }
     
     private void loadStyle(JsonEntry treeJson, String style, Skin textures, Array<String> dependencies, Array<BitmapFont> fonts) {
@@ -129,60 +139,60 @@ public class UIComposer {
     
     private void setButtonStyleDimensionsAndTextures(JsonEntry styleJson, Button.ButtonStyle style, Skin textures) {
         
-        style.up = textures.getDrawable(styleJson.getString("noTexture", "up", "texture"));
-        style.over = textures.getDrawable(styleJson.getString("noTexture", "over", "texture"));
-        style.down = textures.getDrawable(styleJson.getString("noTexture", "down", "texture"));
+        style.up = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "up", "texture")));
+        style.over = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "over", "texture")));
+        style.down = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "down", "texture")));
         
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "up", "size")[0].equals("default")) {
-            style.up.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "up", "size")[0]);
+            style.up.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "up", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "up", "size")[1].equals("default")) {
-            style.up.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "up", "size")[1]);
+            style.up.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "up", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "down", "size")[0].equals("default")) {
-            style.down.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "down", "size")[0]);
+            style.down.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "down", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "down", "size")[1].equals("default")) {
-            style.down.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "down", "size")[1]);
+            style.down.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "down", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "over", "size")[0].equals("default")) {
-            style.over.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "over", "size")[0]);
+            style.over.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "over", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "over", "size")[1].equals("default")) {
-            style.over.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "over", "size")[1]);
+            style.over.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "over", "size")[1]));
         }
     }
     
     private void setCheckBoxStyleDimensionsAndTextures(JsonEntry styleJson, CheckBox.CheckBoxStyle style, Skin textures) {
         
-        style.checkboxOn = textures.getDrawable(styleJson.getString("noTexture", "on", "texture"));
-        style.checkboxOnOver = textures.getDrawable(styleJson.getString("noTexture", "onOver", "texture"));
-        style.checkboxOff = textures.getDrawable(styleJson.getString("noTexture", "off", "texture"));
-        style.checkboxOver = textures.getDrawable(styleJson.getString("noTexture", "offOver", "texture"));
+        style.checkboxOn = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "on", "texture")));
+        style.checkboxOnOver = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "onOver", "texture")));
+        style.checkboxOff = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "off", "texture")));
+        style.checkboxOver = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "offOver", "texture")));
         
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "on", "size")[0].equals("default")) {
-            style.checkboxOn.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "on", "size")[0]);
+            style.checkboxOn.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "on", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "on", "size")[1].equals("default")) {
-            style.checkboxOn.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "on", "size")[1]);
+            style.checkboxOn.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "on", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "onOver", "size")[0].equals("default")) {
-            style.checkboxOnOver.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "onOver", "size")[0]);
+            style.checkboxOnOver.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "onOver", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "onOver", "size")[1].equals("default")) {
-            style.checkboxOnOver.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "onOver", "size")[1]);
+            style.checkboxOnOver.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "onOver", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "off", "size")[0].equals("default")) {
-            style.checkboxOff.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "off", "size")[0]);
+            style.checkboxOff.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "off", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "off", "size")[1].equals("default")) {
-            style.checkboxOff.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "off", "size")[1]);
+            style.checkboxOff.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "off", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "offOver", "size")[0].equals("default")) {
-            style.checkboxOver.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "offOver", "size")[0]);
+            style.checkboxOver.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "offOver", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "offOver", "size")[1].equals("default")) {
-            style.checkboxOver.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "offOver", "size")[1]);
+            style.checkboxOver.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "offOver", "size")[1]));
         }
     }
     
@@ -201,34 +211,37 @@ public class UIComposer {
     
     private void setSliderStyleDimensionsAndTextures(JsonEntry styleJson, Slider.SliderStyle style, Skin textures) {
         
-        style.background = textures.getDrawable(styleJson.getString("noTexture", "background", "texture"));
-        style.knob = textures.getDrawable(styleJson.getString("noTexture", "knob", "texture"));
-        style.knobOver = textures.getDrawable(styleJson.getString("noTexture", "knobOver", "texture"));
-        style.knobDown = textures.getDrawable(styleJson.getString("noTexture", "knobDown", "texture"));
+        style.background = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "background", "texture")));
+        style.background.setLeftWidth(0);
+        style.background.setRightWidth(0);
+        
+        style.knob = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "knob", "texture")));
+        style.knobOver = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "knobOver", "texture")));
+        style.knobDown = new NinePatchDrawable(textures.getPatch(styleJson.getString("noTexture", "knobDown", "texture")));
         
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "background", "size")[0].equals("default")) {
-            style.background.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "background", "size")[0]);
+            style.background.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "background", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "background", "size")[1].equals("default")) {
-            style.background.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "background", "size")[1]);
+            style.background.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "background", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "knob", "size")[0].equals("default")) {
-            style.knob.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "knob", "size")[0]);
+            style.knob.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "knob", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "knob", "size")[1].equals("default")) {
-            style.knob.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "knob", "size")[1]);
+            style.knob.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "knob", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "knobOver", "size")[0].equals("default")) {
-            style.knobOver.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "knobOver", "size")[0]);
+            style.knobOver.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "knobOver", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "knobOver", "size")[1].equals("default")) {
-            style.knobOver.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "knobOver", "size")[1]);
+            style.knobOver.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "knobOver", "size")[1]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "knobDown", "size")[0].equals("default")) {
-            style.knobDown.setMinWidth(styleJson.getIntArray(new int[]{0, 0}, "knobDown", "size")[0]);
+            style.knobDown.setMinWidth(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "knobDown", "size")[0]));
         }
         if (!styleJson.getStringArray(new String[]{"default", "default"}, "knobDown", "size")[1].equals("default")) {
-            style.knobDown.setMinHeight(styleJson.getIntArray(new int[]{0, 0}, "knobDown", "size")[1]);
+            style.knobDown.setMinHeight(Float.parseFloat(styleJson.getStringArray(new String[]{"0", "0"}, "knobDown", "size")[1]));
         }
     }
     
