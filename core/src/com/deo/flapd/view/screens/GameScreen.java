@@ -2,7 +2,6 @@ package com.deo.flapd.view.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -33,6 +32,7 @@ import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
+import static com.deo.flapd.utils.DUtils.handleDebugInput;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
@@ -244,8 +244,8 @@ public class GameScreen implements Screen {
         if (warpSpeed == 0) {
             gameUi.draw(originalDelta);
         }
-        
-        if (drawScreenExtenders) {
+    
+        if(drawScreenExtenders = handleDebugInput(camera, drawScreenExtenders)){
             drawScreenExtenders(batch, fillTexture, verticalFillingThreshold, horizontalFillingThreshold);
         }
         
@@ -260,30 +260,6 @@ public class GameScreen implements Screen {
         }
         
         musicManager.update(delta);
-        
-        if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
-            camera.zoom *= 1.01;
-            camera.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
-            camera.zoom *= 0.99;
-            camera.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            camera.translate(3, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.translate(-3, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(0, 3);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.translate(0, -3);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-            drawScreenExtenders = !drawScreenExtenders;
-        }
     }
     
     @Override

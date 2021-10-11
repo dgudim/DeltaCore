@@ -94,7 +94,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         quantityText.setAlignment(Align.center);
         
         Label topText = new Label("Price:", yellowLabelStyle);
-        topText.setPosition(76, 224);
+        topText.setPosition(76, 235);
         topText.setFontScale(0.4f);
         topText.setAlignment(Align.center);
         
