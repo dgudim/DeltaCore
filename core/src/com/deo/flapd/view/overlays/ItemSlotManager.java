@@ -61,7 +61,7 @@ public class ItemSlotManager {
     
     private final BitmapFont font;
     private final Table table;
-    private final Table inventory;
+    private final Table inventoryLabel;
     public Group holderGroup;
     private final Skin slotSkin;
     private final TextureAtlas items;
@@ -77,30 +77,27 @@ public class ItemSlotManager {
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
     public ItemSlotManager(CompositeManager compositeManager) {
-    
+        
         this.compositeManager = compositeManager;
         assetManager = compositeManager.getAssetManager();
+        uiComposer = compositeManager.getUiComposer();
         
         slotSkin = new Skin();
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
-        uiComposer = compositeManager.getUiComposer();
-        
         items = assetManager.get("items/items.atlas");
-        
         font = assetManager.get("fonts/font2(old).fnt");
         font.getData().setScale(0.2f);
         
-        table = new Table();
+        inventoryLabel = new Table();
+        inventoryLabel.setBackground(new TextureRegionDrawable(assetManager.get("ui/gameUi.atlas", TextureAtlas.class).findRegion("buttonPauseBlank_disabled")));
+        
         holderGroup = new Group();
-        inventory = new Table();
-        
-        inventory.setBackground(new TextureRegionDrawable(assetManager.get("ui/gameUi.atlas", TextureAtlas.class).findRegion("buttonPauseBlank_disabled")));
-        
+        table = new Table();
         scrollPane = new ScrollPane(table);
         
         holderGroup.addActor(scrollPane);
-        holderGroup.addActor(inventory);
+        holderGroup.addActor(inventoryLabel);
     }
     
     public void addShopSlots() {
@@ -142,8 +139,9 @@ public class ItemSlotManager {
         slotManagerMode = INVENTORY;
         boolean nextRow = false;
         for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.getString("noCategory", i, "category").equals("recepies") && getInteger("item_" + getItemTextureNameByName(treeJson.get(i).name)) > 0) {
-                addInventorySlot(treeJson.get(i).name, getInteger("item_" + getItemTextureNameByName(treeJson.get(i).name)), nextRow);
+            int itemQuantity = getInteger("item_" + getItemTextureNameByName(treeJson.get(i).name));
+            if (itemQuantity > 0) {
+                addInventorySlot(treeJson.get(i).name, itemQuantity, nextRow);
                 nextRow = !nextRow;
             }
         }
@@ -157,7 +155,8 @@ public class ItemSlotManager {
         Array<Integer> quantities = new Array<>();
         
         for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.getString("noCategory", i, "category").equals("recepies")) {
+            String type = treeJson.getString("item", i, "type");
+            if (type.equals("item") || type.equals("endItem")) {
                 itemsToAdd.add(treeJson.get(i).name);
             }
         }
@@ -304,7 +303,7 @@ public class ItemSlotManager {
         Table holder2 = new Table();
         holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(30, 30);
         holder2.add(cogs_text).padLeft(5);
-        inventory.align(Align.left);
+        inventoryLabel.align(Align.left);
         final long[] nextUpdateTime = {getLong("lastGenTime") + 18000000};
         long lastReset = nextUpdateTime[0] - millis();
         int hours = (int) TimeUnit.MILLISECONDS.toHours(lastReset);
@@ -334,15 +333,15 @@ public class ItemSlotManager {
         moneyAndCogs.add(holder).align(Align.left).padLeft(10).padBottom(5).row();
         moneyAndCogs.add(holder2).align(Align.left).padLeft(10);
         
-        inventory.add(moneyAndCogs);
+        inventoryLabel.add(moneyAndCogs);
         
         if (slotManagerMode == SHOP) {
-            inventory.add(resetTime).padLeft(10).align(Align.center).width(160).expand();
+            inventoryLabel.add(resetTime).padLeft(10).align(Align.center).width(160).expand();
         } else {
             Label name = new Label("Inventory", yellowLabelStyle);
             name.setColor(Color.ORANGE);
             name.setFontScale(0.6f);
-            inventory.add(name).expand().align(Align.center);
+            inventoryLabel.add(name).expand().align(Align.center);
         }
     }
     
@@ -353,12 +352,12 @@ public class ItemSlotManager {
     
     public void setBounds(float x, float y, float width, float height) {
         height -= 85;
-        inventory.setBounds(x, y + height, width, 85);
+        inventoryLabel.setBounds(x, y + height, width, 85);
         scrollPane.setBounds(x, y, width, height);
     }
     
     public void update() {
-        inventory.clearChildren();
+        inventoryLabel.clearChildren();
         table.clearChildren();
         if (slotManagerMode == SHOP) {
             addShopSlots();
@@ -373,10 +372,12 @@ public class ItemSlotManager {
             log("no item declared with name " + result, ERROR);
             return 0;
         } else {
-            
-            String[] items = treeJson.getStringArray(new String[]{}, result, "items");
-            for (String item : items) {
-                int buffer = getComplexity(item);
+            if(treeJson.getString("item", result, "type").equals("endItem")){
+                return 0;
+            }
+            JsonEntry items = treeJson.get(result, "items");
+            for (int i = 0; i < items.size; i++) {
+                int buffer = getComplexity(items.get(i).name);
                 complexity += buffer + 1;
             }
             

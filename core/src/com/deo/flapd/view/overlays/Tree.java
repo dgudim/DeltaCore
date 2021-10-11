@@ -32,6 +32,7 @@ import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
 import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.connectNinetyDegreeBranch;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -261,38 +262,7 @@ class Node {
     
     private void connectBranch(Array<Node> nodes, boolean startFromMiddle) {
         for (int i = 0; i < nodes.size; i++) {
-            connectNinetyDegreeBranch(bounds.x, bounds.y, nodes.get(i).bounds.x, nodes.get(i).bounds.y, startFromMiddle);
-        }
-    }
-    
-    private void connectBranch(float x, float y, float x2, float y2) {
-        
-        Image branch = new Image(constructFilledImageWithColor(1, 1, Color.GREEN));
-        float len1, len2, thickness;
-        thickness = 4f;
-        len1 = x2 - x;
-        len2 = y2 - y;
-        if (len1 == 0) {
-            branch.setSize(thickness, len2);
-            x -= thickness / 2;
-        } else if (len2 == 0) {
-            branch.setSize(len1, thickness);
-            y -= thickness / 2;
-        }
-        branch.setPosition(x, y);
-        holder.addActor(branch);
-        branches.add(branch);
-    }
-    
-    private void connectNinetyDegreeBranch(float x, float y, float x2, float y2, boolean startFromMiddle) {
-        float jlen = Math.abs(x - x2) / 2f;
-        if (startFromMiddle) {
-            connectBranch(x, y, x, y2);
-            connectBranch(x, y2, x2, y2);
-        } else {
-            connectBranch(x, y, x + jlen, y);
-            connectBranch(x + jlen, y, x + jlen, y2);
-            connectBranch(x + jlen, y2, x2, y2);
+            connectNinetyDegreeBranch(bounds.x, bounds.y, nodes.get(i).bounds.x, nodes.get(i).bounds.y, 4, startFromMiddle, Color.GREEN, branches, holder);
         }
     }
     

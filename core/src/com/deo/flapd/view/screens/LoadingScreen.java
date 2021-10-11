@@ -25,7 +25,6 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
-import com.deo.flapd.view.overlays.Tree;
 
 import static com.deo.flapd.Main.VERSION_NAME;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
@@ -44,7 +43,7 @@ import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
     
-    enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, LOADING_PARTICLES, BUILDING_TREE}
+    enum LoadingState {LOADING_TEXTURES, LOADING_SOUNDS, LOADING_PARTICLES, LOADING_STYLES}
     
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
@@ -60,7 +59,6 @@ public class LoadingScreen implements Screen {
     private final PostProcessor blurProcessor;
     private final boolean enableShader;
     private final long loadingTime;
-    public static Tree craftingTree;
     
     private LoadingState loadingState;
     private String loadingStateName;
@@ -309,17 +307,14 @@ public class LoadingScreen implements Screen {
     private void checkState() {
         try {
             if (assetManager.isFinished()) {
-                if (loadingState.equals(LoadingState.BUILDING_TREE)) {
+                if (loadingState.equals(LoadingState.LOADING_STYLES)) {
                     compositeManager.preloadSounds();
-                    if(craftingTree == null){
-                        craftingTree = new Tree(compositeManager, 105, 65, 430, 410);
-                    }
                     if(compositeManager.getUiComposer() == null){
                         UIComposer uiComposer = new UIComposer(compositeManager);
                         uiComposer.loadStyles(
                                 "defaultLight", "defaultDark", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello",
                                 "workshopGreen", "workshopRed", "workshopCyan", "workshopPurple", "questionButton",
-                                "arrowRightSmall", "arrowLeftSmall", "questionButton");
+                                "arrowRightSmall", "arrowLeftSmall", "circle", "questionButton");
                         compositeManager.setUiComposer(uiComposer);
                     }
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
@@ -332,7 +327,7 @@ public class LoadingScreen implements Screen {
                         setLoadingState(LoadingState.LOADING_PARTICLES);
                     }
                 } else {
-                    setLoadingState(LoadingState.BUILDING_TREE);
+                    setLoadingState(LoadingState.LOADING_STYLES);
                 }
             } else if (assetManager.isLoaded("sfx/explosion.ogg", Sound.class)) {
                 setLoadingState(LoadingState.LOADING_SOUNDS);

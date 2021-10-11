@@ -38,9 +38,17 @@ greyishButton
   orig: 60, 20
   offset: 0, 0
   index: -1
+tableBg
+  rotate: false
+  xy: 1, 17
+  size: 32, 32
+  split: 7, 7, 7, 7
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 9bg
   rotate: false
-  xy: 1, 33
+  xy: 429, 205
   size: 16, 16
   split: 5, 5, 5, 5
   orig: 16, 16
@@ -48,7 +56,7 @@ greyishButton
   index: -1
 lamp
   rotate: false
-  xy: 429, 207
+  xy: 491, 229
   size: 10, 14
   orig: 10, 14
   offset: 0, 0

@@ -2,6 +2,7 @@ package com.deo.flapd.utils;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +14,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -29,9 +33,13 @@ import java.util.Map;
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.NORMAL;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
 import static java.lang.Math.floor;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.sqrt;
+import static java.lang.StrictMath.cos;
+import static java.lang.StrictMath.sin;
 
 public class DUtils {
     
@@ -417,6 +425,59 @@ public class DUtils {
         
     }
     
+    public static void connectVerticalOrHorizontalBranch(float x, float y, float x2, float y2, float thickness, Color color, Array<Image> addTo, Table holder) {
+        Image branch = new Image(constructFilledImageWithColor(1, 1, color));
+        float len1, len2;
+        len1 = x2 - x;
+        len2 = y2 - y;
+        if (len1 == 0) {
+            branch.setSize(thickness, len2);
+            x -= thickness / 2;
+        } else if (len2 == 0) {
+            branch.setSize(len1, thickness);
+            y -= thickness / 2;
+        }
+        branch.setPosition(x, y);
+        addTo.add(branch);
+        holder.addActor(branch);
+    }
+    
+    public static void connectNinetyDegreeBranch(float x, float y, float x2, float y2, float thickness, boolean startFromMiddle, Color color, Array<Image> addTo, Table holder) {
+        float jlen = Math.abs(x - x2) / 2f;
+        if (startFromMiddle) {
+            connectVerticalOrHorizontalBranch(x, y, x, y2, thickness, color, addTo, holder);
+            connectVerticalOrHorizontalBranch(x, y2, x2, y2, thickness, color, addTo, holder);
+        } else {
+            float xOffset = x + jlen;
+            connectVerticalOrHorizontalBranch(x, y, xOffset, y, thickness, color, addTo, holder);
+            connectVerticalOrHorizontalBranch(xOffset, y, xOffset, y2, thickness, color, addTo, holder);
+            connectVerticalOrHorizontalBranch(xOffset, y2, x2, y2, thickness, color, addTo, holder);
+        }
+    }
+    
+    public static void connectArbitraryBranch(float x, float y, float x2, float y2, float thickness, Color color, Array<Image> addTo, Table holder) {
+        Image branch = new Image(constructFilledImageWithColor(1, 1, color));
+        float len;
+        len = getDistanceBetweenTwoPoints(x, y, x2, y2);
+        float angle = MathUtils.atan2(x - x2, y2 - y);
+        branch.setSize(thickness, len + thickness / 4f); // TODO: 9/10/2021 proper small gap(thickness) compensation
+        branch.setRotation((float) (MathUtils.radiansToDegrees * angle));
+        branch.setPosition((float) (x - thickness / 2f * cos(angle)), (float) (y - thickness / 2f * sin(angle)));
+        addTo.add(branch);
+        holder.addActor(branch);
+    }
+    
+    public static void connectFortyFiveDegreeBranch(float x, float y, float x2, float y2, float thickness, Color color, Array<Image> addTo, Table holder) {
+        boolean invert = (x2 - x > 0 && y2 - y < 0) || (x2 - x < 0 && y2 - y > 0);
+        float intermediatePos = x + (y2 - y) * (invert ? -1 : 1);
+        if (x2 - x == 0 || y2 - y == 0) {
+            connectArbitraryBranch(x, y, x2, y2, thickness, color, addTo, holder);
+        } else {
+            connectArbitraryBranch(x, y, intermediatePos, y2, thickness, color, addTo, holder);
+            connectArbitraryBranch(intermediatePos, y2, x2, y2, thickness, color, addTo, holder);
+        }
+    }
+    
     public static String getNameFromPath(String path) {
         int lastIndex = path.lastIndexOf(".");
         return path.substring(path.lastIndexOf("/") + 1, lastIndex == -1 ? path.length() : lastIndex);
@@ -465,6 +526,10 @@ public class DUtils {
         return (float) sqrt(x_delta * x_delta + y_delta * y_delta);
     }
     
+    public static float getDistanceBetweenTwoPoints(Vector2 from, Vector2 to) {
+        return getDistanceBetweenTwoPoints(from.x, from.y, to.x, to.y);
+    }
+    
     public static void drawParticleEffectBounds(ShapeRenderer shapeRenderer, ParticleEffectPool.PooledEffect particleEffect) {
         shapeRenderer.rectLine(particleEffect.getBoundingBox().getCenterX() - particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getCenterX() + particleEffect.getBoundingBox().getWidth() / 2f, particleEffect.getBoundingBox().getCenterY(), particleEffect.getBoundingBox().getHeight());
     }
@@ -501,5 +566,32 @@ public class DUtils {
             batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
             batch.setColor(1, 1, 1, 1);
         }
+    }
+    
+    public static boolean handleDebugInput(OrthographicCamera camera, boolean drawScreenExtenders) {
+        if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
+            camera.zoom *= 1.01;
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
+            camera.zoom *= 0.99;
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            camera.translate(3, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            camera.translate(-3, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.translate(0, 3);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.translate(0, -3);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+            return !drawScreenExtenders;
+        }
+        return drawScreenExtenders;
     }
 }

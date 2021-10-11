@@ -1,11 +1,11 @@
 {
-    "basic armour": {
+    "basic ship": {
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
-        guns:{
+        "guns":{
          "gun0OffsetX": 68,
-         "gun0OffsetY": 12.5f
+         "gun0OffsetY": 12.5
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -13,16 +13,25 @@
             "fire0OffsetX": 10,
             "fire0OffsetY": 18,
             "fire1OffsetX": 4,
-            "fire1OffsetY": 40,
+            "fire1OffsetY": 40
+        },
+        "upgradeMenus": {
+            "engines": [28, 18, 300, 70],
+            "ships": [40, 30, 300, -30],
+            "weapons": [72, 20, 300, 40],
+            "batteries": [52, 20, 300, -30],
+            "shields": [70, 70, 300, -30],
+            "cores": [62, 32, 400, 70],
+            "modules": [11, 51, 300, 30]
         }
     },
-    "armour mk1":{
+    "ship mk1":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
-        guns:{
+        "guns":{
             "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5f
+            "gun0OffsetY": 12.5
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -30,16 +39,16 @@
             "fire0OffsetX": 10,
             "fire0OffsetY": 18,
             "fire1OffsetX": 4,
-            "fire1OffsetY": 40,
+            "fire1OffsetY": 40
         }
     },
-    "armour mk2":{
+    "ship mk2":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
-        guns:{
+        "guns":{
             "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5f
+            "gun0OffsetY": 12.5
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -47,16 +56,16 @@
             "fire0OffsetX": 10,
             "fire0OffsetY": 18,
             "fire1OffsetX": 4,
-            "fire1OffsetY": 40,
+            "fire1OffsetY": 40
         }
     },
-    "armour mk3":{
+    "ship mk3":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
-        guns:{
+        "guns":{
             "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5f
+            "gun0OffsetY": 12.5
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -64,20 +73,20 @@
             "fire0OffsetX": 10,
             "fire0OffsetY": 18,
             "fire1OffsetX": 4,
-            "fire1OffsetY": 40,
+            "fire1OffsetY": 40
         }
     },
-    "beast mode":{
+    "beast ship":{
         "width": 149,
         "height": 72,
-        gunCount: 2,
-        guns:{
+        "gunCount": 2,
+        "guns":{
             "gun0OffsetX": 138,
-            "gun0OffsetY": 13.5f
+            "gun0OffsetY": 13.5,
             "gun1OffsetX": 138,
-            "gun1OffsetY": 13.5f
+            "gun1OffsetY": 13.5
         },
-        hasAnimation: true,
+        "hasAnimation": true,
         "animation": "beastMode",
         "frameDuration": 0.15,
         "fireCount": 4,
@@ -89,7 +98,7 @@
             "fire2OffsetX": 3,
             "fire2OffsetY": 46,
             "fire3OffsetX": 10,
-            "fire3OffsetY": 62,
+            "fire3OffsetY": 62
         }
     }
 }

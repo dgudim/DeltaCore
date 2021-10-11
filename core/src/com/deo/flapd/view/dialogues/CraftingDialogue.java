@@ -30,7 +30,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.ui.UIComposer;
-import com.deo.flapd.view.screens.LoadingScreen;
 
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
 import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
@@ -200,7 +199,7 @@ public class CraftingDialogue extends Dialogue {
                                     if (previousDialogue != null) {
                                         previousDialogue.update();
                                     }
-                                    LoadingScreen.craftingTree.update();
+                                    //LoadingScreen.craftingTree.update();
                                 }
                             }
                         });
@@ -600,7 +599,7 @@ public class CraftingDialogue extends Dialogue {
                 equip.setColor(Color.GREEN);
                 equip.getLabel().setText("equipped");
                 equip.getLabel().setFontScale(0.44f);
-                LoadingScreen.craftingTree.update();
+                //LoadingScreen.craftingTree.update();
             }
         });
         

@@ -7,7 +7,7 @@ progressBarBg
   rotate: false
   xy: 1, 195
   size: 312, 56
-  split: 7, 7, 12, 12
+  split: 0, 0, 0, 0
   orig: 312, 56
   offset: 0, 0
   index: -1
@@ -74,14 +74,14 @@ circle
   orig: 70, 70
   offset: 0, 0
   index: -1
-circle_active
+circle_enabled
   rotate: false
   xy: 329, 109
   size: 70, 70
   orig: 70, 70
   offset: 0, 0
   index: -1
-circle_enabled
+circle_enabled_over
   rotate: false
   xy: 401, 181
   size: 70, 70

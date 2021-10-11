@@ -199,6 +199,32 @@
     "loadFrom": "shop/ui.atlas"
   },
 
+  "circle": {
+    "type": "checkBoxStyle",
+    "font": 0,
+    "off": {
+      "texture": "circle",
+      "size": [30, 30],
+      "fontColor": "default"
+    },
+    "offOver":{
+      "texture": "circle_over",
+      "size": [30, 30],
+      "fontColor": "default"
+    },
+    "on":{
+      "texture": "circle_enabled",
+      "size": [30, 30],
+      "fontColor": "default"
+    },
+    "onOver":{
+      "texture": "circle_enabled_over",
+      "size": [30, 30],
+      "fontColor": "default"
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
   "sliderDefaultBig":{
     "type": "sliderStyle",
     "background": {
