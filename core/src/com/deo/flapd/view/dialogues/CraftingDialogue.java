@@ -88,7 +88,7 @@ public class CraftingDialogue extends Dialogue {
         items = getRequiredItems();
         itemCounts = getRequiredItemCounts();
         
-        BitmapFont font = assetManager.get("fonts/font2(old).fnt");
+        BitmapFont font = assetManager.get("fonts/pixel.ttf");
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.52f);
         font.getData().markupEnabled = true;

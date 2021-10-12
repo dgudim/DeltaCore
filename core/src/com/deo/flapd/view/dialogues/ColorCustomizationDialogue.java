@@ -45,7 +45,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         
         AssetManager assetManager = compositeManager.getAssetManager();
         
-        BitmapFont font = assetManager.get("fonts/font2(old).fnt");
+        BitmapFont font = assetManager.get("fonts/pixel.ttf");
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.13f * 2);
         font.getData().markupEnabled = true;
@@ -91,7 +91,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         itemButtonStyle.imageOver = new Image(items.findRegion("crystal_over")).getDrawable();
         ImageButton item = new ImageButton(itemButtonStyle);
         crystal.add(item).size(35, 35);
-        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", assetManager.get("fonts/font2(old).fnt"), 0.455f);
+        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", assetManager.get("fonts/pixel.ttf"), 0.455f);
         
         if (getInteger("item_crystal") < 1) {
             quantity.setColor(Color.RED);
@@ -204,16 +204,16 @@ public class ColorCustomizationDialogue extends Dialogue {
             blueSlider.setValue(colors[3 * i + 2]);
             
             final Table redSliderTable = new Table();
-            redSliderTable.add(uiComposer.addText("[#FF0000]R:", assetManager.get("fonts/font2(old).fnt"), 0.455f)).padLeft(3.5f);
+            redSliderTable.add(uiComposer.addText("[#FF0000]R:", assetManager.get("fonts/pixel.ttf"), 0.455f)).padLeft(3.5f);
             redSliderTable.add(redSlider).width(122.5f).padLeft(3.5f);
             
             Table greenSliderTable = new Table();
-            greenSliderTable.add(uiComposer.addText("[#00FF00]G:", assetManager.get("fonts/font2(old).fnt"), 0.455f)).padLeft(3.5f);
+            greenSliderTable.add(uiComposer.addText("[#00FF00]G:", assetManager.get("fonts/pixel.ttf"), 0.455f)).padLeft(3.5f);
             greenSliderTable.add(greenSlider).width(122.5f).padLeft(3.5f);
             greenSliderTable.add(colorSquare);
             
             Table blueSliderTable = new Table();
-            blueSliderTable.add(uiComposer.addText("[#0000FF]B:", assetManager.get("fonts/font2(old).fnt"), 0.455f)).padLeft(3.5f);
+            blueSliderTable.add(uiComposer.addText("[#0000FF]B:", assetManager.get("fonts/pixel.ttf"), 0.455f)).padLeft(3.5f);
             blueSliderTable.add(blueSlider).width(122.5f).padLeft(3.5f);
             
             sliders.add(redSlider, greenSlider, blueSlider);

@@ -53,7 +53,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         
         requestedQuantity = MathUtils.clamp(requestedQuantity, 1, availableQuantity);
         
-        BitmapFont font = assetManager.get("fonts/font2(old).fnt");
+        BitmapFont font = assetManager.get("fonts/pixel.ttf");
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         

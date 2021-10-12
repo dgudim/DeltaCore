@@ -240,7 +240,7 @@ class Node {
         node.setBounds(x, y, width, height);
         
         Label.LabelStyle descriptionStyle = new Label.LabelStyle();
-        descriptionStyle.font = assetManager.get("fonts/font2(old).fnt");
+        descriptionStyle.font = assetManager.get("fonts/pixel.ttf");
         descriptionStyle.fontColor = Color.YELLOW;
         
         node.setDisabled(getPartLockState());
@@ -304,7 +304,7 @@ class Node {
     private void addQuantityLabel() {
         if (getType().equals("item") || getType().equals("endItem")) {
             Label.LabelStyle labelStyle = new Label.LabelStyle();
-            labelStyle.font = assetManager.get("fonts/font2(old).fnt");
+            labelStyle.font = assetManager.get("fonts/pixel.ttf");
             Label quantity = new Label("", labelStyle);
             quantity.setFontScale(0.2f);
             quantity.setAlignment(Align.bottomLeft);

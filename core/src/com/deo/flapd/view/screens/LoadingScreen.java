@@ -116,7 +116,7 @@ public class LoadingScreen implements Screen {
         loadingBar.setAnimateDuration(0.01f);
         
         enableShader = getBoolean("bloom");
-        localeManager.setLocale("ru");
+        //localeManager.setLocale("ru");
         setLoadingState(LoadingState.LOADING_TEXTURES);
         
         load();

@@ -62,7 +62,6 @@ public class GameUi {
     public boolean is_firing_secondary;
     
     private final BitmapFont font_numbers;
-    private final BitmapFont font_white;
     private final BitmapFont font_main;
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
@@ -131,10 +130,9 @@ public class GameUi {
         heartIcon.setBounds(658 - 142 * (uiScale - 1), 410 - 70 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
         shieldIcon.setBounds(658 - 142 * (uiScale - 1), 432 - 48 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
         
-        font_numbers = assetManager.get("fonts/font.fnt");
-        font_white = assetManager.get("fonts/font_white.fnt");
-        font_main = assetManager.get("fonts/font2(old).fnt");
-        BitmapFont font_buttons = assetManager.get("fonts/font2.fnt");
+        font_numbers = assetManager.get("fonts/font_numbers.fnt");
+        font_main = assetManager.get("fonts/pixel.ttf.fnt");
+        BitmapFont font_buttons = assetManager.get("fonts/bold_main.ttf");
         
         stage = new Stage(viewport, batch);
         pauseStage = new Stage(viewport, batch);
@@ -461,9 +459,6 @@ public class GameUi {
         
         stage.dispose();
         pauseStage.dispose();
-        font_main.dispose();
-        font_numbers.dispose();
-        font_white.dispose();
         
         putInteger("money", GameLogic.money);
         

@@ -67,7 +67,7 @@ public class UIComposer {
         JsonEntry styles = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/styles.json")));
         
         Array<BitmapFont> fonts = new Array<>();
-        String[] fontNames = styles.getStringArray(new String[]{"fonts/font2(old).fnt", "fonts/font2.fnt"}, "fonts");
+        String[] fontNames = styles.getStringArray(new String[]{"fonts/pixel.ttf", "fonts/bold_main.ttf"}, "fonts");
         Array<String> dependencies = new Array<>();
         Skin textures = new Skin();
         
@@ -330,8 +330,8 @@ public class UIComposer {
         return checkBox;
     }
     
-    public Table addSlider(String style, int min, int max, float step, String font, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
-        Table slider = addSlider(style, min, max, step, font, text, postText, valueKey);
+    public Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
+        Table slider = addSlider(style, min, max, step, text, postText, valueKey);
         slider.getCells().get(0).getActor().addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -341,11 +341,11 @@ public class UIComposer {
         return slider;
     }
     
-    public Table addSlider(String style, int min, int max, float step, String font, final String text, final String postText, final String valueKey) {
+    public Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey) {
         Table cell = new Table();
         final Slider slider = addSlider(style, min, max, step);
         slider.setValue(getFloat(valueKey));
-        final Label textLabel = addText(text + String.format(Locale.ROOT, "%.1f", getFloat(valueKey)) + postText, assetManager.get(font), 0.48f);
+        final Label textLabel = addText(text + String.format(Locale.ROOT, "%.1f", getFloat(valueKey)) + postText, assetManager.get("fonts/pixel.ttf"), 0.48f);
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -375,7 +375,7 @@ public class UIComposer {
     public Table addButton(String style, String text, float fontScale) {
         Table table = new Table();
         table.add(addButton(style));
-        table.add(addText(text, assetManager.get("fonts/font2(old).fnt"), fontScale));
+        table.add(addText(text, assetManager.get("fonts/pixel.ttf"), fontScale));
         return table;
     }
     

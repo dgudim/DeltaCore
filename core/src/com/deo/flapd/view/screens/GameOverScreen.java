@@ -86,7 +86,7 @@ public class GameOverScreen implements Screen {
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
-        font_main = assetManager.get("fonts/font2(old).fnt");
+        font_main = assetManager.get("fonts/pixel.ttf");
         
         stage = new Stage(viewport, batch);
         

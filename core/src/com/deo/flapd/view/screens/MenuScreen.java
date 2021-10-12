@@ -118,7 +118,6 @@ public class MenuScreen implements Screen {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
-    private final LocaleManager localeManager;
     
     private final Game game;
     
@@ -163,7 +162,7 @@ public class MenuScreen implements Screen {
         batch = compositeManager.getBatch();
         soundManager = compositeManager.getSoundManager();
         musicManager = compositeManager.getMusicManager();
-        localeManager = compositeManager.getLocaleManager();
+        LocaleManager localeManager = compositeManager.getLocaleManager();
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
@@ -177,7 +176,7 @@ public class MenuScreen implements Screen {
         menuBg.setBounds(0, 0, 800, 480);
         lamp.setBounds(725, 430, 25, 35);
         
-        font_main = assetManager.get("fonts/font2(old).fnt");
+        font_main = assetManager.get("fonts/pixel.ttf");
         
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
         bg2 = assetManager.get("backgrounds/bg_layer2.png");
@@ -210,7 +209,7 @@ public class MenuScreen implements Screen {
         TextButton newGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.newGame"), 0.4f);
         TextButton continueGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.continue"), 0.4f);
         TextButton workshop = uiComposer.addTextButton("defaultLight", localeManager.get("play.workshop"), 0.4f);
-        final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, "fonts/pixel.ttf", localeManager.get("play.difficulty") + " ", "X", "difficulty");
+        final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, localeManager.get("play.difficulty") + " ", "X", "difficulty");
         playScreenTable.add(newGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(continueGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(workshop).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
@@ -224,15 +223,15 @@ public class MenuScreen implements Screen {
         settingsGroup.align(Align.left);
         final Table musicVolumeT, soundVolumeT, uiScaleT, joystickOffsetX, joystickOffsetY;
         final CheckBox bloomT, showFpsT, transparentUIT, prefsLoggingT;
-        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.musicVolume") + " ", "%", "musicVolume", settingsPane);
-        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.soundVolume") + " ", "%", "soundVolume", settingsPane);
-        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.uiScale") + " ", "X", "ui", settingsPane);
+        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]" + localeManager.get("settings.musicVolume") + " ", "%", "musicVolume", settingsPane);
+        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]" + localeManager.get("settings.soundVolume") + " ", "%", "soundVolume", settingsPane);
+        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "[#32ff32]" + localeManager.get("settings.uiScale") + " ", "X", "ui", settingsPane);
         bloomT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.bloom"), "bloom");
         transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.uiTransparency"), "transparency");
         prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.logPreferences"), "logging");
         showFpsT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.showFps"), "showFps");
-        joystickOffsetX = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.joystickOffsetX") + " ", "px", "joystickOffsetX", settingsPane);
-        joystickOffsetY = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.joystickOffsetX") + " ", "px", "joystickOffsetY", settingsPane);
+        joystickOffsetX = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "[#32ff32]" + localeManager.get("settings.joystickOffsetX") + " ", "px", "joystickOffsetX", settingsPane);
+        joystickOffsetY = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "[#32ff32]" + localeManager.get("settings.joystickOffsetX") + " ", "px", "joystickOffsetY", settingsPane);
         settingsGroup.add(musicVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(soundVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(uiScaleT).padTop(5).padBottom(5).align(Align.left).row();
@@ -252,7 +251,7 @@ public class MenuScreen implements Screen {
         TextButton importGameData = uiComposer.addTextButton("defaultLight", "import game data", 0.4f);
         TextButton clearGameData = uiComposer.addTextButton("defaultLight", "clear game data", 0.4f);
         
-        final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/font2(old).fnt"), 0.4f);
+        final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/bold_main.ttf"), 0.4f);
         exportMessage.setWrap(true);
         
         exportGameData.addListener(new ClickListener() {

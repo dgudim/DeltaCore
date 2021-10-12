@@ -84,14 +84,17 @@ public class Main extends Game {
     
         FreetypeFontLoader.FreeTypeFontLoaderParameter params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         params.fontFileName = "fonts/pixel.ttf";
-        params.fontParameters.size = 80;
+        params.fontParameters.size = 40;
         params.fontParameters.characters = CHARSET;
         assetManager.load("fonts/pixel.ttf", BitmapFont.class, params);
+    
+        FreetypeFontLoader.FreeTypeFontLoaderParameter params2 = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        params2.fontFileName = "fonts/bold_main.ttf";
+        params2.fontParameters.size = 60;
+        params2.fontParameters.characters = CHARSET;
+        assetManager.load("fonts/bold_main.ttf", BitmapFont.class, params2);
         
-        assetManager.load("fonts/font.fnt", BitmapFont.class);
-        assetManager.load("fonts/font_white.fnt", BitmapFont.class);
-        assetManager.load("fonts/font2.fnt", BitmapFont.class);
-        assetManager.load("fonts/font2(old).fnt", BitmapFont.class);
+        assetManager.load("fonts/font_numbers.fnt", BitmapFont.class);
         
         while (!assetManager.isFinished()) {
             assetManager.update();

@@ -21,7 +21,7 @@ public class ConfirmationDialogue extends Dialogue {
     public ConfirmationDialogue(CompositeManager compositeManager, Stage stage, String message, InputListener okButtonListener, InputListener exitButtonListener) {
         AssetManager assetManager = compositeManager.getAssetManager();
         
-        BitmapFont font = assetManager.get("fonts/font2(old).fnt");
+        BitmapFont font = assetManager.get("fonts/pixel.ttf");
         Skin skin = new Skin();
         skin.addRegions(assetManager.get("shop/workshop.atlas"));
         

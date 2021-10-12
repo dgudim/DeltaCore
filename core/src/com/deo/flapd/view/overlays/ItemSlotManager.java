@@ -86,7 +86,7 @@ public class ItemSlotManager {
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
         items = assetManager.get("items/items.atlas");
-        font = assetManager.get("fonts/font2(old).fnt");
+        font = assetManager.get("fonts/pixel.ttf");
         font.getData().setScale(0.2f);
         
         inventoryLabel = new Table();

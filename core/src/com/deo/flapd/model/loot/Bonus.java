@@ -94,7 +94,7 @@ public class Bonus {
         explosions = new Array<>();
         anglesY = new Array<>();
         
-        font_text = assetManager.get("fonts/font2(old).fnt");
+        font_text = assetManager.get("fonts/pixel.ttf");
     }
     
     public static void Spawn(int type, Rectangle enemy) {

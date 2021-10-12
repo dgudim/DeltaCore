@@ -1,5 +1,5 @@
 {
-  "fonts": ["fonts/pixel.ttf", "fonts/font2.fnt"],
+  "fonts": ["fonts/pixel.ttf", "fonts/bold_main.ttf"],
   "separateTextures": [],
 
   "trello":{
