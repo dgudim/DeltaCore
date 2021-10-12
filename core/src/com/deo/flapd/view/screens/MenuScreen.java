@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -117,6 +118,7 @@ public class MenuScreen implements Screen {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
+    private final LocaleManager localeManager;
     
     private final Game game;
     
@@ -161,6 +163,7 @@ public class MenuScreen implements Screen {
         batch = compositeManager.getBatch();
         soundManager = compositeManager.getSoundManager();
         musicManager = compositeManager.getMusicManager();
+        localeManager = compositeManager.getLocaleManager();
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
@@ -204,10 +207,10 @@ public class MenuScreen implements Screen {
         Table playScreenTable = new Table();
         playScreenTable.align(Align.topLeft);
         playScreenTable.setBounds(15, 60, 531, 410);
-        TextButton newGame = uiComposer.addTextButton("defaultLight", "new game", 0.4f);
-        TextButton continueGame = uiComposer.addTextButton("defaultLight", "continue", 0.4f);
-        TextButton workshop = uiComposer.addTextButton("defaultLight", "workshop", 0.4f);
-        final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, "Difficulty ", "X", "difficulty");
+        TextButton newGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.newGame"), 0.4f);
+        TextButton continueGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.continue"), 0.4f);
+        TextButton workshop = uiComposer.addTextButton("defaultLight", localeManager.get("play.workshop"), 0.4f);
+        final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, "fonts/pixel.ttf", localeManager.get("play.difficulty") + " ", "X", "difficulty");
         playScreenTable.add(newGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(continueGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(workshop).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
@@ -221,15 +224,15 @@ public class MenuScreen implements Screen {
         settingsGroup.align(Align.left);
         final Table musicVolumeT, soundVolumeT, uiScaleT, joystickOffsetX, joystickOffsetY;
         final CheckBox bloomT, showFpsT, transparentUIT, prefsLoggingT;
-        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Music volume ", "%", "musicVolume", settingsPane);
-        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]Sound volume ", "%", "soundVolume", settingsPane);
-        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "[#32ff32]Ui scale ", "X", "ui", settingsPane);
-        bloomT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Bloom", "bloom");
-        transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Semi-transparent ui", "transparency");
-        prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Prefs logging", "logging");
-        showFpsT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]Show fps", "showFps");
-        joystickOffsetX = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "[#32ff32]joystick x offset ", "px", "joystickOffsetX", settingsPane);
-        joystickOffsetY = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "[#32ff32]joystick y offset ", "px", "joystickOffsetY", settingsPane);
+        musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.musicVolume") + " ", "%", "musicVolume", settingsPane);
+        soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.soundVolume") + " ", "%", "soundVolume", settingsPane);
+        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 1, 2, 0.25f, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.uiScale") + " ", "X", "ui", settingsPane);
+        bloomT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.bloom"), "bloom");
+        transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.uiTransparency"), "transparency");
+        prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.logPreferences"), "logging");
+        showFpsT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.showFps"), "showFps");
+        joystickOffsetX = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.joystickOffsetX") + " ", "px", "joystickOffsetX", settingsPane);
+        joystickOffsetY = uiComposer.addSlider("sliderDefaultNormal", 0, 50, 0.1f, "fonts/pixel.ttf","[#32ff32]" + localeManager.get("settings.joystickOffsetX") + " ", "px", "joystickOffsetY", settingsPane);
         settingsGroup.add(musicVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(soundVolumeT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(uiScaleT).padTop(5).padBottom(5).align(Align.left).row();
@@ -343,17 +346,17 @@ public class MenuScreen implements Screen {
         workshopCategoryManager.setVisible(false);
         
         CategoryManager menuCategoryManager = new CategoryManager(compositeManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
-        menuCategoryManager.addCategory(playScreenTable, "play").addListener(new ClickListener() {
+        menuCategoryManager.addCategory(playScreenTable, localeManager.get("mainMenu.play")).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 updateFire();
                 updateShip();
             }
         });
-        menuCategoryManager.addCategory(playScreenTable, "online");
-        menuCategoryManager.addCategory(settingsPane, "settings");
-        menuCategoryManager.addCategory(infoText, "info");
-        menuCategoryManager.addCategory(moreTable, "more");
+        menuCategoryManager.addCategory(playScreenTable, localeManager.get("mainMenu.playOnline"));
+        menuCategoryManager.addCategory(settingsPane, localeManager.get("mainMenu.settings"));
+        menuCategoryManager.addCategory(infoText, localeManager.get("mainMenu.info"));
+        menuCategoryManager.addCategory(moreTable, localeManager.get("mainMenu.more"));
         menuCategoryManager.setBounds(545, 3, 400);
         menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
