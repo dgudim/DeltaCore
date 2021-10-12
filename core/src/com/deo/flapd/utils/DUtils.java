@@ -19,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.enemies.Bosses;
 
@@ -44,7 +43,6 @@ import static java.lang.StrictMath.sin;
 public class DUtils {
     
     private static final Preferences prefs = Gdx.app.getPreferences("Preferences");
-    private static final JsonEntry itemNames = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/itemNames.json")));
     private static final String androidRootDir = "Logs/";
     private static final String pcRootDir = "!DeltaCore/";
     private static final String currentRootDir = getRootDir();
@@ -336,7 +334,7 @@ public class DUtils {
     }
     
     public static String getItemTextureNameByName(String name, ItemTextureModifier itemTextureModifier) {
-        return itemNames.getString("ohno", name) + (itemTextureModifier.equals(NORMAL) ? "" : ("_" + itemTextureModifier.name().toLowerCase()));
+        return "ohno"; // TODO: 12/10/2021 stub
     }
     
     public static void updateCamera(OrthographicCamera camera, Viewport viewport, int width, int height) {

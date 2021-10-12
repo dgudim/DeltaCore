@@ -14,6 +14,7 @@ public class CompositeManager {
     private AssetManager assetManager;
     private MusicManager musicManager;
     private SoundManager soundManager;
+    private LocaleManager localeManager;
     
     private PostProcessor blurProcessor;
     private Bloom bloom;
@@ -57,6 +58,10 @@ public class CompositeManager {
         return soundManager;
     }
     
+    public LocaleManager getLocaleManager() {
+        return localeManager;
+    }
+    
     public PostProcessor getBlurProcessor() {
         return blurProcessor;
     }
@@ -95,6 +100,10 @@ public class CompositeManager {
     
     public void setSoundManager(SoundManager soundManager) {
         this.soundManager = soundManager;
+    }
+    
+    public void setLocaleManager(LocaleManager localeManager) {
+        this.localeManager = localeManager;
     }
     
     public void setShapeRenderer(ShapeRenderer shapeRenderer) {

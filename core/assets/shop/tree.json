@@ -1,1188 +1,1194 @@
 {
-  "weapons": {
-    "description": "weapons",
+  "category.weapons": {
+    "description": "category.weapons.description",
     "type": "category",
     "saveTo": "currentWeapon",
-    "default": "small machine gun"
+    "default": "part.small_machine_gun"
   },
-  "basic ammo weapons": {
-    "description": "basic ammo weapons",
+  "category.basic_ammo_weapons": {
+    "description": "category.basic_ammo_weapons.description",
     "type": "subcategory",
-    "category": "weapons"
+    "category": "category.weapons"
   },
-  "laser weapons": {
-    "description": "laser weapons",
+  "category.laser_weapons": {
+    "description": "category.laser_weapons.description",
     "type": "subcategory",
-    "category": "weapons"
+    "category": "category.weapons"
   },
-  "energy weapons": {
-    "description": "energy weapons",
+  "category.energy_weapons": {
+    "description": "category.energy_weapons.description",
     "type": "subcategory",
-    "category": "weapons"
+    "category": "category.weapons"
   },
-  "batteries": {
-    "description": "batteries category",
+  "category.rocket_weapons": {
+    "description": "category.rocket_weapons.description",
+    "type": "subcategory",
+    "category": "category.weapons"
+  },
+  "category.batteries": {
+    "description": "category.batteries.description",
     "type": "category",
     "saveTo": "currentBattery",
-    "default": "battery mk1"
+    "default": "part.battery_mk1"
   },
-  "shields": {
-    "description": "shields category",
+  "category.shields": {
+    "description": "category.shields.description",
     "type": "category",
     "saveTo": "currentShield",
-    "default": "shield generator mk1"
+    "default": "part.shield_generator_mk1"
   },
-  "cores": {
-    "description": "cores category",
+  "category.cores": {
+    "description": "category.cores.description",
     "type": "category",
     "saveTo": "currentCore",
     "default": "star core"
   },
-  "ships": {
-    "description": "ships category",
+  "category.ships": {
+    "description": "category.ships.description",
     "type": "category",
     "saveTo": "currentShip",
-    "default": "basic ship"
+    "default": "part.basic_ship"
   },
-  "engines": {
-    "description": "engine",
+  "category.engines": {
+    "description": "category.engines.description",
     "type": "category",
     "saveTo": "currentEngine",
-    "default": "grasshopper engine"
+    "default": "part.grasshopper_engine"
   },
-  "modules": {
-    "description": "modules category",
+  "category.modules": {
+    "description": "category.modules.description",
     "type": "category",
     "saveTo": "currentModule",
     "default": "none"
   },
-  "grasshopper engine": {
-    "description": "a base engine",
-    "category": "engines",
+  "part.grasshopper_engine": {
+    "description": "part.grasshopper_engine.description",
+    "category": "category.engines",
     "type": "basePart",
     "parameters": {
-      "speed": 1
+      "parameter.speed": 1
     },
     "usesEffect": "fire_engine_left_red_green"
   },
-  "small machine gun": {
-    "description": "a base cannon",
-    "category": "weapons",
+  "part.small_machine_gun": {
+    "description": "part.small_machine_gun.description",
+    "category": "category.weapons",
     "type": "basePart",
     "parameters": {
-      "damage": 50,
-      "spread": 1.4,
-      "shooting speed": 0.7,
-      "bullet speed": 1000,
-      "bullets per shot": 1,
-      "power consumption": 0
+      "parameter.damage": 50,
+      "parameter.spread": 1.4,
+      "parameter.shooting_speed": 0.7,
+      "parameter.bullet_speed": 1000,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 0
     },
     "usesEffect": "explosion3_2"
   },
-  "star core": {
-    "description": "a base core",
-    "category": "cores",
+  "part.star_core": {
+    "description": "part.star_core.description",
+    "category": "category.cores",
     "type": "basePart",
     "parameters": {
-      "health multiplier": 1,
-      "power generation": 3
+      "parameter.health_multiplier": 1,
+      "parameter.power_generation": 3
     },
     "usesEffect": "explosion2"
   },
-  "warp core": {
+  "part.warp_core": {
     "items": {
-      "core shard": 1,
-      "green crystal": 5,
-      "prism": 3,
-      "glass shard": 10,
-      "motherboard mk1": 1
+      "item.core_shard": 1,
+      "item.green_crystal": 5,
+      "item.prism": 3,
+      "item.glass_shard": 10,
+      "item.motherboard_mk1": 1
     },
-    "description": "a slightly better core",
-    "category": "cores",
-    "requires": ["star core"],
+    "description": "part.warp_core.description",
+    "category": "category.cores",
+    "requires": ["part.star_core"],
     "type": "part",
     "parameters": {
-      "health multiplier": 1.5,
-      "speed multiplier": 1.1,
-      "power generation": 4
+      "parameter.health_multiplier": 1.5,
+      "parameter.speed_multiplier": 1.1,
+      "parameter.power_generation": 4
     },
     "usesEffect": "explosion2_green"
   },
-  "energy core": {
+  "part.energy_core": {
     "items": {
-      "core shard": 1,
-      "energy cell": 1,
-      "composite plate": 2,
-      "cooling unit": 1,
-      "motherboard mk2": 1,
-      "cable": 5
+      "item.core_shard": 1,
+      "item.energy_cell": 1,
+      "item.composite_plate": 2,
+      "item.cooling_unit": 1,
+      "item.motherboard_mk2": 1,
+      "item.cable": 5
     },
-    "description": "3rd core",
-    "category": "cores",
-    "requires": ["warp core"],
+    "description": "part.energy_core.description",
+    "category": "category.cores",
+    "requires": ["part.warp_core"],
     "type": "part",
     "parameters": {
-      "health multiplier": 1.8,
-      "speed multiplier": 1.3,
-      "damage multiplier": 1.3,
-      "power generation": 6
+      "parameter.health_multiplier": 1.8,
+      "parameter.speed_multiplier": 1.3,
+      "parameter.damage_multiplier": 1.3,
+      "parameter.power_generation": 6
     },
     "usesEffect": "explosion2_cyan"
   },
-  "thermonuclear core": {
+  "part.thermonuclear_core": {
     "items": {
-      "core shard": 1,
-      "energy cell": 2,
-      "composite plate": 4,
-      "cooling unit": 2,
-      "motherboard mk2": 1,
-      "unstable crystal": 1,
-      "processor mk3": 2
+      "item.core_shard": 1,
+      "item.energy_cell": 2,
+      "item.composite_plate": 4,
+      "item.cooling_unit": 2,
+      "item.motherboard_mk2": 1,
+      "item.unstable_crystal": 1,
+      "item.processor_mk3": 2
     },
-    "description": "4th core",
-    "category": "cores",
-    "requires": ["energy core"],
+    "description": "part.thermonuclear_core.description",
+    "category": "category.cores",
+    "requires": ["part.energy_core"],
     "type": "part",
     "parameters": {
-      "health multiplier": 2,
-      "shield strength multiplier": 1.3,
-      "speed multiplier": 1.4,
-      "damage multiplier": 1.5,
-      "charge capacity multiplier": 1.1,
-      "power generation": 8.5
+      "parameter.health_multiplier": 2,
+      "parameter.shield_strength_multiplier": 1.3,
+      "parameter.speed_multiplier": 1.4,
+      "parameter.damage_multiplier": 1.5,
+      "parameter.charge_capacity_multiplier": 1.1,
+      "parameter.power_generation": 8.5
     },
     "usesEffect": "explosion2_purple"
   },
-  "nuclear engine": {
+  "part.nuclear_engine": {
     "items": {
-      "red fuel cell": 2,
-      "cable": 12,
-      "plastic": 6,
-      "reinforced iron plate": 6,
-      "cyan crystal": 2
+      "item.red_fuel_cell": 2,
+      "item.cable": 12,
+      "item.plastic": 6,
+      "item.reinforced_iron_plate": 6,
+      "item.cyan_crystal": 2
     },
-    "description": "a slightly faster engine that works on nuclear fuel",
-    "category": "engines",
-    "requires": ["grasshopper engine"],
+    "description": "part.nuclear_engine.description",
+    "category": "category.engines",
+    "requires": ["part.grasshopper_engine"],
     "type": "part",
     "parameters": {
-      "speed": 1.3
+      "parameter.speed": 1.3
     },
     "usesEffect": "fire_engine_left_red_purple"
   },
-  "plasma engine": {
+  "part.plasma_engine": {
     "items": {
-      "cyan fuel cell": 2,
-      "cable": 23,
-      "plastic": 6,
-      "reinforced iron plate": 6,
-      "purple crystal": 2,
-      "green coil": 2
+      "item.cyan_fuel_cell": 2,
+      "item.cable": 23,
+      "item.plastic": 6,
+      "item.reinforced_iron_plate": 6,
+      "item.purple_crystal": 2,
+      "item.green_coil": 2
     },
-    "description": "super fast engine that works on plasma",
-    "category": "engines",
-    "requires": ["nuclear engine"],
+    "description": "part.plasma_engine.description",
+    "category": "category.engines",
+    "requires": ["part.nuclear_engine"],
     "type": "part",
     "parameters": {
-      "speed": 1.6
+      "parameter.speed": 1.6
     },
     "usesEffect": "fire_engine_left_blue_purple"
   },
-  "machine gun": {
+  "part.machine_gun": {
     "items": {
-      "bolt": 15,
-      "cable": 20,
-      "reinforced iron plate": 8,
-      "cooling unit": 1,
-      "orange crystal": 1
+      "item.bolt": 15,
+      "item.cable": 20,
+      "item.reinforced_iron_plate": 8,
+      "item.cooling_unit": 1,
+      "item.orange_crystal": 1
     },
-    "description": "machine gun description",
-    "category": "basic ammo weapons",
-    "requires": ["small machine gun"],
+    "description": "part.machine_gun.description",
+    "category": "category.basic_ammo_weapons",
+    "requires": ["part.small_machine_gun"],
     "type": "part",
     "parameters": {
-      "damage": 70,
-      "spread": 0.6,
-      "shooting speed": 0.9,
-      "bullet speed": 1450,
-      "bullets per shot": 1,
-      "power consumption": 0
+      "parameter.damage": 70,
+      "parameter.spread": 0.6,
+      "parameter.shooting_speed": 0.9,
+      "parameter.bullet_speed": 1450,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 0
     },
     "usesEffect": "explosion3_2"
   },
-  "minigun": {
+  "part.minigun": {
     "items": {
-      "bolt": 25,
-      "cable": 15,
-      "composite plate": 6,
-      "cooling unit": 2,
-      "green crystal": 2
+      "item.bolt": 25,
+      "item.cable": 15,
+      "item.composite_plate": 6,
+      "item.cooling_unit": 2,
+      "item.green_crystal": 2
     },
-    "description": "minigun description",
-    "category": "basic ammo weapons",
-    "requires": ["machine gun"],
+    "description": "part.minigun.description",
+    "category": "category.basic_ammo_weapons",
+    "requires": ["part.machine_gun"],
     "type": "part",
     "parameters": {
-      "damage": 20,
-      "spread": 0.8,
-      "shooting speed": 2,
-      "bullet speed": 1200,
-      "bullets per shot": 1,
-      "power consumption": 0
+      "parameter.damage": 20,
+      "parameter.spread": 0.8,
+      "parameter.shooting_speed": 2,
+      "parameter.bullet_speed": 1200,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 0
     },
     "usesEffect": "explosion3_2"
   },
-  "shotgun": {
+  "part.shotgun": {
     "items": {
-      "cog": 15,
-      "cable": 10,
-      "composite plate": 8,
-      "cooling unit": 2,
-      "cyan crystal": 2
+      "item.cog": 15,
+      "item.cable": 10,
+      "item.composite_plate": 8,
+      "item.cooling_unit": 2,
+      "item.cyan_crystal": 2
     },
-    "description": "",
-    "category": "basic ammo weapons",
-    "requires": ["machine gun"],
+    "description": "part.shotgun.description",
+    "category": "category.basic_ammo_weapons",
+    "requires": ["part.machine_gun"],
     "type": "part",
     "parameters": {
-      "damage": 7,
-      "spread": 1.8,
-      "shooting speed": 0.3,
-      "bullet speed": 900,
-      "bullets per shot": 10,
-      "power consumption": 0
+      "parameter.damage": 7,
+      "parameter.spread": 1.8,
+      "parameter.shooting_speed": 0.3,
+      "parameter.bullet_speed": 900,
+      "parameter.bullets_per_shot": 10,
+      "parameter.power_consumption": 0
     },
     "usesEffect": "explosion3_2"
   },
-  "laser gun": {
+  "part.laser_gun": {
     "items": {
-      "bolt": 17,
-      "cable": 25,
-      "reinforced iron plate": 9,
-      "cooling unit": 2,
-      "energy cell": 1,
-      "laser emitter": 1
+      "item.bolt": 17,
+      "item.cable": 25,
+      "item.reinforced_iron_plate": 9,
+      "item.cooling_unit": 2,
+      "item.energy_cell": 1,
+      "item.laser_emitter": 1
     },
-    "description": "",
-    "category": "laser weapons",
-    "requires": ["machine gun"],
+    "description": "part.laser_gun.description",
+    "category": "category.laser_weapons",
+    "requires": ["part.machine_gun"],
     "type": "part",
     "parameters": {
-      "damage": 85,
-      "spread": 0.3,
-      "shooting speed": 1,
-      "bullet speed": 2000,
-      "bullets per shot": 1,
-      "power consumption": 1
+      "parameter.damage": 85,
+      "parameter.spread": 0.3,
+      "parameter.shooting_speed": 1,
+      "parameter.bullet_speed": 2000,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 1
     },
     "usesEffect": "explosion3"
   },
-  "coil gun": {
+  "part.coil_gun": {
     "items": {
-      "green coil": 3,
-      "cable": 25,
-      "composite plate": 3,
-      "cooling unit": 1,
-      "glass rod": 5,
-      "cyan crystal": 2
+      "item.green_coil": 3,
+      "item.cable": 25,
+      "item.composite_plate": 3,
+      "item.cooling_unit": 1,
+      "item.glass_rod": 5,
+      "item.cyan_crystal": 2
     },
-    "description": "",
-    "category": "energy weapons",
-    "requires": ["laser gun", "warp core"],
+    "description": "part.coil_gun.description",
+    "category": "category.energy_weapons",
+    "requires": ["part.laser_gun", "part.warp_core"],
     "type": "part",
     "parameters": {
-      "damage": 90,
-      "spread": 0.15,
-      "shooting speed": 1.1,
-      "bullet speed": 1500,
-      "bullets per shot": 1,
-      "power consumption": 1.25
+      "parameter.damage": 90,
+      "parameter.spread": 0.15,
+      "parameter.shooting_speed": 1.1,
+      "parameter.bullet_speed": 1500,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 1.25
     },
     "usesEffect": "explosion3_3",
     "usesTrail": true,
     "trailEffect": "bullet_trail_highEmission",
     "trailFadeOutTimer": 0.5
   },
-  "rail gun": {
+  "part.rail_gun": {
     "items": {
-      "cyan coil": 1,
-      "purple crystal": 2,
-      "composite plate": 4,
-      "cooling unit": 2,
-      "glass rod": 5,
-      "energy cell": 1,
-      "processor mk3": 1
+      "item.cyan_coil": 1,
+      "item.purple_crystal": 2,
+      "item.composite_plate": 4,
+      "item.cooling_unit": 2,
+      "item.glass_rod": 5,
+      "item.energy_cell": 1,
+      "item.processor_mk3": 1
     },
-    "description": "",
-    "category": "energy weapons",
-    "requires": ["machine gun", "energy core"],
+    "description": "part.rail_gun.description",
+    "category": "category.energy_weapons",
+    "requires": ["part.machine_gun", "part.energy_core"],
     "type": "part",
     "parameters": {
-      "damage": 110,
-      "spread": 0,
-      "shooting speed": 1,
-      "bullet speed": 1700,
-      "bullets per shot": 1,
-      "power consumption": 1.5
+      "parameter.damage": 110,
+      "parameter.spread": 0,
+      "parameter.shooting_speed": 1,
+      "parameter.bullet_speed": 1700,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 1.5
     },
     "usesEffect": "explosion3_3",
     "usesTrail": true,
     "trailEffect": "bullet_trail_highEmission",
     "trailFadeOutTimer": 0.5
   },
-  "laser beam gun": {
+  "part.laser_beam_gun": {
     "items": {
-      "composite plate": 3,
-      "purple crystal": 2,
-      "laser emitter": 2,
-      "cooling unit": 3,
-      "circuit board": 3,
-      "energy cell": 2,
-      "fiber cable": 2
+      "item.composite_plate": 3,
+      "item.purple_crystal": 2,
+      "item.laser_emitter": 2,
+      "item.cooling_unit": 3,
+      "item.circuit_board": 3,
+      "item.energy_cell": 2,
+      "item.fiber_cable": 2
     },
-    "description": "",
-    "category": "laser weapons",
-    "requires": ["machine gun", "energy core"],
+    "description": "part.laser_beam_gun.description",
+    "category": "category.laser_weapons",
+    "requires": ["part.machine_gun", "part.energy_core"],
     "type": "part",
     "parameters": {
-      "damage": 170,
-      "spread": 0,
-      "laser beam thickness": 9,
-      "laser pulse duration": 3000,
-      "power consumption": 2.1
+      "parameter.damage": 170,
+      "parameter.spread": 0,
+      "parameter.laser_beam_thickness": 9,
+      "parameter.laser_pulse_duration": 3000,
+      "parameter.power_consumption": 2.1
     },
     "usesEffect": "fire3",
     "laserBeamColor": "#00d9ff"
   },
-  "heavy laser gun": {
+  "part.heavy_laser_gun": {
     "items": {
-      "composite plate": 6,
-      "unstable crystal": 1,
-      "laser emitter": 3,
-      "cooling unit": 5,
-      "processor mk3": 2,
-      "energy cell": 4,
-      "fiber cable": 6
+      "item.composite_plate": 6,
+      "item.unstable_crystal": 1,
+      "item.laser_emitter": 3,
+      "item.cooling_unit": 5,
+      "item.processor_mk3": 2,
+      "item.energy_cell": 4,
+      "item.fiber_cable": 6
     },
-    "description": "",
-    "category": "laser weapons",
-    "requires": ["machine gun", "thermonuclear core"],
+    "description": "part.heavy_laser_gun.description",
+    "category": "category.laser_weapons",
+    "requires": ["part.machine_gun", "part.thermonuclear_core"],
     "type": "part",
     "parameters": {
-      "damage": 280,
-      "spread": 0,
-      "laser beam thickness": 11,
-      "laser pulse duration": 5000,
-      "power consumption": 2.1
+      "parameter.damage": 280,
+      "parameter.spread": 0,
+      "parameter.laser_beam_thickness": 11,
+      "parameter.laser_pulse_duration": 5000,
+      "parameter.power_consumption": 2.1
     },
     "usesEffect": "fire3",
     "laserBeamColor": "#5721b5"
   },
-  "basic ship": {
-    "description": "this is your starting ship",
-    "category": "ships",
+  "part.basic_ship": {
+    "description": "part.basic_ship.description",
+    "category": "category.ships",
     "type": "basePart",
     "parameters": {
-      "health": 100
+      "parameter.health": 100
     }
   },
-  "ship mk1": {
+  "part.ship_mk1": {
     "items": {
-      "iron sheet": 15,
-      "bolt": 20,
-      "cog": 4,
-      "orange crystal": 1
+      "item.iron_sheet": 15,
+      "item.bolt": 20,
+      "item.cog": 4,
+      "item.orange_crystal": 1
     },
-    "description": "ship with a basic piece of armour, first part of the set",
-    "category": "ships",
-    "requires": ["star core"],
+    "description": "part.ship_mk1.description",
+    "category": "category.ships",
+    "requires": ["part.star_core"],
     "type": "part",
     "parameters": {
-      "health": 130
+      "parameter.health": 130
     }
   },
-  "ship mk2": {
+  "part.ship_mk2": {
     "items": {
-      "reinforced iron plate": 20,
-      "iron sheet": 15,
-      "bolt": 15,
-      "cog": 5,
-      "green crystal": 1
+      "item.reinforced_iron_plate": 20,
+      "item.iron_sheet": 15,
+      "item.bolt": 15,
+      "item.cog": 5,
+      "item.green_crystal": 1
     },
-    "description": "ship with a basic piece of armour, second part of the set",
-    "category": "ships",
-    "requires": ["ship mk1"],
+    "description": "part.ship_mk2.description",
+    "category": "category.ships",
+    "requires": ["part.ship_mk1"],
     "type": "part",
     "parameters": {
-      "health": 170
+      "parameter.health": 170
     }
   },
-  "ship mk3": {
+  "part.ship_mk3": {
     "items": {
-      "composite plate": 15,
-      "reinforced iron plate": 20,
-      "bolt": 10,
-      "reinforced glass pane": 5,
-      "cyan crystal": 1
+      "item.composite_plate": 15,
+      "item.reinforced_iron_plate": 20,
+      "item.bolt": 10,
+      "item.reinforced_glass_pane": 5,
+      "item.cyan_crystal": 1
     },
-    "description": "ship with a basic piece of armour, third part of the set",
-    "category": "ships",
-    "requires": ["ship mk2"],
+    "description": "part.ship_mk3.description",
+    "category": "category.ships",
+    "requires": ["part.ship_mk2"],
     "type": "part",
     "parameters": {
-      "health": 200
+      "parameter.health": 200
     }
   },
-  "beast ship": {
+  "part.beast_ship": {
     "items": {
-      "composite plate": 35,
-      "cyan fuel cell": 3,
-      "circuit board": 3,
-      "bolt": 15,
-      "orange crystal": 4
+      "item.composite_plate": 35,
+      "item.cyan_fuel_cell": 3,
+      "item.circuit_board": 3,
+      "item.bolt": 15,
+      "item.orange_crystal": 4
     },
-    "description": "an extremely durable ship",
-    "category": "ships",
-    "requires": ["ship mk3"],
+    "description": "part.beast_ship.description",
+    "category": "category.ships",
+    "requires": ["part.ship_mk3"],
     "type": "part",
     "parameters": {
-      "health": 270
+      "parameter.health": 270
     }
   },
-  "shield generator mk1": {
-    "description": "a basic shield generator",
-    "category": "shields",
+  "part.shield_generator_mk1": {
+    "description": "part.shield_generator_mk1.description",
+    "category": "category.shields",
     "type": "basePart",
     "parameters": {
-      "shield capacity": 100,
-      "power consumption": 1,
-      "regeneration speed": 1
+      "parameter.shield_capacity": 100,
+      "parameter.power_consumption": 1,
+      "parameter.regeneration_speed": 1
     },
     "usesEffect": "ColdShield"
   },
-  "shield generator mk2": {
+  "part.shield_generator_mk2": {
     "items": {
-      "green coil": 2,
-      "reinforced iron plate": 4,
-      "energy cell": 1,
-      "cooling unit": 1,
-      "advanced chip": 1,
-      "cable": 3,
-      "orange crystal": 2
+      "item.green_coil": 2,
+      "item.reinforced_iron_plate": 4,
+      "item.energy_cell": 1,
+      "item.cooling_unit": 1,
+      "item.advanced_chip": 1,
+      "item.cable": 3,
+      "item.orange_crystal": 2
     },
-    "description": "a more advanced shield generator, less power consumption, more strength",
-    "category": "shields",
-    "requires": ["shield generator mk1"],
+    "description": "part.shield_generator_mk2.description",
+    "category": "category.shields",
+    "requires": ["part.shield_generator_mk1"],
     "type": "part",
     "parameters": {
-      "shield capacity": 130,
-      "power consumption": 0.8,
-      "regeneration speed": 1
+      "parameter.shield_capacity": 130,
+      "parameter.power_consumption": 0.8,
+      "parameter.regeneration_speed": 1
     },
     "usesEffect": "ColdShieldMk2"
   },
-  "shield generator mk3": {
+  "part.shield_generator_mk3": {
     "items": {
-      "cyan coil": 4,
-      "reinforced iron plate": 6,
-      "energy cell": 2,
-      "cooling unit": 1,
-      "cyan crystal": 4,
-      "circuit board": 1,
-      "green crystal": 4
+      "item.cyan_coil": 4,
+      "item.reinforced_iron_plate": 6,
+      "item.energy_cell": 2,
+      "item.cooling_unit": 1,
+      "item.cyan_crystal": 4,
+      "item.circuit_board": 1,
+      "item.green_crystal": 4
     },
-    "description": "an even more advanced shield generator, more strength, faster regeneration speed then previous model, more power consumption",
-    "category": "shields",
-    "requires": ["shield generator mk2", "warp core"],
+    "description": "part.shield_generator_mk3.description",
+    "category": "category.shields",
+    "requires": ["part.shield_generator_mk2", "part.warp_core"],
     "type": "part",
     "parameters": {
-      "shield capacity": 150,
-      "power consumption": 1,
-      "regeneration speed": 1.5
+      "parameter.shield_capacity": 150,
+      "parameter.power_consumption": 1,
+      "parameter.regeneration_speed": 1.5
     },
     "usesEffect": "ColdShieldMk3"
   },
-  "shield generator mk4": {
+  "part.shield_generator_mk4": {
     "items": {
-      "fiber cable": 6,
-      "composite plate": 7,
-      "energy cell": 3,
-      "cooling unit": 2,
-      "purple crystal": 1,
-      "circuit board": 2,
-      "glass rod": 4
+      "item.fiber_cable": 6,
+      "item.composite_plate": 7,
+      "item.energy_cell": 3,
+      "item.cooling_unit": 2,
+      "item.purple_crystal": 1,
+      "item.circuit_board": 2,
+      "item.glass_rod": 4
     },
-    "description": "cutting edge shield generator",
-    "category": "shields",
-    "requires": ["shield generator mk3", "energy core"],
+    "description": "part.shield_generator_mk4.description",
+    "category": "category.shields",
+    "requires": ["part.shield_generator_mk3", "part.energy_core"],
     "type": "part",
     "parameters": {
-      "shield capacity": 190,
-      "power consumption": 1.9,
-      "regeneration speed": 2
+      "parameter.shield_capacity": 190,
+      "parameter.power_consumption": 1.9,
+      "parameter.regeneration_speed": 2
     },
     "usesEffect": "ColdShieldMk4"
   },
-  "battery mk1": {
-    "description": "a basic battery",
-    "category": "batteries",
+  "part.battery_mk1": {
+    "description": "part.battery_mk1.description",
+    "category": "category.batteries",
     "type": "basePart",
     "parameters": {
-      "capacity": 100
+      "parameter.capacity": 100
     }
   },
-  "battery mk2": {
+  "part.battery_mk2": {
     "items": {
-      "energy cell": 3,
-      "iron sheet": 8,
-      "bolt": 20,
-      "orange crystal": 4,
-      "circuit board": 1,
-      "cable": 15,
-      "glass rod": 4
+      "item.energy_cell": 3,
+      "item.iron_sheet": 8,
+      "item.bolt": 20,
+      "item.orange_crystal": 4,
+      "item.circuit_board": 1,
+      "item.cable": 15,
+      "item.glass_rod": 4
     },
-    "description": "slightly more advanced battery with more capacity",
-    "category": "batteries",
-    "requires": ["battery mk1"],
+    "description": "part.battery_mk2.description",
+    "category": "category.batteries",
+    "requires": ["part.battery_mk1"],
     "type": "part",
     "parameters": {
-      "capacity": 130
+      "parameter.capacity": 130
     }
   },
-  "battery mk3": {
+  "part.battery_mk3": {
     "items": {
-      "energy cell": 4,
-      "composite plate": 4,
-      "bolt": 20,
-      "cyan crystal": 5,
-      "circuit board": 1,
-      "fiber cable": 5,
-      "cooling unit": 1
+      "item.energy_cell": 4,
+      "item.composite_plate": 4,
+      "item.bolt": 20,
+      "item.cyan_crystal": 5,
+      "item.circuit_board": 1,
+      "item.fiber_cable": 5,
+      "item.cooling_unit": 1
     },
-    "description": "an even more advanced battery, has even more capacity",
-    "category": "batteries",
-    "requires": ["battery mk2"],
+    "description": "part.battery_mk3.description",
+    "category": "category.batteries",
+    "requires": ["part.battery_mk2"],
     "type": "part",
     "parameters": {
-      "capacity": 150
+      "parameter.capacity": 150
     }
   },
-  "battery mk4": {
+  "part.battery_mk4": {
     "items": {
-      "energy cell": 6,
-      "composite plate": 6,
-      "purple crystal": 2,
-      "circuit board": 2,
-      "fiber cable": 5,
-      "reinforced glass pane": 5,
-      "cooling unit": 2
+      "item.energy_cell": 6,
+      "item.composite_plate": 6,
+      "item.purple_crystal": 2,
+      "item.circuit_board": 2,
+      "item.fiber_cable": 5,
+      "item.reinforced_glass_pane": 5,
+      "item.cooling_unit": 2
     },
-    "description": "cutting-edge technology battery, has double the capacity of mk1 battery",
-    "category": "batteries",
-    "requires": ["battery mk3", "warp core"],
+    "description": "part.battery_mk4.description",
+    "category": "category.batteries",
+    "requires": ["part.battery_mk3", "part.warp_core"],
     "type": "part",
     "parameters": {
-      "capacity": 200
+      "parameter.capacity": 200
     }
   },
-  "magnet": {
+  "part.magnet": {
     "items": {
-      "energy cell": 1,
-      "iron sheet": 4,
-      "green coil": 2,
-      "cyan coil": 2,
-      "bolt": 5,
-      "cable": 5
+      "item.energy_cell": 1,
+      "item.iron_sheet": 4,
+      "item.green_coil": 2,
+      "item.cyan_coil": 2,
+      "item.bolt": 5,
+      "item.cable": 5
     },
-    "description": "attracts bonuses",
-    "category": "modules",
-    "requires": ["star core"],
+    "description": "part.magnet.description",
+    "category": "category.modules",
+    "requires": ["part.star_core"],
     "type": "part",
     "parameters": {
-      "power consumption": 1,
-      "attraction radius": 270
+      "parameter.power_consumption": 1,
+      "parameter.attraction_radius": 270
     }
   },
-  "repellent field": {
+  "part.repellent_field": {
     "items": {
-      "energy cell": 1,
-      "reinforced iron plate": 3,
-      "cyan crystal": 4,
-      "circuit board": 1,
-      "bolt": 7,
-      "cable": 10
+      "item.energy_cell": 1,
+      "item.reinforced_iron_plate": 3,
+      "item.cyan_crystal": 4,
+      "item.circuit_board": 1,
+      "item.bolt": 7,
+      "item.cable": 10
     },
-    "description": "repels enemies",
-    "category": "modules",
-    "requires": ["warp core"],
+    "description": "part.repellent_field.description",
+    "category": "category.modules",
+    "requires": ["part.warp_core"],
     "type": "part",
     "parameters": {
-      "power consumption": 1,
-      "repellent radius": 210
+      "parameter.power_consumption": 1,
+      "parameter.repellent_radius": 210
     }
   },
-  "radar": {
+  "part.radar": {
     "items": {
-      "energy cell": 2,
-      "iron sheet": 5,
-      "purple crystal": 1,
-      "processor mk2": 1,
-      "bolt": 10,
-      "fiber cable": 2
+      "item.energy_cell": 2,
+      "item.iron_sheet": 5,
+      "item.purple_crystal": 1,
+      "item.processor_mk2": 1,
+      "item.bolt": 10,
+      "item.fiber_cable": 2
     },
-    "description": "allows your weapon to target enemies",
-    "category": "modules",
-    "requires": ["warp core"],
+    "description": "part.radar.description",
+    "category": "category.modules",
+    "requires": ["part.warp_core"],
     "type": "part",
     "parameters": {
-      "power consumption": 1,
-      "aim radius": 610
+      "parameter.power_consumption": 1,
+      "parameter.aim_radius": 610
     }
   },
-  "chronos module": {
+  "part.chronos_module": {
     "items": {
-      "energy cell": 10,
-      "iron sheet": 5,
-      "cyan crystal": 2,
-      "purple crystal": 2,
-      "processor mk3": 1,
-      "fiber cable": 5
+      "item.energy_cell": 10,
+      "item.iron_sheet": 5,
+      "item.cyan_crystal": 2,
+      "item.purple_crystal": 2,
+      "item.processor_mk3": 1,
+      "item.fiber_cable": 5
     },
-    "description": "allows you to temporarily slow down time",
-    "category": "modules",
-    "requires": ["warp core"],
+    "description": "part.chronos_module.description",
+    "category": "category.modules",
+    "requires": ["part.warp_core"],
     "type": "part",
     "parameters": {
-      "power consumption": 3,
-      "reload time": 60,
-      "active time": 30,
-      "world speed": 0.07,
-      "player speed": 0.5
+      "parameter.power_consumption": 3,
+      "parameter.reload_time": 60,
+      "parameter.active_time": 30,
+      "parameter.world_speed_multiplier": 0.07,
+      "parameter.player_speed_multiplier": 0.5
     }
   },
-  "reinforced glass pane": {
+  "item.reinforced_glass_pane": {
     "items": {
-      "iron sheet": 1,
-      "bolt": 4,
-      "glass rod": 4,
-      "glass shard": 6,
-      "green crystal": 1
+      "item.iron_sheet": 1,
+      "item.bolt": 4,
+      "item.glass_rod": 4,
+      "item.glass_shard": 6,
+      "item.green_crystal": 1
     },
     "resultCount": 2,
-    "description": "a very strong bullet and explosion-proof glass pane",
+    "description": "item.reinforced_glass_pane.description",
     "type": "item"
   },
-  "energy cell": {
+  "item.energy_cell": {
     "items": {
-      "iron sheet": 2,
-      "bolt": 4,
-      "energy crystal": 1,
-      "glass shard": 2,
-      "cable": 5
+      "item.iron_sheet": 2,
+      "item.bolt": 4,
+      "item.energy_crystal": 1,
+      "item.glass_shard": 2,
+      "item.cable": 5
     },
     "resultCount": 1,
-    "description": "a basic energy cell, mainly used in cannons engine",
+    "description": "item.energy_cell.description",
     "type": "item"
   },
-  "cog": {
+  "item.cog": {
     "items": {
-      "iron sheet": 2,
-      "bolt": 6
+      "item.iron_sheet": 2,
+      "item.bolt": 6
     },
     "resultCount": 2,
-    "description": "",
+    "description": "item.cog.description",
     "type": "item"
   },
-  "screen card": {
+  "item.screen_card": {
     "items": {
-      "glass shard": 4,
-      "wire": 4,
-      "plastic": 3,
-      "green crystal": 1,
-      "blank card": 1
+      "item.glass_shard": 4,
+      "item.wire": 4,
+      "item.plastic": 3,
+      "item.green_crystal": 1,
+      "item.blank_card": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.screen_card.description",
     "type": "item"
   },
-  "energy crystal": {
+  "item.energy_crystal": {
     "items": {
-      "cyan crystal": 1,
-      "cable": 3,
-      "glass shard": 1
+      "item.cyan_crystal": 1,
+      "item.cable": 3,
+      "item.glass_shard": 1
     },
     "resultCount": 1,
-    "description": "energy emitting crystal",
+    "description": "item.energy_crystal.description",
     "type": "item"
   },
-  "cooling unit": {
+  "item.cooling_unit": {
     "items": {
-      "cyan crystal": 1,
-      "iron sheet": 4,
-      "glass shard": 4,
-      "cable": 4
+      "item.cyan_crystal": 1,
+      "item.iron_sheet": 4,
+      "item.glass_shard": 4,
+      "item.cable": 4
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.cooling_unit.description",
     "type": "item"
   },
-  "laser emitter": {
+  "item.prism": {
     "items": {
-      "laser coil": 1,
-      "cyan coil": 1,
-      "glass shard": 4,
-      "cable": 4
-    },
-    "resultCount": 1,
-    "description": "",
-    "type": "item"
-  },
-  "laser coil": {
-    "items": {
-      "cyan crystal": 1,
-      "copper coil": 1,
-      "iron sheet": 1
-    },
-    "resultCount": 1,
-    "description": "",
-    "type": "item"
-  },
-  "cyan coil": {
-    "items": {
-      "green coil": 1,
-      "cyan warp shard": 1
-    },
-    "resultCount": 1,
-    "description": "",
-    "type": "item"
-  },
-  "red fuel cell": {
-    "items": {
-      "iron sheet": 2,
-      "orange crystal": 1,
-      "bolt": 4,
-      "red crystal": 1,
-      "glass shard": 2
-    },
-    "resultCount": 1,
-    "description": "a basic fuel cell, mainly used in engines",
-    "type": "item"
-  },
-  "orange crystal": {
-    "items": {
-      "red crystal": 1,
-      "blue ore": 1
-    },
-    "resultCount": 1,
-    "description": "2nd tier crystal",
-    "type": "item"
-  },
-  "prism": {
-    "items": {
-      "glass shard": 1,
-      "coloring crystal": 1
+      "item.glass_shard": 1,
+      "item.coloring_crystal": 1
     },
     "resultCount": 2,
-    "description": "light splitting piece of glass",
+    "description": "item.prism.description",
     "type": "item"
   },
-  "motherboard mk1": {
+  "item.motherboard_mk1": {
     "items": {
-      "advanced chip": 1,
-      "transistor": 10,
-      "resistor": 10,
-      "wire": 7,
-      "plastic": 5,
-      "memory card": 1
+      "item.advanced_chip": 1,
+      "item.transistor": 10,
+      "item.resistor": 10,
+      "item.wire": 7,
+      "item.plastic": 5,
+      "item.memory_card": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.motherboard_mk1.description",
     "type": "item"
   },
-  "motherboard mk2": {
+  "item.motherboard_mk2": {
     "items": {
-      "circuit board": 1,
-      "transistor": 20,
-      "resistor": 15,
-      "wire": 30,
-      "plastic": 7,
-      "memory card": 1
+      "item.circuit_board": 1,
+      "item.transistor": 20,
+      "item.resistor": 15,
+      "item.wire": 30,
+      "item.plastic": 7,
+      "item.memory_card": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.motherboard_mk2.description",
     "type": "item"
   },
-  "chip": {
+  "item.chip": {
     "items": {
-      "transistor": 10,
-      "resistor": 5,
-      "wire": 4,
-      "plastic": 2
+      "item.transistor": 10,
+      "item.resistor": 5,
+      "item.wire": 4,
+      "item.plastic": 2
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.chip.description",
     "type": "item"
   },
-  "advanced chip": {
+  "item.advanced_chip": {
     "items": {
-      "chip": 1,
-      "resistor": 2,
-      "wire": 3,
-      "plastic": 1,
-      "blue ore": 1
+      "item.chip": 1,
+      "item.resistor": 2,
+      "item.wire": 3,
+      "item.plastic": 1,
+      "item.blue_ore": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.advanced_chip.description",
     "type": "item"
   },
-  "memory card": {
+  "item.memory_card": {
     "items": {
-      "memory cell mk1": 1,
-      "wire": 1,
-      "plastic": 5,
-      "blank card": 1
+      "item.memory_cell_mk1": 1,
+      "item.wire": 1,
+      "item.plastic": 5,
+      "item.blank_card": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.memory_card.description",
     "type": "item"
   },
-  "memory cell mk2": {
+  "item.memory_cell_mk1": {
     "items": {
-      "memory cell mk1": 1,
-      "iron sheet": 1,
-      "purple crystal": 1
+      "item.cyan_crystal": 1,
+      "item.iron_sheet": 2,
+      "item.wire": 5
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.memory_cell_mk1.description",
     "type": "item"
   },
-  "memory cell mk1": {
+  "item.memory_cell_mk2": {
     "items": {
-      "cyan crystal": 1,
-      "iron sheet": 2,
-      "wire": 5
+      "item.memory_cell_mk1": 1,
+      "item.iron_sheet": 1,
+      "item.purple_crystal": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.memory_cell_mk2.description",
     "type": "item"
   },
-  "blank card": {
+  "item.blank_card": {
     "items": {
-      "cyan crystal": 1,
-      "iron sheet": 1,
-      "wire": 5,
-      "plastic": 2,
-      "glass shard": 2
+      "item.cyan_crystal": 1,
+      "item.iron_sheet": 1,
+      "item.wire": 5,
+      "item.plastic": 2,
+      "item.glass_shard": 2
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.blank_card.description",
     "type": "item"
   },
-  "ai card": {
+  "item.ai_card": {
     "items": {
-      "blank card": 1,
-      "ai chip": 1,
-      "memory cell mk2": 1,
-      "wire": 5
+      "item.blank_card": 1,
+      "item.ai_chip": 1,
+      "item.memory_cell_mk2": 1,
+      "item.wire": 5
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.ai_card.description",
     "type": "item"
   },
-  "ai chip": {
+  "item.ai_chip": {
     "items": {
-      "processor mk3": 1,
-      "orange crystal": 1,
-      "wire": 5,
-      "transistor": 10,
-      "fiber cable": 2
+      "item.processor_mk3": 1,
+      "item.orange_crystal": 1,
+      "item.wire": 5,
+      "item.transistor": 10,
+      "item.fiber_cable": 2
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.ai_chip.description",
     "type": "item"
   },
-  "processor mk3": {
+  "item.processor_mk1": {
     "items": {
-      "processor mk2": 1,
-      "iron sheet": 1,
-      "wire": 7,
-      "cooling unit": 1
+      "item.processor_crystal": 1,
+      "item.cyan_crystal": 1,
+      "item.wire": 10,
+      "item.transistor": 20,
+      "item.iron_sheet": 1,
+      "item.glass_shard": 3
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.processor_mk1.description",
     "type": "item"
   },
-  "processor mk2": {
+  "item.processor_mk2": {
     "items": {
-      "processor mk1": 1,
-      "wire": 10,
-      "transistor": 10
+      "item.processor_mk1": 4,
+      "item.wire": 10,
+      "item.transistor": 10
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.processor_mk2.description",
     "type": "item"
   },
-  "processor mk1": {
+  "item.processor_mk3": {
     "items": {
-      "processor crystal": 1,
-      "cyan crystal": 1,
-      "wire": 10,
-      "transistor": 20,
-      "iron sheet": 1,
-      "glass shard": 3
+      "item.processor_mk2": 16,
+      "item.iron_sheet": 1,
+      "item.wire": 7,
+      "item.cooling_unit": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.processor_mk3.description",
     "type": "item"
   },
-  "processor crystal": {
+  "item.processor_crystal": {
     "items": {
-      "purple crystal": 1,
-      "wire": 30,
-      "transistor": 100,
-      "glass rod": 2
+      "item.purple_crystal": 1,
+      "item.wire": 30,
+      "item.transistor": 100,
+      "item.glass_rod": 2
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.processor_crystal.description",
     "type": "item"
   },
-  "unstable crystal": {
+  "item.unstable_crystal": {
     "items": {
-      "purple crystal": 1,
-      "cyan crystal": 1,
-      "green crystal": 1,
-      "orange crystal": 1,
-      "red crystal": 1,
-      "reinforced iron plate": 2
+      "item.purple_crystal": 1,
+      "item.cyan_crystal": 1,
+      "item.green_crystal": 1,
+      "item.orange_crystal": 1,
+      "item.red_crystal": 1,
+      "item.reinforced_iron_plate": 2
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.unstable_crystal.description",
     "type": "item"
   },
-  "transistor": {
+  "item.transistor": {
     "items": {
-      "wire": 6,
-      "plastic": 3,
-      "metal shard": 3
+      "item.wire": 6,
+      "item.plastic": 3,
+      "item.metal_shard": 3
     },
     "resultCount": 10,
-    "description": "",
+    "description": "item.transistor.description",
     "type": "item"
   },
-  "resistor": {
+  "item.resistor": {
     "items": {
-      "copper coil": 1,
-      "plastic": 1
+      "item.copper_coil": 1,
+      "item.plastic": 1
     },
     "resultCount": 2,
-    "description": "",
+    "description": "item.resistor.description",
     "type": "item"
   },
-  "composite plate": {
+  "item.iron_sheet": {
     "items": {
-      "reinforced iron plate": 2,
-      "blue ore": 1
+      "item.metal_shard": 2
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.iron_sheet.description",
     "type": "item"
   },
-  "fiber cable": {
+  "item.reinforced_iron_plate": {
     "items": {
-      "glass rod": 1,
-      "purple warp shard": 1,
-      "cable": 1
+      "item.iron_sheet": 1,
+      "item.bolt": 4
+    },
+    "resultCount": 1,
+    "description": "item.reinforced_iron_plate.description",
+    "type": "item"
+  },
+  "item.composite_plate": {
+    "items": {
+      "item.reinforced_iron_plate": 2,
+      "item.blue_ore": 1
+    },
+    "resultCount": 1,
+    "description": "item.composite_plate.description",
+    "type": "item"
+  },
+  "item.fiber_cable": {
+    "items": {
+      "item.glass_rod": 1,
+      "item.purple_warp_shard": 1,
+      "item.cable": 1
     },
     "resultCount": 3,
-    "description": "",
+    "description": "item.fiber_cable.description",
     "type": "item"
   },
-  "glass rod": {
+  "item.glass_rod": {
     "items": {
-      "glass shard": 5
+      "item.glass_shard": 5
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.glass_rod.description",
     "type": "item"
   },
-  "circuit board": {
+  "item.circuit_board": {
     "items": {
-      "chip": 1,
-      "cyan crystal": 1,
-      "transistor": 1,
-      "resistor": 1,
-      "processor mk1": 1
+      "item.chip": 1,
+      "item.cyan_crystal": 1,
+      "item.transistor": 1,
+      "item.resistor": 1,
+      "item.processor_mk1": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.circuit_board.description",
     "type": "item"
   },
-  "blue ore": {
+  "item.blue_ore": {
     "items": {
-      "ore": 1,
-      "cyan warp shard": 1
+      "item.ore": 1,
+      "item.cyan_warp_shard": 1
     },
     "resultCount": 1,
-    "description": "",
+    "description": "item.blue_ore.description",
     "type": "item"
   },
-  "bolt": {
+  "item.metal_shard": {
     "items": {
-      "metal shard": 1
-    },
-    "resultCount": 1,
-    "description": "a nut and a bolt",
-    "type": "item"
-  },
-  "metal shard": {
-    "items": {
-      "ore": 1
+      "item.ore": 1
     },
     "resultCount": 5,
-    "description": "just a piece of metal",
+    "description": "item.metal_shard.description",
     "type": "item"
   },
-  "cable": {
+  "item.bolt": {
     "items": {
-      "wire": 1,
-      "rubber": 1
+      "item.metal_shard": 1
     },
     "resultCount": 1,
-    "description": "a coated piece of wire",
+    "description": "item.bolt.description",
     "type": "item"
   },
-  "wire": {
+  "item.wire": {
     "items": {
-      "metal shard": 1
+      "item.metal_shard": 1
     },
     "resultCount": 5,
-    "description": "non-coated piece of wire",
+    "description": "item.wire.description",
     "type": "item"
   },
-  "iron sheet": {
+  "item.cable": {
     "items": {
-      "metal shard": 2
+      "item.wire": 1,
+      "item.rubber": 1
     },
     "resultCount": 1,
-    "description": "flat piece of metal",
+    "description": "item.cable.description",
     "type": "item"
   },
-  "reinforced iron plate": {
-    "items": {
-      "iron sheet": 1,
-      "bolt": 4
-    },
-    "resultCount": 1,
-    "description": "a very strong iron plate",
-    "type": "item"
-  },
-  "cyan crystal": {
-    "items": {
-      "green crystal": 1,
-      "cyan warp shard": 1
-    },
-    "resultCount": 1,
-    "description": "4th tier crystal",
-    "type": "item"
-  },
-  "green crystal": {
-    "items": {
-      "orange crystal": 1,
-      "green warp shard": 1
-    },
-    "resultCount": 1,
-    "description": "3rd tier crystal",
-    "type": "item"
-  },
-  "purple crystal": {
-    "items": {
-      "cyan crystal": 1,
-      "purple warp shard": 1
-    },
-    "resultCount": 1,
-    "description": "5th tier crystal",
-    "type": "item"
-  },
-  "cyan fuel cell": {
-    "items": {
-      "red fuel cell": 1,
-      "cyan crystal": 1
-    },
-    "resultCount": 1,
-    "description": "an advanced fuel cell, mainly used in engines",
-    "type": "item"
-  },
-  "green coil": {
-    "items": {
-      "copper coil": 1,
-      "green crystal": 1
-    },
-    "resultCount": 1,
-    "description": "a copper coil with superconductor properties",
-    "type": "item"
-  },
-  "copper coil": {
-    "items": {
-      "wire": 1,
-      "plastic": 2
-    },
-    "resultCount": 1,
-    "description": "a copper coil",
-    "type": "item"
-  },
-  "coloring crystal": {
-    "items": {
-      "glass shard": 1,
-      "red crystal": 1
-    },
-    "resultCount": 2,
-    "description": "a crystal used as a coloring pigment",
-    "type": "item"
-  },
-  "red crystal": {
-    "description": "base ingredient for higher tier crystals",
+  "item.red_crystal": {
+    "description": "item.red_crystal.description",
     "price": 270,
     "type": "endItem"
   },
-  "core shard": {
+  "item.orange_crystal": {
+    "items": {
+      "item.red_crystal": 1,
+      "item.blue_ore": 1
+    },
     "resultCount": 1,
-    "description": "damaged piece of core",
+    "description": "item.orange_crystal.description",
+    "type": "item"
+  },
+  "item.green_crystal": {
+    "items": {
+      "item.orange_crystal": 1,
+      "item.green_warp_shard": 1
+    },
+    "resultCount": 1,
+    "description": "item.green_crystal.description",
+    "type": "item"
+  },
+  "item.cyan_crystal": {
+    "items": {
+      "item.green_crystal": 1,
+      "item.cyan_warp_shard": 1
+    },
+    "resultCount": 1,
+    "description": "item.cyan_crystal.description",
+    "type": "item"
+  },
+  "item.purple_crystal": {
+    "items": {
+      "item.cyan_crystal": 1,
+      "item.purple_warp_shard": 1
+    },
+    "resultCount": 1,
+    "description": "item.purple_crystal.description",
+    "type": "item"
+  },
+  "item.red_fuel_cell": {
+    "items": {
+      "item.iron_sheet": 2,
+      "item.orange_crystal": 1,
+      "item.bolt": 4,
+      "item.red_crystal": 1,
+      "item.glass_shard": 2
+    },
+    "resultCount": 1,
+    "description": "item.red_fuel_cell.description",
+    "type": "item"
+  },
+  "item.cyan_fuel_cell": {
+    "items": {
+      "item.red_fuel_cell": 1,
+      "item.cyan_crystal": 1
+    },
+    "resultCount": 1,
+    "description": "item.cyan_fuel_cell.description",
+    "type": "item"
+  },
+  "item.copper_coil": {
+    "items": {
+      "item.wire": 1,
+      "item.plastic": 2
+    },
+    "resultCount": 1,
+    "description": "item.copper_coil.description",
+    "type": "item"
+  },
+  "item.green_coil": {
+    "items": {
+      "item.copper_coil": 1,
+      "item.green_crystal": 1
+    },
+    "resultCount": 1,
+    "description": "item.green_coil.description",
+    "type": "item"
+  },
+  "item.cyan_coil": {
+    "items": {
+      "item.green_coil": 1,
+      "item.cyan_warp_shard": 1
+    },
+    "resultCount": 1,
+    "description": "item.cyan_coil.description",
+    "type": "item"
+  },
+  "item.laser_coil": {
+    "items": {
+      "item.cyan_crystal": 1,
+      "item.copper_coil": 1,
+      "item.iron_sheet": 1
+    },
+    "resultCount": 1,
+    "description": "item.laser_coil.description",
+    "type": "item"
+  },
+  "item.laser_emitter": {
+    "items": {
+      "item.laser_coil": 1,
+      "item.cyan_coil": 1,
+      "item.glass_shard": 4,
+      "item.green_crystal": 1,
+      "item.cable": 4
+    },
+    "resultCount": 1,
+    "description": "item.laser_emitter.description",
+    "type": "item"
+  },
+  "item.coloring_crystal": {
+    "items": {
+      "item.glass_shard": 1,
+      "item.red_crystal": 1
+    },
+    "resultCount": 2,
+    "description": "item.coloring_crystal.description",
+    "type": "item"
+  },
+  "item.core_shard": {
+    "resultCount": 1,
+    "description": "item.core_shard.description",
     "price": 3700,
     "type": "endItem"
   },
-  "ore": {
-    "description": "space ore",
+  "item.ore": {
+    "description": "item.ore.description",
     "price": 225,
     "type": "endItem"
   },
-  "cyan warp shard": {
-    "description": "mysterious glowing cyan shard, used to craft crystal",
+  "item.green_warp_shard": {
+    "description": "item.green_warp_shard.description",
+    "price": 310,
+    "type": "endItem"
+  },
+  "item.cyan_warp_shard": {
+    "description": "item.cyan_warp_shard.description",
     "price": 390,
     "type": "endItem"
   },
-  "purple warp shard": {
-    "description": "mysterious glowing purple shard, used to craft crystal",
+  "item.purple_warp_shard": {
+    "description": "item.purple_warp_shard.description",
     "price": 240,
     "type": "endItem"
   },
-  "glass shard": {
-    "description": "just a piece of glass",
+  "item.glass_shard": {
+    "description": "item.glass_shard.description",
     "price": 60,
     "type": "endItem"
   },
-  "plastic": {
-    "description": "just a piece of plastic",
+  "item.plastic": {
+    "description": "item.plastic.description",
     "price": 100,
     "type": "endItem"
   },
-  "rubber": {
-    "description": "black bouncy material, used in coating",
+  "item.rubber": {
+    "description": "item.rubber.description",
     "price": 60,
-    "type": "endItem"
-  },
-  "green warp shard": {
-    "description": "mysterious glowing green shard, used to craft crystal",
-    "price": 310,
     "type": "endItem"
   }
 }

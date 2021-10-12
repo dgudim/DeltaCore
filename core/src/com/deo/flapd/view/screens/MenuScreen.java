@@ -369,7 +369,7 @@ public class MenuScreen implements Screen {
         Array<UpgradeMenu> upgradeMenus = new Array<>();
         for (int i = 0; i < treeJson.size; i++) {
             if (treeJson.getString("item", i, "type").equals("category")) {
-                float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0}, treeJson.get(i).name);
+                float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, treeJson.get(i).name);
                 upgradeMenus.add(new UpgradeMenu(
                         compositeManager, menuStage, this, upgradeMenus,
                         treeJson.get(i).name,

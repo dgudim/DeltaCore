@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
@@ -47,9 +48,10 @@ public class LoadingScreen implements Screen {
     
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
+    private final LocaleManager localeManager;
     public static ParticleEffectPoolLoader particleEffectPoolLoader;
     private final SpriteBatch batch;
-    private final BitmapFont main;
+    private final BitmapFont font_main;
     private final Game game;
     private final OrthographicCamera camera;
     private final Viewport viewport;
@@ -69,6 +71,7 @@ public class LoadingScreen implements Screen {
         batch = compositeManager.getBatch();
         blurProcessor = compositeManager.getBlurProcessor();
         assetManager = compositeManager.getAssetManager();
+        localeManager = compositeManager.getLocaleManager();
         game = compositeManager.getGame();
         
         if (getFloat("ui") <= 0) {
@@ -95,7 +98,7 @@ public class LoadingScreen implements Screen {
         log("------------started loading------------", INFO);
         loadingTime = TimeUtils.millis();
         
-        main = new BitmapFont(Gdx.files.internal("fonts/font2(old).fnt"), false);
+        font_main = assetManager.get("fonts/pixel.ttf");
         
         shapeRenderer = compositeManager.getShapeRenderer();
         
@@ -243,14 +246,14 @@ public class LoadingScreen implements Screen {
         loadingBar.setValue(progress * 100);
         loadingBar.draw(batch, 1);
         loadingBar.act(delta);
-        main.getData().setScale(0.8f);
-        main.setColor(Color.CYAN);
-        main.draw(batch, loadingStateName + state, 0, 440, 800, 1, false);
-        main.getData().setScale(0.5f);
-        main.setColor(Color.ORANGE);
-        main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 47, 800, 1, false);
-        main.getData().setScale(0.3f);
-        main.draw(batch, VERSION_NAME, 2, 478);
+        font_main.getData().setScale(0.8f);
+        font_main.setColor(Color.CYAN);
+        font_main.draw(batch, loadingStateName + state, 0, 440, 800, 1, false);
+        font_main.getData().setScale(0.5f);
+        font_main.setColor(Color.ORANGE);
+        font_main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 47, 800, 1, false);
+        font_main.getData().setScale(0.3f);
+        font_main.draw(batch, VERSION_NAME, 2, 478);
         assetManager.update();
         batch.end();
         
@@ -281,7 +284,6 @@ public class LoadingScreen implements Screen {
     }
     
     public void dispose() {
-        main.dispose();
     }
     
     private float calculateOffsetX(float rotation) {
@@ -346,7 +348,7 @@ public class LoadingScreen implements Screen {
     
     void setLoadingState(LoadingState loadingState) {
         this.loadingState = loadingState;
-        loadingStateName = loadingState.name().charAt(0) + loadingState.name().replace("_", " ").toLowerCase().substring(1);
+        loadingStateName = localeManager.get("loadingScreen.status."+loadingState);
     }
     
 }
