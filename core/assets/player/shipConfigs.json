@@ -1,5 +1,5 @@
 {
-    "basic ship": {
+    "part.basic_ship": {
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -25,7 +25,7 @@
             "modules": [11, 51, 300, 30]
         }
     },
-    "ship mk1":{
+    "part.ship_mk1":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -42,7 +42,7 @@
             "fire1OffsetY": 40
         }
     },
-    "ship mk2":{
+    "part.ship_mk2":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -59,7 +59,7 @@
             "fire1OffsetY": 40
         }
     },
-    "ship mk3":{
+    "part.ship_mk3":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -76,7 +76,7 @@
             "fire1OffsetY": 40
         }
     },
-    "beast ship":{
+    "part.beast_ship":{
         "width": 149,
         "height": 72,
         "gunCount": 2,

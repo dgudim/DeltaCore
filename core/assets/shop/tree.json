@@ -41,7 +41,7 @@
     "description": "category.cores.description",
     "type": "category",
     "saveTo": "currentCore",
-    "default": "star core"
+    "default": "part.star_core"
   },
   "category.ships": {
     "description": "category.ships.description",
@@ -835,7 +835,7 @@
   "item.ai_card": {
     "items": {
       "item.blank_card": 1,
-      "item.ai_chip": 1,
+      "item.ai_processor": 1,
       "item.memory_cell_mk2": 1,
       "item.wire": 5
     },
@@ -843,7 +843,7 @@
     "description": "item.ai_card.description",
     "type": "item"
   },
-  "item.ai_chip": {
+  "item.ai_processor": {
     "items": {
       "item.processor_mk3": 1,
       "item.orange_crystal": 1,
@@ -852,7 +852,7 @@
       "item.fiber_cable": 2
     },
     "resultCount": 1,
-    "description": "item.ai_chip.description",
+    "description": "item.ai_processor.description",
     "type": "item"
   },
   "item.processor_mk1": {
