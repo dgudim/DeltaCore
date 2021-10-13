@@ -1,5 +1,5 @@
 
-part.beast_ship.png
+beastMode.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none

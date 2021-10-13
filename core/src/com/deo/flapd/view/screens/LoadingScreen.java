@@ -146,7 +146,7 @@ public class LoadingScreen implements Screen {
         assetManager.load("shop/shopButtons.atlas", TextureAtlas.class);
         assetManager.load("shop/ui.atlas", TextureAtlas.class);
         assetManager.load("player/shields.atlas", TextureAtlas.class);
-        assetManager.load("player/animations/part.beast_ship.atlas", TextureAtlas.class);
+        assetManager.load("player/animations/beastMode.atlas", TextureAtlas.class);
         assetManager.load("bonuses.atlas", TextureAtlas.class);
         assetManager.load("enemies/enemies.atlas", TextureAtlas.class);
         assetManager.load("enemies/ufo/ufo.atlas", TextureAtlas.class);

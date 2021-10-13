@@ -99,6 +99,15 @@
             "fire2OffsetY": 46,
             "fire3OffsetX": 10,
             "fire3OffsetY": 62
+        },
+        "upgradeMenus": {
+            "engines": [28, 18, 300, 70],
+            "ships": [40, 30, 300, -30],
+            "weapons": [72, 20, 300, 40],
+            "batteries": [52, 20, 300, -30],
+            "shields": [70, 70, 300, -30],
+            "cores": [62, 32, 400, 70],
+            "modules": [11, 51, 300, 30]
         }
     }
 }
