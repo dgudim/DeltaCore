@@ -83,12 +83,12 @@ public class LoadingScreen implements Screen {
             putBoolean("bloom", true);
             JsonEntry tree = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
             for (int i = 0; i < tree.size; i++) {
-                if (tree.getString("part", i, "type").equals("basePart")) {
-                    putBoolean("unlocked_" + getItemTextureNameByName(tree.get(i).name), true);
+                if (tree.getString("part", i, "type").equals("category")) {
+                    putBoolean("unlocked_" + tree.get(i).name, true);
                     if (tree.getString("noSaveToLocation", i, "saveTo").equals("noSaveToLocation")) {
                         log("No save to location specified for " + tree.get(i) + " (item at index " + i + ")", WARNING);
                     }
-                    putString(tree.getString("noSaveToLocation", i, "saveTo"), tree.get(i).name);
+                    putString(tree.getString("noSaveToLocation", i, "saveTo"), tree.get(i).getString("noPartSpecified", "default"));
                 }
             }
             log("------------first launch------------\n", INFO);

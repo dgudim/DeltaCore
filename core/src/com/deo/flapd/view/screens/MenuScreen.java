@@ -132,6 +132,7 @@ public class MenuScreen implements Screen {
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
     private final PostProcessor blurProcessor;
+    private final LocaleManager localeManager;
     
     private boolean enableShader;
     
@@ -162,7 +163,7 @@ public class MenuScreen implements Screen {
         batch = compositeManager.getBatch();
         soundManager = compositeManager.getSoundManager();
         musicManager = compositeManager.getMusicManager();
-        LocaleManager localeManager = compositeManager.getLocaleManager();
+        localeManager = compositeManager.getLocaleManager();
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
@@ -297,18 +298,7 @@ public class MenuScreen implements Screen {
         });
         
         ScrollPane infoText = (ScrollPane) uiComposer.addScrollText(
-                "[#00ff55]Made by Deoxys\n" +
-                        "Textures by DefenceX, VKLowe, Deoxys,\n" +
-                        " Max2007\n" +
-                        "Music by EvanKing\n" +
-                        "[#5DBCD2]Inspired by DefenseX, PetruCHIOrus\n" +
-                        "[#cccc22]Testers: Misterowl, Nikita.Beloglazov\n" +
-                        "Kisliy_xleb, Watermelon0guy, PYTHØN\n" +
-                        "Ha4upelmeney, Lukmanov, ZerOn\n" +
-                        "[#0FE500]Contributors: Volkov, DefenseX\n" +
-                        "Zsingularityz\n" +
-                        "[#CAE500]Deltacore\n" +
-                        "® All right reserved",
+                localeManager.get("mainMenu.infoContent"),
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
         
         
@@ -321,13 +311,13 @@ public class MenuScreen implements Screen {
         inventory.setBounds(105, 70, 425, 400);
         
         workshopCategoryManager = new CategoryManager(compositeManager, 90, 40, 2.5f, 0.25f, "defaultLight", "infoBg2", "treeBg", false, "lastClickedWorkshopButton");
-        workshopCategoryManager.addCategory(blackMarket.holderGroup, "market").addListener(new ClickListener() {
+        workshopCategoryManager.addCategory(blackMarket.holderGroup, localeManager.get("workshop.market")).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 blackMarket.update();
             }
         });
-        workshopCategoryManager.addCategory(inventory.holderGroup, "inventory", 0.23f).addListener(new ClickListener() {
+        workshopCategoryManager.addCategory(inventory.holderGroup, localeManager.get("workshop.inventory"), 0.23f).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 inventory.update();
@@ -411,7 +401,7 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(compositeManager, menuStage, "Are you sure you want to start a new game? (you will loose current checkpoint)", new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("newGame.alert"), new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame();
@@ -537,7 +527,7 @@ public class MenuScreen implements Screen {
         
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             if (!isConfirmationDialogActive) {
-                new ConfirmationDialogue(compositeManager, menuStage, "Are you sure you want to quit?", new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("exit.alert"), new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         Gdx.app.exit();
