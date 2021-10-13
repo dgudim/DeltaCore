@@ -29,7 +29,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.NORMAL;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static java.lang.Math.abs;
@@ -200,7 +199,7 @@ public class DUtils {
             ObjectOutputStream s = new ObjectOutputStream(file.write(false));
             s.writeObject(prefs.get());
             s.close();
-            return file.file().getPath();
+            return file.file().getPath().replace("\\", "/");
         } catch (Exception e) {
             logException(e);
             return "error";
@@ -325,16 +324,6 @@ public class DUtils {
         if (logging) {
             log("cleared preferences", DEBUG);
         }
-    }
-    
-    public enum ItemTextureModifier {NORMAL, DISABLED, OVER, ENABLED}
-    
-    public static String getItemTextureNameByName(String name) {
-        return getItemTextureNameByName(name, NORMAL);
-    }
-    
-    public static String getItemTextureNameByName(String name, ItemTextureModifier itemTextureModifier) {
-        return "ohno"; // TODO: 12/10/2021 stub
     }
     
     public static void updateCamera(OrthographicCamera camera, Viewport viewport, int width, int height) {

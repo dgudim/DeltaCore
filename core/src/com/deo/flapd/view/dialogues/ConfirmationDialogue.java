@@ -14,12 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
 public class ConfirmationDialogue extends Dialogue {
     
     public ConfirmationDialogue(CompositeManager compositeManager, Stage stage, String message, InputListener okButtonListener, InputListener exitButtonListener) {
         AssetManager assetManager = compositeManager.getAssetManager();
+        LocaleManager localeManager = compositeManager.getLocaleManager();
         
         BitmapFont font = assetManager.get("fonts/pixel.ttf");
         Skin skin = new Skin();
@@ -36,8 +38,8 @@ public class ConfirmationDialogue extends Dialogue {
         yellowLabelStyle.font = font;
         yellowLabelStyle.fontColor = Color.YELLOW;
         
-        TextButton yes = uiComposer.addTextButton("workshopGreen", "yes", 0.12f);
-        TextButton no = uiComposer.addTextButton("workshopRed", "no", 0.12f);
+        TextButton yes = uiComposer.addTextButton("workshopGreen", localeManager.get("general.yes"), 0.12f);
+        TextButton no = uiComposer.addTextButton("workshopRed", localeManager.get("general.no"), 0.12f);
         yes.setBounds(45, 3, 39, 22);
         no.setBounds(3, 3, 39, 22);
         

@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,18 +24,10 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.view.dialogues.CraftingDialogue;
 
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
-import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.connectNinetyDegreeBranch;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
 
@@ -208,10 +199,10 @@ class Node {
         Skin nodeSkin = new Skin();
         nodeSkin.addRegions(assetManager.get("shop/slots.atlas"));
         ImageButton.ImageButtonStyle nodeStyle = new ImageButton.ImageButtonStyle();
-        nodeStyle.imageUp = new Image(items.findRegion(getItemTextureNameByName(item))).getDrawable();
-        nodeStyle.imageOver = new Image(items.findRegion(getItemTextureNameByName(item, OVER))).getDrawable();
-        nodeStyle.imageDown = new Image(items.findRegion(getItemTextureNameByName(item, ENABLED))).getDrawable();
-        nodeStyle.imageDisabled = new Image(items.findRegion(getItemTextureNameByName(item, DISABLED))).getDrawable();
+        //nodeStyle.imageUp = new Image(items.findRegion(getItemTextureNameByName(item))).getDrawable();
+        //nodeStyle.imageOver = new Image(items.findRegion(getItemTextureNameByName(item, OVER))).getDrawable();
+        //nodeStyle.imageDown = new Image(items.findRegion(getItemTextureNameByName(item, ENABLED))).getDrawable();
+        //nodeStyle.imageDisabled = new Image(items.findRegion(getItemTextureNameByName(item, DISABLED))).getDrawable();
         nodeStyle.up = nodeSkin.getDrawable("slot");
         nodeStyle.down = nodeSkin.getDrawable("enabled_slot");
         nodeStyle.over = nodeSkin.getDrawable("over_slot");
@@ -222,12 +213,12 @@ class Node {
                 try {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
-                    log("error drawing " +
-                            getItemTextureNameByName(item) +
-                            "\nnormal: " + items.findRegion(getItemTextureNameByName(item)) +
-                            "\nover: " + items.findRegion(getItemTextureNameByName(item, OVER)) +
-                            "\nenabled: " + items.findRegion(getItemTextureNameByName(item, ENABLED)) +
-                            "\ndisabled: " + items.findRegion(getItemTextureNameByName(item, DISABLED)), CRITICAL_ERROR);
+                    //log("error drawing " +
+                            //getItemTextureNameByName(item) +
+                            //"\nnormal: " + items.findRegion(getItemTextureNameByName(item)) +
+                            //"\nover: " + items.findRegion(getItemTextureNameByName(item, OVER)) +
+                            //"\nenabled: " + items.findRegion(getItemTextureNameByName(item, ENABLED)) +
+                            //"\ndisabled: " + items.findRegion(getItemTextureNameByName(item, DISABLED)), CRITICAL_ERROR);
                 }
             }
         };
@@ -248,7 +239,7 @@ class Node {
         node.addListener(new ActorGestureListener(20, 0.4f, 0.6f, 0.15f) {
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                new CraftingDialogue(compositeManager, holder.getStage(), name, (int) Math.ceil((requestedQuantity - getInteger("item_" + getItemTextureNameByName(name))) / resultCount));
+                //new CraftingDialogue(compositeManager, holder.getStage(), name, (int) Math.ceil((requestedQuantity - getInteger("item_" + getItemTextureNameByName(name))) / resultCount));
                 return true;
             }
             
@@ -334,13 +325,13 @@ class Node {
     
     void update() {
         if (getType().equals("item") || getType().equals("endItem")) {
-            requestedQuantity = MathUtils.ceil(getRequestedQuantity() * MathUtils.clamp(parent.requestedQuantity - getInteger("item_" + getItemTextureNameByName(parent.name)), 1, 10000) / getResultCount(true));
-            quantity.setText("" + getInteger("item_" + getItemTextureNameByName(name)) + "/" + requestedQuantity);
-            if (getInteger("item_" + getItemTextureNameByName(name)) >= requestedQuantity) {
-                quantity.setColor(Color.YELLOW);
-            } else {
-                quantity.setColor(Color.ORANGE);
-            }
+            //requestedQuantity = MathUtils.ceil(getRequestedQuantity() * MathUtils.clamp(parent.requestedQuantity - getInteger("item_" + getItemTextureNameByName(parent.name)), 1, 10000) / getResultCount(true));
+            //quantity.setText("" + getInteger("item_" + getItemTextureNameByName(name)) + "/" + requestedQuantity);
+            //if (getInteger("item_" + getItemTextureNameByName(name)) >= requestedQuantity) {
+            //    quantity.setColor(Color.YELLOW);
+            //} else {
+            //    quantity.setColor(Color.ORANGE);
+            //}
         }
         node.setDisabled(getPartLockState());
         node.setColor(getCategoryTint());
@@ -384,7 +375,7 @@ class Node {
         if (getType().equals("part")) {
             String[] requiredItems = treeJson.getStringArray(new String[]{}, name, "requires");
             for (String requiredItem : requiredItems) {
-                locked = !getBoolean("unlocked_" + getItemTextureNameByName(requiredItem));
+                //locked = !getBoolean("unlocked_" + getItemTextureNameByName(requiredItem));
                 if (locked) {
                     break;
                 }

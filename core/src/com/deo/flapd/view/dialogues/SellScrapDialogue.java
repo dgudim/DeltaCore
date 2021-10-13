@@ -32,12 +32,8 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class SellScrapDialogue extends MoneyDialogue {
@@ -94,22 +90,22 @@ public class SellScrapDialogue extends MoneyDialogue {
         if (!isEndItem) {
             for (int i = 0; i < items.length; i++) {
                 Table requirement = new Table();
-                Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemTextureNameByName(items[i])) + "+" + itemCounts[i], yellowLabelStyle);
+                Label itemText = new Label(items[i] + " " + getInteger("item_" + items[i]) + "+" + itemCounts[i], yellowLabelStyle);
                 itemText.setFontScale(0.28f);
                 itemText.setWrap(true);
                 labels.add(itemText);
                 ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
-                itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i]))).getDrawable();
-                itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], DISABLED))).getDrawable();
-                itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], ENABLED))).getDrawable();
-                itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], OVER))).getDrawable();
+                itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(items[i])).getDrawable();
+                itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(items[i] + "_disabled")).getDrawable();
+                itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(items[i] + "_enabled")).getDrawable();
+                itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(items[i] + "_over")).getDrawable();
                 ImageButton itemImageButton = new ImageButton(itemButtonStyle);
                 final int finalI = i;
                 
                 requirement.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new SellScrapDialogue(compositeManager, stage, itemSlotManager, getInteger("item_" + getItemTextureNameByName(item)), items[finalI]);
+                        new SellScrapDialogue(compositeManager, stage, itemSlotManager, getInteger("item_" + item), items[finalI]);
                     }
                 });
                 
@@ -205,11 +201,11 @@ public class SellScrapDialogue extends MoneyDialogue {
             endItem.setText("this item can't be scrapped");
         }
         
-        Image product = new Image(itemAtlas.findRegion(getItemTextureNameByName(item)));
+        Image product = new Image(itemAtlas.findRegion(item));
         product.setScaling(Scaling.fit);
         product.setBounds(226, 204, 60, 60);
         
-        final Label productName = new Label(item + " " + getInteger("item_" + getItemTextureNameByName(item)) + "-1", yellowLabelStyle);
+        final Label productName = new Label(item + " " + getInteger("item_" + item) + "-1", yellowLabelStyle);
         productName.setFontScale(0.32f);
         productName.setBounds(196, 164, 120, 32);
         productName.setWrap(true);
@@ -228,9 +224,9 @@ public class SellScrapDialogue extends MoneyDialogue {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 quantityText.setText("quantity:" + (int) quantity.getValue());
-                productName.setText(item + " " + getInteger("item_" + getItemTextureNameByName(item)) + "-" + (int) quantity.getValue());
+                productName.setText(item + " " + getInteger("item_" + item) + "-" + (int) quantity.getValue());
                 for (int i = 0; i < labels.size; i++) {
-                    labels.get(i).setText(items[i] + " " + getInteger("item_" + getItemTextureNameByName(items[i])) + "+" + (int) (itemCounts[i] * quantity.getValue()));
+                    labels.get(i).setText(items[i] + " " + getInteger("item_" + items[i]) + "+" + (int) (itemCounts[i] * quantity.getValue()));
                 }
                 uraniumCells_text.setText(getInteger("money") + "+" + (int) (price[0] * quantity.getValue()));
                 cogs_text.setText(getInteger("cogs") + "+" + (int) (price[1] * quantity.getValue()));
@@ -245,10 +241,10 @@ public class SellScrapDialogue extends MoneyDialogue {
                     addInteger("cogs", (int) (price[1] * quantity.getValue()));
                 } else {
                     for (int i = 0; i < labels.size; i++) {
-                        addInteger("item_" + getItemTextureNameByName(items[i]), (int) (itemCounts[i] * quantity.getValue()));
+                        addInteger("item_" + items[i], (int) (itemCounts[i] * quantity.getValue()));
                     }
                 }
-                subtractInteger("item_" + getItemTextureNameByName(item), (int) quantity.getValue());
+                subtractInteger("item_" + item, (int) quantity.getValue());
                 itemSlotManager.update();
                 dialog.hide();
             }

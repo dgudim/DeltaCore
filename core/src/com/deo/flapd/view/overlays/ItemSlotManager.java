@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.dialogues.PurchaseDialogue;
@@ -36,14 +37,10 @@ import com.deo.flapd.view.dialogues.SellScrapDialogue;
 import java.util.concurrent.TimeUnit;
 
 import static com.badlogic.gdx.utils.TimeUtils.millis;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
 import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getLong;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
@@ -70,6 +67,7 @@ public class ItemSlotManager {
     
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
+    private final LocaleManager localeManager;
     
     private SlotManagerMode slotManagerMode;
     private final UIComposer uiComposer;
@@ -81,6 +79,7 @@ public class ItemSlotManager {
         this.compositeManager = compositeManager;
         assetManager = compositeManager.getAssetManager();
         uiComposer = compositeManager.getUiComposer();
+        localeManager = compositeManager.getLocaleManager();
         
         slotSkin = new Skin();
         slotSkin.addRegions(assetManager.get("shop/workshop.atlas"));
@@ -112,11 +111,11 @@ public class ItemSlotManager {
             slotCount = loadSlots();
         }
         if (slotCount == 0) {
-            final TextButton update = uiComposer.addTextButton("workshopGreen", "reset for 3500?", 0.48f);
+            final TextButton update = uiComposer.addTextButton("workshopGreen", localeManager.get("workshop.market.reset"), 0.48f);
             update.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new ConfirmationDialogue(compositeManager, stage, "reset the shop for 3500?", new ClickListener() {
+                    new ConfirmationDialogue(compositeManager, stage, localeManager.get("workshop.market.reset"), new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
                             if (getInteger("money") >= 3500) {
@@ -139,7 +138,7 @@ public class ItemSlotManager {
         slotManagerMode = INVENTORY;
         boolean nextRow = false;
         for (int i = 0; i < treeJson.size; i++) {
-            int itemQuantity = getInteger("item_" + getItemTextureNameByName(treeJson.get(i).name));
+            int itemQuantity = getInteger("item_" + treeJson.get(i).name);
             if (itemQuantity > 0) {
                 addInventorySlot(treeJson.get(i).name, itemQuantity, nextRow);
                 nextRow = !nextRow;
@@ -200,16 +199,16 @@ public class ItemSlotManager {
         lockedSlotStyle.up = new NinePatchDrawable(slotSkin.getPatch("slot_disabled"));
         lockedSlotStyle.down = new NinePatchDrawable(slotSkin.getPatch("slot_disabled_down"));
         lockedSlotStyle.over = new NinePatchDrawable(slotSkin.getPatch("slot_disabled_over"));
-        
+        // TODO: 13/10/2021 add to styles.json
         slotStyle = new ImageButton.ImageButtonStyle();
         slotStyle.up = new NinePatchDrawable(slotSkin.getPatch("slot"));
         slotStyle.over = new NinePatchDrawable(slotSkin.getPatch("slot_over"));
         slotStyle.down = new NinePatchDrawable(slotSkin.getPatch("slot_enabled"));
         
-        Image imageUp_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result)));
-        Image imageOver_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, OVER)));
-        Image imageDisabled_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, DISABLED)));
-        Image imageDown_scaled = new Image(this.items.findRegion(getItemTextureNameByName(result, ENABLED)));
+        Image imageUp_scaled = new Image(this.items.findRegion(result));
+        Image imageOver_scaled = new Image(this.items.findRegion(result + "_over"));
+        Image imageDisabled_scaled = new Image(this.items.findRegion(result + "_disabled"));
+        Image imageDown_scaled = new Image(this.items.findRegion(result + "_enabled"));
         
         float heightBefore = imageUp_scaled.getHeight();
         float widthBefore = imageUp_scaled.getWidth();
@@ -233,16 +232,16 @@ public class ItemSlotManager {
                     super.draw(batch, parentAlpha);
                 } catch (Exception e) {
                     log("error drawing " +
-                            getItemTextureNameByName(result) +
-                            "\nnormal: " + items.findRegion(getItemTextureNameByName(result)) +
-                            "\nover: " + items.findRegion(getItemTextureNameByName(result, OVER)) +
-                            "\nenabled: " + items.findRegion(getItemTextureNameByName(result, ENABLED)) +
-                            "\ndisabled: " + items.findRegion(getItemTextureNameByName(result, DISABLED)), CRITICAL_ERROR);
+                            result +
+                            "\nnormal: " + items.findRegion(result) +
+                            "\nover: " + items.findRegion(result + "_over") +
+                            "\nenabled: " + items.findRegion(result + "_enabled") +
+                            "\ndisabled: " + items.findRegion(result + "_disabled"), CRITICAL_ERROR);
                 }
             }
         };
         
-        Label text = new Label(result, labelStyle);
+        Label text = new Label(localeManager.get(result), labelStyle);
         text.setFontScale(0.28f, 0.3f);
         text.setColor(Color.YELLOW);
         
@@ -309,7 +308,7 @@ public class ItemSlotManager {
         int hours = (int) TimeUnit.MILLISECONDS.toHours(lastReset);
         int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(lastReset) - hours * 60;
         int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(lastReset) - hours * 3600 - minutes * 60;
-        Label resetTime = new Label("||Reset in: " + hours + "h " + minutes + "m " + seconds + "s||", yellowLabelStyle) {
+        Label resetTime = new Label("||" + localeManager.get("workshop.market.resetIn") + " " + hours + "h " + minutes + "m " + seconds + "s||", yellowLabelStyle) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 super.draw(batch, parentAlpha);
@@ -317,7 +316,7 @@ public class ItemSlotManager {
                 int hours = (int) TimeUnit.MILLISECONDS.toHours(nextReset);
                 int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(nextReset) - hours * 60;
                 int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(nextReset) - hours * 3600 - minutes * 60;
-                this.setText("||Reset in: " + hours + "h " + minutes + "m " + seconds + "s||");
+                this.setText("||" + localeManager.get("workshop.market.resetIn") + " " + hours + "h " + minutes + "m " + seconds + "s||");
                 if (hours <= 0 && minutes <= 0 && seconds <= 0) {
                     putLong("lastGenTime", millis());
                     nextUpdateTime[0] = millis() + 18000000;
@@ -338,7 +337,7 @@ public class ItemSlotManager {
         if (slotManagerMode == SHOP) {
             inventoryLabel.add(resetTime).padLeft(10).align(Align.center).width(160).expand();
         } else {
-            Label name = new Label("Inventory", yellowLabelStyle);
+            Label name = new Label(localeManager.get("workshop.inventory"), yellowLabelStyle);
             name.setColor(Color.ORANGE);
             name.setFontScale(0.6f);
             inventoryLabel.add(name).expand().align(Align.center);
@@ -372,7 +371,7 @@ public class ItemSlotManager {
             log("no item declared with name " + result, ERROR);
             return 0;
         } else {
-            if(treeJson.getString("item", result, "type").equals("endItem")){
+            if (treeJson.getString("item", result, "type").equals("endItem")) {
                 return 0;
             }
             JsonEntry items = treeJson.get(result, "items");

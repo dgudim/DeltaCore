@@ -34,7 +34,6 @@ import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
@@ -116,7 +115,7 @@ public class LoadingScreen implements Screen {
         loadingBar.setAnimateDuration(0.01f);
         
         enableShader = getBoolean("bloom");
-        //localeManager.setLocale("ru");
+        localeManager.setLocale("ru");
         setLoadingState(LoadingState.LOADING_TEXTURES);
         
         load();
@@ -331,7 +330,7 @@ public class LoadingScreen implements Screen {
                 } else {
                     setLoadingState(LoadingState.LOADING_STYLES);
                 }
-            } else if (assetManager.isLoaded("sfx/explosion.ogg", Sound.class)) {
+            } else if (assetManager.isLoaded("sfx/explosion.ogg", Sound.class) && loadingState != LoadingState.LOADING_SOUNDS) {
                 setLoadingState(LoadingState.LOADING_SOUNDS);
             }
         } catch (ClassCastException | NumberFormatException e) {

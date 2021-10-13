@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -34,6 +35,7 @@ public class CategoryManager extends Actor {
     private final boolean useBg;
     private final boolean closeAtSecondClick;
     private final String key;
+    private final LocaleManager localeManager;
     private final UIComposer uiComposer;
     private final String style;
     private final boolean useTbg;
@@ -41,6 +43,7 @@ public class CategoryManager extends Actor {
     public CategoryManager(CompositeManager compositeManager, float buttonWidth, float buttonHeight, float pad, float fontScale, String style, String background, String tableBackground, boolean closeAtSecondClick, String personalKey) {
         
         AssetManager assetManager = compositeManager.getAssetManager();
+        localeManager = compositeManager.getLocaleManager();
         
         buttons = new Table();
         
@@ -106,7 +109,7 @@ public class CategoryManager extends Actor {
     }
     
     public Button addCloseButton() {
-        TextButton category = uiComposer.addTextButton(style, "back", fontScale);
+        TextButton category = uiComposer.addTextButton(style, localeManager.get("general.back"), fontScale);
         
         category.addListener(new ClickListener() {
             @Override

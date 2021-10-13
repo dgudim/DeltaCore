@@ -32,7 +32,6 @@ import com.deo.flapd.view.overlays.ItemSlotManager;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
@@ -98,11 +97,11 @@ public class PurchaseDialogue extends MoneyDialogue {
         topText.setFontScale(0.4f);
         topText.setAlignment(Align.center);
         
-        Image product = new Image(itemAtlas.findRegion(getItemTextureNameByName(result)));
+        Image product = new Image(itemAtlas.findRegion(result));
         product.setBounds(352, 160, 140, 100);
         product.setScaling(Scaling.fit);
         
-        final Label productName = new Label(result + " " + getInteger("item_" + getItemTextureNameByName(result)) + "+" + requestedQuantity, yellowLabelStyle);
+        final Label productName = new Label(result + " " + getInteger("item_" + result) + "+" + requestedQuantity, yellowLabelStyle);
         productName.setFontScale(0.32f);
         productName.setBounds(344, 116, 156, 40);
         productName.setWrap(true);
@@ -144,7 +143,7 @@ public class PurchaseDialogue extends MoneyDialogue {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 quantityText.setText("quantity:" + (int) quantity.getValue());
-                productName.setText(result + " " + getInteger("item_" + getItemTextureNameByName(result)) + "+" + (int) (quantity.getValue()));
+                productName.setText(result + " " + getInteger("item_" + result) + "+" + (int) (quantity.getValue()));
                 uraniumCells_text.setText(getInteger("money") + "/" + (int) (price[0] * quantity.getValue()));
                 cogs_text.setText(getInteger("cogs") + "/" + (int) (price[1] * quantity.getValue()));
                 if (getInteger("money") < price[0] * quantity.getValue()) {
@@ -167,7 +166,7 @@ public class PurchaseDialogue extends MoneyDialogue {
                 if (getInteger("money") >= price[0] * quantity.getValue() && getInteger("cogs") >= price[1] * quantity.getValue()) {
                     subtractInteger("money", (int) (price[0] * quantity.getValue()));
                     subtractInteger("cogs", (int) (price[1] * quantity.getValue()));
-                    addInteger("item_" + getItemTextureNameByName(result), (int) quantity.getValue());
+                    addInteger("item_" + result, (int) quantity.getValue());
                     
                     JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
                     Array<String> items = new Array<>();

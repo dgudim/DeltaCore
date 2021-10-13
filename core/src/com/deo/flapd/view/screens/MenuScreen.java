@@ -63,7 +63,6 @@ import static com.deo.flapd.utils.DUtils.drawBg;
 import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
 import static com.deo.flapd.utils.DUtils.handleDebugInput;
@@ -207,9 +206,9 @@ public class MenuScreen implements Screen {
         Table playScreenTable = new Table();
         playScreenTable.align(Align.topLeft);
         playScreenTable.setBounds(15, 60, 531, 410);
-        TextButton newGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.newGame"), 0.4f);
-        TextButton continueGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.continue"), 0.4f);
-        TextButton workshop = uiComposer.addTextButton("defaultLight", localeManager.get("play.workshop"), 0.4f);
+        TextButton newGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.newGame"), 0.3f);
+        TextButton continueGame = uiComposer.addTextButton("defaultLight", localeManager.get("play.continue"), 0.3f);
+        TextButton workshop = uiComposer.addTextButton("defaultLight", localeManager.get("play.workshop"), 0.3f);
         final Table difficultyT = uiComposer.addSlider("sliderDefaultNormal", 1, 5, 0.1f, localeManager.get("play.difficulty") + " ", "X", "difficulty");
         playScreenTable.add(newGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
         playScreenTable.add(continueGame).size(160, 35).padTop(5).padBottom(5).align(Align.left).row();
@@ -246,19 +245,19 @@ public class MenuScreen implements Screen {
         Table moreTable = new Table();
         moreTable.align(Align.topLeft);
         moreTable.setBounds(15, 62, 531, 410);
-        moreTable.add(uiComposer.addLinkButton("gitHub", "[#32ff32]Game source code", "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
-        moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]Official trello list of planned features", "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
-        final TextButton exportGameData = uiComposer.addTextButton("defaultLight", "export game data", 0.4f);
-        TextButton importGameData = uiComposer.addTextButton("defaultLight", "import game data", 0.4f);
-        TextButton clearGameData = uiComposer.addTextButton("defaultLight", "clear game data", 0.4f);
+        moreTable.add(uiComposer.addLinkButton("gitHub", "[#32ff32]"+localeManager.get("more.github"), "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]"+localeManager.get("more.trello"), "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
+        final TextButton exportGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.exportData"), 0.3f);
+        TextButton importGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.importData"), 0.3f);
+        TextButton clearGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.clearData"), 0.3f);
         
-        final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/bold_main.ttf"), 0.4f);
+        final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/bold_main.ttf"), 0.3f);
         exportMessage.setWrap(true);
         
         exportGameData.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                exportMessage.setText("[#FFFF00]saved to " + savePrefsToFile());
+                exportMessage.setText("[#FFFF00]"+localeManager.get("more.savedData")+" " + savePrefsToFile());
             }
         });
         
@@ -751,7 +750,7 @@ public class MenuScreen implements Screen {
         if (!playerHasAnimation) {
             ship.setDrawable(new TextureRegionDrawable(
                     assetManager.get("items/items.atlas", TextureAtlas.class)
-                            .findRegion(getItemTextureNameByName(getString("currentShip")))));
+                            .findRegion(getString("currentShip"))));
         } else {
             enemyAnimation = new Animation<>(
                     shipConfig.getFloat(3, "frameDuration"),

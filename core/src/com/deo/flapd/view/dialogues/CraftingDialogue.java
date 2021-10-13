@@ -31,13 +31,9 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.ui.UIComposer;
 
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.DISABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.ENABLED;
-import static com.deo.flapd.utils.DUtils.ItemTextureModifier.OVER;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putString;
@@ -169,7 +165,7 @@ public class CraftingDialogue extends Dialogue {
                     break;
                 case ("part"):
                 case ("item"):
-                    if ((!getBoolean("unlocked_" + getItemTextureNameByName(result)) && getType().equals("part")) || getType().equals("item")) {
+                    if ((!getBoolean("unlocked_" + result) && getType().equals("part")) || getType().equals("item")) {
                         
                         resultCount = getResultCount();
                         
@@ -181,19 +177,19 @@ public class CraftingDialogue extends Dialogue {
                             public void clicked(InputEvent event, float x, float y) {
                                 boolean craftingAllowed = true;
                                 for (int i = 0; i < itemCounts.length; i++) {
-                                    if (getInteger("item_" + getItemTextureNameByName(items[i])) < (int) (itemCounts[i] * quantity.getValue())) {
+                                    if (getInteger("item_" + items[i]) < (int) (itemCounts[i] * quantity.getValue())) {
                                         craftingAllowed = false;
                                     }
                                 }
                                 if (craftingAllowed) {
                                     for (int i = 0; i < itemCounts.length; i++) {
-                                        subtractInteger("item_" + getItemTextureNameByName(items[i]), (int) (itemCounts[i] * quantity.getValue()));
+                                        subtractInteger("item_" + items[i], (int) (itemCounts[i] * quantity.getValue()));
                                     }
                                     if (getType().equals("part")) {
-                                        putBoolean("unlocked_" + getItemTextureNameByName(result), true);
+                                        putBoolean("unlocked_" + result, true);
                                         putString(saveTo(), result);
                                     } else {
-                                        addInteger("item_" + getItemTextureNameByName(result), (int) (resultCount * quantity.getValue()));
+                                        addInteger("item_" + result, (int) (resultCount * quantity.getValue()));
                                     }
                                     dialog.hide();
                                     if (previousDialogue != null) {
@@ -325,8 +321,8 @@ public class CraftingDialogue extends Dialogue {
     @Override
     public void update() {
         for (int i = 0; i < itemCounts.length; i++) {
-            tableLabels.get(i).setText(items[i] + " " + getInteger("item_" + getItemTextureNameByName(items[i])) + "/" + (int) (itemCounts[i] * quantity.getValue()));
-            if (itemCounts[i] * quantity.getValue() > getInteger("item_" + getItemTextureNameByName(items[i]))) {
+            tableLabels.get(i).setText(items[i] + " " + getInteger("item_" + items[i]) + "/" + (int) (itemCounts[i] * quantity.getValue()));
+            if (itemCounts[i] * quantity.getValue() > getInteger("item_" + items[i])) {
                 tableLabels.get(i).setColor(Color.valueOf("#DD0000"));
             } else {
                 tableLabels.get(i).setColor(Color.YELLOW);
@@ -341,7 +337,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private Image getProductImage() {
-        Image product = new Image(itemAtlas.findRegion(getItemTextureNameByName(result)));
+        Image product = new Image(itemAtlas.findRegion(result));
         product.setBounds(352, 160, 140, 100);
         product.setScaling(Scaling.fit);
         return product;
@@ -381,19 +377,19 @@ public class CraftingDialogue extends Dialogue {
         
         for (int i = 0; i < items.length; i++) {
             final Table requirement = new Table();
-            Label itemText = new Label(items[i] + " " + getInteger("item_" + getItemTextureNameByName(items[i])) + "/" + itemCounts[i] * requestedQuantity, yellowLabelStyle);
+            Label itemText = new Label(items[i] + " " + getInteger("item_" + items[i]) + "/" + itemCounts[i] * requestedQuantity, yellowLabelStyle);
             itemText.setFontScale(0.4f);
             itemText.setWrap(true);
-            if (itemCounts[i] * requestedQuantity > getInteger("item_" + getItemTextureNameByName(items[i]))) {
+            if (itemCounts[i] * requestedQuantity > getInteger("item_" + items[i])) {
                 itemText.setColor(Color.valueOf("#DD0000"));
             }
             labels.add(itemText);
             
             Button.ButtonStyle itemButtonStyle = new Button.ButtonStyle();
-            itemButtonStyle.up =  new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i]))).getDrawable();
-            itemButtonStyle.disabled = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], DISABLED))).getDrawable();
-            itemButtonStyle.down = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], ENABLED))).getDrawable();
-            itemButtonStyle.over = new Image(itemAtlas.findRegion(getItemTextureNameByName(items[i], OVER))).getDrawable();
+            itemButtonStyle.up = new Image(itemAtlas.findRegion(items[i])).getDrawable();
+            itemButtonStyle.disabled = new Image(itemAtlas.findRegion(items[i] + "_disabled")).getDrawable();
+            itemButtonStyle.down = new Image(itemAtlas.findRegion(items[i] + "_enabled")).getDrawable();
+            itemButtonStyle.over = new Image(itemAtlas.findRegion(items[i] + "_over")).getDrawable();
             Button item = new Button(itemButtonStyle);
             
             TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", "buy", 0.21000001f);
@@ -413,7 +409,7 @@ public class CraftingDialogue extends Dialogue {
                     }
                     
                     new PurchaseDialogue(compositeManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemTextureNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + items[finalI])) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
                             CraftingDialogue.this);
                 }
             });
@@ -422,7 +418,7 @@ public class CraftingDialogue extends Dialogue {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(compositeManager, stage, items[finalI],
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemTextureNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + items[finalI])) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
@@ -431,7 +427,7 @@ public class CraftingDialogue extends Dialogue {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(compositeManager, stage, items[finalI],
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + getItemTextureNameByName(items[finalI]))) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
+                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + items[finalI])) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
@@ -469,7 +465,7 @@ public class CraftingDialogue extends Dialogue {
             public void changed(ChangeEvent event, Actor actor) {
                 quantityText.setText("quantity:" + (int) quantity.getValue());
                 update();
-                productQuantity.setText(result + " " + getInteger("item_" + getItemTextureNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
+                productQuantity.setText(result + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
             }
         });
         
@@ -497,9 +493,9 @@ public class CraftingDialogue extends Dialogue {
     private Label addProductQuantity(boolean showCraftableQuantity) {
         Label productQuantity = addProductName();
         if (showCraftableQuantity) {
-            productQuantity.setText(result + " " + getInteger("item_" + getItemTextureNameByName(result)) + "+" + (int) (resultCount * quantity.getValue()));
+            productQuantity.setText(result + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
         } else {
-            productQuantity.setText(result + " " + getInteger("item_" + getItemTextureNameByName(result)));
+            productQuantity.setText(result + " " + getInteger("item_" + result));
         }
         return productQuantity;
     }
@@ -533,7 +529,7 @@ public class CraftingDialogue extends Dialogue {
         if (getType().equals("part")) {
             String[] requiredItems = treeJson.getStringArray(new String[]{}, result, "requires");
             for (String requiredItem : requiredItems) {
-                locked = !getBoolean("unlocked_" + getItemTextureNameByName(requiredItem));
+                locked = !getBoolean("unlocked_" + requiredItem);
                 if (locked) {
                     break;
                 }
@@ -550,14 +546,14 @@ public class CraftingDialogue extends Dialogue {
             Table requirement = new Table();
             Label itemText = new Label(requiredItems[i], yellowLabelStyle);
             itemText.setFontScale(0.4f);
-            if (!getBoolean("unlocked_" + getItemTextureNameByName(requiredItems[i]))) {
+            if (!getBoolean("unlocked_" + requiredItems[i])) {
                 itemText.setColor(Color.valueOf("#DD0000"));
             }
             ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
-            itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(getItemTextureNameByName(requiredItems[i]))).getDrawable();
-            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(getItemTextureNameByName(requiredItems[i], DISABLED))).getDrawable();
-            itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(getItemTextureNameByName(requiredItems[i], ENABLED))).getDrawable();
-            itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(getItemTextureNameByName(requiredItems[i], OVER))).getDrawable();
+            itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(requiredItems[i])).getDrawable();
+            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(requiredItems[i] + "_disabled")).getDrawable();
+            itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(requiredItems[i] + "_enabled")).getDrawable();
+            itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(requiredItems[i] + "_over")).getDrawable();
             ImageButton item = new ImageButton(itemButtonStyle);
             final int finalI = i;
             

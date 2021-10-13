@@ -17,7 +17,6 @@ import com.deo.flapd.utils.JsonEntry;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getString;
 
 public class Player extends Entity {
@@ -101,7 +100,7 @@ public class Player extends Entity {
                             .findRegions(shipConfig.getString("", "animation")),
                     Animation.PlayMode.LOOP);
         } else {
-            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getItemTextureNameByName(getString("currentArmour"))));
+            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString("currentShip")));
         }
         
         String[] params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");

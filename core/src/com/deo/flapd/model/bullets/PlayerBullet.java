@@ -21,7 +21,6 @@ import com.deo.flapd.utils.JsonEntry;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getItemTextureNameByName;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 
@@ -158,7 +157,7 @@ public class PlayerBullet {
             bullet = new Sprite();
             laserColor = currentCannon.getString("#00FFFF", "laserBeamColor");
         } else {
-            bullet = new Sprite(bullets.findRegion("bullet_" + getItemTextureNameByName(getString("currentCannon"))));
+            bullet = new Sprite(bullets.findRegion("bullet_" + getString("currentCannon")));// TODO: 13/10/2021 fix this
         }
         
         params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");
