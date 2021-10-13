@@ -2,19 +2,23 @@ package com.deo.flapd.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.PropertiesUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
+import static com.deo.flapd.utils.DUtils.containsKey;
+import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.putString;
 
 public class LocaleManager {
     
-    Array<ObjectMap<String, String>> locales;
+    Array<Properties> locales;
     String currentLocale;
     int currentLocaleIndex = -1;
     String[] localeNames = {"en", "ru"};
@@ -22,18 +26,26 @@ public class LocaleManager {
     
     public LocaleManager() {
         locales = new Array<>();
-        currentLocale = System.getProperty("user.language");
-        log("system locale: " + currentLocale, DEBUG);
+        if (containsKey("locale")) {
+            currentLocale = getString("locale");
+            log("loaded locale: " + currentLocale, DEBUG);
+        } else {
+            currentLocale = System.getProperty("user.language");
+            log("system locale: " + currentLocale, DEBUG);
+        }
+        
         long time = TimeUtils.millis();
         for (int i = 0; i < localeNames.length; i++) {
             if (localeNames[i].equals(currentLocale)) {
                 currentLocaleIndex = i;
             }
             try {
-                ObjectMap<String, String> locale_map = new ObjectMap<>();
-                PropertiesUtils.load(locale_map, Gdx.files.internal("localization/" + localeNames[i] + ".properties").reader());
+                Properties locale_map = new Properties();
+                final InputStreamReader in = new InputStreamReader(Gdx.files.internal("localization/" + localeNames[i] + ".properties").read(), StandardCharsets.UTF_8);
+                locale_map.load(in);
+                in.close();
                 locales.add(locale_map);
-                log("loaded locale: " + localeNames[i] + ", " + locale_map.size + " strings", DEBUG);
+                log("loaded locale: " + localeNames[i] + ", " + locale_map.size() + " strings", DEBUG);
             } catch (IOException e) {
                 logException(e);
             }
@@ -44,6 +56,7 @@ public class LocaleManager {
             currentLocaleIndex = 0;
         }
         log("current locale: " + currentLocale, DEBUG);
+        putString("locale", currentLocale);
     }
     
     String[] getLocales() {
@@ -60,11 +73,10 @@ public class LocaleManager {
     }
     
     public String get(String key) {
-        String value = locales.get(currentLocaleIndex).get(key);
+        String value = (String) locales.get(currentLocaleIndex).get(key);
         if (value == null) {
             return key;
         }
         return value;
     }
-    
 }
