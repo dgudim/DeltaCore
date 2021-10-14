@@ -131,7 +131,7 @@ public class GameUi {
         shieldIcon.setBounds(658 - 142 * (uiScale - 1), 432 - 48 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
         
         font_numbers = assetManager.get("fonts/font_numbers.fnt");
-        font_main = assetManager.get("fonts/pixel.ttf.fnt");
+        font_main = assetManager.get("fonts/pixel.ttf");
         BitmapFont font_buttons = assetManager.get("fonts/bold_main.ttf");
         
         stage = new Stage(viewport, batch);

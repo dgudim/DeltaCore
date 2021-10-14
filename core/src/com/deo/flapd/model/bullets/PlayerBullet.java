@@ -19,10 +19,12 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.log;
 
 public class PlayerBullet {
     
@@ -63,8 +65,8 @@ public class PlayerBullet {
     private float width, height;
     
     public float damage;
-    private int baseDamage;
-    private int bulletSpeed;
+    private float baseDamage;
+    private float bulletSpeed;
     private int bulletsPerShot;
     private final float bulletTrailTimer;
     
@@ -96,7 +98,7 @@ public class PlayerBullet {
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentShip")));
         
-        JsonEntry currentCannon = treeJson.get(getString("currentCannon"));
+        JsonEntry currentWeapon = treeJson.get(getString("currentWeapon"));
         
         gunCount = shipConfig.getInt(1, "gunCount");
         currentActiveGun = 0;
@@ -109,11 +111,11 @@ public class PlayerBullet {
             gunOffsetsY[i] = shipConfig.getFloat(0, "guns", "gun" + i + "OffsetY");
         }
         
-        bulletExplosionEffect = currentCannon.getString("particles/explosion3.p", "usesEffect");
+        bulletExplosionEffect = currentWeapon.getString("particles/explosion3.p", "usesEffect");
         
-        if (currentCannon.getBoolean(false, "usesTrail")) {
-            bulletTrailEffect = currentCannon.getString("particles/bullet_trail_left.p", "trailEffect");
-            bulletTrailTimer = currentCannon.getFloat(5, "trailFadeOutTimer");
+        if (currentWeapon.getBoolean(false, false, "usesTrail")) {
+            bulletTrailEffect = currentWeapon.getString("particles/bullet_trail_left.p", "trailEffect");
+            bulletTrailTimer = currentWeapon.getFloat(5, "trailFadeOutTimer");
             hasTrail = true;
         } else {
             bulletTrailEffect = "";
@@ -121,58 +123,57 @@ public class PlayerBullet {
             hasTrail = false;
         }
         
-        String[] params = currentCannon.getStringArray(new String[]{}, "parameters");
-        float[] paramValues = currentCannon.getFloatArray(new float[]{}, "parameterValues");
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].endsWith("damage")) {
-                damage = (int) paramValues[i];
-                baseDamage = (int) paramValues[i];
-            }
-            if (params[i].endsWith("shooting speed")) {
-                shootingSpeedMultiplier = paramValues[i];
-            }
-            if (params[i].endsWith("spread")) {
-                spread = paramValues[i];
-            }
-            if (params[i].endsWith("power consumption")) {
-                powerConsumption = paramValues[i];
-            }
-            if (params[i].endsWith("bullet speed")) {
-                bulletSpeed = (int) paramValues[i];
-            }
-            if (params[i].endsWith("bullets per shot")) {
-                bulletsPerShot = (int) paramValues[i];
-            }
-            if (params[i].endsWith("laser beam thickness")) {
-                laserHeight = paramValues[i];
-                isLaser = true;
-            }
-            if (params[i].endsWith("laser pulse duration")) {
-                laserDuration = paramValues[i];
-                currentDuration = paramValues[i];
+        JsonEntry params_weapon = currentWeapon.get("parameters");
+        for (int i = 0; i < params_weapon.size; i++) {
+            switch (params_weapon.get(i).name) {
+                case ("parameter.damage"):
+                    damage = params_weapon.getFloat(1, i);
+                    baseDamage = damage;
+                    break;
+                case ("parameter.shooting_speed"):
+                    shootingSpeedMultiplier = params_weapon.getFloat(1, i);
+                    break;
+                case ("parameter.bullet_speed"):
+                    bulletSpeed = params_weapon.getFloat(1, i);
+                    break;
+                case ("parameter.power_consumption"):
+                    powerConsumption = params_weapon.getFloat(1, i);
+                    break;
+                case ("parameter.bullets_per_shot"):
+                    bulletsPerShot = params_weapon.getInt(1, i);
+                    break;
+                case ("parameter.spread"):
+                    spread = params_weapon.getFloat(1, i);
+                    break;
+                case ("parameter.laser_beam_thickness"):
+                    laserHeight = params_weapon.getFloat(1, i);
+                    isLaser = true;
+                    break;
+                case ("parameter.laser_pulse_duration"):
+                    laserDuration = params_weapon.getFloat(1, i);
+                    currentDuration = laserDuration;
+                    break;
+                default:
+                    log("unknown parameter " + params_weapon.get(i).name + " for " + getString("currentShield"), WARNING);
+                    break;
             }
         }
         
         if (isLaser) {
             bullet = new Sprite();
-            laserColor = currentCannon.getString("#00FFFF", "laserBeamColor");
+            laserColor = currentWeapon.getString("#00FFFF", "laserBeamColor");
         } else {
-            bullet = new Sprite(bullets.findRegion("bullet_" + getString("currentCannon")));// TODO: 13/10/2021 fix this
+            bullet = new Sprite(bullets.findRegion("bullet_" + getString("currentWeapon")));
         }
         
-        params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");
-        paramValues = treeJson.getFloatArray(new float[]{}, getString("currentCore"), "parameterValues");
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].endsWith("damage multiplier")) {
-                damage *= paramValues[i];
-                baseDamage *= paramValues[i];
-            }
-        }
+        float damageMultiplier = treeJson.getFloat(false,1, getString("currentCore"), "parameters", "parameter.damage_multiplier");
+        damage *= damageMultiplier;
+        baseDamage *= damageMultiplier;
         
-        isHoming = currentCannon.getBoolean(false, "homing");
+        isHoming = currentWeapon.getBoolean(false, false, "homing");
         if (isHoming) {
-            explosionTimer = currentCannon.getFloat(3, "explosionTimer");
-            homingSpeed = currentCannon.getFloat(9, "homingSpeed");
+            explosionTimer = currentWeapon.getFloat(3, "explosionTimer");
+            homingSpeed = currentWeapon.getFloat(9, "homingSpeed");
         }
         
         this.bullets = new Array<>();
@@ -442,7 +443,7 @@ public class PlayerBullet {
         }
     }
     
-    public void updateReload(float delta){
+    public void updateReload(float delta) {
         millis = millis + 50 * (GameLogic.bonuses_collected / 100.0f + 1) * delta * gunCount;
     }
     

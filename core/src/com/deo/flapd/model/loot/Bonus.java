@@ -15,11 +15,10 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Bosses;
 
-import java.util.Random;
-
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Bonus {
@@ -44,7 +43,6 @@ public class Bonus {
     private final float uiScale;
     
     private final Image bonus_bullets_t;
-    private static Random random;
     
     private final Bosses bosses;
     
@@ -58,8 +56,6 @@ public class Bonus {
         playerBounds = this.player.entityHitBox;
         
         uiScale = getFloat("ui");
-        
-        random = new Random();
         
         TextureAtlas bonusesAtlas = assetManager.get("bonuses.atlas");
         bonus_health = new Sprite(bonusesAtlas.findRegion("bonus_health"));
@@ -112,7 +108,7 @@ public class Bonus {
         
         bonuses.add(bonus);
         types.add(BonusType.values()[type]);
-        anglesY.add(random.nextFloat() * 2 - 1);
+        anglesY.add(getRandomInRange(0, 1000) / 500f - 1);
     }
     
     public void draw(SpriteBatch batch, float delta) {

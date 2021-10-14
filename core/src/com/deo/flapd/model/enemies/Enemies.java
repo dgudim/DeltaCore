@@ -1,13 +1,13 @@
 package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 
 import java.util.concurrent.ExecutorService;
@@ -18,7 +18,7 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemies {
     
-    private final AssetManager assetManager;
+    private final CompositeManager compositeManager;
     
     JsonEntry enemiesJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("enemies/enemies.json")));
     private final Array<EnemyData> enemies;
@@ -30,9 +30,9 @@ public class Enemies {
     
     static final ExecutorService enemySpawnThread = Executors.newFixedThreadPool(3);
     
-    public Enemies(AssetManager assetManager) {
+    public Enemies(CompositeManager compositeManager) {
         
-        this.assetManager = assetManager;
+        this.compositeManager = compositeManager;
         
         enemies = new Array<>();
         enemyEntities = new Array<>();
@@ -53,7 +53,7 @@ public class Enemies {
         enemySpawnThread.submit(() -> {
             EnemyData enemyDataClone = data.clone();
             data.health *= difficulty;
-            enemyEntities.add(new Enemy(assetManager, enemyDataClone, Enemies.this, player));
+            enemyEntities.add(new Enemy(compositeManager, enemyDataClone, Enemies.this, player));
         });
     }
     

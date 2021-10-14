@@ -10,8 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Bosses;
 
-import java.util.Random;
-
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
@@ -30,8 +29,7 @@ public class Checkpoint {
     private float speed;
     private float destination_posX;
     private float destination_posY;
-    private final Random random;
-
+    
     public Checkpoint(AssetManager assetManager, Player player) {
         checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
         checkpoint_green = new Sprite((Texture) assetManager.get("checkpoint_green.png"));
@@ -41,9 +39,7 @@ public class Checkpoint {
         this.player = player;
 
         shipBounds = this.player.entityHitBox;
-
-        random = new Random();
-    
+        
         bounds.setPosition(-200, -200);
 
         checkpoint_blue.setSize(0, 0);
@@ -57,7 +53,7 @@ public class Checkpoint {
         this.destination_posY = destination_posY;
         this.speed = speed;
 
-        bounds.setPosition(950, random.nextInt(201) + 100);
+        bounds.setPosition(950, getRandomInRange(0, 201) + 100);
 
         fire = particleEffectPoolLoader.getParticleEffectByPath("particles/fire_down.p");
         fire2 = particleEffectPoolLoader.getParticleEffectByPath("particles/fire_down.p");

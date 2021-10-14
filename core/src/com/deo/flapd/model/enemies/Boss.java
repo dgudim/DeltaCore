@@ -29,6 +29,7 @@ import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
 
@@ -62,7 +63,6 @@ public class Boss {
     private final Array<Phase> phases;
     private final int[] spawnAt;
     boolean visible;
-    Player player;
     Array<Movement> animations;
     public boolean hasAlreadySpawned;
     private final int spawnScore;
@@ -76,10 +76,13 @@ public class Boss {
     String bossMusic;
     MusicManager musicManager;
     
-    Boss(String bossName, AssetManager assetManager, MusicManager musicManager) {
+    Boss(String bossName, CompositeManager compositeManager) {
         log("------------------------------------------------------\n", DEBUG);
         log("---------loading " + bossName, DEBUG);
         long genTime = TimeUtils.millis();
+        
+        AssetManager assetManager = compositeManager.getAssetManager();
+        musicManager = compositeManager.getMusicManager();
         
         this.bossName = bossName;
         
@@ -93,20 +96,20 @@ public class Boss {
         spawnScore = bossConfig.getInt(-1, "spawnConditions", "score") + getRandomInRange(-bossConfig.getInt(0, "spawnConditions", "randomness"), bossConfig.getInt(0, "spawnConditions", "randomness"));
         spawnAt = bossConfig.getIntArray(new int[]{500, 500}, "spawnAt");
         bossMusic = bossConfig.getString(false, "", "music");
-        this.musicManager = musicManager;
+        
         for (int i = 0; i < bossConfig.get("parts").size; i++) {
             String type = bossConfig.get("parts", i).getString("part", "type");
             switch (type) {
                 case ("basePart"):
                     if (body == null) {
-                        body = new BasePart(bossConfig.get("parts", i), bossAtlas, assetManager);
+                        body = new BasePart(bossConfig.get("parts", i), bossAtlas, compositeManager);
                         parts.add(body);
                     } else {
                         log("can't have two or more base parts per boss, ignoring " + bossConfig.get("parts", i).name, ERROR);
                     }
                     break;
                 case ("part"):
-                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
+                    parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, this, compositeManager));
                     break;
                 case ("cannon"):
                     
@@ -147,23 +150,23 @@ public class Boss {
                         config.addValue(new JsonEntry(toAdd));
                     }
                     
-                    parts.add(new Cannon(config, bossAtlas, parts, this, assetManager));
+                    parts.add(new Cannon(config, bossAtlas, parts, this, compositeManager));
                     break;
                 case ("shield"):
-                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
+                    parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, this, compositeManager));
                     break;
                 case ("clone"):
                     String copyFrom = bossConfig.get("parts", i).getString(parts.get(0).name, "copyFrom");
                     String cloneType = bossConfig.getString("part", "parts", copyFrom, "type");
                     switch (cloneType) {
                         case ("part"):
-                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
+                            parts.add(new Part(bossConfig.get("parts", i), bossAtlas, parts, this, compositeManager));
                             break;
                         case ("cannon"):
-                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
+                            parts.add(new Cannon(bossConfig.get("parts", i), bossAtlas, parts, this, compositeManager));
                             break;
                         case ("shield"):
-                            parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, this, assetManager));
+                            parts.add(new Shield(bossConfig.get("parts", i), bossAtlas, parts, this, compositeManager));
                             break;
                         default:
                             log("Can't copy base part", WARNING);
@@ -263,7 +266,6 @@ public class Boss {
     }
     
     void setTargetPlayer(Player player) {
-        this.player = player;
         if (hasAi) {
             bossAi.initialize(player, body);
         }
@@ -303,6 +305,7 @@ public class Boss {
 class BasePart extends Entity {
     
     AssetManager assetManager;
+    private Drops drops;
     
     float movementOffsetX = 0;
     float movementOffsetY = 0;
@@ -340,12 +343,13 @@ class BasePart extends Entity {
     Sound explosionSound;
     float soundVolume;
     
-    BasePart(JsonEntry newConfig, TextureAtlas textures, AssetManager assetManager) {
+    BasePart(JsonEntry newConfig, TextureAtlas textures, CompositeManager compositeManager) {
         
         log("loading " + newConfig.name, DEBUG);
         
         active = false;
-        this.assetManager = assetManager;
+        assetManager = compositeManager.getAssetManager();
+        drops = compositeManager.getDrops();
         
         exploded = false;
         name = newConfig.name;
@@ -613,7 +617,7 @@ class BasePart extends Entity {
                 Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
             }
             
-            Drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
+            drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));
             
             explosionEffect.setPosition(x + movementOffsetX + width / 2, y + movementOffsetY + height / 2);
             
@@ -646,8 +650,8 @@ class Part extends BasePart {
     BasePart link;
     final Boss boss;
     
-    Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, AssetManager assetManager) {
-        super(newConfig, textures, assetManager);
+    Part(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, CompositeManager compositeManager) {
+        super(newConfig, textures, compositeManager);
         this.parts = parts;
         link = boss.body;
         this.boss = boss;
@@ -697,8 +701,8 @@ class Part extends BasePart {
 
 class Shield extends Part {
     
-    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, AssetManager assetManager) {
-        super(newConfig, textures, parts, boss, assetManager);
+    Shield(JsonEntry newConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, CompositeManager compositeManager) {
+        super(newConfig, textures, parts, boss, compositeManager);
     }
     
     @Override
@@ -721,8 +725,8 @@ class Cannon extends Part {
     
     Array<Barrel> barrels;
     
-    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, AssetManager assetManager) {
-        super(partConfig, textures, parts, boss, assetManager);
+    Cannon(JsonEntry partConfig, TextureAtlas textures, Array<BasePart> parts, Boss boss, CompositeManager compositeManager) {
+        super(partConfig, textures, parts, boss, compositeManager);
         
         canAim = currentConfig.getBoolean(false, false, "canAim");
         if (canAim) {

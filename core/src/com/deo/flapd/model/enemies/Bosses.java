@@ -1,11 +1,10 @@
 package com.deo.flapd.model.enemies;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.CompositeManager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,9 +22,9 @@ public class Bosses {
         bosses = new Array<>();
     }
     
-    public void loadBosses(AssetManager assetManager, MusicManager musicManager) {
+    public void loadBosses(CompositeManager compositeManager) {
         for (String bossName : bossNames) {
-            bosses.add(new Boss(bossName, assetManager, musicManager));
+            bosses.add(new Boss(bossName, compositeManager));
         }
     }
     

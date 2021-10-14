@@ -17,28 +17,28 @@ bullet_long_yellow
   orig: 75, 20
   offset: 0, 0
   index: -1
-bullet_Cannon1
+bullet_part.machine_gun
   rotate: false
   xy: 176, 11
   size: 52, 20
   orig: 52, 20
   offset: 0, 0
   index: -1
-bullet_Cannon2
+bullet_part.small_machine_gun
   rotate: false
   xy: 230, 11
   size: 52, 20
   orig: 52, 20
   offset: 0, 0
   index: -1
-bullet_Cannon3
+bullet_part.laser_gun
   rotate: false
   xy: 284, 19
   size: 52, 12
   orig: 52, 12
   offset: 0, 0
   index: -1
-bullet_Cannon5
+bullet_part.rail_gun
   rotate: false
   xy: 338, 19
   size: 52, 12
@@ -59,28 +59,28 @@ bullet_destroyer_rocket
   orig: 40, 24
   offset: 0, 0
   index: -1
-bullet_Cannon4
+bullet_med_red
   rotate: false
   xy: 434, 17
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
-bullet_med_red
+bullet_part.coil_gun
   rotate: false
   xy: 434, 1
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
-bullet_minigun
+bullet_part.minigun
   rotate: false
   xy: 314, 3
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
-bullet_shotgun
+bullet_part.shotgun
   rotate: false
   xy: 450, 17
   size: 14, 14

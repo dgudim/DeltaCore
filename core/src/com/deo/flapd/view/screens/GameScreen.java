@@ -20,7 +20,6 @@ import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
-import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -117,11 +116,11 @@ public class GameScreen implements Screen {
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         
-        enemies = new Enemies(assetManager);
+        enemies = new Enemies(compositeManager);
         enemies.loadEnemies();
         
         bosses = new Bosses();
-        bosses.loadBosses(assetManager, musicManager);
+        bosses.loadBosses(compositeManager);
         
         player = new Player(assetManager, 0, 204, newGame, enemies);
         
@@ -133,6 +132,7 @@ public class GameScreen implements Screen {
         bonus = new Bonus(assetManager, 50, 50, player, bosses);
         
         drops = new Drops(assetManager, 48, getFloat("ui"));
+        compositeManager.setDrops(drops);
         
         gameUi = new GameUi(viewport, compositeManager, player);
         

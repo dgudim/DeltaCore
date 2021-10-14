@@ -502,6 +502,9 @@ public class JsonEntry {
     
     @Override
     public String toString() {
+        if(isNull()){
+            return "null";
+        }
         return jsonValue.toString();
     }
 }

@@ -10,20 +10,17 @@ import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.environment.EnvironmentalEffects;
 import com.deo.flapd.utils.JsonEntry;
 
-import java.util.Random;
-
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomBoolean;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 
 
 public class GameLogic {
     
     private final Player player;
-    
-    private final Random random;
     
     public static int bonuses_collected;
     
@@ -45,7 +42,6 @@ public class GameLogic {
     
     public GameLogic(Player player, boolean newGame, Game game, EnvironmentalEffects environmentalEffects, Checkpoint checkpoint) {
         this.player = player;
-        random = new Random();
         
         this.game = game;
         
@@ -58,25 +54,9 @@ public class GameLogic {
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
-        speedMultiplier = treeJson.getFloatArray(new float[]{}, getString("currentEngine"), "parameterValues")[0];
-        
-        float[] shipParamValues = treeJson.getFloatArray(new float[]{}, getString("currentArmour"), "parameterValues");
-        String[] shipParams = treeJson.getStringArray(new String[]{}, getString("currentArmour"), "parameters");
-        
-        float[] coreParamValues = treeJson.getFloatArray(new float[]{}, getString("currentCore"), "parameterValues");
-        String[] coreParams = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");
-        
-        for (int i = 0; i < shipParamValues.length; i++) {
-            if (shipParams[i].endsWith("speed multiplier")) {
-                speedMultiplier *= shipParamValues[i];
-            }
-        }
-        
-        for (int i = 0; i < coreParams.length; i++) {
-            if (coreParams[i].endsWith("speed multiplier")) {
-                speedMultiplier *= coreParamValues[i];
-            }
-        }
+        speedMultiplier = treeJson.getFloat(false, 1, getString("currentEngine"), "parameters", "parameter.speed_multiplier");
+        speedMultiplier *= treeJson.getFloat(false, 1, getString("currentShip"), "parameters", "parameter.speed_multiplier");
+        speedMultiplier *= treeJson.getFloat(false, 1, getString("currentCore"), "parameters", "parameter.speed_multiplier");
         
         if (!newGame) {
             bonuses_collected = getInteger("bonuses_collected");
@@ -142,17 +122,17 @@ public class GameLogic {
         }
         
         if (getRandomBoolean(0.05f) && delta > 0) {
-            environmentalEffects.spawnMeteorite(random.nextInt(480), (random.nextInt(60) - 30) / 10f, random.nextInt(10) + 5);
+            environmentalEffects.spawnMeteorite(getRandomInRange(0, 480), (getRandomInRange(0, 60) - 30) / 10f, getRandomInRange(0, 10) + 5);
         }
-    
+        
         if (getRandomBoolean(0.005f) && delta > 0) {
-            environmentalEffects.spawnFallingShip(random.nextInt(480));
+            environmentalEffects.spawnFallingShip(getRandomInRange(0, 480));
         }
         
         if (!bossWave) {
             if (score > lastCheckpoint + 9000) {
                 lastCheckpoint = score;
-                checkpoint.Spawn(random.nextInt(300) + 150, random.nextInt(201) + 100, 1);
+                checkpoint.Spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100, 1);
             }
         }
     }

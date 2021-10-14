@@ -21,6 +21,7 @@ import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 
@@ -37,7 +38,9 @@ public class Enemy extends Entity {
     
     private final Array<EnemyBullet> bullets;
     
+    private final CompositeManager compositeManager;
     private final AssetManager assetManager;
+    private final Drops drops;
     
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
@@ -54,8 +57,11 @@ public class Enemy extends Entity {
     private final Rectangle playerBounds;
     private final PlayerBullet playerBullet;
     
-    Enemy(AssetManager assetManager, EnemyData data, Enemies enemies, Player player) {
-        this.assetManager = assetManager;
+    Enemy(CompositeManager compositeManager, EnemyData data, Enemies enemies, Player player) {
+        this.compositeManager = compositeManager;
+        assetManager = compositeManager.getAssetManager();
+        drops = compositeManager.getDrops();
+        
         this.data = data;
         this.enemies = enemies;
         this.player = player;
@@ -291,7 +297,7 @@ public class Enemy extends Entity {
         for (int i = 0; i < data.dronesPerSpawn; i++) {
             EnemyData droneData = new EnemyData(enemies.enemiesJson.get(data.droneType)).setNewPosition(x, y);
             droneData.health *= difficulty;
-            enemies.enemyEntities.add(new Enemy(assetManager, droneData, enemies, player));
+            enemies.enemyEntities.add(new Enemy(compositeManager, droneData, enemies, player));
         }
         shootingSound.play(volume / 100f);
         data.millis = 0;
@@ -323,7 +329,7 @@ public class Enemy extends Entity {
             Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), entityHitBox);
         }
         
-        Drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
+        drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
         
         explosionSound.play(volume / 100f);
     }

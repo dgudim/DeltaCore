@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
 import com.deo.flapd.utils.postprocessing.effects.MotionBlur;
@@ -26,6 +27,8 @@ public class CompositeManager {
     private UIComposer uiComposer;
     
     private Game game;
+    
+    Drops drops;
     
     public CompositeManager() {
     }
@@ -72,6 +75,14 @@ public class CompositeManager {
     
     public Bloom getBloom() {
         return bloom;
+    }
+    
+    public Drops getDrops() {
+        return drops;
+    }
+    
+    public void setDrops(Drops drops) {
+        this.drops = drops;
     }
     
     public void setUiComposer(UIComposer uiComposer) {
