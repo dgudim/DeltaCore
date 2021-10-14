@@ -324,7 +324,7 @@ public class Enemy extends Entity {
         
         GameLogic.enemiesKilled++;
         
-        UraniumCell.Spawn(entityHitBox, (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), 1, data.moneyTimer);
+        UraniumCell.Spawn(entityHitBox, (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), data.moneyTimer);
         if (getRandomInRange(0, 100) <= data.bonusChance) {
             Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), entityHitBox);
         }

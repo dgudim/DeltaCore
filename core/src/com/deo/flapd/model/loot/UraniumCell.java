@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
@@ -17,52 +18,45 @@ public class UraniumCell {
     
     private final Sprite cell;
     private static Array<Float> timers;
-    private static Array<Rectangle> cells;
+    private static Array<Vector2> cells;
     private static Array<Float> degrees;
-    private static Array<Integer> values;
+    private static Array<Integer> pack_levels;
     private final float uiScaling;
     
     public UraniumCell(AssetManager assetManager) {
         
         cell = new Sprite((Texture) assetManager.get("uraniumCell.png"));
+        
         cells = new Array<>();
         timers = new Array<>();
         degrees = new Array<>();
-        values = new Array<>();
+        pack_levels = new Array<>();
         
         uiScaling = getFloat("ui");
     }
     
-    public static void Spawn(Rectangle originEnemy, int count, float scale, float timer) {
-        Spawn(originEnemy.getX() + originEnemy.width / 2 - 19, originEnemy.getY() + originEnemy.height / 2 - 22, count, scale, timer);
+    public static void Spawn(Rectangle originEnemy, int count, float timer) {
+        Spawn(originEnemy.getX() + originEnemy.width / 2 - 19, originEnemy.getY() + originEnemy.height / 2 - 22, count, timer);
     }
     
-    public static void Spawn(float x, float y, int count, float scale, float timer) {
+    public static void Spawn(float x, float y, int count, float timer) {
         for (int i = 0; i < count; i++) {
-            Rectangle cell = new Rectangle();
-            
-            cell.x = x;
-            cell.y = y;
-            
-            cell.setSize(39 * scale, 45 * scale);
-            
-            cells.add(cell);
+            cells.add(new Vector2(x, y));
             timers.add(timer * (getRandomInRange(1, 2) / 1.5f));
             degrees.add(getRandomInRange(0, 1000) * 0.36f);
-            values.add((int) MathUtils.clamp((getRandomInRange(0, 3) + 1) * scale, 1, 4));
+            pack_levels.add(clamp((getRandomInRange(0, 3) + 1), 1, 4));
         }
     }
     
     public void draw(SpriteBatch batch, float delta) {
         for (int i = 0; i < cells.size; i++) {
-            Rectangle cell = cells.get(i);
+            Vector2 cell = cells.get(i);
             float degree = degrees.get(i);
             float timer = timers.get(i);
-            float pack_level = values.get(i);
+            float pack_level = pack_levels.get(i);
             
             this.cell.setPosition(cell.x, cell.y);
-            this.cell.setSize(cell.width, cell.height);
-            this.cell.setOrigin(cell.width / 2f, cell.height / 2f);
+            
             this.cell.setColor(1 - (pack_level - 1) / 4, 1 - (pack_level - 1) / 4, 1, 1);
             this.cell.draw(batch);
             
@@ -93,16 +87,16 @@ public class UraniumCell {
         timers.removeIndex(i);
         cells.removeIndex(i);
         degrees.removeIndex(i);
-        GameLogic.money += values.get(i);
-        GameLogic.moneyEarned += values.get(i);
-        values.removeIndex(i);
+        GameLogic.money += pack_levels.get(i);
+        GameLogic.moneyEarned += pack_levels.get(i);
+        pack_levels.removeIndex(i);
     }
     
     public void dispose() {
         timers.clear();
         cells.clear();
         degrees.clear();
-        values.clear();
+        pack_levels.clear();
     }
     
 }

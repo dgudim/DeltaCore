@@ -133,10 +133,10 @@ public class Main extends Game {
     public void dispose() {
         flushLogBuffer();
         batch.dispose();
-        compositeManager.dispose();
         blurProcessor.dispose();
         if (particleEffectPoolLoader != null) {
             particleEffectPoolLoader.dispose();
         }
+        compositeManager.dispose();
     }
 }

@@ -67,7 +67,6 @@ public class GameScreen implements Screen {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
-    //private final LocaleManager localeManager;
     
     private final Bonus bonus;
     

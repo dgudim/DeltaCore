@@ -85,7 +85,7 @@ public class Drops {
                 
                 drop.setPosition(pos1.x, pos1.y);
     
-                if (abs(pos1.x - pos2.x) < 20 && abs(pos1.y - pos2.y) < 20) {
+                if (abs(pos1.x - pos2.x) < 15 && abs(pos1.y - pos2.y) < 15) {
                     removeDrop(i);
                     dropRemoved = true;
                 }

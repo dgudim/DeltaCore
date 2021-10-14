@@ -2369,14 +2369,14 @@ item.cyan_warp_shard_over
   orig: 21, 21
   offset: 0, 0
   index: -1
-item.green_warp_shard.png
+item.green_warp_shard
   rotate: false
   xy: 1602, 667
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-item.green_warp_shard.png_disabled
+item.green_warp_shard_disabled
   rotate: false
   xy: 1602, 644
   size: 21, 21
@@ -2404,14 +2404,14 @@ item.cyan_crystal_over
   orig: 13, 13
   offset: 0, 0
   index: -1
-item.green_warp_shard.png_enabled
+item.green_warp_shard_enabled
   rotate: false
   xy: 1625, 690
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-item.green_warp_shard.png_over
+item.green_warp_shard_over
   rotate: false
   xy: 1625, 667
   size: 21, 21

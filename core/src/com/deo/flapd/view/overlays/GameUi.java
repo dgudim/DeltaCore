@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.view.screens.GameOverScreen;
 import com.deo.flapd.view.screens.GameScreen;
@@ -94,6 +95,7 @@ public class GameUi {
         AssetManager assetManager = compositeManager.getAssetManager();
         batch = compositeManager.getBatch();
         shapeRenderer = compositeManager.getShapeRenderer();
+        LocaleManager localeManager = compositeManager.getLocaleManager();
         this.player = player;
         
         uiScale = getFloat("ui");
@@ -157,9 +159,9 @@ public class GameUi {
         pauseButtonStyle.down = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_enabled"));
         pauseButtonStyle.downFontColor = Color.valueOf("#FFAF05");
         
-        TextButton exit_button = new TextButton("Exit", pauseButtonStyle);
-        TextButton continue_button = new TextButton("Continue", pauseButtonStyle);
-        TextButton restart_button = new TextButton("Restart", pauseButtonStyle);
+        TextButton exit_button = new TextButton(localeManager.get("pause.exit"), pauseButtonStyle);
+        TextButton continue_button = new TextButton(localeManager.get("pause.continue"), pauseButtonStyle);
+        TextButton restart_button = new TextButton(localeManager.get("pause.restart"), pauseButtonStyle);
         continue_button.setScale(uiScale);
         restart_button.setScale(uiScale);
         exit_button.setScale(uiScale);
@@ -236,7 +238,7 @@ public class GameUi {
             font_numbers.setColor(0, 1, 1, 1);
         }
         
-        chronosModuleEnabled = currentBonus.equals("chronos module");
+        chronosModuleEnabled = currentBonus.equals("part.chronos_module");
         
         stage.addActor(stats_indicator_panel);
         stage.addActor(pause);

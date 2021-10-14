@@ -212,7 +212,6 @@ public class Bonus {
             explosions.get(i3).free();
         }
         explosions.clear();
-        font_text.dispose();
     }
     
     private void removeBonus(int i, boolean explode) {

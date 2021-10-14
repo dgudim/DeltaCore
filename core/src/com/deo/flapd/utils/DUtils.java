@@ -29,6 +29,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
+import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static java.lang.Math.abs;
@@ -83,7 +84,7 @@ public class DUtils {
     }
     
     public static int getRandomInRange(int min, int max) {
-        return MathUtils.random(max - min) + min;
+        return random(max - min) + min;
     }
     
     public static boolean getRandomBoolean(float positiveChance) {

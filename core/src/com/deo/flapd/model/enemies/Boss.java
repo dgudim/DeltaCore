@@ -611,7 +611,7 @@ class BasePart extends Entity {
     
     void explode() {
         if (hasCollision && !type.equals("shield")) {
-            UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), 1, moneyTimer);
+            UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]),  moneyTimer);
             
             if (getRandomInRange(0, 100) <= bonusChance) {
                 Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
