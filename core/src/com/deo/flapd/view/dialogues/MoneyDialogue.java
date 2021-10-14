@@ -12,7 +12,7 @@ public abstract class MoneyDialogue extends Dialogue {
             JsonEntry items = treeJson.get(result, "items");
             for (int i = 0; i < items.size; i++) {
                 int[] buffer = getPrice(items.get(i).name, treeJson, priceCoefficient);
-                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(false, 1, result, "resultCount") * items.get(i).asInt() / 3f);
+                priceArray[0] += Math.ceil(buffer[0] / treeJson.getFloat(false, 1, result, "resultCount") * items.getInt(1, i) / 3f);
                 priceArray[1] += buffer[1] + 1;
             }
         } else {

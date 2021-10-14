@@ -20,6 +20,7 @@ import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -67,6 +68,7 @@ public class GameScreen implements Screen {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
+    //private final LocaleManager localeManager;
     
     private final Bonus bonus;
     

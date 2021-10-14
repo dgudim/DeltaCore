@@ -400,7 +400,7 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("newGame.alert"), new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("nemGame.alert"), new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame();

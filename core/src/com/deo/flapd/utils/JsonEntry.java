@@ -53,7 +53,7 @@ public class JsonEntry {
         return getWithFallBack(new JsonEntry(), showWarnings, name);
     }
     
-    public JsonEntry getWithFallBack(JsonEntry fallback, boolean showWarnings, String name){
+    public JsonEntry getWithFallBack(JsonEntry fallback, boolean showWarnings, String name) {
         if (jsonValue.get(name) == null) {
             if (showWarnings) {
                 log("No key named " + name + " (path: " + jsonValue.trace() + ")", WARNING);
@@ -248,6 +248,20 @@ public class JsonEntry {
         return getBoolean(true, defaultValue, keys);
     }
     
+    public int getInt(int defaultValue, int index) {
+        return getInt(true, defaultValue, index);
+    }
+    
+    public int getInt(boolean showWarnings, int defaultValue, int index) {
+        if (!get(index).isNumber()) {
+            if (showWarnings) {
+                log("No value specified for index " + index + " in entry: " + name + ", using default (" + defaultValue + ")", WARNING);
+            }
+            return defaultValue;
+        }
+        return get(index).asInt();
+    }
+    
     /**
      * Finds the child with the specified name and path and returns it as an integer.
      */
@@ -368,7 +382,7 @@ public class JsonEntry {
     public float[] getFloatArrayWithFallback(JsonEntry fallback, boolean showWarnings, float[] defaultValue, String... keys) {
         if (get(false, keys).isNull()) {
             return fallback.getFloatArray(showWarnings, defaultValue, keys);
-           
+            
         } else {
             return getFloatArray(false, null, keys);
         }

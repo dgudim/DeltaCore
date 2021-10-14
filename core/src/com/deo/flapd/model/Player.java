@@ -16,8 +16,10 @@ import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.log;
 
 public class Player extends Entity {
     
@@ -40,7 +42,7 @@ public class Player extends Entity {
     
     private float shieldRegenerationSpeed;
     private float shieldPowerConsumption;
-    public float shieldStrength;
+    public float shieldCapacity;
     public float shieldStrengthMultiplier = 1;
     
     private float powerGeneration;
@@ -68,7 +70,7 @@ public class Player extends Entity {
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentArmour")));
+        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentShip")));
         
         fires = new Array<>();
         
@@ -103,34 +105,42 @@ public class Player extends Entity {
             entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString("currentShip")));
         }
         
-        String[] params = treeJson.getStringArray(new String[]{}, getString("currentCore"), "parameters");
-        float[] paramValues = treeJson.getFloatArray(new float[]{}, getString("currentCore"), "parameterValues");
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].endsWith("power generation")) {
-                powerGeneration = paramValues[i];
-            }
-            if (params[i].endsWith("health multiplier")) {
-                healthMultiplier = paramValues[i];
-            }
-            if (params[i].endsWith("shield strength multiplier")) {
-                shieldStrengthMultiplier = paramValues[i];
-            }
-            if (params[i].endsWith("charge capacity multiplier")) {
-                chargeCapacityMultiplier = paramValues[i];
+        JsonEntry params_core = treeJson.get(getString("currentCore"), "parameters");
+        for (int i = 0; i < params_core.size; i++) {
+            switch (params_core.get(i).name) {
+                case ("parameter.power_generation"):
+                    powerGeneration = params_core.getFloat(1, i);
+                    break;
+                case ("parameter.health_multiplier"):
+                    healthMultiplier = params_core.getFloat(1, i);
+                    break;
+                case ("parameter.shield_strength_multiplier"):
+                    shieldStrengthMultiplier = params_core.getFloat(1, i);
+                    break;
+                case ("parameter.charge_capacity_multiplier"):
+                    chargeCapacityMultiplier = params_core.getFloat(1, i);
+                    break;
+                default:
+                    log("unknown parameter " + params_core.get(i).name + " for " + getString("currentCore"), WARNING);
+                    break;
             }
         }
         
-        params = treeJson.getStringArray(new String[]{}, getString("currentShield"), "parameters");
-        paramValues = treeJson.getFloatArray(new float[]{}, getString("currentShield"), "parameterValues");
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].endsWith("power consumption")) {
-                shieldPowerConsumption = paramValues[i];
-            }
-            if (params[i].endsWith("shield regeneration speed")) {
-                shieldRegenerationSpeed = paramValues[i];
-            }
-            if (params[i].endsWith("shield strength")) {
-                shieldStrength = paramValues[i];
+        JsonEntry params_shield = treeJson.get(getString("currentShield"), "parameters");
+        for (int i = 0; i < params_shield.size; i++) {
+            switch (params_shield.get(i).name) {
+                case ("parameter.power_consumption"):
+                    shieldPowerConsumption = params_shield.getFloat(1, i);
+                    break;
+                case ("parameter.regeneration_speed"):
+                    shieldRegenerationSpeed = params_shield.getFloat(1, i);
+                    break;
+                case ("parameter.shield_capacity"):
+                    shieldCapacity = params_shield.getFloat(1, i);
+                    break;
+                default:
+                    log("unknown parameter " + params_shield.get(i).name + " for " + getString("currentShield"), WARNING);
+                    break;
             }
         }
         
@@ -142,57 +152,50 @@ public class Player extends Entity {
         aimRadius.setSize(0, 0);
         
         String bonus = getString("currentBonus");
+        JsonEntry params_bonus = treeJson.get(bonus, "parameters");
         
-        if (bonus.contains("magnet")) {
-            params = treeJson.getStringArray(new String[]{}, bonus, "parameters");
-            paramValues = treeJson.getFloatArray(new float[]{}, bonus, "parameterValues");
-            for (int i = 0; i < params.length; i++) {
-                if (params[i].endsWith("power consumption")) {
-                    bonusPowerConsumption = paramValues[i];
-                }
-                if (params[i].endsWith("attraction radius")) {
-                    magnetField.setSize(paramValues[i], paramValues[i]);
+        if (!bonus.equals("none")) {
+            for (int i = 0; i < params_bonus.size; i++) {
+                switch (params_bonus.get(i).name) {
+                    case ("parameter.power_consumption"):
+                        bonusPowerConsumption = params_bonus.getFloat(1, i);
+                        break;
+                    case ("parameter.attraction_radius"):
+                        if (bonus.equals("part.magnet")) {
+                            float radius = params_bonus.getFloat(1, i);
+                            magnetField.setSize(radius, radius);
+                        }
+                        break;
+                    case ("parameter.repellent_radius"):
+                        if (bonus.equals("repellent_field")) {
+                            float radius = params_bonus.getFloat(1, i);
+                            repellentField.setSize(radius, radius);
+                        }
+                        break;
+                    case ("parameter.aim_radius"):
+                        if (bonus.equals("radar")) {
+                            float radius = params_bonus.getFloat(1, i);
+                            aimRadius.setSize(radius, radius);
+                        }
+                        break;
+                    default:
+                        log("unknown parameter " + params_bonus.get(i).name + " for " + bonus, WARNING);
+                        break;
                 }
             }
         }
         
-        if (bonus.contains("repellent")) {
-            params = treeJson.getStringArray(new String[]{}, bonus, "parameters");
-            paramValues = treeJson.getFloatArray(new float[]{}, bonus, "parameterValues");
-            for (int i = 0; i < params.length; i++) {
-                if (params[i].endsWith("power consumption")) {
-                    bonusPowerConsumption = paramValues[i];
-                }
-                if (params[i].endsWith("repellent radius")) {
-                    repellentField.setSize(paramValues[i], paramValues[i]);
-                }
-            }
-        }
-        
-        if (bonus.contains("radar")) {
-            params = treeJson.getStringArray(new String[]{}, bonus, "parameters");
-            paramValues = treeJson.getFloatArray(new float[]{}, bonus, "parameterValues");
-            for (int i = 0; i < params.length; i++) {
-                if (params[i].endsWith("aim radius")) {
-                    aimRadius.setSize(paramValues[i], paramValues[i]);
-                }
-                if (params[i].endsWith("power consumption")) {
-                    bonusPowerConsumption = paramValues[i];
-                }
-            }
-        }
-        
-        chargeCapacity = treeJson.getFloatArray(new float[]{}, getString("currentBattery"), "parameterValues")[0];
-        healthCapacity = treeJson.getFloatArray(new float[]{}, getString("currentArmour"), "parameterValues")[0];
+        chargeCapacity = treeJson.getFloat(1, getString("currentBattery"), "parameters", "parameter.capacity");
+        healthCapacity = treeJson.getFloat(1, getString("currentShip"), "parameters", "parameter.health");
         
         shield = new Sprite(fields.findRegion(treeJson.getString("explosion2", getString("currentShield"), "usesEffect")));
         
         if (!newGame) {
-            shieldCharge = clamp(getFloat("Shield"), 0, shieldStrength * shieldStrengthMultiplier);
+            shieldCharge = clamp(getFloat("Shield"), 0, shieldCapacity * shieldStrengthMultiplier);
             health = clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
             charge = clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
         } else {
-            shieldCharge = shieldStrength * shieldStrengthMultiplier;
+            shieldCharge = shieldCapacity * shieldStrengthMultiplier;
             health = healthCapacity * healthMultiplier;
             charge = chargeCapacity * chargeCapacityMultiplier;
         }
@@ -222,7 +225,7 @@ public class Player extends Entity {
         bullet = new PlayerBullet(assetManager, this, enemies, newGame);
     }
     
-    public void scaleFireMotion(float motionScale){
+    public void scaleFireMotion(float motionScale) {
         for (int i = 0; i < fires.size; i++) {
             fires.get(i).scaleEffect(1, motionScale);
         }
@@ -249,11 +252,11 @@ public class Player extends Entity {
         
     }
     
-    public void drawBullets(SpriteBatch batch, float delta){
+    public void drawBullets(SpriteBatch batch, float delta) {
         bullet.draw(batch, delta);
     }
     
-    public void updateBulletReload(float delta){
+    public void updateBulletReload(float delta) {
         bullet.updateReload(delta);
     }
     
@@ -293,7 +296,7 @@ public class Player extends Entity {
             } else {
                 charge = chargeCapacity * chargeCapacityMultiplier;
             }
-            if (shieldCharge < shieldStrength * shieldStrengthMultiplier && charge >= shieldPowerConsumption * delta) {
+            if (shieldCharge < shieldCapacity * shieldStrengthMultiplier && charge >= shieldPowerConsumption * delta) {
                 shieldCharge += shieldRegenerationSpeed * delta;
                 charge -= shieldPowerConsumption * delta;
             }

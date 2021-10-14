@@ -171,7 +171,7 @@ public class Bonus {
                         player.charge = clamp(player.charge + 5, -1000, player.chargeCapacity * player.chargeCapacityMultiplier);
                         break;
                     case SHIELD:
-                        player.shieldCharge = clamp(player.shieldCharge + 15, -1000, player.shieldStrength);
+                        player.shieldCharge = clamp(player.shieldCharge + 15, -1000, player.shieldCapacity);
                         break;
                     case HEALTH:
                         player.health = clamp(player.health + 15, -1000, player.healthCapacity * player.healthMultiplier);
