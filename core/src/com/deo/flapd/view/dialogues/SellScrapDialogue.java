@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
@@ -129,8 +130,8 @@ public class SellScrapDialogue extends MoneyDialogue {
         price[1] = price[1] / 3;
         final Table requirements = new Table();
         Table holder = new Table();
-        final Label uraniumCells_text = new Label(getInteger("money") + "+" + price[0], yellowLabelStyle);
-        final Label cogs_text = new Label(getInteger("cogs") + "+" + price[1], yellowLabelStyle);
+        final Label uraniumCells_text = new Label(getInteger(Keys.moneyAmount) + "+" + price[0], yellowLabelStyle);
+        final Label cogs_text = new Label(getInteger(Keys.cogAmount) + "+" + price[1], yellowLabelStyle);
         uraniumCells_text.setFontScale(0.32f);
         cogs_text.setFontScale(0.32f);
         
@@ -228,8 +229,8 @@ public class SellScrapDialogue extends MoneyDialogue {
                 for (int i = 0; i < labels.size; i++) {
                     labels.get(i).setText(items[i] + " " + getInteger("item_" + items[i]) + "+" + (int) (itemCounts[i] * quantity.getValue()));
                 }
-                uraniumCells_text.setText(getInteger("money") + "+" + (int) (price[0] * quantity.getValue()));
-                cogs_text.setText(getInteger("cogs") + "+" + (int) (price[1] * quantity.getValue()));
+                uraniumCells_text.setText(getInteger(Keys.moneyAmount) + "+" + (int) (price[0] * quantity.getValue()));
+                cogs_text.setText(getInteger(Keys.cogAmount) + "+" + (int) (price[1] * quantity.getValue()));
             }
         });
         
@@ -237,8 +238,8 @@ public class SellScrapDialogue extends MoneyDialogue {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (buy.isChecked()) {
-                    addInteger("money", (int) (price[0] * quantity.getValue()));
-                    addInteger("cogs", (int) (price[1] * quantity.getValue()));
+                    addInteger(Keys.moneyAmount, (int) (price[0] * quantity.getValue()));
+                    addInteger(Keys.cogAmount, (int) (price[1] * quantity.getValue()));
                 } else {
                     for (int i = 0; i < labels.size; i++) {
                         addInteger("item_" + items[i], (int) (itemCounts[i] * quantity.getValue()));

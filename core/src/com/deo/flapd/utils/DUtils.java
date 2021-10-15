@@ -367,21 +367,20 @@ public class DUtils {
     }
     
     public static void initNewGame() {
-        putInteger("enemiesKilled", 0);
-        putInteger("moneyEarned", 0);
-        putInteger("Score", 0);
-        putFloat("Health", 1000);
-        putFloat("Shield", 1000);
-        putFloat("Charge", 1000);
+        putInteger(Keys.enemiesKilled, 0);
+        putInteger(Keys.moneyEarned, 0);
+        putInteger(Keys.playerScore, 0);
+        putFloat(Keys.playerChargeValue, 1000);
+        putFloat(Keys.playerHealthValue, 1000); // TODO: 15/10/2021 replace 1000 with a normal number
+        putFloat(Keys.playerShieldValue, 1000);
         for (int i = 0; i < Bosses.bossNames.length; i++) {
             putBoolean("boss_spawned_" + Bosses.bossNames[i], false);
         }
-        putInteger("bonuses_collected", 0);
-        putInteger("lastCheckpoint", 0);
-        putInteger("bulletsShot", 0);
-        putInteger("meteoritesDestroyed", 0);
-        putFloat("ShipX", 0);
-        putFloat("ShipY", 220);
+        putInteger(Keys.bonusesCollected, 0);
+        putInteger(Keys.lastCheckpointScore, 0);
+        putInteger(Keys.bulletsShot, 0);
+        putFloat(Keys.lastPLayerX, 0);
+        putFloat(Keys.lastPLayerY, 220);
     }
     
     public static float lerpWithConstantSpeed(float from, float to, float speed, float delta) {
@@ -448,7 +447,7 @@ public class DUtils {
         float len;
         len = getDistanceBetweenTwoPoints(x, y, x2, y2);
         float angle = MathUtils.atan2(x - x2, y2 - y);
-        branch.setSize(thickness, len + thickness / 4f); // TODO: 9/10/2021 proper small gap(thickness) compensation
+        branch.setSize(thickness, len + thickness / 4f);
         branch.setRotation((float) (MathUtils.radiansToDegrees * angle));
         branch.setPosition((float) (x - thickness / 2f * cos(angle)), (float) (y - thickness / 2f * sin(angle)));
         addTo.add(branch);
@@ -583,3 +582,4 @@ public class DUtils {
         return drawScreenExtenders;
     }
 }
+

@@ -26,8 +26,8 @@ public class LocaleManager {
     
     public LocaleManager() {
         locales = new Array<>();
-        if (containsKey("locale")) {
-            currentLocale = getString("locale");
+        if (containsKey(Keys.locale)) {
+            currentLocale = getString(Keys.locale);
             log("loaded locale: " + currentLocale, DEBUG);
         } else {
             currentLocale = System.getProperty("user.language");
@@ -56,7 +56,7 @@ public class LocaleManager {
             currentLocaleIndex = 0;
         }
         log("current locale: " + currentLocale, DEBUG);
-        putString("locale", currentLocale);
+        putString(Keys.locale, currentLocale);
     }
     
     String[] getLocales() {

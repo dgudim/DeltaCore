@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -64,13 +65,13 @@ public class GameOverScreen implements Screen {
         blurProcessor = compositeManager.getBlurProcessor();
         AssetManager assetManager = compositeManager.getAssetManager();
         
-        enableShader = getBoolean("bloom");
+        enableShader = getBoolean(Keys.enableBloom);
         score = GameLogic.score;
-        highScore = getInteger("highScore");
-        difficulty = getFloat("difficulty");
+        highScore = getInteger(Keys.highScore);
+        difficulty = getFloat(Keys.difficulty);
         
         if (score > highScore) {
-            putInteger("highScore", score);
+            putInteger(Keys.highScore, score);
             highScore = score;
             isNewHighScore = true;
         } else {

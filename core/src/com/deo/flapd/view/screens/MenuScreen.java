@@ -43,6 +43,7 @@ import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
@@ -141,7 +142,7 @@ public class MenuScreen implements Screen {
     
     private final JsonEntry treeJson;
     
-    private final String currentShipTexture;
+    private final String currentShip;
     private String lastFireEffect;
     
     private boolean isConfirmationDialogActive = false;
@@ -188,7 +189,7 @@ public class MenuScreen implements Screen {
         
         menuStage = new Stage(viewport, batch);
         
-        currentShipTexture = getString("currentShip");
+        currentShip = getString(Keys.currentShip);
         shipConfigs = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")));
         initializeShip();
         
@@ -413,7 +414,7 @@ public class MenuScreen implements Screen {
         continueGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getFloat("Health") > 0) {
+                if (getFloat(Keys.playerHealthValue) > 0) {
                     startWarpAnimation(menuCategoryManager, false);
                 }
             }
@@ -430,7 +431,7 @@ public class MenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enableShader = bloomT.isChecked();
-                putBoolean("bloom", bloomT.isChecked());
+                putBoolean(Keys.enableBloom, bloomT.isChecked());
             }
         });
         
@@ -438,33 +439,33 @@ public class MenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 DUtils.logging = prefsLoggingT.isChecked();
-                putBoolean("logging", prefsLoggingT.isChecked());
+                putBoolean(Keys.logPreferences, prefsLoggingT.isChecked());
             }
         });
         
         buildNumber.addListener(new ActorGestureListener(20, 0.4f, 60, 0.15f) {
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                addInteger("money", 100000);
-                addInteger("cogs", 100000);
-                putLong("lastGenTime", 0);
+                addInteger(Keys.moneyAmount, 100000);
+                addInteger(Keys.cogAmount, 100000);
+                putLong(Keys.shopLastGenerationTime, 0);
                 return true;
             }
         });
         
         musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
-        musicManager.setVolume(getFloat("musicVolume") / 100f);
+        musicManager.setVolume(getFloat(Keys.musicVolume) / 100f);
         musicVolumeS.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                putFloat("musicVolume", musicVolumeS.getValue());
+                putFloat(Keys.musicVolume, musicVolumeS.getValue());
                 musicManager.setVolume(musicVolumeS.getValue() / 100f);
             }
         });
         
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
         
-        enableShader = getBoolean("bloom");
+        enableShader = getBoolean(Keys.enableBloom);
         log("generated ui in " + TimeUtils.timeSinceMillis(uiGenTime) + "ms", INFO);
         log("done, took " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
     }
@@ -657,7 +658,7 @@ public class MenuScreen implements Screen {
         
         clearFireArray();
         
-        String fireEffect = treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect");
+        String fireEffect = treeJson.getString("fire_engine_left_red", getString(Keys.currentEngine), "usesEffect");
         
         for (int i = 0; i < fireCount; i++) {
             ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + fireEffect + ".p");
@@ -674,10 +675,10 @@ public class MenuScreen implements Screen {
             if (lastFireEffect.equals(" ")) {
                 loadFire();
             }
-            if (!lastFireEffect.equals(treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect"))) {
+            if (!lastFireEffect.equals(treeJson.getString("fire_engine_left_red", getString(Keys.currentEngine), "usesEffect"))) {
                 loadFire();
             }
-            String key = treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect") + "_color";
+            String key = treeJson.getString("fire_engine_left_red", getString(Keys.currentEngine), "usesEffect") + "_color";
             if (getString(key).equals("")) {
                 setFireToDefault(key);
             } else {
@@ -689,12 +690,12 @@ public class MenuScreen implements Screen {
         } catch (Exception e) {
             log("corrupted fire color array", ERROR);
             logException(e);
-            setFireToDefault(treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect") + "_color");
+            setFireToDefault(treeJson.getString("fire_engine_left_red", getString(Keys.currentEngine), "usesEffect") + "_color");
         }
     }
     
     private void updateShip() {
-        if (!currentShipTexture.equals(getString("currentShip"))) {
+        if (!currentShip.equals(getString(Keys.currentShip))) {
             initializeShip();
             lastFireEffect = " ";
             updateFire();
@@ -706,7 +707,7 @@ public class MenuScreen implements Screen {
         shipUpgradeAnimationDirection = -1;
         shipUpgradeAnimationPosition = 0;
         
-        shipConfig = shipConfigs.get(getString("currentShip"));
+        shipConfig = shipConfigs.get(getString(Keys.currentShip));
         playerHasAnimation = shipConfig.getBoolean(false, "hasAnimation");
         
         ship_touchLayer = new Image();
@@ -750,7 +751,7 @@ public class MenuScreen implements Screen {
         if (!playerHasAnimation) {
             ship.setDrawable(new TextureRegionDrawable(
                     assetManager.get("items/items.atlas", TextureAtlas.class)
-                            .findRegion(getString("currentShip"))));
+                            .findRegion(getString(Keys.currentShip))));
         } else {
             enemyAnimation = new Animation<>(
                     shipConfig.getFloat(3, "frameDuration"),

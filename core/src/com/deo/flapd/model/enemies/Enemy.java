@@ -1,7 +1,6 @@
 package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
@@ -24,6 +23,8 @@ import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.SoundManager;
 
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
@@ -45,9 +46,7 @@ public class Enemy extends Entity {
     boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
     
-    private final Sound explosionSound;
-    private Sound shootingSound;
-    private final float volume;
+    private final SoundManager soundManager;
     
     private final float difficulty;
     
@@ -61,6 +60,7 @@ public class Enemy extends Entity {
         this.compositeManager = compositeManager;
         assetManager = compositeManager.getAssetManager();
         drops = compositeManager.getDrops();
+        soundManager = compositeManager.getSoundManager();
         
         this.data = data;
         this.enemies = enemies;
@@ -68,18 +68,7 @@ public class Enemy extends Entity {
         hasAnimation = data.hasAnimation;
         playerBounds = this.player.entityHitBox;
         playerBullet = this.player.bullet;
-        difficulty = getFloat("difficulty");
-        
-        if (data.spawnsBullets) {
-            shootingSound = assetManager.get(data.shootingSound);
-        }
-        
-        if (data.spawnsDrones) {
-            shootingSound = assetManager.get(data.droneSpawnSound);
-        }
-        
-        explosionSound = assetManager.get(data.explosionSound);
-        volume = getFloat("soundVolume");
+        difficulty = getFloat(Keys.difficulty);
         
         bullets = new Array<>();
         if (hasAnimation) {
@@ -109,7 +98,7 @@ public class Enemy extends Entity {
                             rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             data.fireParticleEffects.set(i, fire);
         }
-        data.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(data.explosion);
+        data.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(data.explosionEffect);
         data.explosionParticleEffect.scaleEffect(data.explosionScale);
     }
     
@@ -287,7 +276,7 @@ public class Enemy extends Entity {
             
             bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
         }
-        shootingSound.play(volume / 100f);
+        soundManager.playSound_noLink(data.shootingSound);
         data.millis = 0;
     }
     
@@ -299,7 +288,7 @@ public class Enemy extends Entity {
             droneData.health *= difficulty;
             enemies.enemyEntities.add(new Enemy(compositeManager, droneData, enemies, player));
         }
-        shootingSound.play(volume / 100f);
+        soundManager.playSound_noLink(data.droneSpawnSound);
         data.millis = 0;
     }
     
@@ -331,7 +320,7 @@ public class Enemy extends Entity {
         
         drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
         
-        explosionSound.play(volume / 100f);
+       soundManager.playSound_noLink(data.explosionSound);
     }
 }
 
@@ -340,14 +329,13 @@ class EnemyData {
     String name;
     String texture;
     String explosionSound;
-    String explosion;
+    String explosionEffect;
     ParticleEffectPool.PooledEffect explosionParticleEffect;
     float explosionScale;
     String shootingSound;
     
     float bulletOffsetAngle;
     float bulletOffsetDistance;
-    
     int bulletsPerShot;
     float bulletSpread;
     
@@ -366,9 +354,7 @@ class EnemyData {
     
     float health;
     float regeneration;
-    
     int speed;
-    
     float shootingDelay;
     
     float millis;
@@ -376,11 +362,8 @@ class EnemyData {
     String hitColor;
     
     private final int[] spawnHeight;
-    
     int[] scoreSpawnConditions;
-    
     float spawnDelay;
-    
     int[] enemyCountSpawnConditions;
     
     int dropTimer;
@@ -399,22 +382,16 @@ class EnemyData {
     float idealExplosionTimer;
     
     boolean spawnsDrones;
-    
     int dronesPerSpawn;
-    
     float droneSpawnDelay;
-    
     String droneType;
-    
     String droneSpawnSound;
-    
     float droneAngle;
     float droneDistance;
     
     boolean spawnsBullets;
     
     boolean hasAnimation;
-    
     float frameDuration;
     
     public boolean canAim;
@@ -430,7 +407,7 @@ class EnemyData {
         name = enemyInfo.name;
         texture = enemyInfo.getString("noTexture", "texture");
         explosionSound = enemyInfo.getString("sfx/explosion.ogg", "explosionSound");
-        explosion = enemyInfo.getString("particles/explosion.p", "explosionEffect");
+        explosionEffect = enemyInfo.getString("particles/explosion.p", "explosionEffect");
         explosionScale = enemyInfo.getFloat(1, "explosionScale");
         
         width = enemyInfo.getFloat(1, "width");

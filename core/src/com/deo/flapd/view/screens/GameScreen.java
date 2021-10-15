@@ -20,6 +20,7 @@ import com.deo.flapd.model.loot.Bonus;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -105,7 +106,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
-        drawDebug = getBoolean("drawDebug");
+        drawDebug = getBoolean(Keys.drawDebug);
         shapeRenderer = compositeManager.getShapeRenderer();
         
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
@@ -121,7 +122,7 @@ public class GameScreen implements Screen {
         bosses = new Bosses();
         bosses.loadBosses(compositeManager);
         
-        player = new Player(assetManager, 0, 204, newGame, enemies);
+        player = new Player(compositeManager, 0, 204, newGame, enemies);
         
         enemies.setTargetPlayer(player);
         bosses.setTargetPlayer(player);
@@ -130,7 +131,7 @@ public class GameScreen implements Screen {
         
         bonus = new Bonus(assetManager, 50, 50, player, bosses);
         
-        drops = new Drops(assetManager, 48, getFloat("ui"));
+        drops = new Drops(assetManager, 48);
         compositeManager.setDrops(drops);
         
         gameUi = new GameUi(viewport, compositeManager, player);
@@ -142,9 +143,9 @@ public class GameScreen implements Screen {
         gameLogic = new GameLogic(player, newGame, game, environmentalEffects, checkpoint);
         
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
-        this.musicManager.setVolume(getFloat("musicVolume") / 100f);
+        this.musicManager.setVolume(getFloat(Keys.musicVolume) / 100f);
         
-        enableShader = getBoolean("bloom");
+        enableShader = getBoolean(Keys.enableBloom);
         
         soundManager.playSound("ftl_flight");
     }

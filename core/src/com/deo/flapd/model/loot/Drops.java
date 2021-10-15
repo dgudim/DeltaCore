@@ -8,9 +8,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.utils.Keys;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static java.lang.StrictMath.abs;
 
@@ -28,11 +30,11 @@ public class Drops {
     private final Array<String> types;
     
     private final float maxSize;
-    private final float uiScaling;
+    private final float uiScale;
     
-    public Drops(AssetManager assetManager, float maxSize, float uiScaling) {
+    public Drops(AssetManager assetManager, float maxSize) {
         
-        this.uiScaling = uiScaling;
+        uiScale = getFloat(Keys.uiScale);
         
         itemAtlas = assetManager.get("items/items.atlas");
         
@@ -80,7 +82,7 @@ public class Drops {
                 Vector2 pos1 = new Vector2();
                 pos1.set(drop.getX(), drop.getY());
                 Vector2 pos2 = new Vector2();
-                pos2.set(390 - drop.getWidth() / 2 - 400 * (uiScaling - 1), 455 - drop.getHeight() / 2 - 20 * (uiScaling - 1));
+                pos2.set(390 - drop.getWidth() / 2 - 400 * (uiScale - 1), 455 - drop.getHeight() / 2 - 20 * (uiScale - 1));
                 pos1.lerp(pos2, 4.5f * delta);
                 
                 drop.setPosition(pos1.x, pos1.y);

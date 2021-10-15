@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Bosses;
+import com.deo.flapd.utils.Keys;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.addInteger;
@@ -55,7 +56,7 @@ public class Bonus {
         this.player = player;
         playerBounds = this.player.entityHitBox;
         
-        uiScale = getFloat("ui");
+        uiScale = getFloat(Keys.uiScale);
         
         TextureAtlas bonusesAtlas = assetManager.get("bonuses.atlas");
         bonus_health = new Sprite(bonusesAtlas.findRegion("bonus_health"));
@@ -176,11 +177,11 @@ public class Bonus {
                         if (GameLogic.bonuses_collected < 10) {
                             GameLogic.bonuses_collected += 1;
                         } else {
-                            addInteger("cogs", 1);
+                            addInteger(Keys.cogAmount, 1);
                         }
                         break;
                     case PART:
-                        addInteger("cogs", 1);
+                        addInteger(Keys.cogAmount, 1);
                         break;
                     case BOSS:
                         bosses.spawnRandomBoss();

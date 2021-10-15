@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.view.screens.GameOverScreen;
@@ -98,10 +99,10 @@ public class GameUi {
         LocaleManager localeManager = compositeManager.getLocaleManager();
         this.player = player;
         
-        uiScale = getFloat("ui");
-        showFps = getBoolean("showFps");
-        transparency = getBoolean("transparency");
-        String currentBonus = getString("currentBonus");
+        uiScale = getFloat(Keys.uiScale);
+        showFps = getBoolean(Keys.showFps);
+        transparency = getBoolean(Keys.transparentUi);
+        chronosModuleEnabled = getString(Keys.currentModule).equals("part.chronos_module");
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
         
@@ -196,7 +197,7 @@ public class GameUi {
             touchpad.setColor(1, 1, 1, 0.7f);
         }
         
-        touchpad.setBounds(10 + getFloat("joystickOffsetX"), 10 + getFloat("joystickOffsetY"), 110 * uiScale, 110 * uiScale);
+        touchpad.setBounds(10 + getFloat(Keys.joystickOffsetX), 10 + getFloat(Keys.joystickOffsetY), 110 * uiScale, 110 * uiScale);
         
         ProgressBar.ProgressBarStyle healthBarStyle = new ProgressBar.ProgressBarStyle();
         ProgressBar.ProgressBarStyle shieldBarStyle = new ProgressBar.ProgressBarStyle();
@@ -237,8 +238,6 @@ public class GameUi {
         } else {
             font_numbers.setColor(0, 1, 1, 1);
         }
-        
-        chronosModuleEnabled = currentBonus.equals("part.chronos_module");
         
         stage.addActor(stats_indicator_panel);
         stage.addActor(pause);
@@ -462,7 +461,7 @@ public class GameUi {
         stage.dispose();
         pauseStage.dispose();
         
-        putInteger("money", GameLogic.money);
+        putInteger(Keys.moneyAmount, GameLogic.money);
         
         setTimeWarpState(1, 1, 0, false, true);
     }

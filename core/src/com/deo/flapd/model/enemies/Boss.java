@@ -2,7 +2,6 @@ package com.deo.flapd.model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
@@ -32,6 +31,7 @@ import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.SoundManager;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -45,7 +45,6 @@ import static com.deo.flapd.utils.DUtils.convertPercentsToAbsoluteValue;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
-import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
@@ -340,8 +339,8 @@ class BasePart extends Entity {
     float itemTimer, moneyTimer;
     int bonusChance;
     
-    Sound explosionSound;
-    float soundVolume;
+    String explosionSound;
+    SoundManager soundManager;
     
     BasePart(JsonEntry newConfig, TextureAtlas textures, CompositeManager compositeManager) {
         
@@ -349,6 +348,8 @@ class BasePart extends Entity {
         
         active = false;
         assetManager = compositeManager.getAssetManager();
+        soundManager = compositeManager.getSoundManager();
+        explosionSound = currentConfig.getString("sfx/explosion.ogg", "explosionSound");
         drops = compositeManager.getDrops();
         
         exploded = false;
@@ -398,7 +399,6 @@ class BasePart extends Entity {
             moneyCount = currentConfig.getIntArray(new int[]{3, 5}, "drops", "money", "count");
             moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
             
-            explosionSound = assetManager.get(currentConfig.getString("sfx/explosion.ogg", "explosionSound"));
             explosionEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
             log("creating explosion effect for " + newConfig.name, DEBUG);
@@ -432,7 +432,6 @@ class BasePart extends Entity {
             }
         }
         
-        soundVolume = getFloat("soundVolume");
         String texture = currentConfig.getString("noTexture", "texture");
         hasAnimation = currentConfig.getBoolean(false, false, "hasAnimation");
         
@@ -611,7 +610,7 @@ class BasePart extends Entity {
     
     void explode() {
         if (hasCollision && !type.equals("shield")) {
-            UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]),  moneyTimer);
+            UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), moneyTimer);
             
             if (getRandomInRange(0, 100) <= bonusChance) {
                 Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
@@ -621,9 +620,7 @@ class BasePart extends Entity {
             
             explosionEffect.setPosition(x + movementOffsetX + width / 2, y + movementOffsetY + height / 2);
             
-            if (soundVolume > 0) {
-                explosionSound.play(soundVolume / 100f);
-            }
+            soundManager.playSound_noLink(explosionSound);
             
             exploded = true;
         }
@@ -895,7 +892,7 @@ class Barrel extends Entity {
     BulletData bulletData;
     Array<EnemyBullet> bullets;
     
-    Sound shootingSound;
+    String shootingSound;
     
     boolean powerUpActive;
     ParticleEffectPool.PooledEffect powerUpEffect;
@@ -967,7 +964,7 @@ class Barrel extends Entity {
         
         bulletData = new BulletData(config.getWithFallBack(baseConfig.get(true, "bullet"), false, "bullet"));
         
-        shootingSound = base.assetManager.get(config.getStringWithFallback(baseConfig, true, "sfx/gun1.ogg", "shootSound"));
+        shootingSound = config.getStringWithFallback(baseConfig, true, "sfx/gun1.ogg", "shootSound");
         
         bulletOffset = config.getFloatArrayWithFallback(baseConfig, true, new float[]{0, 0}, "bulletOffset");
         
@@ -1133,9 +1130,9 @@ class Barrel extends Entity {
                     }
                     Thread.sleep((int) (powerUpEffectShootDelay * 1000));
                     powerUpActive = false;
-                    if (burstSpacing < 100 && base.soundVolume > 0) {
+                    if (burstSpacing < 100) {
                         try {
-                            shootingSound.play(base.soundVolume / 100f);
+                            base.soundManager.playSound_noLink(shootingSound);
                         } catch (GdxRuntimeException e) {
                             logException(e);
                         }
@@ -1173,8 +1170,8 @@ class Barrel extends Entity {
         newRot += getRandomInRange(-10, 10) * bulletSpread;
         
         bullets.add(new EnemyBullet(base.assetManager, newBulletData, base.player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
-        if (burstSpacing >= 100 && base.soundVolume > 0) {
-            shootingSound.play(base.soundVolume / 100f);
+        if (burstSpacing >= 100) {
+            base.soundManager.playSound_noLink(shootingSound);
         }
         currentRecoilOffset = recoil;
     }

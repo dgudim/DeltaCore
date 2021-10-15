@@ -40,7 +40,7 @@ public class SoundManager {
     }
     
     public void notifyVolumeUpdated() {
-        soundVolume = getFloat("soundVolume") / 100f;
+        soundVolume = getFloat(Keys.soundVolume) / 100f;
     }
     
     public long playSound(String name) {

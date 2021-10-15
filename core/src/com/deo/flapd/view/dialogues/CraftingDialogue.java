@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.ui.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
@@ -329,7 +330,7 @@ public class CraftingDialogue extends Dialogue {
             }
         }
         for (int i = 0; i < items.length; i++) {
-            if (!getString("savedSlots").contains(items[i])) {
+            if (!getString(Keys.savedShopSlots).contains(items[i])) {
                 buyShortcuts.get(i).setTouchable(Touchable.disabled);
                 buyShortcuts.get(i).setColor(Color.GRAY);
             }
@@ -371,7 +372,7 @@ public class CraftingDialogue extends Dialogue {
         final Array<Label> labels = new Array<>();
         Table ingredientsTable = new Table();
         
-        final JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
+        final JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString(Keys.savedShopSlots) + "," + "\"productQuantities\":" + getString(Keys.savedShopSlotsQuantities) + "}"));
         final Array<String> Jitems = new Array<>();
         Jitems.addAll(slotsJson.getStringArray(new String[]{}, "slots"));
         

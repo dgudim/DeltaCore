@@ -9,6 +9,7 @@ import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +38,7 @@ public class Enemies {
         enemies = new Array<>();
         enemyEntities = new Array<>();
         
-        difficulty = getFloat("difficulty");
+        difficulty = getFloat(Keys.difficulty);
     }
     
     public void loadEnemies() {

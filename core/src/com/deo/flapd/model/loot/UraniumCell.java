@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.utils.Keys;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -32,7 +33,7 @@ public class UraniumCell {
         degrees = new Array<>();
         pack_levels = new Array<>();
         
-        uiScaling = getFloat("ui");
+        uiScaling = getFloat(Keys.uiScale);
     }
     
     public static void Spawn(Rectangle originEnemy, int count, float timer) {

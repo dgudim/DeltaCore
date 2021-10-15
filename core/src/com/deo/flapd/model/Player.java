@@ -2,7 +2,6 @@ package com.deo.flapd.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -13,7 +12,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.enemies.Enemies;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.SoundManager;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
@@ -34,9 +36,7 @@ public class Player extends Entity {
     private final Color shieldColor;
     private final Color shipColor;
     
-    private final Sound explosion;
-    
-    private final float soundVolume;
+    private final SoundManager soundManager;
     
     public float shieldCharge, charge;
     
@@ -62,7 +62,9 @@ public class Player extends Entity {
     public PlayerBullet bullet;
     public int bulletsShot;
     
-    public Player(AssetManager assetManager, float x, float y, boolean newGame, Enemies enemies) {
+    public Player(CompositeManager compositeManager, float x, float y, boolean newGame, Enemies enemies) {
+        AssetManager assetManager = compositeManager.getAssetManager();
+        soundManager = compositeManager.getSoundManager();
         
         shieldColor = new Color(1, 1, 1, 1);
         shipColor = new Color(1, 1, 1, 1);
@@ -70,7 +72,7 @@ public class Player extends Entity {
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentShip")));
+        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString(Keys.currentShip)));
         
         fires = new Array<>();
         
@@ -79,14 +81,14 @@ public class Player extends Entity {
         fireOffsetsX = new float[fireCount];
         fireOffsetsY = new float[fireCount];
         
-        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect") + "_color") + "}").get("colors").asFloatArray();
+        float[] colors = new JsonReader().parse("{\"colors\":" + getString(treeJson.getString("fire_engine_left_red", getString(Keys.currentEngine), "usesEffect") + "_color") + "}").get("colors").asFloatArray();
         
         for (int i = 0; i < fireCount; i++) {
             fireOffsetsX[i] = shipConfig.getFloat(0, "fires", "fire" + i + "OffsetX");
             fireOffsetsY[i] = shipConfig.getFloat(0, "fires", "fire" + i + "OffsetY");
             
             ParticleEffect fire = new ParticleEffect();
-            fire.load(Gdx.files.internal("particles/" + treeJson.getString("fire_engine_left_red", getString("currentEngine"), "usesEffect") + ".p"), Gdx.files.internal("particles"));
+            fire.load(Gdx.files.internal("particles/" + treeJson.getString("fire_engine_left_red", getString(Keys.currentEngine), "usesEffect") + ".p"), Gdx.files.internal("particles"));
             fire.start();
             fire.getEmitters().get(0).getTint().setColors(colors);
             fires.add(fire);
@@ -102,10 +104,10 @@ public class Player extends Entity {
                             .findRegions(shipConfig.getString("", "animation")),
                     Animation.PlayMode.LOOP);
         } else {
-            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString("currentShip")));
+            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString(Keys.currentShip)));
         }
         
-        JsonEntry params_core = treeJson.get(getString("currentCore"), "parameters");
+        JsonEntry params_core = treeJson.get(getString(Keys.currentCore), "parameters");
         for (int i = 0; i < params_core.size; i++) {
             switch (params_core.get(i).name) {
                 case ("parameter.power_generation"):
@@ -121,12 +123,12 @@ public class Player extends Entity {
                     chargeCapacityMultiplier = params_core.getFloat(1, i);
                     break;
                 default:
-                    log("unknown parameter " + params_core.get(i).name + " for " + getString("currentCore"), WARNING);
+                    log("unknown parameter " + params_core.get(i).name + " for " + getString(Keys.currentCore), WARNING);
                     break;
             }
         }
         
-        JsonEntry params_shield = treeJson.get(getString("currentShield"), "parameters");
+        JsonEntry params_shield = treeJson.get(getString(Keys.currentShield), "parameters");
         for (int i = 0; i < params_shield.size; i++) {
             switch (params_shield.get(i).name) {
                 case ("parameter.power_consumption"):
@@ -139,7 +141,7 @@ public class Player extends Entity {
                     shieldCapacity = params_shield.getFloat(1, i);
                     break;
                 default:
-                    log("unknown parameter " + params_shield.get(i).name + " for " + getString("currentShield"), WARNING);
+                    log("unknown parameter " + params_shield.get(i).name + " for " + getString(Keys.currentShield), WARNING);
                     break;
             }
         }
@@ -151,49 +153,49 @@ public class Player extends Entity {
         repellentField.setSize(0, 0);
         aimRadius.setSize(0, 0);
         
-        String bonus = getString("currentBonus");
-        JsonEntry params_bonus = treeJson.get(bonus, "parameters");
+        String module = getString(Keys.currentModule);
+        JsonEntry params_module = treeJson.get(module, "parameters");
         
-        if (!bonus.equals("none")) {
-            for (int i = 0; i < params_bonus.size; i++) {
-                switch (params_bonus.get(i).name) {
+        if (!module.equals("none")) {
+            for (int i = 0; i < params_module.size; i++) {
+                switch (params_module.get(i).name) {
                     case ("parameter.power_consumption"):
-                        bonusPowerConsumption = params_bonus.getFloat(1, i);
+                        bonusPowerConsumption = params_module.getFloat(1, i);
                         break;
                     case ("parameter.attraction_radius"):
-                        if (bonus.equals("part.magnet")) {
-                            float radius = params_bonus.getFloat(1, i);
+                        if (module.equals("part.magnet")) {
+                            float radius = params_module.getFloat(1, i);
                             magnetField.setSize(radius, radius);
                         }
                         break;
                     case ("parameter.repellent_radius"):
-                        if (bonus.equals("repellent_field")) {
-                            float radius = params_bonus.getFloat(1, i);
+                        if (module.equals("part.repellent_field")) {
+                            float radius = params_module.getFloat(1, i);
                             repellentField.setSize(radius, radius);
                         }
                         break;
                     case ("parameter.aim_radius"):
-                        if (bonus.equals("radar")) {
-                            float radius = params_bonus.getFloat(1, i);
+                        if (module.equals("part.radar")) {
+                            float radius = params_module.getFloat(1, i);
                             aimRadius.setSize(radius, radius);
                         }
                         break;
                     default:
-                        log("unknown parameter " + params_bonus.get(i).name + " for " + bonus, WARNING);
+                        log("unknown parameter " + params_module.get(i).name + " for " + module, WARNING);
                         break;
                 }
             }
         }
         
-        chargeCapacity = treeJson.getFloat(1, getString("currentBattery"), "parameters", "parameter.capacity");
-        healthCapacity = treeJson.getFloat(1, getString("currentShip"), "parameters", "parameter.health");
+        chargeCapacity = treeJson.getFloat(1, getString(Keys.currentBattery), "parameters", "parameter.capacity");
+        healthCapacity = treeJson.getFloat(1, getString(Keys.currentShip), "parameters", "parameter.health");
         
-        shield = new Sprite(fields.findRegion(treeJson.getString("explosion2", getString("currentShield"), "usesEffect")));
+        shield = new Sprite(fields.findRegion(treeJson.getString("noValue", getString(Keys.currentShield), "usesEffect")));
         
         if (!newGame) {
-            shieldCharge = clamp(getFloat("Shield"), 0, shieldCapacity * shieldStrengthMultiplier);
-            health = clamp(getFloat("Health"), 0, healthCapacity * healthMultiplier);
-            charge = clamp(getFloat("Charge"), 0, chargeCapacity * chargeCapacityMultiplier);
+            shieldCharge = clamp(getFloat(Keys.playerShieldValue), 0, shieldCapacity * shieldStrengthMultiplier);
+            health = clamp(getFloat(Keys.playerHealthValue), 0, healthCapacity * healthMultiplier);
+            charge = clamp(getFloat(Keys.playerChargeValue), 0, chargeCapacity * chargeCapacityMultiplier);
         } else {
             shieldCharge = shieldCapacity * shieldStrengthMultiplier;
             health = healthCapacity * healthMultiplier;
@@ -214,13 +216,9 @@ public class Player extends Entity {
         damage_fire.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
         
         explosionEffect = new ParticleEffect();
-        explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString("currentCore")).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
+        explosionEffect.load(Gdx.files.internal("particles/" + new JsonReader().parse(Gdx.files.internal("shop/tree.json")).get(getString(Keys.currentCore)).getString("usesEffect") + ".p"), Gdx.files.internal("particles"));
         
         damage_fire.start();
-        
-        soundVolume = getFloat("soundVolume");
-        
-        explosion = assetManager.get("sfx/explosion.ogg");
         
         bullet = new PlayerBullet(assetManager, this, enemies, newGame);
     }
@@ -361,8 +359,6 @@ public class Player extends Entity {
         health = -1000;
         shieldCharge = -1000;
         charge = -1000;
-        if (soundVolume > 0) {
-            explosion.play(soundVolume / 100f);
-        }
+        soundManager.playSound_noLink("sfx/explosion.ogg");
     }
 }

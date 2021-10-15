@@ -9,9 +9,9 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.environment.EnvironmentalEffects;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomBoolean;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
@@ -24,7 +24,7 @@ public class GameLogic {
     
     public static int bonuses_collected;
     
-    public static boolean bossWave, has1stBossSpawned, has2ndBossSpawned;
+    public static boolean bossWave;
     
     public static int lastCheckpoint;
     
@@ -32,7 +32,7 @@ public class GameLogic {
     public static int enemiesKilled;
     public static int money, moneyEarned;
     
-    private float speedMultiplier;
+    private final float speedMultiplier;
     
     private final Game game;
     
@@ -54,32 +54,28 @@ public class GameLogic {
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
-        speedMultiplier = treeJson.getFloat(false, 1, getString("currentEngine"), "parameters", "parameter.speed_multiplier");
-        speedMultiplier *= treeJson.getFloat(false, 1, getString("currentShip"), "parameters", "parameter.speed_multiplier");
-        speedMultiplier *= treeJson.getFloat(false, 1, getString("currentCore"), "parameters", "parameter.speed_multiplier");
+        speedMultiplier = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.speed_multiplier")
+                + treeJson.getFloat(false, 1, getString(Keys.currentShip), "parameters", "parameter.speed_multiplier")
+                + treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.speed_multiplier");
         
         if (!newGame) {
-            bonuses_collected = getInteger("bonuses_collected");
-            lastCheckpoint = getInteger("lastCheckpoint");
-            has1stBossSpawned = getBoolean("has1stBossSpawned");
-            has2ndBossSpawned = getBoolean("has2ndBossSpawned");
+            bonuses_collected = getInteger(Keys.bonusesCollected);
+            lastCheckpoint = getInteger(Keys.lastCheckpointScore);
             
-            score = getInteger("Score");
-            moneyEarned = getInteger("moneyEarned");
+            score = getInteger(Keys.playerScore);
+            moneyEarned = getInteger(Keys.moneyEarned);
             
-            enemiesKilled = getInteger("enemiesKilled");
+            enemiesKilled = getInteger(Keys.enemiesKilled);
         } else {
             bonuses_collected = 0;
             lastCheckpoint = 0;
-            has1stBossSpawned = false;
-            has2ndBossSpawned = false;
             
             score = 0;
             moneyEarned = 0;
             
             enemiesKilled = 0;
         }
-        money = getInteger("money");
+        money = getInteger(Keys.moneyAmount);
         bossWave = false;
     }
     
@@ -110,11 +106,11 @@ public class GameLogic {
         player.y = clamp(player.y, 0, 480 - player.height);
         
         if (is_firing) {
-            playerBullet.Spawn(1, false);
+            playerBullet.spawn(1, false);
         }
         
         if (is_firing_secondary) {
-            playerBullet.Spawn(1.5f, true);
+            playerBullet.spawn(1.5f, true);
         }
         
         if (playerBullet.isLaser) {
@@ -132,7 +128,7 @@ public class GameLogic {
         if (!bossWave) {
             if (score > lastCheckpoint + 9000) {
                 lastCheckpoint = score;
-                checkpoint.Spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100, 1);
+                checkpoint.spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100, 1);
             }
         }
     }

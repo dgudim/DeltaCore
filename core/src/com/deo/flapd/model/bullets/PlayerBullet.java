@@ -18,6 +18,7 @@ import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
@@ -96,9 +97,9 @@ public class PlayerBullet {
         TextureAtlas bullets = assetManager.get("bullets/bullets.atlas");
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString("currentShip")));
+        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString(Keys.currentShip)));
         
-        JsonEntry currentWeapon = treeJson.get(getString("currentWeapon"));
+        JsonEntry currentWeapon = treeJson.get(getString(Keys.currentWeapon));
         
         gunCount = shipConfig.getInt(1, "gunCount");
         currentActiveGun = 0;
@@ -154,7 +155,7 @@ public class PlayerBullet {
                     currentDuration = laserDuration;
                     break;
                 default:
-                    log("unknown parameter " + params_weapon.get(i).name + " for " + getString("currentShield"), WARNING);
+                    log("unknown parameter " + params_weapon.get(i).name + " for " + getString(Keys.currentShield), WARNING);
                     break;
             }
         }
@@ -163,10 +164,10 @@ public class PlayerBullet {
             bullet = new Sprite();
             laserColor = currentWeapon.getString("#00FFFF", "laserBeamColor");
         } else {
-            bullet = new Sprite(bullets.findRegion("bullet_" + getString("currentWeapon")));
+            bullet = new Sprite(bullets.findRegion("bullet_" + getString(Keys.currentWeapon)));
         }
         
-        float damageMultiplier = treeJson.getFloat(false,1, getString("currentCore"), "parameters", "parameter.damage_multiplier");
+        float damageMultiplier = treeJson.getFloat(false,1, getString(Keys.currentCore), "parameters", "parameter.damage_multiplier");
         damage *= damageMultiplier;
         baseDamage *= damageMultiplier;
         
@@ -189,7 +190,7 @@ public class PlayerBullet {
         explosionTimers = new Array<>();
         
         if (!newGame) {
-            this.player.bulletsShot = getInteger("bulletsShot");
+            this.player.bulletsShot = getInteger(Keys.bulletsShot);
         } else {
             this.player.bulletsShot = 0;
         }
@@ -198,7 +199,7 @@ public class PlayerBullet {
         laser.setSize(3, laserHeight);
         laser.setPosition(-100, -100);
         
-        soundVolume = getFloat("soundVolume");
+        soundVolume = getFloat(Keys.soundVolume);
         if (isLaser) {
             laserSaw = assetManager.get("sfx/laser.ogg");
             laserSaw.play();
@@ -218,7 +219,7 @@ public class PlayerBullet {
         bullet.setOrigin(0, 5);
     }
     
-    public void Spawn(float damageMultiplier, boolean is_charged) {
+    public void spawn(float damageMultiplier, boolean is_charged) {
         
         if (!isLaser) {
             if (player.charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {

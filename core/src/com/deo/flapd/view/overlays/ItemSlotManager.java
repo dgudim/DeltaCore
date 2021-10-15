@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
@@ -103,9 +104,9 @@ public class ItemSlotManager {
         long timeSnap = millis();
         slotManagerMode = SHOP;
         int slotCount;
-        long lastGenerationTime = getLong("lastGenTime");
+        long lastGenerationTime = getLong(Keys.shopLastGenerationTime);
         if (TimeUtils.timeSinceMillis(lastGenerationTime) > 18000000) {
-            putLong("lastGenTime", millis());
+            putLong(Keys.shopLastGenerationTime, millis());
             slotCount = generateShopSlots();
         } else {
             slotCount = loadSlots();
@@ -118,9 +119,9 @@ public class ItemSlotManager {
                     new ConfirmationDialogue(compositeManager, stage, localeManager.get("workshop.market.reset"), new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
-                            if (getInteger("money") >= 3500) {
-                                subtractInteger("money", 3500);
-                                putLong("lastGenTime", 0);
+                            if (getInteger(Keys.moneyAmount) >= 3500) {
+                                subtractInteger(Keys.moneyAmount, 3500);
+                                putLong(Keys.shopLastGenerationTime, 0);
                                 ItemSlotManager.this.update();
                             }
                         }
@@ -172,14 +173,14 @@ public class ItemSlotManager {
             nextRow = !nextRow;
         }
         
-        putString("savedSlots", addedItems.toString());
-        putString("savedSlotQuantities", quantities.toString());
+        putString(Keys.savedShopSlots, addedItems.toString());
+        putString(Keys.savedShopSlotsQuantities, quantities.toString());
         log("generated shop slots in " + TimeUtils.timeSinceMillis(timeSnap) + "ms", INFO);
         return slotQuantity;
     }
     
     private int loadSlots() {
-        JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString("savedSlots") + "," + "\"productQuantities\":" + getString("savedSlotQuantities") + "}"));
+        JsonEntry slotsJson = new JsonEntry(new JsonReader().parse("{\"slots\":" + getString(Keys.savedShopSlots) + "," + "\"productQuantities\":" + getString(Keys.savedShopSlotsQuantities) + "}"));
         int[] productQuantities = slotsJson.getIntArray(new int[]{}, "productQuantities");
         String[] slotNames = slotsJson.getStringArray(new String[]{}, "slots");
         boolean nextRow = false;
@@ -289,8 +290,8 @@ public class ItemSlotManager {
         yellowLabelStyle.fontColor = Color.YELLOW;
         
         Table holder = new Table();
-        Label uraniumCells_text = new Label("" + getInteger("money"), yellowLabelStyle);
-        Label cogs_text = new Label("" + getInteger("cogs"), yellowLabelStyle);
+        Label uraniumCells_text = new Label("" + getInteger(Keys.moneyAmount), yellowLabelStyle);
+        Label cogs_text = new Label("" + getInteger(Keys.cogAmount), yellowLabelStyle);
         uraniumCells_text.setFontScale(0.5f);
         cogs_text.setFontScale(0.5f);
         
@@ -303,7 +304,7 @@ public class ItemSlotManager {
         holder2.add(new Image(assetManager.get("bonuses.atlas", TextureAtlas.class).findRegion("bonus_part"))).size(30, 30);
         holder2.add(cogs_text).padLeft(5);
         inventoryLabel.align(Align.left);
-        final long[] nextUpdateTime = {getLong("lastGenTime") + 18000000};
+        final long[] nextUpdateTime = {getLong(Keys.shopLastGenerationTime) + 18000000};
         long lastReset = nextUpdateTime[0] - millis();
         int hours = (int) TimeUnit.MILLISECONDS.toHours(lastReset);
         int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(lastReset) - hours * 60;
@@ -318,7 +319,7 @@ public class ItemSlotManager {
                 int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(nextReset) - hours * 3600 - minutes * 60;
                 this.setText("||" + localeManager.get("workshop.market.resetIn") + " " + hours + "h " + minutes + "m " + seconds + "s||");
                 if (hours <= 0 && minutes <= 0 && seconds <= 0) {
-                    putLong("lastGenTime", millis());
+                    putLong(Keys.shopLastGenerationTime, millis());
                     nextUpdateTime[0] = millis() + 18000000;
                     table.clearChildren();
                     generateShopSlots();

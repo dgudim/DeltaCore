@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
@@ -73,13 +74,13 @@ public class LoadingScreen implements Screen {
         localeManager = compositeManager.getLocaleManager();
         game = compositeManager.getGame();
         
-        if (getFloat("ui") <= 0) {
-            putFloat("ui", 1);
-            putFloat("soundVolume", 100);
-            putFloat("musicVolume", 100);
-            putFloat("difficulty", 1);
-            putBoolean("transparency", true);
-            putBoolean("bloom", true);
+        if (getFloat(Keys.uiScale) <= 0) {
+            putFloat(Keys.uiScale, 1);
+            putFloat(Keys.soundVolume, 100);
+            putFloat(Keys.musicVolume, 100);
+            putFloat(Keys.difficulty, 1);
+            putBoolean(Keys.transparentUi, true);
+            putBoolean(Keys.enableBloom, true);
             JsonEntry tree = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
             for (int i = 0; i < tree.size; i++) {
                 if (tree.getString("part", i, "type").equals("category")) {
@@ -114,7 +115,7 @@ public class LoadingScreen implements Screen {
         loadingBar.setPosition(0, 30);
         loadingBar.setAnimateDuration(0.01f);
         
-        enableShader = getBoolean("bloom");
+        enableShader = getBoolean(Keys.enableBloom);
         
         setLoadingState(LoadingState.LOADING_TEXTURES);
         
