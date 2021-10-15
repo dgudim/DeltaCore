@@ -366,13 +366,24 @@ public class DUtils {
         log(fullStackTrace, ERROR);
     }
     
-    public static void initNewGame() {
+    public static void initNewGame(JsonEntry treeJson) {
+        
         putInteger(Keys.enemiesKilled, 0);
         putInteger(Keys.moneyEarned, 0);
         putInteger(Keys.playerScore, 0);
-        putFloat(Keys.playerChargeValue, 1000);
-        putFloat(Keys.playerHealthValue, 1000); // TODO: 15/10/2021 replace 1000 with a normal number
-        putFloat(Keys.playerShieldValue, 1000);
+        
+        putFloat(Keys.playerChargeValue,
+                treeJson.getFloat(1, getString(Keys.currentBattery), "parameters", "parameter.capacity")
+                        * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.charge_capacity_multiplier"));
+        
+        putFloat(Keys.playerHealthValue,
+                treeJson.getFloat(1, getString(Keys.currentShip), "parameters", "parameter.health")
+                        * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.health_multiplier"));
+        
+        putFloat(Keys.playerShieldValue,
+                treeJson.getFloat(1, getString(Keys.currentShield), "parameters", "parameter.shield_capacity")
+                        * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.shield_strength_multiplier"));
+        
         for (int i = 0; i < Bosses.bossNames.length; i++) {
             putBoolean("boss_spawned_" + Bosses.bossNames[i], false);
         }

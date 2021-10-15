@@ -406,7 +406,7 @@ class EnemyData {
         
         name = enemyInfo.name;
         texture = enemyInfo.getString("noTexture", "texture");
-        explosionSound = enemyInfo.getString("sfx/explosion.ogg", "explosionSound");
+        explosionSound = enemyInfo.getString("explosion", "explosionSound");
         explosionEffect = enemyInfo.getString("particles/explosion.p", "explosionEffect");
         explosionScale = enemyInfo.getFloat(1, "explosionScale");
         
@@ -465,7 +465,7 @@ class EnemyData {
         speed = enemyInfo.getInt(100, "speed");
         
         if (spawnsBullets) {
-            shootingSound = enemyInfo.getString("sfx/gun1.ogg", "shootSound");
+            shootingSound = enemyInfo.getString("gun1", "shootSound");
             
             float[] bulletOffset = enemyInfo.getFloatArray(new float[]{0, 0}, "bulletOffset");
             bulletOffsetAngle = MathUtils.atan2(bulletOffset[1], bulletOffset[0]) * MathUtils.radiansToDegrees;
@@ -486,7 +486,7 @@ class EnemyData {
             droneSpawnDelay = enemyInfo.getFloat(3, "droneSpawnDelay");
             dronesPerSpawn = enemyInfo.getInt(1, "dronesPerSpawn");
             droneType = enemyInfo.getString(name, "droneType");
-            droneSpawnSound = enemyInfo.getString("sfx/gun3.ogg", "droneSpawnSound");
+            droneSpawnSound = enemyInfo.getString("gun3", "droneSpawnSound");
             int[] droneSpawnOffset = enemyInfo.getIntArray(new int[]{0, 0}, "droneSpawnOffset");
             droneAngle = MathUtils.atan2(droneSpawnOffset[1], droneSpawnOffset[0]) * MathUtils.radiansToDegrees;
             droneDistance = getDistanceBetweenTwoPoints(0, 0, droneSpawnOffset[0], droneSpawnOffset[1]);

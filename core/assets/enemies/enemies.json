@@ -2,7 +2,7 @@
   "training bot": {
 
     "texture": "trainingbot",
-    "explosionSound": "sfx/explosion.ogg",
+    "explosionSound": "explosion",
     "explosionEffect": "particles/explosion.p",
     "explosionScale": 1,
     "fire": {
@@ -43,7 +43,7 @@
     "bulletSpread": 0.4,
     "bulletOffset": [-39, -28],
     "bulletsPerShot": 1,
-    "shootSound": "sfx/gun2.ogg",
+    "shootSound": "gun2",
 
     "spawnDelay": 0.5,
     "spawnHeight": [20, 420],
@@ -72,7 +72,7 @@
   "shotgun enemy": {
 
     "texture": "enemy_shotgun",
-    "explosionSound": "sfx/explosion.ogg",
+    "explosionSound": "explosion",
     "explosionEffect": "particles/explosion.p",
     "explosionScale": 1.3,
     "fire": {
@@ -113,7 +113,7 @@
     "bulletSpread": 2.4,
     "bulletOffset": [-82, -21],
     "bulletsPerShot": 7,
-    "shootSound": "sfx/gun2.ogg",
+    "shootSound": "gun2",
 
     "spawnDelay": 0.5,
     "spawnHeight": [20, 420],
@@ -142,7 +142,7 @@
 
   "bomb enemy": {
     "texture": "atomic_bomb",
-    "explosionSound": "sfx/explosion.ogg",
+    "explosionSound": "explosion",
     "explosionEffect": "particles/explosion.p",
     "explosionScale": 1.3,
     "fire": {
@@ -191,7 +191,7 @@
   "sniper enemy": {
 
     "texture": "enemy_sniper",
-    "explosionSound": "sfx/explosion.ogg",
+    "explosionSound": "explosion",
     "explosionEffect": "particles/explosion.p",
     "explosionScale": 1,
     "fire": {
@@ -236,7 +236,7 @@
     "bulletSpread": 0,
     "bulletOffset": [-50, -12],
     "bulletsPerShot": 1,
-    "shootSound": "sfx/gun1.ogg",
+    "shootSound": "gun1",
 
     "spawnDelay": 0.6,
     "spawnHeight": [20, 420],
@@ -265,7 +265,7 @@
   "ufo": {
     "texture": "enemies/ufo/ufo.atlas",
     "frameDuration": 0.15,
-    "explosionSound": "sfx/explosion.ogg",
+    "explosionSound": "explosion",
     "explosionEffect": "particles/explosion.p",
     "explosionScale": 1.2,
     "fire": {
@@ -283,7 +283,7 @@
     "droneType": "ufo drone",
     "dronesPerSpawn": 1,
     "droneSpawnDelay": 1.5,
-    "droneSpawnSound": "sfx/gun3.ogg",
+    "droneSpawnSound": "gun3",
     "droneSpawnOffset": [-24, -52],
     "spawnsBullets": false,
     "hitColor": "#FF0000",
@@ -317,7 +317,7 @@
 
   "ufo drone": {
     "texture": "enemy_rocket",
-    "explosionSound": "sfx/explosion.ogg",
+    "explosionSound": "explosion",
     "explosionEffect": "particles/explosion.p",
     "explosionScale": 0.2,
     "fire": {
@@ -363,7 +363,7 @@
     "bulletSpread": 0,
     "bulletOffset": [-16, -11],
     "bulletsPerShot": 2,
-    "shootSound": "sfx/gun3.ogg",
+    "shootSound": "gun3",
 
     "spawnDelay": 1,
     "spawnHeight": [20, 420],

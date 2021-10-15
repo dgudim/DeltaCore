@@ -214,9 +214,9 @@ public class GameUi {
         chargeBarStyle.knob = BarBackgroundBlank;
         chargeBarStyle.knobBefore = constructFilledImageWithColor(100, (int) (12 * uiScale), Color.YELLOW);
         
-        healthProgressBar = new ProgressBar(0, this.player.healthCapacity * this.player.healthMultiplier, 0.01f, false, healthBarStyle);
-        shieldProgressBar = new ProgressBar(0, this.player.shieldCapacity * this.player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
-        chargeProgressBar = new ProgressBar(0, this.player.chargeCapacity * this.player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
+        healthProgressBar = new ProgressBar(0, player.healthCapacity * player.healthMultiplier, 0.01f, false, healthBarStyle);
+        shieldProgressBar = new ProgressBar(0, player.shieldCapacity * player.shieldStrengthMultiplier, 0.01f, false, shieldBarStyle);
+        chargeProgressBar = new ProgressBar(0, player.chargeCapacity * player.chargeCapacityMultiplier, 0.01f, false, chargeBarStyle);
         
         healthProgressBar.setBounds(666 - 134 * (uiScale - 1), 413 - 62 * (uiScale - 1), 124 * uiScale, 10);
         shieldProgressBar.setBounds(666 - 134 * (uiScale - 1), 435 - 40 * (uiScale - 1), 72 * uiScale, 10);

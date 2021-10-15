@@ -404,7 +404,7 @@ public class MenuScreen implements Screen {
                 new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("newGame.alert"), new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        initNewGame();
+                        initNewGame(treeJson);
                         startWarpAnimation(menuCategoryManager, true);
                     }
                 });

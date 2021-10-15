@@ -347,14 +347,14 @@ class BasePart extends Entity {
         log("loading " + newConfig.name, DEBUG);
         
         active = false;
+        currentConfig = newConfig;
         assetManager = compositeManager.getAssetManager();
         soundManager = compositeManager.getSoundManager();
-        explosionSound = currentConfig.getString("sfx/explosion.ogg", "explosionSound");
+        explosionSound = currentConfig.getString(false, "explosion", "explosionSound");
         drops = compositeManager.getDrops();
         
         exploded = false;
         name = newConfig.name;
-        currentConfig = newConfig;
         this.textures = textures;
         links = new Array<>();
         if (newConfig.getString("part", "type").equals("clone")) {
@@ -964,7 +964,7 @@ class Barrel extends Entity {
         
         bulletData = new BulletData(config.getWithFallBack(baseConfig.get(true, "bullet"), false, "bullet"));
         
-        shootingSound = config.getStringWithFallback(baseConfig, true, "sfx/gun1.ogg", "shootSound");
+        shootingSound = config.getStringWithFallback(baseConfig, true, "gun1", "shootSound");
         
         bulletOffset = config.getFloatArrayWithFallback(baseConfig, true, new float[]{0, 0}, "bulletOffset");
         

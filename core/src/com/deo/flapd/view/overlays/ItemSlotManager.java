@@ -200,7 +200,7 @@ public class ItemSlotManager {
         lockedSlotStyle.up = new NinePatchDrawable(slotSkin.getPatch("slot_disabled"));
         lockedSlotStyle.down = new NinePatchDrawable(slotSkin.getPatch("slot_disabled_down"));
         lockedSlotStyle.over = new NinePatchDrawable(slotSkin.getPatch("slot_disabled_over"));
-        // TODO: 13/10/2021 add to styles.json
+        
         slotStyle = new ImageButton.ImageButtonStyle();
         slotStyle.up = new NinePatchDrawable(slotSkin.getPatch("slot"));
         slotStyle.over = new NinePatchDrawable(slotSkin.getPatch("slot_over"));
