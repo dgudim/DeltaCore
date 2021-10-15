@@ -222,7 +222,7 @@ public class SellScrapDialogue extends MoneyDialogue {
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                quantityText.setText(localeManager.get("dialogue.quantity") + (int) quantity.getValue());
+                quantityText.setText(localeManager.get("dialogue.quantity") + ":" + (int) quantity.getValue());
                 productName.setText(localeManager.get(item) + " " + getInteger("item_" + item) + "-" + (int) quantity.getValue());
                 for (int i = 0; i < labels.size; i++) {
                     String currentItem = items.get(i).name;

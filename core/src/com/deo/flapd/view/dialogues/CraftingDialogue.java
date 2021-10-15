@@ -52,8 +52,8 @@ public class CraftingDialogue extends Dialogue {
     private final int requestedQuantity;
     private final Array<TextButton> buyShortcuts;
     private Array<Label> tableLabels;
-    private final String[] items;
-    private final int[] itemCounts;
+    private final JsonEntry items;
+    ;
     private final String result;
     private int resultCount;
     private final UIComposer uiComposer;
@@ -81,8 +81,7 @@ public class CraftingDialogue extends Dialogue {
         
         buyShortcuts = new Array<>();
         tableLabels = new Array<>();
-        items = getRequiredItems();
-        itemCounts = getRequiredItemCounts();
+        items = treeJson.get(result, "items");
         
         BitmapFont font = assetManager.get("fonts/pixel.ttf");
         font.setUseIntegerPositions(false);
@@ -96,12 +95,12 @@ public class CraftingDialogue extends Dialogue {
         
         itemAtlas = assetManager.get("items/items.atlas");
         
-        TextButton yes = uiComposer.addTextButton("workshopGreen", localeManager.get("craft"), 0.48f);
-        TextButton no = uiComposer.addTextButton("workshopRed", localeManager.get("cancel"), 0.48f);
-        TextButton yes2 = uiComposer.addTextButton("workshopGreen", localeManager.get("ok"), 0.48f);
-        TextButton yes3 = uiComposer.addTextButton("workshopGreen", localeManager.get("gotYou"), 0.48f);
-        TextButton equip = uiComposer.addTextButton("workshopCyan", localeManager.get("equip"), 0.48f);
-        TextButton customize = uiComposer.addTextButton("workshopPurple", localeManager.get("customize"), 0.4f);
+        TextButton yes = uiComposer.addTextButton("workshopGreen", localeManager.get("craftingDialogue.craft"), 0.48f);
+        TextButton no = uiComposer.addTextButton("workshopRed", localeManager.get("craftingDialogue.cancel"), 0.48f);
+        TextButton yes2 = uiComposer.addTextButton("workshopGreen", localeManager.get("craftingDialogue.ok"), 0.48f);
+        TextButton yes3 = uiComposer.addTextButton("workshopGreen", localeManager.get("craftingDialogue.gotYou"), 0.48f);
+        TextButton equip = uiComposer.addTextButton("workshopCyan", localeManager.get("craftingDialogue.equip"), 0.48f);
+        TextButton customize = uiComposer.addTextButton("workshopPurple", localeManager.get("craftingDialogue.customize"), 0.4f);
         yes.setBounds(344, 12, 156, 88);
         no.setBounds(12, 12, 156, 88);
         yes2.setBounds(12, 12, 156, 88);
@@ -167,7 +166,7 @@ public class CraftingDialogue extends Dialogue {
                 case ("item"):
                     if ((!getBoolean("unlocked_" + result) && getType().equals("part")) || getType().equals("item")) {
                         
-                        resultCount = getResultCount();
+                        resultCount = treeJson.getInt(1, result, "resultCount");
                         
                         addQuestion();
                         addCloseListener(no);
@@ -176,14 +175,14 @@ public class CraftingDialogue extends Dialogue {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
                                 boolean craftingAllowed = true;
-                                for (int i = 0; i < itemCounts.length; i++) {
-                                    if (getInteger("item_" + items[i]) < (int) (itemCounts[i] * quantity.getValue())) {
+                                for (int i = 0; i < items.size; i++) {
+                                    if (getInteger("item_" + items.get(i).name) < (int) (items.getInt(1, i) * quantity.getValue())) {
                                         craftingAllowed = false;
                                     }
                                 }
                                 if (craftingAllowed) {
-                                    for (int i = 0; i < itemCounts.length; i++) {
-                                        subtractInteger("item_" + items[i], (int) (itemCounts[i] * quantity.getValue()));
+                                    for (int i = 0; i < items.size; i++) {
+                                        subtractInteger("item_" + items.get(i).name, (int) (items.getInt(1, i) * quantity.getValue()));
                                     }
                                     if (getType().equals("part")) {
                                         putBoolean("unlocked_" + result, true);
@@ -292,44 +291,28 @@ public class CraftingDialogue extends Dialogue {
         
     }
     
-    private String[] getRequiredItems() {
-        return treeJson.getStringArray(new String[]{}, result, "items");
-    }
-    
-    private String getDescription(String result) {
-        return treeJson.getString(localeManager.get("craftingDialogue.descriptionPlaceholder"), result, "description");
-    }
-    
     private String getStats() {
         StringBuilder stats = new StringBuilder();
-        String[] statsArray = treeJson.getStringArray(new String[]{}, result, "parameters");
-        String[] statsValues = treeJson.getStringArray(new String[]{}, result, "parameterValues");
-        for (int i = 0; i < statsArray.length; i++) {
-            stats.append("\n").append(statsArray[i]).append(": ").append(statsValues[i]);
+        JsonEntry statsArray = treeJson.get(result, "parameters");
+        for (int i = 0; i < statsArray.size; i++) {
+            stats.append("\n").append(localeManager.get(statsArray.get(i).name)).append(": ").append(statsArray.getFloat(0, i));
         }
         return stats.toString();
     }
     
-    private int[] getRequiredItemCounts() {
-        return treeJson.getIntArray(new int[]{}, result, "itemCounts");
-    }
-    
-    private int getResultCount() {
-        return treeJson.getInt(1, result, "resultCount");
-    }
-    
-    @Override
     public void update() {
-        for (int i = 0; i < itemCounts.length; i++) {
-            tableLabels.get(i).setText(items[i] + " " + getInteger("item_" + items[i]) + "/" + (int) (itemCounts[i] * quantity.getValue()));
-            if (itemCounts[i] * quantity.getValue() > getInteger("item_" + items[i])) {
+        for (int i = 0; i < items.size; i++) {
+            String currentItem = items.get(i).name;
+            int itemQuantity = items.getInt(1, i);
+            tableLabels.get(i).setText(localeManager.get(currentItem) + " " + getInteger("item_" + currentItem) + "/" + (int) (itemQuantity * quantity.getValue()));
+            if (itemQuantity * quantity.getValue() > getInteger("item_" + currentItem)) {
                 tableLabels.get(i).setColor(Color.valueOf("#DD0000"));
             } else {
                 tableLabels.get(i).setColor(Color.YELLOW);
             }
         }
-        for (int i = 0; i < items.length; i++) {
-            if (!getString(Keys.savedShopSlots).contains(items[i])) {
+        for (int i = 0; i < items.size; i++) {
+            if (!getString(Keys.savedShopSlots).contains(items.get(i).name)) {
                 buyShortcuts.get(i).setTouchable(Touchable.disabled);
                 buyShortcuts.get(i).setColor(Color.GRAY);
             }
@@ -375,29 +358,31 @@ public class CraftingDialogue extends Dialogue {
         final Array<String> Jitems = new Array<>();
         Jitems.addAll(slotsJson.getStringArray(new String[]{}, "slots"));
         
-        for (int i = 0; i < items.length; i++) {
+        for (int i = 0; i < items.size; i++) {
+            String currentItem = items.get(i).name;
+            int itemQuantity = items.getInt(1, i);
             final Table requirement = new Table();
-            Label itemText = new Label(items[i] + " " + getInteger("item_" + items[i]) + "/" + itemCounts[i] * requestedQuantity, yellowLabelStyle);
+            Label itemText = new Label(localeManager.get(currentItem) + " " + getInteger("item_" + currentItem) + "/" + itemQuantity * requestedQuantity, yellowLabelStyle);
             itemText.setFontScale(0.4f);
             itemText.setWrap(true);
-            if (itemCounts[i] * requestedQuantity > getInteger("item_" + items[i])) {
+            if (itemQuantity * requestedQuantity > getInteger("item_" + currentItem)) {
                 itemText.setColor(Color.valueOf("#DD0000"));
             }
             labels.add(itemText);
             
             Button.ButtonStyle itemButtonStyle = new Button.ButtonStyle();
-            itemButtonStyle.up = new Image(itemAtlas.findRegion(items[i])).getDrawable();
-            itemButtonStyle.disabled = new Image(itemAtlas.findRegion(items[i] + "_disabled")).getDrawable();
-            itemButtonStyle.down = new Image(itemAtlas.findRegion(items[i] + "_enabled")).getDrawable();
-            itemButtonStyle.over = new Image(itemAtlas.findRegion(items[i] + "_over")).getDrawable();
+            itemButtonStyle.up = new Image(itemAtlas.findRegion(currentItem)).getDrawable();
+            itemButtonStyle.disabled = new Image(itemAtlas.findRegion(currentItem + "_disabled")).getDrawable();
+            itemButtonStyle.down = new Image(itemAtlas.findRegion(currentItem + "_enabled")).getDrawable();
+            itemButtonStyle.over = new Image(itemAtlas.findRegion(currentItem + "_over")).getDrawable();
             Button item = new Button(itemButtonStyle);
             
             TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", localeManager.get("craftingDialogue.buy"), 0.21000001f);
-            if (Jitems.indexOf(items[i], false) == -1) {
+            if (Jitems.indexOf(currentItem, false) == -1) {
                 buyShortcut.setTouchable(Touchable.disabled);
                 buyShortcut.setColor(Color.GRAY);
             }
-            final int finalI = i;
+            
             buyShortcut.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -408,8 +393,8 @@ public class CraftingDialogue extends Dialogue {
                         quantities.add(slotsJson.getIntArray(new int[]{}, "productQuantities")[i]);
                     }
                     
-                    new PurchaseDialogue(compositeManager, stage, items[finalI], quantities.get(Jitems.indexOf(items[finalI], false)),
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + items[finalI])) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
+                    new PurchaseDialogue(compositeManager, stage, currentItem, quantities.get(Jitems.indexOf(currentItem, false)),
+                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(1, "resultCount")),
                             CraftingDialogue.this);
                 }
             });
@@ -417,8 +402,8 @@ public class CraftingDialogue extends Dialogue {
             item.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(compositeManager, stage, items[finalI],
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + items[finalI])) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
+                    new CraftingDialogue(compositeManager, stage, currentItem,
+                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
@@ -426,8 +411,8 @@ public class CraftingDialogue extends Dialogue {
             itemText.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(compositeManager, stage, items[finalI],
-                            (int) Math.ceil((itemCounts[finalI] * quantity.getValue() - getInteger("item_" + items[finalI])) / treeJson.get(items[finalI]).getFloat(1, "resultCount")),
+                    new CraftingDialogue(compositeManager, stage, currentItem,
+                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
@@ -465,7 +450,7 @@ public class CraftingDialogue extends Dialogue {
             public void changed(ChangeEvent event, Actor actor) {
                 quantityText.setText(localeManager.get("dialogue.quantity") + ":" + (int) quantity.getValue());
                 update();
-                productQuantity.setText(result + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
+                productQuantity.setText(localeManager.get(result) + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
             }
         });
         
@@ -493,15 +478,15 @@ public class CraftingDialogue extends Dialogue {
     private Label addProductQuantity(boolean showCraftableQuantity) {
         Label productQuantity = addProductName();
         if (showCraftableQuantity) {
-            productQuantity.setText(result + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
+            productQuantity.setText(localeManager.get(result) + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
         } else {
-            productQuantity.setText(result + " " + getInteger("item_" + result));
+            productQuantity.setText(localeManager.get(result) + " " + getInteger("item_" + result));
         }
         return productQuantity;
     }
     
     private Label addProductName() {
-        Label productName = new Label(result, yellowLabelStyle);
+        Label productName = new Label(localeManager.get(result), yellowLabelStyle);
         productName.setFontScale(0.32f);
         productName.setBounds(344, 116, 156, 40);
         productName.setWrap(true);
@@ -511,7 +496,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private void addDescription(boolean showStats) {
-        Label description = new Label("[#FEDE15]" + getDescription(result), defaultLabelStyle);
+        Label description = new Label("[#FEDE15]" + localeManager.get(treeJson.getString(localeManager.get("craftingDialogue.descriptionPlaceholder"), result, "description")), defaultLabelStyle);
         if (showStats) {
             description.setText(description.getText() + getStats());
         }

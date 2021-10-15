@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
@@ -50,6 +51,7 @@ public class PurchaseDialogue extends MoneyDialogue {
     public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue) {
         
         AssetManager assetManager = compositeManager.getAssetManager();
+        LocaleManager localeManager = compositeManager.getLocaleManager();
         
         requestedQuantity = MathUtils.clamp(requestedQuantity, 1, availableQuantity);
         
@@ -70,8 +72,8 @@ public class PurchaseDialogue extends MoneyDialogue {
         yellowLabelStyle.font = font;
         yellowLabelStyle.fontColor = Color.YELLOW;
         
-        TextButton yes = uiComposer.addTextButton("workshopGreen", "buy", 0.48f);
-        TextButton no = uiComposer.addTextButton("workshopRed", "cancel", 0.48f);
+        TextButton yes = uiComposer.addTextButton("workshopGreen", localeManager.get("purchaseDialogue.buy"), 0.48f);
+        TextButton no = uiComposer.addTextButton("workshopRed", localeManager.get("purchaseDialogue.cancel"), 0.48f);
         yes.setBounds(344, 12, 156, 88);
         no.setBounds(12, 12, 156, 88);
         
@@ -87,13 +89,13 @@ public class PurchaseDialogue extends MoneyDialogue {
         quantity.setBounds(186, 24, 140, 40);
         quantity.setValue(requestedQuantity);
         
-        final Label quantityText = new Label("quantity:" + requestedQuantity, yellowLabelStyle);
+        final Label quantityText = new Label(localeManager.get("dialogue.quantity") + ":" + requestedQuantity, yellowLabelStyle);
         quantityText.setFontScale(0.4f);
         quantityText.setPosition(196, 64);
         quantityText.setSize(120, 40);
         quantityText.setAlignment(Align.center);
         
-        Label topText = new Label("Price:", yellowLabelStyle);
+        Label topText = new Label(localeManager.get("purchaseDialogue.price") + ":", yellowLabelStyle);
         topText.setPosition(76, 235);
         topText.setFontScale(0.4f);
         topText.setAlignment(Align.center);
@@ -102,7 +104,7 @@ public class PurchaseDialogue extends MoneyDialogue {
         product.setBounds(352, 160, 140, 100);
         product.setScaling(Scaling.fit);
         
-        final Label productName = new Label(result + " " + getInteger("item_" + result) + "+" + requestedQuantity, yellowLabelStyle);
+        final Label productName = new Label(localeManager.get(result) + " " + getInteger("item_" + result) + "+" + requestedQuantity, yellowLabelStyle);
         productName.setFontScale(0.32f);
         productName.setBounds(344, 116, 156, 40);
         productName.setWrap(true);
@@ -143,8 +145,8 @@ public class PurchaseDialogue extends MoneyDialogue {
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                quantityText.setText("quantity:" + (int) quantity.getValue());
-                productName.setText(result + " " + getInteger("item_" + result) + "+" + (int) (quantity.getValue()));
+                quantityText.setText(localeManager.get("dialogue.quantity") + ":" + (int) quantity.getValue());
+                productName.setText(localeManager.get(result) + " " + getInteger("item_" + result) + "+" + (int) (quantity.getValue()));
                 uraniumCells_text.setText(getInteger(Keys.moneyAmount) + "/" + (int) (price[0] * quantity.getValue()));
                 cogs_text.setText(getInteger(Keys.cogAmount) + "/" + (int) (price[1] * quantity.getValue()));
                 if (getInteger(Keys.moneyAmount) < price[0] * quantity.getValue()) {
