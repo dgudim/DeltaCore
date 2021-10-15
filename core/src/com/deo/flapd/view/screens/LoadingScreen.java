@@ -251,7 +251,7 @@ public class LoadingScreen implements Screen {
         font_main.draw(batch, loadingStateName + state, 0, 440, 800, 1, false);
         font_main.getData().setScale(0.5f);
         font_main.setColor(Color.ORANGE);
-        font_main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 47, 800, 1, false);
+        font_main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 49, 800, 1, false);
         font_main.getData().setScale(0.3f);
         font_main.draw(batch, VERSION_NAME, 2, 478);
         assetManager.update();
