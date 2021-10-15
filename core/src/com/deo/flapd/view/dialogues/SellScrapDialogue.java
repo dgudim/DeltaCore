@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
@@ -42,6 +43,7 @@ public class SellScrapDialogue extends MoneyDialogue {
     public SellScrapDialogue(CompositeManager compositeManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
         
         AssetManager assetManager = compositeManager.getAssetManager();
+        LocaleManager localeManager = compositeManager.getLocaleManager();
         
         BitmapFont font = assetManager.get("fonts/pixel.ttf");
         Skin skin = new Skin();
@@ -76,37 +78,33 @@ public class SellScrapDialogue extends MoneyDialogue {
         Table ingredientsTable = new Table();
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        final String[] items = treeJson.getStringArray(new String[]{}, item, "items");
-        final int[] itemCounts = treeJson.getIntArray(new int[]{}, item, "itemCounts");
-        for (int i = 0; i < itemCounts.length; i++) {
-            itemCounts[i] = MathUtils.clamp(itemCounts[i] / 2, 1, itemCounts[i]);
-        }
+        JsonEntry items = treeJson.get(item, "items");
         
-        boolean isEndItem = false;
+        boolean loadItems = !items.isNull();
+        final int[] itemCounts = new int[loadItems ? items.size : 0];
         
-        if (items.length == 0) {
-            isEndItem = true;
-        }
-        
-        if (!isEndItem) {
-            for (int i = 0; i < items.length; i++) {
+        if (loadItems) {
+            for (int i = 0; i < items.size; i++) {
+                itemCounts[i] = MathUtils.clamp(items.getInt(1, i) / 2, 1, itemCounts[i]);
+            }
+            for (int i = 0; i < items.size; i++) {
+                String currentItem = items.get(i).name;
                 Table requirement = new Table();
-                Label itemText = new Label(items[i] + " " + getInteger("item_" + items[i]) + "+" + itemCounts[i], yellowLabelStyle);
+                Label itemText = new Label(localeManager.get(currentItem) + " " + getInteger("item_" + currentItem) + "+" + itemCounts[i], yellowLabelStyle);
                 itemText.setFontScale(0.28f);
                 itemText.setWrap(true);
                 labels.add(itemText);
                 ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
-                itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(items[i])).getDrawable();
-                itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(items[i] + "_disabled")).getDrawable();
-                itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(items[i] + "_enabled")).getDrawable();
-                itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(items[i] + "_over")).getDrawable();
+                itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(currentItem)).getDrawable();
+                itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(currentItem + "_disabled")).getDrawable();
+                itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(currentItem + "_enabled")).getDrawable();
+                itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(currentItem + "_over")).getDrawable();
                 ImageButton itemImageButton = new ImageButton(itemButtonStyle);
-                final int finalI = i;
                 
                 requirement.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new SellScrapDialogue(compositeManager, stage, itemSlotManager, getInteger("item_" + item), items[finalI]);
+                        new SellScrapDialogue(compositeManager, stage, itemSlotManager, getInteger("item_" + item), currentItem);
                     }
                 });
                 
@@ -164,9 +162,9 @@ public class SellScrapDialogue extends MoneyDialogue {
             public void clicked(InputEvent event, float x, float y) {
                 scrap.setChecked(!buy.isChecked());
                 if (scrap.isChecked()) {
-                    sell.setText("scrap");
+                    sell.setText(localeManager.get("scrapDialogue.scrap"));
                 } else {
-                    sell.setText("sell");
+                    sell.setText(localeManager.get("scrapDialogue.sell"));
                 }
             }
         });
@@ -176,9 +174,9 @@ public class SellScrapDialogue extends MoneyDialogue {
             public void clicked(InputEvent event, float x, float y) {
                 buy.setChecked(!scrap.isChecked());
                 if (buy.isChecked()) {
-                    sell.setText("sell");
+                    sell.setText(localeManager.get("scrapDialogue.sell"));
                 } else {
-                    sell.setText("scrap");
+                    sell.setText(localeManager.get("scrapDialogue.scrap"));
                 }
             }
         });
@@ -189,24 +187,24 @@ public class SellScrapDialogue extends MoneyDialogue {
         endItem.setWrap(true);
         endItem.setAlignment(Align.center);
         
-        scrap.setDisabled(isEndItem);
-        if (isEndItem) {
+        scrap.setDisabled(!loadItems);
+        if (!loadItems) {
             buy.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     scrap.setChecked(false);
                     buy.setChecked(true);
-                    sell.setText("sell");
+                    sell.setText(localeManager.get("scrapDialogue.sell"));
                 }
             });
-            endItem.setText("this item can't be scrapped");
+            endItem.setText(localeManager.get("scrapDialogue.cantBeScrapped"));
         }
         
         Image product = new Image(itemAtlas.findRegion(item));
         product.setScaling(Scaling.fit);
         product.setBounds(226, 204, 60, 60);
         
-        final Label productName = new Label(item + " " + getInteger("item_" + item) + "-1", yellowLabelStyle);
+        final Label productName = new Label(localeManager.get(item) + " " + getInteger("item_" + item) + "-1", yellowLabelStyle);
         productName.setFontScale(0.32f);
         productName.setBounds(196, 164, 120, 32);
         productName.setWrap(true);
@@ -215,7 +213,7 @@ public class SellScrapDialogue extends MoneyDialogue {
         final Slider quantity = uiComposer.addSlider("sliderDefaultNormal", 1, MathUtils.clamp(availableQuantity, 1, 9999), 1);
         quantity.setBounds(186, 24, 140, 40);
         
-        final Label quantityText = new Label("quantity:1", yellowLabelStyle);
+        final Label quantityText = new Label(localeManager.get("dialogue.quantity") + ":1", yellowLabelStyle);
         quantityText.setFontScale(0.4f);
         quantityText.setPosition(196, 64);
         quantityText.setSize(120, 40);
@@ -224,10 +222,11 @@ public class SellScrapDialogue extends MoneyDialogue {
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                quantityText.setText("quantity:" + (int) quantity.getValue());
-                productName.setText(item + " " + getInteger("item_" + item) + "-" + (int) quantity.getValue());
+                quantityText.setText(localeManager.get("dialogue.quantity") + (int) quantity.getValue());
+                productName.setText(localeManager.get(item) + " " + getInteger("item_" + item) + "-" + (int) quantity.getValue());
                 for (int i = 0; i < labels.size; i++) {
-                    labels.get(i).setText(items[i] + " " + getInteger("item_" + items[i]) + "+" + (int) (itemCounts[i] * quantity.getValue()));
+                    String currentItem = items.get(i).name;
+                    labels.get(i).setText(localeManager.get(currentItem) + " " + getInteger("item_" + currentItem) + "+" + (int) (itemCounts[i] * quantity.getValue()));
                 }
                 uraniumCells_text.setText(getInteger(Keys.moneyAmount) + "+" + (int) (price[0] * quantity.getValue()));
                 cogs_text.setText(getInteger(Keys.cogAmount) + "+" + (int) (price[1] * quantity.getValue()));
@@ -242,7 +241,7 @@ public class SellScrapDialogue extends MoneyDialogue {
                     addInteger(Keys.cogAmount, (int) (price[1] * quantity.getValue()));
                 } else {
                     for (int i = 0; i < labels.size; i++) {
-                        addInteger("item_" + items[i], (int) (itemCounts[i] * quantity.getValue()));
+                        addInteger("item_" + items.get(i).name, (int) (itemCounts[i] * quantity.getValue()));
                     }
                 }
                 subtractInteger("item_" + item, (int) quantity.getValue());
