@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
@@ -46,6 +47,7 @@ public class CraftingDialogue extends Dialogue {
     private final Stage stage;
     
     private final CompositeManager compositeManager;
+    private final LocaleManager localeManager;
     
     private final int requestedQuantity;
     private final Array<TextButton> buyShortcuts;
@@ -65,10 +67,6 @@ public class CraftingDialogue extends Dialogue {
         this(compositeManager, stage, result, 1, false, null);
     }
     
-    public CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, int requestedQuantity) {
-        this(compositeManager, stage, result, requestedQuantity, false, null);
-    }
-    
     public CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, boolean showDescription) {
         this(compositeManager, stage, result, 1, showDescription, null);
     }
@@ -77,6 +75,7 @@ public class CraftingDialogue extends Dialogue {
         this.stage = stage;
         this.compositeManager = compositeManager;
         AssetManager assetManager = compositeManager.getAssetManager();
+        localeManager = compositeManager.getLocaleManager();
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
         
@@ -97,12 +96,12 @@ public class CraftingDialogue extends Dialogue {
         
         itemAtlas = assetManager.get("items/items.atlas");
         
-        TextButton yes = uiComposer.addTextButton("workshopGreen", "craft", 0.48f);
-        TextButton no = uiComposer.addTextButton("workshopRed", "cancel", 0.48f);
-        TextButton yes2 = uiComposer.addTextButton("workshopGreen", "ok", 0.48f);
-        TextButton yes3 = uiComposer.addTextButton("workshopGreen", "got you", 0.48f);
-        TextButton equip = uiComposer.addTextButton("workshopCyan", "equip", 0.48f);
-        TextButton customize = uiComposer.addTextButton("workshopPurple", "customize", 0.4f);
+        TextButton yes = uiComposer.addTextButton("workshopGreen", localeManager.get("craft"), 0.48f);
+        TextButton no = uiComposer.addTextButton("workshopRed", localeManager.get("cancel"), 0.48f);
+        TextButton yes2 = uiComposer.addTextButton("workshopGreen", localeManager.get("ok"), 0.48f);
+        TextButton yes3 = uiComposer.addTextButton("workshopGreen", localeManager.get("gotYou"), 0.48f);
+        TextButton equip = uiComposer.addTextButton("workshopCyan", localeManager.get("equip"), 0.48f);
+        TextButton customize = uiComposer.addTextButton("workshopPurple", localeManager.get("customize"), 0.4f);
         yes.setBounds(344, 12, 156, 88);
         no.setBounds(12, 12, 156, 88);
         yes2.setBounds(12, 12, 156, 88);
@@ -126,28 +125,28 @@ public class CraftingDialogue extends Dialogue {
         
         quantity = uiComposer.addSlider("sliderDefaultNormal", 1, 50, 1);
         
-        Label text = new Label("This is a base part", yellowLabelStyle);
+        Label text = new Label(localeManager.get("craftingDialogue.basePartMessage"), yellowLabelStyle);
         text.setPosition(40, 244);
         text.setFontScale(0.32f);
         text.setAlignment(Align.center);
         
         if (!showDescription && !isPartLocked()) {
             switch (getType()) {
-                case ("baseCategory"):
                 case ("basePart"):
-                    
-                    if (saveTo().equals("currentEngine")) {
+                case ("category"):
+                case ("subcategory"):
+                    if (saveTo().equals(Keys.currentEngine)) {
                         customize.addListener(new ClickListener() {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
                                 new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
                             }
                         });
-                        yes.setText("ok");
+                        yes.setText(localeManager.get("craftingDialogue.ok"));
                         addButtons(yes, customize);
                         addCloseListener(yes);
                     } else {
-                        yes.setText("fine");
+                        yes.setText(localeManager.get("craftingDialogue.fine"));
                         addButtons(yes, yes2);
                         addCloseListener(yes, yes2);
                     }
@@ -157,7 +156,7 @@ public class CraftingDialogue extends Dialogue {
                     } else {
                         addButtons(yes3);
                         addCloseListener(yes3);
-                        text.setText("this is a base category");
+                        text.setText(localeManager.get("craftingDialogue.categoryMessage"));
                     }
                     
                     addProductName();
@@ -214,7 +213,7 @@ public class CraftingDialogue extends Dialogue {
                             addQuantitySelector();
                         }
                     } else {
-                        text.setText("Part already crafted");
+                        text.setText(localeManager.get("craftingDialogue.partCraftedMessage"));
                         
                         if (saveTo().equals("currentEngine")) {
                             customize.addListener(new ClickListener() {
@@ -223,11 +222,11 @@ public class CraftingDialogue extends Dialogue {
                                     new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
                                 }
                             });
-                            yes.setText("ok");
+                            yes.setText(localeManager.get("craftingDialogue.ok"));
                             addButtons(yes, customize);
                             addCloseListener(yes);
                         } else {
-                            yes.setText("fine");
+                            yes.setText(localeManager.get("craftingDialogue.fine"));
                             addButtons(yes, yes2);
                             addCloseListener(yes, yes2);
                         }
@@ -240,11 +239,11 @@ public class CraftingDialogue extends Dialogue {
                     }
                     break;
                 case ("endItem"):
-                    yes.setText("fine");
+                    yes.setText(localeManager.get("craftingDialogue.fine"));
                     
                     addCloseListener(yes, yes2, yes3);
                     
-                    text.setText("Item can't be crafted");
+                    text.setText(localeManager.get("craftingDialogue.cantBeCraftedMessage"));
                     
                     addProductQuantity(false);
                     
@@ -255,11 +254,11 @@ public class CraftingDialogue extends Dialogue {
                     break;
             }
         } else if (showDescription) {
-            yes.setText("fine");
+            yes.setText(localeManager.get("craftingDialogue.fine"));
             
             addCloseListener(yes, yes2, yes3);
             
-            text.setText("Description:");
+            text.setText(localeManager.get("craftingDialogue.description") + ":");
             
             if (getType().equals("part")) {
                 addProductName();
@@ -272,8 +271,8 @@ public class CraftingDialogue extends Dialogue {
             dialog.addActor(text);
             addButtons(yes, yes2, yes3);
         } else {
-            text.setText("This part requires other parts:");
-            yes.setText("fine");
+            text.setText(localeManager.get("craftingDialogue.requiresOtherPartsMessage") + ":");
+            yes.setText(localeManager.get("craftingDialogue.fine"));
             dialog.setBackground(buttonSkin.getDrawable("craftingTerminal_locked"));
             
             addCloseListener(yes, yes2);
@@ -298,7 +297,7 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private String getDescription(String result) {
-        return treeJson.getString("No description", result, "description");
+        return treeJson.getString(localeManager.get("craftingDialogue.descriptionPlaceholder"), result, "description");
     }
     
     private String getStats() {
@@ -393,7 +392,7 @@ public class CraftingDialogue extends Dialogue {
             itemButtonStyle.over = new Image(itemAtlas.findRegion(items[i] + "_over")).getDrawable();
             Button item = new Button(itemButtonStyle);
             
-            TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", "buy", 0.21000001f);
+            TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", localeManager.get("craftingDialogue.buy"), 0.21000001f);
             if (Jitems.indexOf(items[i], false) == -1) {
                 buyShortcut.setTouchable(Touchable.disabled);
                 buyShortcut.setColor(Color.GRAY);
@@ -453,7 +452,7 @@ public class CraftingDialogue extends Dialogue {
         
         addRequirementsTable();
         
-        final Label quantityText = new Label("quantity:" + requestedQuantity, yellowLabelStyle);
+        final Label quantityText = new Label(localeManager.get("dialogue.quantity") + ":" + requestedQuantity, yellowLabelStyle);
         quantityText.setFontScale(0.4f);
         quantityText.setAlignment(Align.center);
         
@@ -464,7 +463,7 @@ public class CraftingDialogue extends Dialogue {
         quantity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                quantityText.setText("quantity:" + (int) quantity.getValue());
+                quantityText.setText(localeManager.get("dialogue.quantity") + ":" + (int) quantity.getValue());
                 update();
                 productQuantity.setText(result + " " + getInteger("item_" + result) + "+" + (int) (resultCount * quantity.getValue()));
             }
@@ -585,7 +584,7 @@ public class CraftingDialogue extends Dialogue {
     private void addEquipButton(final TextButton equip) {
         if (getString(saveTo()).equals(result)) {
             equip.setColor(Color.GREEN);
-            equip.getLabel().setText("equipped");
+            equip.getLabel().setText(localeManager.get("craftingDialogue.equipped"));
             equip.getLabel().setFontScale(0.44f);
         }
         
@@ -594,7 +593,7 @@ public class CraftingDialogue extends Dialogue {
             public void clicked(InputEvent event, float x, float y) {
                 putString(saveTo(), result);
                 equip.setColor(Color.GREEN);
-                equip.getLabel().setText("equipped");
+                equip.getLabel().setText(localeManager.get("craftingDialogue.equipped"));
                 equip.getLabel().setFontScale(0.44f);
                 //LoadingScreen.craftingTree.update();
             }

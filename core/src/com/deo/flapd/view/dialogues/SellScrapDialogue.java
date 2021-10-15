@@ -197,7 +197,7 @@ public class SellScrapDialogue extends MoneyDialogue {
                     sell.setText(localeManager.get("scrapDialogue.sell"));
                 }
             });
-            endItem.setText(localeManager.get("scrapDialogue.cantBeScrapped"));
+            endItem.setText(localeManager.get("scrapDialogue.cantBeScrappedMessage"));
         }
         
         Image product = new Image(itemAtlas.findRegion(item));
