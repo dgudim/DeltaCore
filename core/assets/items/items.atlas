@@ -332,28 +332,28 @@ part.shield_generator_mk3_over
   orig: 104, 106
   offset: 0, 0
   index: -1
-part.thermoNuclearCore
+part.thermonuclear_core
   rotate: false
   xy: 217, 244
   size: 101, 101
   orig: 101, 101
   offset: 0, 0
   index: -1
-part.thermoNuclearCore_disabled
+part.thermonuclear_core_disabled
   rotate: false
   xy: 217, 141
   size: 101, 101
   orig: 101, 101
   offset: 0, 0
   index: -1
-part.thermoNuclearCore_enabled
+part.thermonuclear_core_enabled
   rotate: false
   xy: 375, 676
   size: 101, 101
   orig: 101, 101
   offset: 0, 0
   index: -1
-part.thermoNuclearCore_over
+part.thermonuclear_core_over
   rotate: false
   xy: 375, 573
   size: 101, 101
@@ -1473,13 +1473,6 @@ item.unstable_crystal
   orig: 46, 46
   offset: 0, 0
   index: -1
-item.unstable_сrystal
-  rotate: false
-  xy: 786, 226
-  size: 46, 46
-  orig: 46, 46
-  offset: 0, 0
-  index: -1
 item.unstable_crystal_disabled
   rotate: false
   xy: 786, 178
@@ -2278,7 +2271,7 @@ item.memory_cell_mk1_over
   orig: 26, 18
   offset: 0, 0
   index: -1
-item.energy_core
+part.energy_core
   rotate: false
   xy: 440, 138
   size: 12, 14
@@ -2425,13 +2418,6 @@ item.purple_warp_shard.png
   orig: 21, 21
   offset: 0, 0
   index: -1
-item.energy_core_disabled
-  rotate: false
-  xy: 472, 353
-  size: 12, 14
-  orig: 12, 14
-  offset: 0, 0
-  index: -1
 item.laser_coil
   rotate: false
   xy: 792, 429
@@ -2472,6 +2458,13 @@ item.purple_warp_shard.png_over
   xy: 1427, 527
   size: 21, 21
   orig: 21, 21
+  offset: 0, 0
+  index: -1
+part.energy_core_disabled
+  rotate: false
+  xy: 472, 353
+  size: 12, 14
+  orig: 12, 14
   offset: 0, 0
   index: -1
 item.cyan_coil_disabled
@@ -2656,128 +2649,128 @@ item.green_crystal
   orig: 13, 13
   offset: 0, 0
   index: -1
-item.energy_core_enabled
-  rotate: false
-  xy: 1648, 685
-  size: 12, 14
-  orig: 12, 14
-  offset: 0, 0
-  index: -1
-item.energy_core_over
-  rotate: false
-  xy: 1648, 669
-  size: 12, 14
-  orig: 12, 14
-  offset: 0, 0
-  index: -1
 item.green_crystal_disabled
   rotate: false
-  xy: 1663, 700
+  xy: 1648, 686
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.green_crystal_enabled
   rotate: false
-  xy: 1648, 654
+  xy: 1663, 700
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.green_crystal_over
   rotate: false
-  xy: 1662, 685
+  xy: 1648, 671
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.orange_crystal
   rotate: false
-  xy: 1662, 670
+  xy: 1663, 685
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
-item.metal_shard
-  rotate: false
-  xy: 1663, 655
-  size: 12, 13
-  orig: 12, 13
-  offset: 0, 0
-  index: -1
-item.metal_shard_disabled
-  rotate: false
-  xy: 1663, 655
-  size: 12, 13
-  orig: 12, 13
-  offset: 0, 0
-  index: -1
-item.metal_shard_enabled
-  rotate: false
-  xy: 1663, 655
-  size: 12, 13
-  orig: 12, 13
-  offset: 0, 0
-  index: -1
-item.metal_shard_over
-  rotate: false
-  xy: 1663, 655
-  size: 12, 13
-  orig: 12, 13
-  offset: 0, 0
-  index: -1
 item.orange_crystal_disabled
   rotate: false
-  xy: 1622, 629
+  xy: 1648, 656
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.orange_crystal_enabled
   rotate: false
-  xy: 1623, 614
+  xy: 1663, 670
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.orange_crystal_over
   rotate: false
-  xy: 1623, 599
+  xy: 1663, 655
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.purple_crystal
   rotate: false
-  xy: 1623, 584
+  xy: 1648, 641
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.purple_crystal_disabled
   rotate: false
-  xy: 1623, 569
+  xy: 1663, 640
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
 item.purple_crystal_enabled
   rotate: false
-  xy: 1637, 629
+  xy: 1588, 506
   size: 13, 13
   orig: 13, 13
+  offset: 0, 0
+  index: -1
+item.metal_shard
+  rotate: false
+  xy: 1603, 506
+  size: 12, 13
+  orig: 12, 13
+  offset: 0, 0
+  index: -1
+item.metal_shard_disabled
+  rotate: false
+  xy: 1603, 506
+  size: 12, 13
+  orig: 12, 13
+  offset: 0, 0
+  index: -1
+item.metal_shard_enabled
+  rotate: false
+  xy: 1603, 506
+  size: 12, 13
+  orig: 12, 13
+  offset: 0, 0
+  index: -1
+item.metal_shard_over
+  rotate: false
+  xy: 1603, 506
+  size: 12, 13
+  orig: 12, 13
   offset: 0, 0
   index: -1
 item.purple_crystal_over
   rotate: false
-  xy: 1638, 614
+  xy: 1622, 629
   size: 13, 13
   orig: 13, 13
   offset: 0, 0
   index: -1
+part.energy_core_enabled
+  rotate: false
+  xy: 1623, 613
+  size: 12, 14
+  orig: 12, 14
+  offset: 0, 0
+  index: -1
+part.energy_core_over
+  rotate: false
+  xy: 1623, 597
+  size: 12, 14
+  orig: 12, 14
+  offset: 0, 0
+  index: -1
 item.laser_coil_over
   rotate: false
-  xy: 477, 818
+  xy: 1637, 633
   size: 9, 9
   orig: 9, 9
   offset: 0, 0

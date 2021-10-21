@@ -3,6 +3,7 @@ package com.deo.flapd.view.overlays;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -26,10 +27,14 @@ import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.screens.MenuScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.connectFortyFiveDegreeBranch;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.log;
 
 public class UpgradeMenu extends Actor {
+    
+    AssetManager assetManager;
     
     private final Array<Image> connectingBranches;
     private final Array<Float> originalBranchHeights;
@@ -51,11 +56,13 @@ public class UpgradeMenu extends Actor {
     private final Vector2 originalShipDimensions;
     private final Vector2 originalAnchorPosition;
     
+    JsonEntry treeJson;
+    
     public UpgradeMenu(CompositeManager compositeManager, Stage stage, MenuScreen menuScreen, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
-        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
         UIComposer uiComposer = compositeManager.getUiComposer();
-        AssetManager assetManager = compositeManager.getAssetManager();
+        assetManager = compositeManager.getAssetManager();
         LocaleManager localeManager = compositeManager.getLocaleManager();
         opensToTheLeft = targetPosition.x < 0;
         
@@ -109,12 +116,14 @@ public class UpgradeMenu extends Actor {
         Label rootCategoryLabel = uiComposer.addText(localeManager.get(category), assetManager.get("fonts/pixel.ttf"), 0.48f);
         rootCategoryLabel.getStyle().background = constructFilledImageWithColor(1, 1, Color.DARK_GRAY);
         itemSelectionTable.add(rootCategoryLabel).align(Align.left).width(width - 8).row();
+        loadItemsForCategory(category, itemSelectionTable, width);
         Array<String> subcategories = new Array<>();
         for (int i = 0; i < treeJson.size; i++) {
             if (treeJson.getString("", i, "category").equals(category) && treeJson.getString("", i, "type").equals("subcategory")) {
                 subcategories.add(treeJson.get(i).name);
                 Label subcategoryLabel = uiComposer.addText(localeManager.get(treeJson.get(i).name), assetManager.get("fonts/pixel.ttf"), 0.48f);
                 itemSelectionTable.add(subcategoryLabel).align(Align.left).padLeft(10).row();
+                loadItemsForCategory(treeJson.get(i).name, itemSelectionTable, width);
             }
         }
         
@@ -131,6 +140,28 @@ public class UpgradeMenu extends Actor {
         
         stage.addActor(itemSelection_outerHolder);
         stage.addActor(this);
+    }
+    
+    void loadItemsForCategory(String category, Table addTo, float width) {
+        for (int i2 = 0; i2 < treeJson.size; i2++) {
+            String type = treeJson.getString("", i2, "type");
+            if (treeJson.getString("", i2, "category").equals(category) && (type.equals("part") || type.equals("basePart"))) {
+                Table item = new Table();
+                int finalI = i2;
+                Image item_image = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(treeJson.get(finalI).name)) {
+                    @Override
+                    public void draw(Batch batch, float parentAlpha) {
+                        try {
+                            super.draw(batch, parentAlpha);
+                        } catch (Exception e) {
+                            log("error drawing " + treeJson.get(finalI).name, CRITICAL_ERROR);
+                        }
+                    }
+                };
+                item.add(item_image);
+                addTo.add(item).width(width - 8).row();
+            }
+        }
     }
     
     void close() {

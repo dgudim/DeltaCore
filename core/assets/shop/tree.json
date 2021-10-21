@@ -72,7 +72,7 @@
   },
   "part.small_machine_gun": {
     "description": "part.small_machine_gun.description",
-    "category": "category.weapons",
+    "category": "category.basic_ammo_weapons",
     "type": "basePart",
     "parameters": {
       "parameter.damage": 50,
