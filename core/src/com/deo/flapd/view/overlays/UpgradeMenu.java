@@ -3,7 +3,6 @@ package com.deo.flapd.view.overlays;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -24,17 +25,32 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
+import com.deo.flapd.view.dialogues.CraftingDialogue;
 import com.deo.flapd.view.screens.MenuScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
 import static com.deo.flapd.utils.DUtils.connectFortyFiveDegreeBranch;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
-import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getString;
 
 public class UpgradeMenu extends Actor {
     
+    private final Drawable up_enabled;
+    private final Drawable over_enabled;
+    private final Drawable down_enabled;
+    private final Drawable up_disabled;
+    private final Drawable over_disabled;
+    private final Drawable down_disabled;
+    private final Drawable up;
+    private final Drawable over;
+    private final Drawable down;
+    
+    CompositeManager compositeManager;
     AssetManager assetManager;
+    TextureAtlas itemsAtlas;
+    LocaleManager localeManager;
+    UIComposer uiComposer;
     
     private final Array<Image> connectingBranches;
     private final Array<Float> originalBranchHeights;
@@ -45,6 +61,11 @@ public class UpgradeMenu extends Actor {
     boolean opensToTheLeft;
     ScrollPane itemSelection_outerHolder;
     float itemSelectionHeight = 200;
+    
+    Array<String> parts;
+    Array<ImageTextButton.ImageTextButtonStyle> partsStyles;
+    String currentEquipped;
+    String saveTo;
     
     private final float branchThickness = 4;
     private byte animationDirection = -1;
@@ -59,11 +80,27 @@ public class UpgradeMenu extends Actor {
     JsonEntry treeJson;
     
     public UpgradeMenu(CompositeManager compositeManager, Stage stage, MenuScreen menuScreen, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
-        treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        up = constructFilledImageWithColor(1, 1, Color.valueOf("#44444444"));
+        over = constructFilledImageWithColor(1, 1, Color.valueOf("#66666644"));
+        down = constructFilledImageWithColor(1, 1, Color.valueOf("#88888844"));
         
-        UIComposer uiComposer = compositeManager.getUiComposer();
+        up_enabled = constructFilledImageWithColor(1, 1, Color.valueOf("#11AA1144"));
+        over_enabled = constructFilledImageWithColor(1, 1, Color.valueOf("#33CC3344"));
+        down_enabled = constructFilledImageWithColor(1, 1, Color.valueOf("#55FF5544"));
+        
+        up_disabled = constructFilledImageWithColor(1, 1, Color.valueOf("#AAAA1144"));
+        over_disabled = constructFilledImageWithColor(1, 1, Color.valueOf("#CCCC3344"));
+        down_disabled = constructFilledImageWithColor(1, 1, Color.valueOf("#FFFF5544"));
+        
+        treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        parts = new Array<>();
+        partsStyles = new Array<>();
+        
+        this.compositeManager = compositeManager;
+        uiComposer = compositeManager.getUiComposer();
         assetManager = compositeManager.getAssetManager();
-        LocaleManager localeManager = compositeManager.getLocaleManager();
+        itemsAtlas = assetManager.get("items/items.atlas", TextureAtlas.class);
+        localeManager = compositeManager.getLocaleManager();
         opensToTheLeft = targetPosition.x < 0;
         
         connectingBranches = new Array<>();
@@ -112,23 +149,21 @@ public class UpgradeMenu extends Actor {
         stage.addActor(holder);
         stage.addActor(openMenuCheckBox);
         
+        saveTo = treeJson.getString("errorSaving" + category, category, "saveTo");
+        currentEquipped = getString(saveTo);
+        
         Table itemSelectionTable = new Table();
-        Label rootCategoryLabel = uiComposer.addText(localeManager.get(category), assetManager.get("fonts/pixel.ttf"), 0.48f);
-        rootCategoryLabel.getStyle().background = constructFilledImageWithColor(1, 1, Color.DARK_GRAY);
-        itemSelectionTable.add(rootCategoryLabel).align(Align.left).width(width - 8).row();
-        loadItemsForCategory(category, itemSelectionTable, width);
-        Array<String> subcategories = new Array<>();
+        loadItemsForCategory(category, itemSelectionTable, width, true);
         for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.getString("", i, "category").equals(category) && treeJson.getString("", i, "type").equals("subcategory")) {
-                subcategories.add(treeJson.get(i).name);
-                Label subcategoryLabel = uiComposer.addText(localeManager.get(treeJson.get(i).name), assetManager.get("fonts/pixel.ttf"), 0.48f);
-                itemSelectionTable.add(subcategoryLabel).align(Align.left).padLeft(10).row();
-                loadItemsForCategory(treeJson.get(i).name, itemSelectionTable, width);
+            if (treeJson.getString(false, "", i, "category").equals(category) && treeJson.getString("", i, "type").equals("subcategory")) {
+                loadItemsForCategory(treeJson.get(i).name, itemSelectionTable, width, false);
             }
         }
+        refreshStates();
         
         itemSelectionTable.align(Align.topLeft);
         ScrollPane itemSelection = new ScrollPane(itemSelectionTable);
+        itemSelection.setupOverscroll(7, 7, 30);
         
         Table itemSelectionHolderTable = new Table();
         itemSelectionHolderTable.setBackground(new NinePatchDrawable(assetManager.get("ui/menuUi.atlas", TextureAtlas.class).createPatch("tableBg")));
@@ -137,31 +172,88 @@ public class UpgradeMenu extends Actor {
         itemSelection_outerHolder = new ScrollPane(itemSelectionHolderTable);
         itemSelection_outerHolder.setScrollingDisabled(true, true);
         itemSelection_outerHolder.setSize(width, 0);
+        itemSelection_outerHolder.setupOverscroll(0, 0, 0);
         
         stage.addActor(itemSelection_outerHolder);
         stage.addActor(this);
     }
     
-    void loadItemsForCategory(String category, Table addTo, float width) {
-        for (int i2 = 0; i2 < treeJson.size; i2++) {
-            String type = treeJson.getString("", i2, "type");
-            if (treeJson.getString("", i2, "category").equals(category) && (type.equals("part") || type.equals("basePart"))) {
-                Table item = new Table();
-                int finalI = i2;
-                Image item_image = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(treeJson.get(finalI).name)) {
+    void loadItemsForCategory(String category, Table addTo, float width, boolean root) {
+        Label categoryLabel = uiComposer.addText((root ? "  " : "") + localeManager.get(category), assetManager.get("fonts/pixel.ttf"), 0.48f);
+        categoryLabel.getStyle().background = constructFilledImageWithColor(1, 1, Color.valueOf(root ? "#262626" : "#464646"));
+        categoryLabel.getStyle().fontColor = Color.valueOf(root ? "#ffb121" : "#ffd343");
+        addTo.add(categoryLabel).align(Align.left).width(width - 8).row();
+        
+        for (int i = 0; i < treeJson.size; i++) {
+            String type = treeJson.getString("", i, "type");
+            if (treeJson.getString(false, "", i, "category").equals(category) && (type.equals("part") || type.equals("basePart"))) {
+                
+                ImageTextButton.ImageTextButtonStyle itemButtonStyle = new ImageTextButton.ImageTextButtonStyle();
+                itemButtonStyle.imageUp = new Image(itemsAtlas.findRegion(treeJson.get(i).name)).getDrawable();
+                itemButtonStyle.imageDisabled = new Image(itemsAtlas.findRegion(treeJson.get(i).name + "_disabled")).getDrawable();
+                itemButtonStyle.imageDown = new Image(itemsAtlas.findRegion(treeJson.get(i).name + "_enabled")).getDrawable();
+                itemButtonStyle.imageOver = new Image(itemsAtlas.findRegion(treeJson.get(i).name + "_over")).getDrawable();
+                itemButtonStyle.font = assetManager.get("fonts/pixel.ttf");
+                itemButtonStyle.fontColor = Color.valueOf("#CCCCCC");
+                itemButtonStyle.overFontColor = Color.valueOf("#DDDDDD");
+                itemButtonStyle.downFontColor = Color.WHITE;
+                ImageTextButton textImageButton = new ImageTextButton(localeManager.get(treeJson.get(i).name), itemButtonStyle);
+                parts.add(treeJson.get(i).name);
+                partsStyles.add(itemButtonStyle);
+    
+                int finalI = i;
+                textImageButton.addListener(new ClickListener(){
                     @Override
-                    public void draw(Batch batch, float parentAlpha) {
-                        try {
-                            super.draw(batch, parentAlpha);
-                        } catch (Exception e) {
-                            log("error drawing " + treeJson.get(finalI).name, CRITICAL_ERROR);
-                        }
+                    public void clicked(InputEvent event, float x, float y) {
+                        new CraftingDialogue(compositeManager, addTo.getStage(), treeJson.get(finalI).name, false);
                     }
-                };
-                item.add(item_image);
-                addTo.add(item).width(width - 8).row();
+                });
+                
+                float scale = 80 / Math.max(itemButtonStyle.imageUp.getMinWidth(), itemButtonStyle.imageUp.getMinHeight());
+                float itemButton_width = itemButtonStyle.imageUp.getMinWidth() * scale;
+                float itemButton_height = itemButtonStyle.imageUp.getMinHeight() * scale;
+                itemButtonStyle.imageUp.setMinWidth(itemButton_width);
+                itemButtonStyle.imageUp.setMinHeight(itemButton_height);
+                itemButtonStyle.imageDown.setMinWidth(itemButton_width);
+                itemButtonStyle.imageDown.setMinHeight(itemButton_height);
+                itemButtonStyle.imageOver.setMinWidth(itemButton_width);
+                itemButtonStyle.imageOver.setMinHeight(itemButton_height);
+                
+                textImageButton.align(Align.left);
+                textImageButton.getLabel().setAlignment(Align.left);
+                
+                addTo.add(textImageButton).width(width - 8).padTop(5).row();
             }
         }
+    }
+    
+    void refreshStates() {
+        for (int i = 0; i < parts.size; i++) {
+            if (parts.get(i).equals(currentEquipped)) {
+                partsStyles.get(i).up = up_enabled;
+                partsStyles.get(i).over = over_enabled;
+                partsStyles.get(i).down = down_enabled;
+            } else {
+                if (getPartLockState(parts.get(i))) {
+                    partsStyles.get(i).up = up;
+                    partsStyles.get(i).over = over;
+                    partsStyles.get(i).down = down;
+                } else {
+                    partsStyles.get(i).up = up_disabled;
+                    partsStyles.get(i).over = over_disabled;
+                    partsStyles.get(i).down = down_disabled;
+                }
+            }
+        }
+    }
+    
+    private boolean getPartLockState(String part) {
+        for (String requiredItem : treeJson.getStringArray(new String[]{}, part, "requires")) {
+            if (!getBoolean("unlocked_" + requiredItem)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     void close() {
