@@ -331,7 +331,11 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private String saveTo() {
-        return treeJson.getString("noSaveToLocation", result, "saveTo");
+        JsonEntry intermediateValue = treeJson.get(treeJson.getString("noSaveToLocation", result, "category"));
+        if (intermediateValue.getString("category", "type").equals("subcategory")) {
+            return treeJson.getString("noSaveToLocation", intermediateValue.getString("noCategory", "category"), "saveTo");
+        }
+        return intermediateValue.getString("noSaveToLocation", "saveTo");
     }
     
     private void addCloseListener(TextButton... buttons) {
