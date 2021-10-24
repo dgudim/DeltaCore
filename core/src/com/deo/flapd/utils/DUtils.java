@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -473,6 +474,16 @@ public class DUtils {
         } else {
             connectArbitraryBranch(x, y, intermediatePos, y2, thickness, color, addTo, holder);
             connectArbitraryBranch(intermediatePos, y2, x2, y2, thickness, color, addTo, holder);
+        }
+    }
+    
+    public static void scaleDrawables(float targetSize, Drawable... drawables) {
+        float scale = 80 / Math.max(drawables[0].getMinWidth(), drawables[0].getMinHeight());
+        float width = drawables[0].getMinWidth() * scale;
+        float height = drawables[0].getMinHeight() * scale;
+        for (Drawable drawable : drawables) {
+            drawable.setMinWidth(width);
+            drawable.setMinHeight(height);
         }
     }
     

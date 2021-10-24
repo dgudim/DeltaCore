@@ -292,7 +292,6 @@ public class UIComposer {
         return label;
     }
     
-    
     private void addButtonStyle(Button.ButtonStyle buttonStyle, String assignmentName) {
         buttonStyles.add(buttonStyle);
         buttonStyleNames.add(assignmentName);
@@ -330,7 +329,7 @@ public class UIComposer {
         return checkBox;
     }
     
-    public Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
+    public Table addSlider(String style, float min, float max, float step, final String text, final String postText, final String valueKey, final ScrollPane scrollHolder) {
         Table slider = addSlider(style, min, max, step, text, postText, valueKey);
         slider.getCells().get(0).getActor().addListener(new ChangeListener() {
             @Override
@@ -341,7 +340,7 @@ public class UIComposer {
         return slider;
     }
     
-    public Table addSlider(String style, int min, int max, float step, final String text, final String postText, final String valueKey) {
+    public Table addSlider(String style, float min, float max, float step, final String text, final String postText, final String valueKey) {
         Table cell = new Table();
         final Slider slider = addSlider(style, min, max, step);
         slider.setValue(getFloat(valueKey));
@@ -358,7 +357,7 @@ public class UIComposer {
         return cell;
     }
     
-    public Slider addSlider(String style, int min, int max, float step) {
+    public Slider addSlider(String style, float min, float max, float step) {
         if (sliderStyleNames.indexOf(style, false) == -1)
             throw new IllegalArgumentException("Style not loaded: " + style);
         return new Slider(min, max, step, false, sliderStyles.get(sliderStyleNames.indexOf(style, false)));

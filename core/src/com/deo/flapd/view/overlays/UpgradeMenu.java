@@ -33,15 +33,16 @@ import static com.deo.flapd.utils.DUtils.connectFortyFiveDegreeBranch;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.scaleDrawables;
 
 public class UpgradeMenu extends Actor {
     
-    private final Drawable up_enabled;
-    private final Drawable over_enabled;
-    private final Drawable down_enabled;
-    private final Drawable up_disabled;
-    private final Drawable over_disabled;
-    private final Drawable down_disabled;
+    private final Drawable up_current;
+    private final Drawable over_current;
+    private final Drawable down_current;
+    private final Drawable up_available;
+    private final Drawable over_available;
+    private final Drawable down_available;
     private final Drawable up;
     private final Drawable over;
     private final Drawable down;
@@ -63,7 +64,7 @@ public class UpgradeMenu extends Actor {
     float itemSelectionHeight = 200;
     
     Array<String> parts;
-    Array<ImageTextButton.ImageTextButtonStyle> partsStyles;
+    Array<ImageTextButton> partsButtons;
     String currentEquipped;
     String saveTo;
     
@@ -84,17 +85,17 @@ public class UpgradeMenu extends Actor {
         over = constructFilledImageWithColor(1, 1, Color.valueOf("#66666644"));
         down = constructFilledImageWithColor(1, 1, Color.valueOf("#88888844"));
         
-        up_enabled = constructFilledImageWithColor(1, 1, Color.valueOf("#11AA1144"));
-        over_enabled = constructFilledImageWithColor(1, 1, Color.valueOf("#33CC3344"));
-        down_enabled = constructFilledImageWithColor(1, 1, Color.valueOf("#55FF5544"));
+        up_current = constructFilledImageWithColor(1, 1, Color.valueOf("#11AA1144"));
+        over_current = constructFilledImageWithColor(1, 1, Color.valueOf("#33CC3344"));
+        down_current = constructFilledImageWithColor(1, 1, Color.valueOf("#55FF5544"));
         
-        up_disabled = constructFilledImageWithColor(1, 1, Color.valueOf("#AAAA1144"));
-        over_disabled = constructFilledImageWithColor(1, 1, Color.valueOf("#CCCC3344"));
-        down_disabled = constructFilledImageWithColor(1, 1, Color.valueOf("#FFFF5544"));
+        up_available = constructFilledImageWithColor(1, 1, Color.valueOf("#AAAA1144"));
+        over_available = constructFilledImageWithColor(1, 1, Color.valueOf("#CCCC3344"));
+        down_available = constructFilledImageWithColor(1, 1, Color.valueOf("#FFFF5544"));
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         parts = new Array<>();
-        partsStyles = new Array<>();
+        partsButtons = new Array<>();
         
         this.compositeManager = compositeManager;
         uiComposer = compositeManager.getUiComposer();
@@ -179,10 +180,19 @@ public class UpgradeMenu extends Actor {
     }
     
     void loadItemsForCategory(String category, Table addTo, float width, boolean root) {
-        Label categoryLabel = uiComposer.addText((root ? "  " : "") + localeManager.get(category), assetManager.get("fonts/pixel.ttf"), 0.48f);
-        categoryLabel.getStyle().background = constructFilledImageWithColor(1, 1, Color.valueOf(root ? "#262626" : "#464646"));
+        Table titleTable = new Table();
+        titleTable.align(Align.left);
+        titleTable.setBackground(constructFilledImageWithColor(1, 1, Color.valueOf(root ? "#262626" : "#464646")));
+        if(!root){
+            Image subcategoryIcon = new Image(itemsAtlas.findRegion(category));
+            titleTable.add(subcategoryIcon).padRight(5).padLeft(5).size(20);
+        }
+        Label categoryLabel = uiComposer.addText(localeManager.get(category), assetManager.get("fonts/pixel.ttf"), 0.48f);
         categoryLabel.getStyle().fontColor = Color.valueOf(root ? "#ffb121" : "#ffd343");
-        addTo.add(categoryLabel).align(Align.left).width(width - 8).row();
+        categoryLabel.setFillParent(true);
+        categoryLabel.setAlignment(root ? Align.center : Align.left);
+        titleTable.add(categoryLabel);
+        addTo.add(titleTable).width(width - 8).row();
         
         for (int i = 0; i < treeJson.size; i++) {
             String type = treeJson.getString("", i, "type");
@@ -199,27 +209,19 @@ public class UpgradeMenu extends Actor {
                 itemButtonStyle.downFontColor = Color.WHITE;
                 ImageTextButton textImageButton = new ImageTextButton(localeManager.get(treeJson.get(i).name), itemButtonStyle);
                 parts.add(treeJson.get(i).name);
-                partsStyles.add(itemButtonStyle);
-    
+                partsButtons.add(textImageButton);
+                
                 int finalI = i;
-                textImageButton.addListener(new ClickListener(){
+                textImageButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         new CraftingDialogue(compositeManager, addTo.getStage(), treeJson.get(finalI).name, false);
                     }
                 });
                 
-                float scale = 80 / Math.max(itemButtonStyle.imageUp.getMinWidth(), itemButtonStyle.imageUp.getMinHeight());
-                float itemButton_width = itemButtonStyle.imageUp.getMinWidth() * scale;
-                float itemButton_height = itemButtonStyle.imageUp.getMinHeight() * scale;
-                itemButtonStyle.imageUp.setMinWidth(itemButton_width);
-                itemButtonStyle.imageUp.setMinHeight(itemButton_height);
-                itemButtonStyle.imageDown.setMinWidth(itemButton_width);
-                itemButtonStyle.imageDown.setMinHeight(itemButton_height);
-                itemButtonStyle.imageOver.setMinWidth(itemButton_width);
-                itemButtonStyle.imageOver.setMinHeight(itemButton_height);
-                
+                scaleDrawables(80, itemButtonStyle.imageUp, itemButtonStyle.imageDown, itemButtonStyle.imageDisabled, itemButtonStyle.imageOver);
                 textImageButton.align(Align.left);
+                textImageButton.getImageCell().width(80);
                 textImageButton.getLabel().setAlignment(Align.left);
                 
                 addTo.add(textImageButton).width(width - 8).padTop(5).row();
@@ -230,24 +232,23 @@ public class UpgradeMenu extends Actor {
     void refreshStates() {
         for (int i = 0; i < parts.size; i++) {
             if (parts.get(i).equals(currentEquipped)) {
-                partsStyles.get(i).up = up_enabled;
-                partsStyles.get(i).over = over_enabled;
-                partsStyles.get(i).down = down_enabled;
-            } else {
-                if (getPartLockState(parts.get(i))) {
-                    partsStyles.get(i).up = up;
-                    partsStyles.get(i).over = over;
-                    partsStyles.get(i).down = down;
-                } else {
-                    partsStyles.get(i).up = up_disabled;
-                    partsStyles.get(i).over = over_disabled;
-                    partsStyles.get(i).down = down_disabled;
-                }
+                partsButtons.get(i).getStyle().up = up_current;
+                partsButtons.get(i).getStyle().over = over_current;
+                partsButtons.get(i).getStyle().down = down_current;
+            } else if (getBoolean("unlocked_" + parts.get(i))) {
+                partsButtons.get(i).getStyle().up = up;
+                partsButtons.get(i).getStyle().over = over;
+                partsButtons.get(i).getStyle().down = down;
+            } else if (isPartUnlocked(parts.get(i))) {
+                partsButtons.get(i).getStyle().up = up_available;
+                partsButtons.get(i).getStyle().over = over_available;
+                partsButtons.get(i).getStyle().down = down_available;
             }
+            partsButtons.get(i).setDisabled(!isPartUnlocked(parts.get(i)));
         }
     }
     
-    private boolean getPartLockState(String part) {
+    private boolean isPartUnlocked(String part) {
         for (String requiredItem : treeJson.getStringArray(new String[]{}, part, "requires")) {
             if (!getBoolean("unlocked_" + requiredItem)) {
                 return false;

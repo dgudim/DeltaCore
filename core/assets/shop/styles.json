@@ -349,5 +349,26 @@
       "fontColor": "#1C0929"
     },
     "loadFrom": "shop/workshop.atlas"
+  },
+
+  "pauseButton": {
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "buttonPauseBlank_disabled",
+      "size": ["default", "default"],
+      "fontColor": "#FF8000"
+    },
+    "over":{
+      "texture": "buttonPauseBlank_over",
+      "size": ["default", "default"],
+      "fontColor": "#FF9505"
+    },
+    "down":{
+      "texture": "buttonPauseBlank_enabled",
+      "size": ["default", "default"],
+      "fontColor": "#FFAF05"
+    },
+    "loadFrom": "ui/gameUi.atlas"
   }
 }

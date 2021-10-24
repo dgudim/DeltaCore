@@ -30,6 +30,7 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.SoundManager;
+import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.screens.GameOverScreen;
 import com.deo.flapd.view.screens.GameScreen;
 import com.deo.flapd.view.screens.MenuScreen;
@@ -97,6 +98,7 @@ public class GameUi {
         batch = compositeManager.getBatch();
         shapeRenderer = compositeManager.getShapeRenderer();
         LocaleManager localeManager = compositeManager.getLocaleManager();
+        UIComposer uiComposer = compositeManager.getUiComposer();
         this.player = player;
         
         uiScale = getFloat(Keys.uiScale);
@@ -135,7 +137,6 @@ public class GameUi {
         
         font_numbers = assetManager.get("fonts/font_numbers.fnt");
         font_main = assetManager.get("fonts/pixel.ttf");
-        BitmapFont font_buttons = assetManager.get("fonts/bold_main.ttf");
         
         stage = new Stage(viewport, batch);
         pauseStage = new Stage(viewport, batch);
@@ -151,27 +152,15 @@ public class GameUi {
         weaponControls.row();
         weaponControls.setBounds(511 - 283 * (uiScale - 1.1f), 5, 283.5f * (uiScale - 0.1f), 69.75f * (uiScale - 0.1f));
         
-        TextButton.TextButtonStyle pauseButtonStyle = new TextButton.TextButtonStyle();
-        pauseButtonStyle.font = font_buttons;
-        pauseButtonStyle.up = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_disabled"));
-        pauseButtonStyle.fontColor = Color.valueOf("#FF8000");
-        pauseButtonStyle.over = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_over"));
-        pauseButtonStyle.overFontColor = Color.valueOf("#FF9505");
-        pauseButtonStyle.down = new TextureRegionDrawable(gameUiAtlas.findRegion("buttonPauseBlank_enabled"));
-        pauseButtonStyle.downFontColor = Color.valueOf("#FFAF05");
-        
-        TextButton exit_button = new TextButton(localeManager.get("pause.exit"), pauseButtonStyle);
-        TextButton continue_button = new TextButton(localeManager.get("pause.continue"), pauseButtonStyle);
-        TextButton restart_button = new TextButton(localeManager.get("pause.restart"), pauseButtonStyle);
+        TextButton exit_button = uiComposer.addTextButton("pauseButton", localeManager.get("pause.exit"), 0.5f);
+        TextButton continue_button = uiComposer.addTextButton("pauseButton", localeManager.get("pause.continue"), 0.5f);
+        TextButton restart_button = uiComposer.addTextButton("pauseButton", localeManager.get("pause.restart"), 0.5f);
         continue_button.setScale(uiScale);
         restart_button.setScale(uiScale);
         exit_button.setScale(uiScale);
         exit_button.setTransform(true);
         restart_button.setTransform(true);
         continue_button.setTransform(true);
-        continue_button.getLabel().setFontScale(0.5f);
-        restart_button.getLabel().setFontScale(0.5f);
-        exit_button.getLabel().setFontScale(0.5f);
         
         Table pause1 = new Table();
         pause1.setBounds(400 - 600 * uiScale / 2, 240 - 360 * uiScale / 2, 600 * uiScale, 360 * uiScale);

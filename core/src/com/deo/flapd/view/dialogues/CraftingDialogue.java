@@ -39,6 +39,7 @@ import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.scaleDrawables;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class CraftingDialogue extends Dialogue {
@@ -53,7 +54,7 @@ public class CraftingDialogue extends Dialogue {
     private final Array<TextButton> buyShortcuts;
     private Array<Label> tableLabels;
     private final JsonEntry items;
-    ;
+    
     private final String result;
     private int resultCount;
     private final UIComposer uiComposer;
@@ -533,7 +534,7 @@ public class CraftingDialogue extends Dialogue {
         
         for (int i = 0; i < requiredItems.length; i++) {
             Table requirement = new Table();
-            Label itemText = new Label(requiredItems[i], yellowLabelStyle);
+            Label itemText = new Label(localeManager.get(requiredItems[i]), yellowLabelStyle);
             itemText.setFontScale(0.4f);
             if (!getBoolean("unlocked_" + requiredItems[i])) {
                 itemText.setColor(Color.valueOf("#DD0000"));
@@ -553,12 +554,9 @@ public class CraftingDialogue extends Dialogue {
                     dialog.hide();
                 }
             });
-            
-            float scale = 80 / Math.max(item.getWidth(), item.getHeight());
-            float width = item.getWidth() * scale;
-            float height = item.getHeight() * scale;
-            
-            requirement.add(item).size(width, height);
+    
+            scaleDrawables(80, itemButtonStyle.imageUp, itemButtonStyle.imageDown, itemButtonStyle.imageDisabled, itemButtonStyle.imageOver);
+            requirement.add(item).size(80);
             requirement.add(itemText).pad(4).padLeft(8).align(Align.center);
             ingredientsTable.add(requirement).padTop(4).padBottom(4).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(4);
