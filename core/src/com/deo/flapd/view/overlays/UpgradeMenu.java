@@ -24,8 +24,10 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.LocaleManager;
+import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
+import com.deo.flapd.view.dialogues.DialogueActionListener;
 import com.deo.flapd.view.screens.MenuScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
@@ -52,6 +54,7 @@ public class UpgradeMenu extends Actor {
     TextureAtlas itemsAtlas;
     LocaleManager localeManager;
     UIComposer uiComposer;
+    SoundManager soundManager;
     
     private final Array<Image> connectingBranches;
     private final Array<Float> originalBranchHeights;
@@ -65,7 +68,6 @@ public class UpgradeMenu extends Actor {
     
     Array<String> parts;
     Array<ImageTextButton> partsButtons;
-    String currentEquipped;
     String saveTo;
     
     private final float branchThickness = 4;
@@ -79,6 +81,8 @@ public class UpgradeMenu extends Actor {
     private final Vector2 originalAnchorPosition;
     
     JsonEntry treeJson;
+    
+    private final MenuScreen menuScreen;
     
     public UpgradeMenu(CompositeManager compositeManager, Stage stage, MenuScreen menuScreen, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
         up = constructFilledImageWithColor(1, 1, Color.valueOf("#44444444"));
@@ -97,11 +101,13 @@ public class UpgradeMenu extends Actor {
         parts = new Array<>();
         partsButtons = new Array<>();
         
+        this.menuScreen = menuScreen;
         this.compositeManager = compositeManager;
         uiComposer = compositeManager.getUiComposer();
         assetManager = compositeManager.getAssetManager();
         itemsAtlas = assetManager.get("items/items.atlas", TextureAtlas.class);
         localeManager = compositeManager.getLocaleManager();
+        soundManager = compositeManager.getSoundManager();
         opensToTheLeft = targetPosition.x < 0;
         
         connectingBranches = new Array<>();
@@ -151,7 +157,6 @@ public class UpgradeMenu extends Actor {
         stage.addActor(openMenuCheckBox);
         
         saveTo = treeJson.getString("errorSaving" + category, category, "saveTo");
-        currentEquipped = getString(saveTo);
         
         Table itemSelectionTable = new Table();
         loadItemsForCategory(category, itemSelectionTable, width, true);
@@ -160,7 +165,7 @@ public class UpgradeMenu extends Actor {
                 loadItemsForCategory(treeJson.get(i).name, itemSelectionTable, width, false);
             }
         }
-        refreshStates();
+        updateStates();
         
         itemSelectionTable.align(Align.topLeft);
         ScrollPane itemSelection = new ScrollPane(itemSelectionTable);
@@ -215,7 +220,17 @@ public class UpgradeMenu extends Actor {
                 textImageButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        new CraftingDialogue(compositeManager, addTo.getStage(), treeJson.get(finalI).name, false);
+                        soundManager.playSound_noLink("click");
+                        new CraftingDialogue(compositeManager, addTo.getStage(), treeJson.get(finalI).name, new DialogueActionListener() {
+                            @Override
+                            public void onConfirm() {
+                                updateStates();
+                            }
+                            @Override
+                            public void onStateChanged() {
+                                updateStates();
+                            }
+                        }, UpgradeMenu.this);
                     }
                 });
                 
@@ -229,9 +244,13 @@ public class UpgradeMenu extends Actor {
         }
     }
     
-    void refreshStates() {
+    public void updateFire(){
+        menuScreen.updateFire();
+    }
+    
+    void updateStates() {
         for (int i = 0; i < parts.size; i++) {
-            if (parts.get(i).equals(currentEquipped)) {
+            if (parts.get(i).equals(getString(saveTo))) {
                 partsButtons.get(i).getStyle().up = up_current;
                 partsButtons.get(i).getStyle().over = over_current;
                 partsButtons.get(i).getStyle().down = down_current;

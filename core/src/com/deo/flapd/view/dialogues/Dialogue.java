@@ -5,3 +5,4 @@ public abstract class Dialogue {
     void update(){}
 
 }
+

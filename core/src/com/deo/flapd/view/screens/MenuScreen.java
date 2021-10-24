@@ -339,8 +339,6 @@ public class MenuScreen implements Screen {
         menuCategoryManager.addCategory(playScreenTable, localeManager.get("mainMenu.play")).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                updateFire();
-                updateShip();
                 closeAllUpgradeMenus();
                 setUpgradeMenuVisibility(!playScreenTable.isVisible());
             }
@@ -709,7 +707,7 @@ public class MenuScreen implements Screen {
         lastFireEffect = fireEffect;
     }
     
-    private void updateFire() {
+    public void updateFire() {
         try {
             if (lastFireEffect.equals(" ")) {
                 loadFire();
@@ -737,8 +735,8 @@ public class MenuScreen implements Screen {
         if (!currentShip.equals(getString(Keys.currentHull))) {
             initializeShip();
             lastFireEffect = " ";
-            updateFire();
         }
+        updateFire();
     }
     
     private void initializeShip() {

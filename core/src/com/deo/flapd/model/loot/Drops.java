@@ -20,7 +20,7 @@ public class Drops {
     
     String[] availableDrops = {
             "item.coloring_crystal", "item.ore", "item.metal_shard", "item.rubber", "item.plastic", "item.wire", "item.bolt", "item.cog",
-            "item.glass_shard", "item.iron_sheet", "item.red_crystal",
+            "item.glass_shard", "item.metal_sheet", "item.red_crystal",
             "item.energy_cell", "item.cyan_warp_shard", "item.green_warp_shard", "item.purple_crystal", "item.core_shard"};
     
     private final TextureAtlas itemAtlas;

@@ -359,6 +359,6 @@ public class Player extends Entity {
         health = -1000;
         shieldCharge = -1000;
         charge = -1000;
-        soundManager.playSound_noLink("sfx/explosion.ogg");
+        soundManager.playSound_noLink("explosion");
     }
 }

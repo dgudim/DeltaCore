@@ -41,7 +41,7 @@ public class ColorCustomizationDialogue extends Dialogue {
     private final Dialog dialog;
     public boolean drawFire = true;
     
-    ColorCustomizationDialogue(CompositeManager compositeManager, final String particleEffect, final Stage stage) {
+    ColorCustomizationDialogue(CompositeManager compositeManager, final String particleEffect, final Stage stage, DialogueActionListener dialogueActionListener) {
         
         AssetManager assetManager = compositeManager.getAssetManager();
         
@@ -55,11 +55,9 @@ public class ColorCustomizationDialogue extends Dialogue {
         final Window.WindowStyle dialogStyle = new Window.WindowStyle();
         dialogStyle.background = textures.getDrawable("colorDialog");
         dialogStyle.titleFont = font;
-        
-        ParticleEffectPool.PooledEffect[] fires = loadFire(particleEffect);
-        
-        final ParticleEffectPool.PooledEffect fire = fires[0];
-        final ParticleEffectPool.PooledEffect fire2 = fires[1];
+    
+        ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + particleEffect + ".p");
+        fire.scaleEffect(5f);
         
         dialog = new Dialog("", dialogStyle);
         
@@ -67,33 +65,31 @@ public class ColorCustomizationDialogue extends Dialogue {
         
         TextButton close = uiComposer.addTextButton("workshopRed", "cancel", 0.455f);
         TextButton ok = uiComposer.addTextButton("workshopGreen", "apply", 0.455f);
-        TextButton reset = uiComposer.addTextButton("workshopGreen", "reset", 0.28f);
         
         close.setBounds(10.5f, 10.5f, 147, 87.5f);
         ok.setBounds(171.5f, 10.5f, 147, 87.5f);
-        reset.setBounds(10.5f, 248.5f, 70, 24.5f);
         
         close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 fire.free();
-                fire2.free();
                 drawFire = false;
+                dialogueActionListener.onCancel();
                 dialog.hide();
             }
         });
         TextureAtlas items = assetManager.get("items/items.atlas");
         Table crystal = new Table();
         ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
-        itemButtonStyle.imageUp = new Image(items.findRegion("crystal")).getDrawable();
-        itemButtonStyle.imageDisabled = new Image(items.findRegion("crystal_disabled")).getDrawable();
-        itemButtonStyle.imageDown = new Image(items.findRegion("crystal_enabled")).getDrawable();
-        itemButtonStyle.imageOver = new Image(items.findRegion("crystal_over")).getDrawable();
+        itemButtonStyle.imageUp = new Image(items.findRegion("item.coloring_crystal")).getDrawable();
+        itemButtonStyle.imageDisabled = new Image(items.findRegion("item.coloring_crystal_disabled")).getDrawable();
+        itemButtonStyle.imageDown = new Image(items.findRegion("item.coloring_crystal_enabled")).getDrawable();
+        itemButtonStyle.imageOver = new Image(items.findRegion("item.coloring_crystal_over")).getDrawable();
         ImageButton item = new ImageButton(itemButtonStyle);
         crystal.add(item).size(35, 35);
-        Label quantity = uiComposer.addText(getInteger("item_crystal") + "/1", assetManager.get("fonts/pixel.ttf"), 0.455f);
+        Label quantity = uiComposer.addText(getInteger("item_item.coloring_crystal") + "/1", assetManager.get("fonts/pixel.ttf"), 0.455f);
         
-        if (getInteger("item_crystal") < 1) {
+        if (getInteger("item_item.coloring_crystal") < 1) {
             quantity.setColor(Color.RED);
         } else {
             quantity.setColor(Color.YELLOW);
@@ -104,16 +100,15 @@ public class ColorCustomizationDialogue extends Dialogue {
         item.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new CraftingDialogue(compositeManager, stage, "coloring crystal");
+                new CraftingDialogue(compositeManager, stage, "item.coloring_crystal");
             }
         });
         
-        Image Ship = new Image(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion("ship")) {
+        Image fireHolder = new Image() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 if(drawFire) {
                     fire.draw(batch);
-                    fire2.draw(batch);
                 }
                 super.draw(batch, parentAlpha);
             }
@@ -122,7 +117,6 @@ public class ColorCustomizationDialogue extends Dialogue {
             public void act(float delta) {
                 if(drawFire){
                     fire.update(delta);
-                    fire2.update(delta);
                 }
                 super.act(delta);
             }
@@ -130,13 +124,11 @@ public class ColorCustomizationDialogue extends Dialogue {
             @Override
             public void setPosition(float x, float y) {
                 super.setPosition(x, y);
-                fire.setPosition(x + 17.5f, y + 42);
-                fire2.setPosition(x + 3.5f, y + 94.5f);
+                fire.setPosition(x, y);
             }
         };
         
-        Ship.setSize(179.2f, 134.4f);
-        Ship.setPosition(122.5f, 280);
+        fireHolder.setPosition(225.5f, 350);
         
         Table colorCustomisationTable = new Table();
         
@@ -150,34 +142,22 @@ public class ColorCustomizationDialogue extends Dialogue {
             float[] colors = new JsonReader().parse("{\"colors\":" + getString(particleEffect + "_color") + "}").get("colors").asFloatArray();
             notEditedColors = colors.clone();
             fire.getEmitters().get(0).getTint().setColors(colors);
-            fire2.getEmitters().get(0).getTint().setColors(colors);
         }
         
-        reset.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                writeFireColor(originalColors, particleEffect);
-                fire.free();
-                fire2.free();
-                new ColorCustomizationDialogue(compositeManager, particleEffect, stage);
-                dialog.hide();
-            }
-        });
-        
         final float[] colors = fire.getEmitters().get(0).getTint().getColors();
-        final float[] colors2 = fire2.getEmitters().get(0).getTint().getColors();
         Array<Array<Float>> colorChannels = new Array<>();
         
         ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getInteger("item_crystal") >= 1) {
+                if (getInteger("item_item.coloring_crystal") >= 1) {
                     writeFireColor(colors, particleEffect);
                     if (!Arrays.equals(colors, notEditedColors)) {
-                        subtractInteger("item_crystal", 1);
+                        subtractInteger("item_item.coloring_crystal", 1);
                     }
+                    drawFire = false;
                     fire.free();
-                    fire2.free();
+                    dialogueActionListener.onConfirm();
                     dialog.hide();
                 }
             }
@@ -223,7 +203,6 @@ public class ColorCustomizationDialogue extends Dialogue {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     colors[3 * finalI] = redSlider.getValue();
-                    colors2[3 * finalI] = redSlider.getValue();
                     colorSquare.setColor(new Color().add(colors[3 * finalI], colors[3 * finalI + 1], colors[3 * finalI + 2], 1));
                 }
             });
@@ -232,7 +211,6 @@ public class ColorCustomizationDialogue extends Dialogue {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     colors[3 * finalI + 1] = greenSlider.getValue();
-                    colors2[3 * finalI + 1] = greenSlider.getValue();
                     colorSquare.setColor(new Color().add(colors[3 * finalI], colors[3 * finalI + 1], colors[3 * finalI + 2], 1));
                 }
             });
@@ -241,7 +219,6 @@ public class ColorCustomizationDialogue extends Dialogue {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     colors[3 * finalI + 2] = blueSlider.getValue();
-                    colors2[3 * finalI + 2] = blueSlider.getValue();
                     colorSquare.setColor(new Color().add(colors[3 * finalI], colors[3 * finalI + 1], colors[3 * finalI + 2], 1));
                 }
             });
@@ -266,11 +243,10 @@ public class ColorCustomizationDialogue extends Dialogue {
             });
         }
         
-        dialog.addActor(Ship);
+        dialog.addActor(fireHolder);
         dialog.addActor(ok);
         dialog.addActor(close);
         dialog.addActor(colorCustomisationScrollPane);
-        dialog.addActor(reset);
         dialog.add(crystal).padRight(15).padBottom(245);
         dialog.setSize(329, 448);
         dialog.setPosition(180, 15);
@@ -288,13 +264,4 @@ public class ColorCustomizationDialogue extends Dialogue {
         buffer.append("]");
         putString(particleEffect + "_color", buffer.toString());
     }
-    
-    private ParticleEffectPool.PooledEffect[] loadFire(String particleEffect) {
-        ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + particleEffect + ".p");
-        ParticleEffectPool.PooledEffect fire2 = particleEffectPoolLoader.getParticleEffectByPath("particles/" + particleEffect + ".p");
-        fire.scaleEffect(2.45f);
-        fire2.scaleEffect(2.45f);
-        return new ParticleEffectPool.PooledEffect[]{fire, fire2};
-    }
-    
 }

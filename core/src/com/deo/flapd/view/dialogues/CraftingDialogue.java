@@ -32,6 +32,7 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
+import com.deo.flapd.view.overlays.UpgradeMenu;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getBoolean;
@@ -45,6 +46,8 @@ import static com.deo.flapd.utils.DUtils.subtractInteger;
 public class CraftingDialogue extends Dialogue {
     
     private final Dialog dialog;
+    private final DialogueActionListener dialogueActionListener;
+    private final UpgradeMenu upgradeMenu;
     private final Stage stage;
     
     private final CompositeManager compositeManager;
@@ -65,16 +68,22 @@ public class CraftingDialogue extends Dialogue {
     private final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
     
     public CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result) {
-        this(compositeManager, stage, result, 1, false, null);
+        this(compositeManager, stage, result, 1, false, null, null, null);
     }
     
     public CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, boolean showDescription) {
-        this(compositeManager, stage, result, 1, showDescription, null);
+        this(compositeManager, stage, result, 1, showDescription, null, null, null);
     }
     
-    private CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue) {
+    public CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, DialogueActionListener dialogueActionListener, UpgradeMenu upgradeMenu) {
+        this(compositeManager, stage, result, 1, false, null, dialogueActionListener, upgradeMenu);
+    }
+    
+    private CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue, DialogueActionListener dialogueActionListener, UpgradeMenu upgradeMenu) {
         this.stage = stage;
         this.compositeManager = compositeManager;
+        this.upgradeMenu = upgradeMenu;
+        this.dialogueActionListener = dialogueActionListener;
         AssetManager assetManager = compositeManager.getAssetManager();
         localeManager = compositeManager.getLocaleManager();
         this.result = result;
@@ -135,13 +144,16 @@ public class CraftingDialogue extends Dialogue {
         if (!showDescription && !isPartLocked()) {
             switch (getType()) {
                 case ("basePart"):
-                case ("category"):
-                case ("subcategory"):
                     if (saveTo().equals(Keys.currentEngine)) {
                         customize.addListener(new ClickListener() {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
-                                new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
+                                new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage, new DialogueActionListener() {
+                                    @Override
+                                    public void onConfirm() {
+                                        upgradeMenu.updateFire();
+                                    }
+                                });
                             }
                         });
                         yes.setText(localeManager.get("craftingDialogue.ok"));
@@ -153,16 +165,9 @@ public class CraftingDialogue extends Dialogue {
                         addCloseListener(yes, yes2);
                     }
                     
-                    if (getType().equals("basePart")) {
-                        addEquipButton(equip);
-                    } else {
-                        addButtons(yes3);
-                        addCloseListener(yes3);
-                        text.setText(localeManager.get("craftingDialogue.categoryMessage"));
-                    }
-                    
+                    addEquipButton(equip);
                     addProductName();
-                    addDescription(getType().equals("basePart"));
+                    addDescription(true);
                     dialog.addActor(text);
                     break;
                 case ("part"):
@@ -197,7 +202,9 @@ public class CraftingDialogue extends Dialogue {
                                     if (previousDialogue != null) {
                                         previousDialogue.update();
                                     }
-                                    //LoadingScreen.craftingTree.update();
+                                    if (dialogueActionListener != null) {
+                                        dialogueActionListener.onConfirm();
+                                    }
                                 }
                             }
                         });
@@ -221,7 +228,12 @@ public class CraftingDialogue extends Dialogue {
                             customize.addListener(new ClickListener() {
                                 @Override
                                 public void clicked(InputEvent event, float x, float y) {
-                                    new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage);
+                                    new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage, new DialogueActionListener() {
+                                        @Override
+                                        public void onConfirm() {
+                                            upgradeMenu.updateFire();
+                                        }
+                                    });
                                 }
                             });
                             yes.setText(localeManager.get("craftingDialogue.ok"));
@@ -346,6 +358,9 @@ public class CraftingDialogue extends Dialogue {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    if (dialogueActionListener != null) {
+                        dialogueActionListener.onCancel();
+                    }
                     dialog.hide();
                 }
             });
@@ -412,7 +427,7 @@ public class CraftingDialogue extends Dialogue {
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(compositeManager, stage, currentItem,
                             (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(false, 1, "resultCount")),
-                            false, CraftingDialogue.this);
+                            false, CraftingDialogue.this, null, upgradeMenu);
                 }
             });
             
@@ -421,7 +436,7 @@ public class CraftingDialogue extends Dialogue {
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(compositeManager, stage, currentItem,
                             (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(false, 1, "resultCount")),
-                            false, CraftingDialogue.this);
+                            false, CraftingDialogue.this, null, upgradeMenu);
                 }
             });
             
@@ -553,7 +568,7 @@ public class CraftingDialogue extends Dialogue {
             item.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new CraftingDialogue(compositeManager, stage, requiredItems[finalI], 1, false, CraftingDialogue.this);
+                    new CraftingDialogue(compositeManager, stage, requiredItems[finalI], 1, false, CraftingDialogue.this, dialogueActionListener, upgradeMenu);
                     dialog.hide();
                 }
             });
@@ -585,7 +600,9 @@ public class CraftingDialogue extends Dialogue {
                 equip.setColor(Color.GREEN);
                 equip.getLabel().setText(localeManager.get("craftingDialogue.equipped"));
                 equip.getLabel().setFontScale(0.44f);
-                //LoadingScreen.craftingTree.update();
+                if (dialogueActionListener != null) {
+                    dialogueActionListener.onStateChanged();
+                }
             }
         });
         
