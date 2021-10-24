@@ -115,28 +115,28 @@ part.shield_generator_mk4_over
   orig: 104, 118
   offset: 0, 0
   index: -1
-part.beast_ship
+part.beast_hull
   rotate: false
   xy: 187, 829
   size: 149, 72
   orig: 149, 72
   offset: 0, 0
   index: -1
-part.beast_ship_disabled
+part.beast_hull_disabled
   rotate: false
   xy: 1691, 951
   size: 149, 72
   orig: 149, 72
   offset: 0, 0
   index: -1
-part.beast_ship_enabled
+part.beast_hull_enabled
   rotate: false
   xy: 338, 829
   size: 149, 72
   orig: 149, 72
   offset: 0, 0
   index: -1
-part.beast_ship_over
+part.beast_hull_over
   rotate: false
   xy: 1842, 951
   size: 149, 72
@@ -171,56 +171,56 @@ part.battery_mk3_disabled
   orig: 80, 100
   offset: 0, 0
   index: -1
-part.basic_ship
+part.basic_hull
   rotate: false
   xy: 489, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.basic_ship_disabled
+part.basic_hull_disabled
   rotate: false
   xy: 607, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.basic_ship_enabled
+part.basic_hull_enabled
   rotate: false
   xy: 725, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.basic_ship_over
+part.basic_hull_over
   rotate: false
   xy: 843, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk1
+part.hull_mk1
   rotate: false
   xy: 961, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk1_disabled
+part.hull_mk1_disabled
   rotate: false
   xy: 1079, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk1_enabled
+part.hull_mk1_enabled
   rotate: false
   xy: 1197, 813
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk1_over
+part.hull_mk1_over
   rotate: false
   xy: 1315, 813
   size: 116, 88
@@ -269,7 +269,7 @@ part.plasma_engine_disabled
   orig: 118, 48
   offset: 0, 0
   index: -1
-part.ship_mk2
+part.hull_mk2
   rotate: false
   xy: 1931, 861
   size: 116, 88
@@ -360,49 +360,49 @@ part.thermonuclear_core_over
   orig: 101, 101
   offset: 0, 0
   index: -1
-part.ship_mk2_disabled
+part.hull_mk2_disabled
   rotate: false
   xy: 478, 723
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk2_enabled
+part.hull_mk2_enabled
   rotate: false
   xy: 478, 633
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk2_over
+part.hull_mk2_over
   rotate: false
   xy: 596, 723
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk3
+part.hull_mk3
   rotate: false
   xy: 596, 633
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk3_disabled
+part.hull_mk3_disabled
   rotate: false
   xy: 714, 723
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk3_enabled
+part.hull_mk3_enabled
   rotate: false
   xy: 714, 633
   size: 116, 88
   orig: 116, 88
   offset: 0, 0
   index: -1
-part.ship_mk3_over
+part.hull_mk3_over
   rotate: false
   xy: 832, 723
   size: 116, 88
@@ -1746,7 +1746,7 @@ item.gravity_engine_over
   orig: 33, 33
   offset: 0, 0
   index: -1
-item.iron_sheet
+item.metal_sheet
   rotate: false
   xy: 899, 404
   size: 33, 30
@@ -1858,7 +1858,7 @@ item.energy_cell_disabled
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.iron_sheet_disabled
+item.metal_sheet_disabled
   rotate: false
   xy: 968, 407
   size: 33, 30
@@ -1879,7 +1879,7 @@ item.energy_cell_enabled
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.iron_sheet_enabled
+item.metal_sheet_enabled
   rotate: false
   xy: 968, 375
   size: 33, 30
@@ -1900,28 +1900,28 @@ item.energy_cell_over
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.reinforced_iron_plate
+item.reinforced_metal_plate
   rotate: false
   xy: 922, 316
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.reinforced_iron_plate_disabled
+item.reinforced_metal_plate_disabled
   rotate: false
   xy: 922, 316
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.reinforced_iron_plate_enabled
+item.reinforced_metal_plate_enabled
   rotate: false
   xy: 922, 316
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.reinforced_iron_plate_over
+item.reinforced_metal_plate_over
   rotate: false
   xy: 922, 316
   size: 32, 32
@@ -1949,7 +1949,7 @@ item.wire_enabled
   orig: 32, 32
   offset: 0, 0
   index: -1
-item.iron_sheet_over
+item.metal_sheet_over
   rotate: false
   xy: 956, 275
   size: 33, 30

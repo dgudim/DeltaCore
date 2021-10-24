@@ -183,7 +183,7 @@ public class UpgradeMenu extends Actor {
         Table titleTable = new Table();
         titleTable.align(Align.left);
         titleTable.setBackground(constructFilledImageWithColor(1, 1, Color.valueOf(root ? "#262626" : "#464646")));
-        if(!root){
+        if (!root) {
             Image subcategoryIcon = new Image(itemsAtlas.findRegion(category));
             titleTable.add(subcategoryIcon).padRight(5).padLeft(5).size(20);
         }
@@ -249,7 +249,7 @@ public class UpgradeMenu extends Actor {
     }
     
     private boolean isPartUnlocked(String part) {
-        for (String requiredItem : treeJson.getStringArray(new String[]{}, part, "requires")) {
+        for (String requiredItem : treeJson.getStringArray(false, new String[]{}, part, "requires")) {
             if (!getBoolean("unlocked_" + requiredItem)) {
                 return false;
             }
@@ -257,7 +257,17 @@ public class UpgradeMenu extends Actor {
         return true;
     }
     
-    void close() {
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        itemSelection_outerHolder.setVisible(visible);
+        openMenuCheckBox.setVisible(visible);
+        for (int i = 0; i < connectingBranches.size; i++) {
+            connectingBranches.get(i).setVisible(visible);
+        }
+    }
+    
+    public void close() {
         openMenuCheckBox.setChecked(false);
         animationDirection = -1;
     }

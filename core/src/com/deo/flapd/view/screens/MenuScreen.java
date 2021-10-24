@@ -96,6 +96,7 @@ public class MenuScreen implements Screen {
     private float targetShipX;
     private float previousFireMotionScale = 1;
     private float previousFireSizeScale = 1;
+    private final Array<UpgradeMenu> upgradeMenus;
     
     private Animation<TextureRegion> enemyAnimation;
     private Array<TextureRegionDrawable> enemyAnimation_drawables;
@@ -189,7 +190,7 @@ public class MenuScreen implements Screen {
         
         menuStage = new Stage(viewport, batch);
         
-        currentShip = getString(Keys.currentShip);
+        currentShip = getString(Keys.currentHull);
         shipConfigs = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")));
         initializeShip();
         
@@ -246,8 +247,8 @@ public class MenuScreen implements Screen {
         Table moreTable = new Table();
         moreTable.align(Align.topLeft);
         moreTable.setBounds(15, 62, 531, 410);
-        moreTable.add(uiComposer.addLinkButton("gitHub", "[#32ff32]"+localeManager.get("more.github"), "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
-        moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]"+localeManager.get("more.trello"), "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(uiComposer.addLinkButton("gitHub", "[#32ff32]" + localeManager.get("more.github"), "https://github.com/dgudim/DeltaCore_")).padTop(5).padBottom(5).align(Align.left).row();
+        moreTable.add(uiComposer.addLinkButton("trello", "[#32ff32]" + localeManager.get("more.trello"), "https://trello.com/b/FowZ4XAO/delta-core")).padTop(5).padBottom(5).align(Align.left).row();
         final TextButton exportGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.exportData"), 0.3f);
         TextButton importGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.importData"), 0.3f);
         TextButton clearGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.clearData"), 0.3f);
@@ -258,7 +259,7 @@ public class MenuScreen implements Screen {
         exportGameData.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                exportMessage.setText("[#FFFF00]"+localeManager.get("more.savedData")+" " + savePrefsToFile());
+                exportMessage.setText("[#FFFF00]" + localeManager.get("more.savedData") + " " + savePrefsToFile());
             }
         });
         
@@ -297,7 +298,7 @@ public class MenuScreen implements Screen {
             }
         });
         
-        ScrollPane infoText = (ScrollPane) uiComposer.addScrollText(
+        ScrollPane infoTextPane = (ScrollPane) uiComposer.addScrollText(
                 localeManager.get("mainMenu.infoContent"),
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
         
@@ -340,12 +341,38 @@ public class MenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 updateFire();
                 updateShip();
+                closeAllUpgradeMenus();
+                setUpgradeMenuVisibility(!playScreenTable.isVisible());
             }
         });
-        menuCategoryManager.addCategory(playScreenTable, localeManager.get("mainMenu.playOnline"));
-        menuCategoryManager.addCategory(settingsPane, localeManager.get("mainMenu.settings"));
-        menuCategoryManager.addCategory(infoText, localeManager.get("mainMenu.info"));
-        menuCategoryManager.addCategory(moreTable, localeManager.get("mainMenu.more"));
+        menuCategoryManager.addCategory(playScreenTable, localeManager.get("mainMenu.playOnline")).addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeAllUpgradeMenus();
+                setUpgradeMenuVisibility(!playScreenTable.isVisible());
+            }
+        });;
+        menuCategoryManager.addCategory(settingsPane, localeManager.get("mainMenu.settings")).addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeAllUpgradeMenus();
+                setUpgradeMenuVisibility(!settingsPane.isVisible());
+            }
+        });
+        menuCategoryManager.addCategory(infoTextPane, localeManager.get("mainMenu.info")).addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeAllUpgradeMenus();
+                setUpgradeMenuVisibility(!infoTextPane.isVisible());
+            }
+        });
+        menuCategoryManager.addCategory(moreTable, localeManager.get("mainMenu.more")).addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeAllUpgradeMenus();
+                setUpgradeMenuVisibility(!moreTable.isVisible());
+            }
+        });
         menuCategoryManager.setBounds(545, 3, 400);
         menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
@@ -358,7 +385,7 @@ public class MenuScreen implements Screen {
         menuCategoryManager.attach(menuStage);
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        Array<UpgradeMenu> upgradeMenus = new Array<>();
+        upgradeMenus = new Array<>();
         for (int i = 0; i < treeJson.size; i++) {
             if (treeJson.getString("item", i, "type").equals("category")) {
                 float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, treeJson.get(i).name);
@@ -370,12 +397,12 @@ public class MenuScreen implements Screen {
             }
         }
         
-        menuStage.addActor(infoText);
+        menuStage.addActor(infoTextPane);
         menuStage.addActor(playScreenTable);
         menuStage.addActor(moreTable);
         menuStage.addActor(settingsPane);
         workshopCategoryManager.attach(menuStage);
-        infoText.setVisible(false);
+        infoTextPane.setVisible(false);
         moreTable.setVisible(false);
         playScreenTable.setVisible(false);
         settingsPane.setVisible(false);
@@ -468,6 +495,18 @@ public class MenuScreen implements Screen {
         enableShader = getBoolean(Keys.enableBloom);
         log("generated ui in " + TimeUtils.timeSinceMillis(uiGenTime) + "ms", INFO);
         log("done, took " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
+    }
+    
+    private void closeAllUpgradeMenus(){
+        for (int i = 0; i < upgradeMenus.size; i++) {
+            upgradeMenus.get(i).close();
+        }
+    }
+    
+    private void setUpgradeMenuVisibility(boolean visible) {
+        for (int i = 0; i < upgradeMenus.size; i++) {
+            upgradeMenus.get(i).setVisible(visible);
+        }
     }
     
     @Override
@@ -695,7 +734,7 @@ public class MenuScreen implements Screen {
     }
     
     private void updateShip() {
-        if (!currentShip.equals(getString(Keys.currentShip))) {
+        if (!currentShip.equals(getString(Keys.currentHull))) {
             initializeShip();
             lastFireEffect = " ";
             updateFire();
@@ -707,7 +746,7 @@ public class MenuScreen implements Screen {
         shipUpgradeAnimationDirection = -1;
         shipUpgradeAnimationPosition = 0;
         
-        shipConfig = shipConfigs.get(getString(Keys.currentShip));
+        shipConfig = shipConfigs.get(getString(Keys.currentHull));
         playerHasAnimation = shipConfig.getBoolean(false, "hasAnimation");
         
         ship_touchLayer = new Image();
@@ -751,7 +790,7 @@ public class MenuScreen implements Screen {
         if (!playerHasAnimation) {
             ship.setDrawable(new TextureRegionDrawable(
                     assetManager.get("items/items.atlas", TextureAtlas.class)
-                            .findRegion(getString(Keys.currentShip))));
+                            .findRegion(getString(Keys.currentHull))));
         } else {
             enemyAnimation = new Animation<>(
                     shipConfig.getFloat(3, "frameDuration"),

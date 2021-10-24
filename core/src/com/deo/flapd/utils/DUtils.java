@@ -378,7 +378,7 @@ public class DUtils {
                         * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.charge_capacity_multiplier"));
         
         putFloat(Keys.playerHealthValue,
-                treeJson.getFloat(1, getString(Keys.currentShip), "parameters", "parameter.health")
+                treeJson.getFloat(1, getString(Keys.currentHull), "parameters", "parameter.health")
                         * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.health_multiplier"));
         
         putFloat(Keys.playerShieldValue,

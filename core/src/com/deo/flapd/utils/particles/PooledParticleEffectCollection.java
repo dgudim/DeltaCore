@@ -38,7 +38,7 @@ public class PooledParticleEffectCollection {
                 if (initialized[0]) {
                     currentCapacity++;
                     putInteger("pool_" + path, currentCapacity);
-                    log("expanding pooled particle effect collection " + name + ", path: " + path + ", new size: " + currentCapacity + ", overhead: " + currentCapacity / (float) initialCapacity * 100 + "%", INFO);
+                    log("expanding pooled particle effect collection: " + name + ", path: " + path + ", new size: " + currentCapacity + ", overhead: " + currentCapacity / (float) initialCapacity * 100 + "%", INFO);
                 }
                 return super.newObject();
             }

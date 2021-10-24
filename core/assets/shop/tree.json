@@ -43,11 +43,11 @@
     "saveTo": "currentCore",
     "default": "part.star_core"
   },
-  "category.ships": {
-    "description": "category.ships.description",
+  "category.hulls": {
+    "description": "category.hulls.description",
     "type": "category",
-    "saveTo": "currentShip",
-    "default": "part.basic_ship"
+    "saveTo": "currentHull",
+    "default": "part.basic_hull"
   },
   "category.engines": {
     "description": "category.engines.description",
@@ -163,7 +163,7 @@
       "item.red_fuel_cell": 2,
       "item.cable": 12,
       "item.plastic": 6,
-      "item.reinforced_iron_plate": 6,
+      "item.reinforced_metal_plate": 6,
       "item.cyan_crystal": 2
     },
     "description": "part.nuclear_engine.description",
@@ -180,7 +180,7 @@
       "item.cyan_fuel_cell": 2,
       "item.cable": 23,
       "item.plastic": 6,
-      "item.reinforced_iron_plate": 6,
+      "item.reinforced_metal_plate": 6,
       "item.purple_crystal": 2,
       "item.green_coil": 2
     },
@@ -197,7 +197,7 @@
     "items": {
       "item.bolt": 15,
       "item.cable": 20,
-      "item.reinforced_iron_plate": 8,
+      "item.reinforced_metal_plate": 8,
       "item.cooling_unit": 1,
       "item.orange_crystal": 1
     },
@@ -263,7 +263,7 @@
     "items": {
       "item.bolt": 17,
       "item.cable": 25,
-      "item.reinforced_iron_plate": 9,
+      "item.reinforced_metal_plate": 9,
       "item.cooling_unit": 2,
       "item.energy_cell": 1,
       "item.laser_emitter": 1
@@ -383,62 +383,62 @@
     "usesEffect": "fire3",
     "laserBeamColor": "#5721b5"
   },
-  "part.basic_ship": {
-    "description": "part.basic_ship.description",
-    "category": "category.ships",
+  "part.basic_hull": {
+    "description": "part.basic_hull.description",
+    "category": "category.hulls",
     "type": "basePart",
     "parameters": {
       "parameter.health": 100
     }
   },
-  "part.ship_mk1": {
+  "part.hull_mk1": {
     "items": {
-      "item.iron_sheet": 15,
+      "item.metal_sheet": 15,
       "item.bolt": 20,
       "item.cog": 4,
       "item.orange_crystal": 1
     },
-    "description": "part.ship_mk1.description",
-    "category": "category.ships",
+    "description": "part.hull_mk1.description",
+    "category": "category.hulls",
     "requires": ["part.star_core"],
     "type": "part",
     "parameters": {
       "parameter.health": 130
     }
   },
-  "part.ship_mk2": {
+  "part.hull_mk2": {
     "items": {
-      "item.reinforced_iron_plate": 20,
-      "item.iron_sheet": 15,
+      "item.reinforced_metal_plate": 20,
+      "item.metal_sheet": 15,
       "item.bolt": 15,
       "item.cog": 5,
       "item.green_crystal": 1
     },
-    "description": "part.ship_mk2.description",
-    "category": "category.ships",
-    "requires": ["part.ship_mk1"],
+    "description": "part.hull_mk2.description",
+    "category": "category.hulls",
+    "requires": ["part.hull_mk1"],
     "type": "part",
     "parameters": {
       "parameter.health": 170
     }
   },
-  "part.ship_mk3": {
+  "part.hull_mk3": {
     "items": {
       "item.composite_plate": 15,
-      "item.reinforced_iron_plate": 20,
+      "item.reinforced_metal_plate": 20,
       "item.bolt": 10,
       "item.reinforced_glass_pane": 5,
       "item.cyan_crystal": 1
     },
-    "description": "part.ship_mk3.description",
-    "category": "category.ships",
-    "requires": ["part.ship_mk2"],
+    "description": "part.hull_mk3.description",
+    "category": "category.hulls",
+    "requires": ["part.hull_mk2"],
     "type": "part",
     "parameters": {
       "parameter.health": 200
     }
   },
-  "part.beast_ship": {
+  "part.beast_hull": {
     "items": {
       "item.composite_plate": 35,
       "item.cyan_fuel_cell": 3,
@@ -446,9 +446,9 @@
       "item.bolt": 15,
       "item.orange_crystal": 4
     },
-    "description": "part.beast_ship.description",
-    "category": "category.ships",
-    "requires": ["part.ship_mk3"],
+    "description": "part.beast_hull.description",
+    "category": "category.hulls",
+    "requires": ["part.hull_mk3"],
     "type": "part",
     "parameters": {
       "parameter.health": 270
@@ -468,7 +468,7 @@
   "part.shield_generator_mk2": {
     "items": {
       "item.green_coil": 2,
-      "item.reinforced_iron_plate": 4,
+      "item.reinforced_metal_plate": 4,
       "item.energy_cell": 1,
       "item.cooling_unit": 1,
       "item.advanced_chip": 1,
@@ -489,7 +489,7 @@
   "part.shield_generator_mk3": {
     "items": {
       "item.cyan_coil": 4,
-      "item.reinforced_iron_plate": 6,
+      "item.reinforced_metal_plate": 6,
       "item.energy_cell": 2,
       "item.cooling_unit": 1,
       "item.cyan_crystal": 4,
@@ -539,7 +539,7 @@
   "part.battery_mk2": {
     "items": {
       "item.energy_cell": 3,
-      "item.iron_sheet": 8,
+      "item.metal_sheet": 8,
       "item.bolt": 20,
       "item.orange_crystal": 4,
       "item.circuit_board": 1,
@@ -593,7 +593,7 @@
   "part.magnet": {
     "items": {
       "item.energy_cell": 1,
-      "item.iron_sheet": 4,
+      "item.metal_sheet": 4,
       "item.green_coil": 2,
       "item.cyan_coil": 2,
       "item.bolt": 5,
@@ -611,7 +611,7 @@
   "part.repellent_field": {
     "items": {
       "item.energy_cell": 1,
-      "item.reinforced_iron_plate": 3,
+      "item.reinforced_metal_plate": 3,
       "item.cyan_crystal": 4,
       "item.circuit_board": 1,
       "item.bolt": 7,
@@ -629,7 +629,7 @@
   "part.radar": {
     "items": {
       "item.energy_cell": 2,
-      "item.iron_sheet": 5,
+      "item.metal_sheet": 5,
       "item.purple_crystal": 1,
       "item.processor_mk2": 1,
       "item.bolt": 10,
@@ -647,7 +647,7 @@
   "part.chronos_module": {
     "items": {
       "item.energy_cell": 10,
-      "item.iron_sheet": 5,
+      "item.metal_sheet": 5,
       "item.cyan_crystal": 2,
       "item.purple_crystal": 2,
       "item.processor_mk3": 1,
@@ -667,7 +667,7 @@
   },
   "item.reinforced_glass_pane": {
     "items": {
-      "item.iron_sheet": 1,
+      "item.metal_sheet": 1,
       "item.bolt": 4,
       "item.glass_rod": 4,
       "item.glass_shard": 6,
@@ -679,7 +679,7 @@
   },
   "item.energy_cell": {
     "items": {
-      "item.iron_sheet": 2,
+      "item.metal_sheet": 2,
       "item.bolt": 4,
       "item.energy_crystal": 1,
       "item.glass_shard": 2,
@@ -691,7 +691,7 @@
   },
   "item.cog": {
     "items": {
-      "item.iron_sheet": 2,
+      "item.metal_sheet": 2,
       "item.bolt": 6
     },
     "resultCount": 2,
@@ -723,7 +723,7 @@
   "item.cooling_unit": {
     "items": {
       "item.cyan_crystal": 1,
-      "item.iron_sheet": 4,
+      "item.metal_sheet": 4,
       "item.glass_shard": 4,
       "item.cable": 4
     },
@@ -803,7 +803,7 @@
   "item.memory_cell_mk1": {
     "items": {
       "item.cyan_crystal": 1,
-      "item.iron_sheet": 2,
+      "item.metal_sheet": 2,
       "item.wire": 5
     },
     "resultCount": 1,
@@ -813,7 +813,7 @@
   "item.memory_cell_mk2": {
     "items": {
       "item.memory_cell_mk1": 1,
-      "item.iron_sheet": 1,
+      "item.metal_sheet": 1,
       "item.purple_crystal": 1
     },
     "resultCount": 1,
@@ -823,7 +823,7 @@
   "item.blank_card": {
     "items": {
       "item.cyan_crystal": 1,
-      "item.iron_sheet": 1,
+      "item.metal_sheet": 1,
       "item.wire": 5,
       "item.plastic": 2,
       "item.glass_shard": 2
@@ -861,7 +861,7 @@
       "item.cyan_crystal": 1,
       "item.wire": 10,
       "item.transistor": 20,
-      "item.iron_sheet": 1,
+      "item.metal_sheet": 1,
       "item.glass_shard": 3
     },
     "resultCount": 1,
@@ -881,7 +881,7 @@
   "item.processor_mk3": {
     "items": {
       "item.processor_mk2": 16,
-      "item.iron_sheet": 1,
+      "item.metal_sheet": 1,
       "item.wire": 7,
       "item.cooling_unit": 1
     },
@@ -907,7 +907,7 @@
       "item.green_crystal": 1,
       "item.orange_crystal": 1,
       "item.red_crystal": 1,
-      "item.reinforced_iron_plate": 2
+      "item.reinforced_metal_plate": 2
     },
     "resultCount": 1,
     "description": "item.unstable_crystal.description",
@@ -932,26 +932,26 @@
     "description": "item.resistor.description",
     "type": "item"
   },
-  "item.iron_sheet": {
+  "item.metal_sheet": {
     "items": {
       "item.metal_shard": 2
     },
     "resultCount": 1,
-    "description": "item.iron_sheet.description",
+    "description": "item.metal_sheet.description",
     "type": "item"
   },
-  "item.reinforced_iron_plate": {
+  "item.reinforced_metal_plate": {
     "items": {
-      "item.iron_sheet": 1,
+      "item.metal_sheet": 1,
       "item.bolt": 4
     },
     "resultCount": 1,
-    "description": "item.reinforced_iron_plate.description",
+    "description": "item.reinforced_metal_plate.description",
     "type": "item"
   },
   "item.composite_plate": {
     "items": {
-      "item.reinforced_iron_plate": 2,
+      "item.reinforced_metal_plate": 2,
       "item.blue_ore": 1
     },
     "resultCount": 1,
@@ -1073,7 +1073,7 @@
   },
   "item.red_fuel_cell": {
     "items": {
-      "item.iron_sheet": 2,
+      "item.metal_sheet": 2,
       "item.orange_crystal": 1,
       "item.bolt": 4,
       "item.red_crystal": 1,
@@ -1123,7 +1123,7 @@
     "items": {
       "item.cyan_crystal": 1,
       "item.copper_coil": 1,
-      "item.iron_sheet": 1
+      "item.metal_sheet": 1
     },
     "resultCount": 1,
     "description": "item.laser_coil.description",

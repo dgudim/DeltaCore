@@ -55,7 +55,7 @@ public class LocaleManager {
             currentLocale = localeNames[0];
             currentLocaleIndex = 0;
         }
-        if (containsKey(Keys.locale)) {
+        if (!containsKey(Keys.locale)) {
             putString(Keys.locale, currentLocale);
         }
         log("current locale: " + currentLocale, DEBUG);

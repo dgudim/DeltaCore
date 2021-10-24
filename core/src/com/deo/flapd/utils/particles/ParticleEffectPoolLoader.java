@@ -41,7 +41,7 @@ public class ParticleEffectPoolLoader {
             {"particles/fire_engine_left_blue.p", " "},
             {"particles/fire_engine_left_blue_purple.p", " "},
             {"particles/fire_engine_left_red.p", " "},
-            {"particles/fire_engine_left_red_green.p", " "},
+            {"particles/fire_engine_left_red_green.p", "player default engine fire"},
             {"particles/fire_engine_left_red_purple.p", " "},
             {"particles/laser_powerup_red.p", " "},
             {"particles/particle_nowind.p", " "},

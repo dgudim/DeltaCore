@@ -72,7 +72,7 @@ public class Player extends Entity {
         TextureAtlas fields = assetManager.get("player/shields.atlas", TextureAtlas.class);
         
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString(Keys.currentShip)));
+        JsonEntry shipConfig = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")).get(getString(Keys.currentHull)));
         
         fires = new Array<>();
         
@@ -104,7 +104,7 @@ public class Player extends Entity {
                             .findRegions(shipConfig.getString("", "animation")),
                     Animation.PlayMode.LOOP);
         } else {
-            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString(Keys.currentShip)));
+            entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString(Keys.currentHull)));
         }
         
         JsonEntry params_core = treeJson.get(getString(Keys.currentCore), "parameters");
@@ -188,7 +188,7 @@ public class Player extends Entity {
         }
         
         chargeCapacity = treeJson.getFloat(1, getString(Keys.currentBattery), "parameters", "parameter.capacity");
-        healthCapacity = treeJson.getFloat(1, getString(Keys.currentShip), "parameters", "parameter.health");
+        healthCapacity = treeJson.getFloat(1, getString(Keys.currentHull), "parameters", "parameter.health");
         
         shield = new Sprite(fields.findRegion(treeJson.getString("noValue", getString(Keys.currentShield), "usesEffect")));
         

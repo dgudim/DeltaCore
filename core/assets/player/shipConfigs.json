@@ -1,5 +1,5 @@
 {
-    "part.basic_ship": {
+    "part.basic_hull": {
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -17,7 +17,7 @@
         },
         "upgradeMenus": {
             "category.engines": [28, 18, 300, 70],
-            "category.ships": [40, 30, 300, -30],
+            "category.hulls": [40, 30, 300, -30],
             "category.weapons": [72, 20, 300, 40],
             "category.batteries": [52, 20, 300, -30],
             "category.shields": [70, 70, 300, -30],
@@ -25,7 +25,7 @@
             "category.modules": [11, 51, 300, 30]
         }
     },
-    "part.ship_mk1":{
+    "part.hull_mk1":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -42,7 +42,7 @@
             "fire1OffsetY": 40
         }
     },
-    "part.ship_mk2":{
+    "part.hull_mk2":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -59,7 +59,7 @@
             "fire1OffsetY": 40
         }
     },
-    "part.ship_mk3":{
+    "part.hull_mk3":{
         "width": 76.8,
         "height": 57.6,
         "gunCount": 1,
@@ -76,7 +76,7 @@
             "fire1OffsetY": 40
         }
     },
-    "part.beast_ship":{
+    "part.beast_hull":{
         "width": 149,
         "height": 72,
         "gunCount": 2,
@@ -102,7 +102,7 @@
         },
         "upgradeMenus": {
             "category.engines": [28, 18, 300, 70],
-            "category.ships": [40, 30, 300, -30],
+            "category.hulls": [40, 30, 300, -30],
             "category.weapons": [72, 20, 300, 40],
             "category.batteries": [52, 20, 300, -30],
             "category.shields": [70, 70, 300, -30],

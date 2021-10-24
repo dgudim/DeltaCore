@@ -82,7 +82,7 @@ public class CraftingDialogue extends Dialogue {
         
         buyShortcuts = new Array<>();
         tableLabels = new Array<>();
-        items = treeJson.get(result, "items");
+        items = treeJson.get(false, result, "items");
         
         BitmapFont font = assetManager.get("fonts/pixel.ttf");
         font.setUseIntegerPositions(false);
@@ -107,7 +107,9 @@ public class CraftingDialogue extends Dialogue {
         yes2.setBounds(12, 12, 156, 88);
         yes3.setBounds(180, 12, 152, 88);
         equip.setBounds(180, 12, 152, 88);
+        equip.getLabel().setWrap(true);
         customize.setBounds(12, 12, 156, 88);
+        customize.getLabel().setWrap(true);
         
         yellowLabelStyle = new Label.LabelStyle();
         yellowLabelStyle.font = font;
@@ -167,7 +169,7 @@ public class CraftingDialogue extends Dialogue {
                 case ("item"):
                     if ((!getBoolean("unlocked_" + result) && getType().equals("part")) || getType().equals("item")) {
                         
-                        resultCount = treeJson.getInt(1, result, "resultCount");
+                        resultCount = treeJson.getInt(false, 1, result, "resultCount");
                         
                         addQuestion();
                         addCloseListener(no);
@@ -375,13 +377,14 @@ public class CraftingDialogue extends Dialogue {
             }
             labels.add(itemText);
             
-            Button.ButtonStyle itemButtonStyle = new Button.ButtonStyle();
-            itemButtonStyle.up = new Image(itemAtlas.findRegion(currentItem)).getDrawable();
-            itemButtonStyle.disabled = new Image(itemAtlas.findRegion(currentItem + "_disabled")).getDrawable();
-            itemButtonStyle.down = new Image(itemAtlas.findRegion(currentItem + "_enabled")).getDrawable();
-            itemButtonStyle.over = new Image(itemAtlas.findRegion(currentItem + "_over")).getDrawable();
-            Button item = new Button(itemButtonStyle);
+            ImageButton.ImageButtonStyle itemButtonStyle = new ImageButton.ImageButtonStyle();
+            itemButtonStyle.imageUp = new Image(itemAtlas.findRegion(currentItem)).getDrawable();
+            itemButtonStyle.imageDisabled = new Image(itemAtlas.findRegion(currentItem + "_disabled")).getDrawable();
+            itemButtonStyle.imageDown = new Image(itemAtlas.findRegion(currentItem + "_enabled")).getDrawable();
+            itemButtonStyle.imageOver = new Image(itemAtlas.findRegion(currentItem + "_over")).getDrawable();
+            ImageButton item = new ImageButton(itemButtonStyle);
             
+            scaleDrawables(40, itemButtonStyle.imageUp, itemButtonStyle.imageDisabled, itemButtonStyle.imageDown, itemButtonStyle.imageOver);
             TextButton buyShortcut = uiComposer.addTextButton("workshopPurple", localeManager.get("craftingDialogue.buy"), 0.21000001f);
             if (Jitems.indexOf(currentItem, false) == -1) {
                 buyShortcut.setTouchable(Touchable.disabled);
@@ -399,7 +402,7 @@ public class CraftingDialogue extends Dialogue {
                     }
                     
                     new PurchaseDialogue(compositeManager, stage, currentItem, quantities.get(Jitems.indexOf(currentItem, false)),
-                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(1, "resultCount")),
+                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(false, 1, "resultCount")),
                             CraftingDialogue.this);
                 }
             });
@@ -408,7 +411,7 @@ public class CraftingDialogue extends Dialogue {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(compositeManager, stage, currentItem,
-                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(1, "resultCount")),
+                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(false, 1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
@@ -417,15 +420,15 @@ public class CraftingDialogue extends Dialogue {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     new CraftingDialogue(compositeManager, stage, currentItem,
-                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(1, "resultCount")),
+                            (int) Math.ceil((itemQuantity * quantity.getValue() - getInteger("item_" + currentItem)) / treeJson.get(currentItem).getFloat(false, 1, "resultCount")),
                             false, CraftingDialogue.this);
                 }
             });
             
             buyShortcuts.add(buyShortcut);
-            requirement.add(item).size(40, 40);
-            requirement.add(itemText).width(208).pad(4).padLeft(8);
-            requirement.add(buyShortcut).size(40, 20).padLeft(8);
+            requirement.add(item).size(40);
+            requirement.add(itemText).width(200).pad(4).padLeft(8);
+            requirement.add(buyShortcut).size(60, 20);
             ingredientsTable.add(requirement).padTop(4).padBottom(4).align(Align.left).row();
             ingredientsTable.align(Align.left).padLeft(4);
         }
@@ -554,7 +557,7 @@ public class CraftingDialogue extends Dialogue {
                     dialog.hide();
                 }
             });
-    
+            
             scaleDrawables(80, itemButtonStyle.imageUp, itemButtonStyle.imageDown, itemButtonStyle.imageDisabled, itemButtonStyle.imageOver);
             requirement.add(item).size(80);
             requirement.add(itemText).pad(4).padLeft(8).align(Align.center);

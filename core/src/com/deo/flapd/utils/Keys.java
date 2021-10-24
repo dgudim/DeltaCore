@@ -17,7 +17,7 @@ public class Keys {
     
     final public static String currentEngine = "currentEngine";
     final public static String currentCore = "currentCore";
-    final public static String currentShip = "currentShip";
+    final public static String currentHull = "currentHull";
     final public static String currentWeapon = "currentWeapon";
     final public static String currentShield = "currentShield";
     final public static String currentModule = "currentModule";

@@ -55,7 +55,7 @@ public class GameLogic {
         JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
         speedMultiplier = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.speed_multiplier")
-                * treeJson.getFloat(false, 1, getString(Keys.currentShip), "parameters", "parameter.speed_multiplier")
+                * treeJson.getFloat(false, 1, getString(Keys.currentHull), "parameters", "parameter.speed_multiplier")
                 * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.speed_multiplier");
         
         if (!newGame) {
