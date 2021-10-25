@@ -225,10 +225,12 @@ public class UpgradeMenu extends Actor {
                             @Override
                             public void onConfirm() {
                                 updateStates();
+                                updateShip();
                             }
                             @Override
                             public void onStateChanged() {
                                 updateStates();
+                                updateShip();
                             }
                         }, UpgradeMenu.this);
                     }
@@ -246,6 +248,10 @@ public class UpgradeMenu extends Actor {
     
     public void updateFire(){
         menuScreen.updateFire();
+    }
+    
+    public void updateShip(){
+        menuScreen.updateShip();
     }
     
     void updateStates() {
