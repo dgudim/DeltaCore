@@ -23,10 +23,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.SoundManager;
@@ -78,10 +80,14 @@ public class GameUi {
     Image timeFreezeButton;
     Image timeFreezeButton_disabled;
     Image timeFreezeButton_active;
-    private final int maxTimeWarpCharge = 30000;
-    private float timeWarpCharge = 30000;
+    private int maxTimeCharge;
+    private float timeCharge;
+    private float reloadTime;
+    private float worldSpeedMultiplier;
+    private float playerSpeedMultiplier;
     private boolean timeWarpAvailable = true;
     private boolean timeWarpActive = false;
+    private float powerConsumption;
     
     private final Game game;
     private final CompositeManager compositeManager;
@@ -105,6 +111,16 @@ public class GameUi {
         showFps = getBoolean(Keys.showFps);
         transparency = getBoolean(Keys.transparentUi);
         chronosModuleEnabled = getString(Keys.currentModule).equals("part.chronos_module");
+    
+        final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        if(chronosModuleEnabled){
+            worldSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameter.world_speed_multiplier");
+            playerSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameter.player_speed_multiplier");
+            maxTimeCharge = treeJson.getInt(1, "part.chronos_module", "parameter.active_time");
+            timeCharge = maxTimeCharge;
+            reloadTime = treeJson.getFloat(1, "part.chronos_module", "parameter.reload_time");
+            powerConsumption = treeJson.getFloat(1, "part.chronos_module", "parameter.power_consumption");
+        }
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
         
@@ -298,10 +314,10 @@ public class GameUi {
                 new Thread(() -> {
                     try {
                         Gdx.app.postRunnable(() -> {
-                            setTimeWarpState(0.5f, 0.07f, 0.97f, true, false);
+                            setTimeWarpState(playerSpeedMultiplier, worldSpeedMultiplier, 0.97f, true, false);
                             setWarpButtonState(WarpButtonState.ACTIVE);
                         });
-                        Thread.sleep(maxTimeWarpCharge);
+                        Thread.sleep(maxTimeCharge);
                         Gdx.app.postRunnable(() -> {
                             setTimeWarpState(1, 1, 0, false, false);
                             setWarpButtonState(WarpButtonState.DISABLED);
@@ -366,14 +382,15 @@ public class GameUi {
         if (chronosModuleEnabled) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.LIME);
-            shapeRenderer.rect(5, 480 - uiScale * 52.5f + 5, 66 * uiScale - 10, (52.5f * uiScale - 10) * (timeWarpCharge / (float) maxTimeWarpCharge));
+            shapeRenderer.rect(5, 480 - uiScale * 52.5f + 5, 66 * uiScale - 10, (52.5f * uiScale - 10) * (timeCharge / (float) maxTimeCharge));
             shapeRenderer.end();
             if (timeWarpActive) {
-                timeWarpCharge = clamp(timeWarpCharge - delta * 1000, 0, maxTimeWarpCharge);
+                timeCharge = clamp(timeCharge - delta * 1000, 0, maxTimeCharge);
+                player.charge -= powerConsumption * delta;
             } else {
-                timeWarpCharge = clamp(timeWarpCharge + delta * 300, 0, maxTimeWarpCharge);
+                timeCharge = clamp(timeCharge + delta * 1000 * maxTimeCharge / reloadTime, 0, maxTimeCharge);
             }
-            if (!timeWarpAvailable && timeWarpCharge == maxTimeWarpCharge) {
+            if (!timeWarpAvailable && timeCharge == maxTimeCharge) {
                 timeWarpAvailable = true;
                 setWarpButtonState(WarpButtonState.AVAILABLE);
             }
