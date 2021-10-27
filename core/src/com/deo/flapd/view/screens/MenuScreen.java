@@ -104,7 +104,7 @@ public class MenuScreen implements Screen {
     private boolean playerHasAnimation;
     private final JsonEntry shipConfigs;
     private JsonEntry shipConfig;
-    private float shipUpgradeAnimationPosition = 0;
+    private float shipUpgradeAnimationPosition = 1;
     private byte shipUpgradeAnimationDirection = -1;
     
     private final Texture fillTexture;
@@ -189,7 +189,7 @@ public class MenuScreen implements Screen {
         fillTexture = assetManager.get("screenFill.png");
         
         menuStage = new Stage(viewport, batch);
-    
+        
         fires = new Array<>();
         fireOffsetsX = new Array<>();
         fireOffsetsY = new Array<>();
@@ -537,7 +537,7 @@ public class MenuScreen implements Screen {
         }
         
         if (upgradeAnimationActive) {
-            ship.setSize(originalShipWidth * shipUpgradeAnimationPosition, originalShipHeight * shipUpgradeAnimationPosition);
+            updateShipSize();
             
             if (warpAnimationActive) {
                 newFireMotionScale += 1 - shipUpgradeAnimationPosition_normalized + 0.1f;
@@ -549,7 +549,7 @@ public class MenuScreen implements Screen {
         }
         
         if (warpAnimationActive || upgradeAnimationActive) {
-            ship.setPosition(lerp(50, targetShipX, shipUpgradeAnimationPosition_normalized) + warpXOffset, 279 - ship.getHeight() / 2);
+            updateShipPosition(shipUpgradeAnimationPosition_normalized);
             updateFirePositions();
             scaleFire(shipUpgradeAnimationPosition, newFireMotionScale);
         }
@@ -686,7 +686,7 @@ public class MenuScreen implements Screen {
     }
     
     private void loadFire() {
-    
+        
         float currMotionScale = previousFireMotionScale;
         float currentSizeScale = previousFireSizeScale;
         //save scale
@@ -801,22 +801,28 @@ public class MenuScreen implements Screen {
                 }
             }
             
-            float width = shipConfig.getFloat(1, "width");
-            float height = shipConfig.getFloat(1, "height");
+            originalShipHeight = shipConfig.getFloat(1, "height");
+            originalShipWidth = shipConfig.getFloat(1, "width");;
+            targetShipX = 210 - originalShipWidth * targetShipScaleFactor / 2f;
             
-            if(!(originalShipWidth == width && originalShipHeight == height)){
-                originalShipHeight = height;
-                originalShipWidth = width;
-                targetShipX = 230 - originalShipWidth * targetShipScaleFactor / 2f;
-    
-                ship.setSize(width, height);
-                
-                closeAllUpgradeMenus();
-            }
+            updateShipSize();
+            updateShipPosition((shipUpgradeAnimationPosition - 1) / targetShipScaleFactor);
+            
+            closeAllUpgradeMenus();
+            
             lastFireEffect = " ";
             updateFire();
         }
     }
+    
+    public void updateShipSize(){
+        ship.setSize(originalShipWidth * shipUpgradeAnimationPosition, originalShipHeight * shipUpgradeAnimationPosition);
+    }
+    
+    public void updateShipPosition(float shipUpgradeAnimationPosition_normalized){
+        ship.setPosition(lerp(50, targetShipX, shipUpgradeAnimationPosition_normalized) + warpXOffset, 279 - ship.getHeight() / 2);
+    }
+    
     
     public void initializeShip() {
         initializeShipTexture();
