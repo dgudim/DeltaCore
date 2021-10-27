@@ -382,7 +382,6 @@ public class MenuScreen implements Screen {
         
         menuCategoryManager.attach(menuStage);
         
-        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         for (int i = 0; i < treeJson.size; i++) {
             if (treeJson.getString("item", i, "type").equals("category")) {
                 float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, treeJson.get(i).name);
@@ -809,6 +808,9 @@ public class MenuScreen implements Screen {
             updateShipPosition((shipUpgradeAnimationPosition - 1) / targetShipScaleFactor);
             
             closeAllUpgradeMenus();
+            for(int i = 0; i<upgradeMenus.size; i++){
+                upgradeMenus.get(i).remove();
+            }
             
             lastFireEffect = " ";
             updateFire();
@@ -823,6 +825,18 @@ public class MenuScreen implements Screen {
         ship.setPosition(lerp(50, targetShipX, shipUpgradeAnimationPosition_normalized) + warpXOffset, 279 - ship.getHeight() / 2);
     }
     
+    public void rebuildUpgradeMenus(){
+        for (int i = 0; i < treeJson.size; i++) {
+            if (treeJson.getString("item", i, "type").equals("category")) {
+                float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, treeJson.get(i).name);
+                upgradeMenus.add(new UpgradeMenu(
+                        compositeManager, menuStage, this, upgradeMenus,
+                        treeJson.get(i).name,
+                        new Vector2(coords[0], coords[1]),
+                        new Vector2(coords[2], coords[3])));
+            }
+        }
+    }
     
     public void initializeShip() {
         initializeShipTexture();

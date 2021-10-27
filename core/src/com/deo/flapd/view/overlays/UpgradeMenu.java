@@ -184,6 +184,10 @@ public class UpgradeMenu extends Actor {
         stage.addActor(this);
     }
     
+    void setCoords(){
+    
+    }
+    
     void loadItemsForCategory(String category, Table addTo, float width, boolean root) {
         Table titleTable = new Table();
         titleTable.align(Align.left);
