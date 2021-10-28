@@ -111,15 +111,15 @@ public class GameUi {
         showFps = getBoolean(Keys.showFps);
         transparency = getBoolean(Keys.transparentUi);
         chronosModuleEnabled = getString(Keys.currentModule).equals("part.chronos_module");
-    
+        
         final JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        if(chronosModuleEnabled){
-            worldSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameter.world_speed_multiplier");
-            playerSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameter.player_speed_multiplier");
-            maxTimeCharge = treeJson.getInt(1, "part.chronos_module", "parameter.active_time");
+        if (chronosModuleEnabled) {
+            worldSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.world_speed_multiplier");
+            playerSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.player_speed_multiplier");
+            maxTimeCharge = treeJson.getInt(1, "part.chronos_module", "parameters", "parameter.active_time");
             timeCharge = maxTimeCharge;
-            reloadTime = treeJson.getFloat(1, "part.chronos_module", "parameter.reload_time");
-            powerConsumption = treeJson.getFloat(1, "part.chronos_module", "parameter.power_consumption");
+            reloadTime = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.reload_time");
+            powerConsumption = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.power_consumption");
         }
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");

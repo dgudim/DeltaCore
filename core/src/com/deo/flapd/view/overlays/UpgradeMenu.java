@@ -213,8 +213,8 @@ public class UpgradeMenu extends Actor {
                 itemButtonStyle.overFontColor = Color.valueOf("#DDDDDD");
                 itemButtonStyle.downFontColor = Color.WHITE;
                 ImageTextButton textImageButton = new ImageTextButton(localeManager.get(treeJson.get(i).name), itemButtonStyle);
-                // TODO: 27/10/2021 fix smatt font after game
-                textImageButton.setDebug(true, true);
+                textImageButton.getLabel().setFontScale(0.35f);
+                
                 parts.add(treeJson.get(i).name);
                 partsButtons.add(textImageButton);
                 
