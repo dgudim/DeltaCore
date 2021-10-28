@@ -379,10 +379,22 @@ public class JsonEntry {
         return get(showWarnings, keys).jsonValue.asFloatArray();
     }
     
+    /**
+     * Finds the child with the specified index and and returns it as a float array.
+     */
+    public float[] getFloatArray(boolean showWarnings, float[] defaultValue, int index) {
+        if (get(false, index).isNull()) {
+            if (showWarnings) {
+                log("No value specified for index " + index + " in entry: " + name + ", using default (" + ((defaultValue.length > 0) ? (defaultValue[0] + "..." + defaultValue[defaultValue.length - 1]) : "empty array") + ")", WARNING);
+            }
+            return defaultValue;
+        }
+        return get(showWarnings, index).jsonValue.asFloatArray();
+    }
+    
     public float[] getFloatArrayWithFallback(JsonEntry fallback, boolean showWarnings, float[] defaultValue, String... keys) {
         if (get(false, keys).isNull()) {
             return fallback.getFloatArray(showWarnings, defaultValue, keys);
-            
         } else {
             return getFloatArray(false, null, keys);
         }
@@ -393,6 +405,13 @@ public class JsonEntry {
      */
     public float[] getFloatArray(float[] defaultValue, String... keys) {
         return getFloatArray(true, defaultValue, keys);
+    }
+    
+    /**
+     * Finds the child with the specified index and path and returns it as a float array.
+     */
+    public float[] getFloatArray(float[] defaultValue, int index) {
+        return getFloatArray(true, defaultValue, index);
     }
     
     /**
