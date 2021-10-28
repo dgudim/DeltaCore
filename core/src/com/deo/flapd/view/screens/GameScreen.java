@@ -115,6 +115,9 @@ public class GameScreen implements Screen {
         
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+    
+        drops = new Drops(assetManager, 48);
+        compositeManager.setDrops(drops);
         
         enemies = new Enemies(compositeManager);
         enemies.loadEnemies();
@@ -130,9 +133,6 @@ public class GameScreen implements Screen {
         uraniumCell = new UraniumCell(assetManager);
         
         bonus = new Bonus(assetManager, 50, 50, player, bosses);
-        
-        drops = new Drops(assetManager, 48);
-        compositeManager.setDrops(drops);
         
         gameUi = new GameUi(viewport, compositeManager, player);
         

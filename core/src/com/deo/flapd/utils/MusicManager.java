@@ -88,12 +88,6 @@ public class MusicManager {
         }
     }
     
-    public void resume() {
-        if (!music.isPlaying()) {
-            music.play();
-        }
-    }
-    
     public void setVolume(float volume) {
         targetVolume = volume;
     }
@@ -107,7 +101,7 @@ public class MusicManager {
             float amplitudeNext = amplitude.get(arrayPos + 1);
             return lerp(amplitudeCurr, amplitudeNext, lerpPos);
         }
-        return 1;
+        return 0;
     }
     
     public void update(float delta) {
@@ -123,17 +117,16 @@ public class MusicManager {
                     loadNextMusic();
                 }
             } else {
-                if (targetVolume - currentVolume > delta) {
+                if (targetVolume - currentVolume >= delta) {
                     currentVolume = clamp(currentVolume + delta, 0, 1);
-                    resume();
                     music.setVolume(currentVolume);
-                } else if (targetVolume - currentVolume < -delta) {
+                } else if (targetVolume - currentVolume <= -delta) {
                     currentVolume = clamp(currentVolume - delta, 0, 1);
-                    resume();
                     music.setVolume(currentVolume);
                 }
-                if (music.isPlaying() && currentVolume <= 0.008) {
-                    music.pause();
+                if (music.isPlaying() && currentVolume <= delta && targetVolume == 0) {
+                    music.setVolume(0);
+                    currentVolume = 0;
                 }
             }
         }

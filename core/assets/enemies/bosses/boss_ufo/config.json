@@ -46,7 +46,7 @@
       },
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 1,
       "offset": {
         "relativeTo": "body",
@@ -56,7 +56,7 @@
       "bulletSpread": 0.5,
       "bulletOffset": [-37, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/gun3.ogg",
+      "shootSound": "gun3",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 2,

@@ -116,9 +116,9 @@ public class GameUi {
         if (chronosModuleEnabled) {
             worldSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.world_speed_multiplier");
             playerSpeedMultiplier = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.player_speed_multiplier");
-            maxTimeCharge = treeJson.getInt(1, "part.chronos_module", "parameters", "parameter.active_time");
+            maxTimeCharge = treeJson.getInt(1, "part.chronos_module", "parameters", "parameter.active_time") * 1000;
             timeCharge = maxTimeCharge;
-            reloadTime = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.reload_time");
+            reloadTime = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.reload_time") * 1000;
             powerConsumption = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.power_consumption");
         }
         

@@ -207,10 +207,7 @@ public class Player extends Entity {
         setSize(shipConfig.getFloat(1, "width"), shipConfig.getFloat(1, "height"));
         init();
         
-        shield.setOrigin((width + 30) / 2f, (height + 30) / 2f);
-        
         shield.setSize(width + 30, height + 30);
-        shield.setPosition(x, y - 10);
         
         damage_fire = new ParticleEffect();
         damage_fire.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
@@ -310,7 +307,8 @@ public class Player extends Entity {
     
     public void drawShield(SpriteBatch batch, float delta) {
         if (!isDead) {
-            shield.setPosition(x - 20, y - 15);
+            shield.setPosition(x - 15, y - 15);
+            
             shield.setRotation(rotation);
             shield.setColor(shieldColor.r, shieldColor.g, shieldColor.b, clamp(shieldCharge / 100, 0, 1));
             shield.draw(batch);

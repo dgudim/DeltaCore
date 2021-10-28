@@ -16,7 +16,7 @@
       "texture": "boss",
       "explosionEffect": "particles/explosion2.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 1,
       "drops": {
         "items": {
@@ -49,7 +49,7 @@
       "texture": "upperCannon_part1",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 2,
       "drops": {
         "items": {
@@ -101,7 +101,7 @@
       "bulletSpread": 0,
       "bulletOffset": [-10, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/gun2.ogg",
+      "shootSound": "gun2",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 2.5,
@@ -113,7 +113,7 @@
       "texture": "cannon1",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 2,
       "drops": {
         "items": {
@@ -215,7 +215,7 @@
       "bulletSpread": 0,
       "bulletOffset": [0, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/gun1.ogg",
+      "shootSound": "gun1",
       "offset": {
         "relativeTo": "body",
         "X": 66,
@@ -229,7 +229,7 @@
       "texture": "cannon2",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 2,
       "drops": {
         "items": {
@@ -284,7 +284,7 @@
       "bulletSpread": 0.5,
       "bulletOffset": [-40, 0],
       "bulletsPerShot": 3,
-      "shootSound": "sfx/gun3.ogg",
+      "shootSound": "gun3",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.7,
@@ -295,7 +295,7 @@
       "texture": "bigCannon",
       "explosionEffect": "particles/explosion.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 0,
       "drops": {
         "items": {
@@ -350,7 +350,7 @@
       "bulletSpread": 0,
       "bulletOffset": [0, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/gun3.ogg",
+      "shootSound": "gun3",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.3,

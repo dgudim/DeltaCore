@@ -89,6 +89,7 @@ public class MenuScreen implements Screen {
     
     private final Texture bg1;
     private final Texture bg2;
+    public Image shipShield;
     public Image ship;
     private Image ship_touchLayer;
     private float originalShipWidth;
@@ -379,6 +380,7 @@ public class MenuScreen implements Screen {
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
         
         menuStage.addActor(ship);
+        menuStage.addActor(shipShield);
         menuStage.addActor(menuBg);
         menuStage.addActor(ship_touchLayer);
         menuStage.addActor(buildNumber);
@@ -729,34 +731,31 @@ public class MenuScreen implements Screen {
     
     private void initializeShipTexture() {
         ship_touchLayer = new Image();
+        shipShield = new Image();
         ship = new Image() {
-            @Override
-            public void setBounds(float x, float y, float width, float height) {
-                super.setBounds(x, y, width, height);
-                ship_touchLayer.setBounds(x, y, width, height);
-            }
-            
             @Override
             public void setPosition(float x, float y) {
                 super.setPosition(x, y);
                 ship_touchLayer.setPosition(x, y);
+                shipShield.setPosition(x - 15 * shipUpgradeAnimationPosition, y - 15 * shipUpgradeAnimationPosition);
             }
             
             @Override
             public void setX(float x) {
                 super.setX(x);
                 ship_touchLayer.setX(x);
+                shipShield.setX(x - 15 * shipUpgradeAnimationPosition);
             }
             
             @Override
             public void setSize(float width, float height) {
                 super.setSize(width, height);
                 ship_touchLayer.setSize(width, height);
+                shipShield.setSize(width + 30 * shipUpgradeAnimationPosition, height + 30 * shipUpgradeAnimationPosition);
             }
             
             @Override
             public void act(float delta) {
-                super.act(delta);
                 ship_touchLayer.act(delta);
             }
             
@@ -794,10 +793,11 @@ public class MenuScreen implements Screen {
                     enemyAnimation_drawables.add(new TextureRegionDrawable(region));
                 }
             }
+            shipShield.setDrawable(new TextureRegionDrawable(assetManager.get("player/shields.atlas", TextureAtlas.class).findRegion(treeJson.getString("noValue", getString(Keys.currentShield), "usesEffect"))));
             
             originalShipHeight = shipConfig.getFloat(1, "height");
             originalShipWidth = shipConfig.getFloat(1, "width");
-            ;
+            
             targetShipX = 210 - originalShipWidth * targetShipScaleFactor / 2f;
             
             updateShipSize();

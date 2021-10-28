@@ -1,7 +1,7 @@
 {
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
-  "music": "music/vhs.ogg",
+  "music": "music/vhs",
   "spawnConditions": {
     "score": 19000,
     "randomness": 1000
@@ -22,7 +22,7 @@
       "frameDuration": 0.1,
       "explosionEffect": "particles/explosion_destroyer.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 1,
       "drops": {
         "items": {
@@ -73,7 +73,7 @@
       "bulletSpread": 9.5,
       "bulletOffset": [0, 0],
       "bulletsPerShot": 3,
-      "shootSound": "sfx/gun2.ogg",
+      "shootSound": "gun2",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 5,
@@ -123,7 +123,7 @@
       "bulletSpread": 0,
       "bulletOffset": [0, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/laser.ogg",
+      "shootSound": "laser",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.3,

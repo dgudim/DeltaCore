@@ -20,7 +20,7 @@
       "frameDuration": 0.1,
       "explosionEffect": "particles/explosion_evil.p",
       "explosionScale": 1,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "layer": 1,
       "drops": {
         "items": {
@@ -64,7 +64,7 @@
       "bulletSpread": 1.5,
       "bulletOffset": [0, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/gun3.ogg",
+      "shootSound": "gun3",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.7,
@@ -75,7 +75,7 @@
       "texture": "EyeDrone",
       "explosionEffect": "particles/explosion_evil_small.p",
       "explosionScale": 0.9,
-      "explosionSound": "sfx/explosion.ogg",
+      "explosionSound": "explosion",
       "effects": {
         "count": 1,
         "effect0": "particles/fire2.p",
@@ -167,7 +167,7 @@
       "bulletSpread": 0.7,
       "bulletOffset": [0, 0],
       "bulletsPerShot": 1,
-      "shootSound": "sfx/laser.ogg",
+      "shootSound": "laser",
       "fireRate": {
         "initialDelay": 0,
         "baseRate": 0.3,

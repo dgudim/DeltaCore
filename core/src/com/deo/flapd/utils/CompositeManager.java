@@ -28,7 +28,7 @@ public class CompositeManager {
     
     private Game game;
     
-    Drops drops;
+    private Drops drops;
     
     public CompositeManager() {
     }
