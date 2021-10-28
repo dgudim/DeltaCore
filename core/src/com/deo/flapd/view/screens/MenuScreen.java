@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -41,9 +42,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
-import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
@@ -97,6 +98,7 @@ public class MenuScreen implements Screen {
     private float previousFireMotionScale = 1;
     private float previousFireSizeScale = 1;
     private final Array<UpgradeMenu> upgradeMenus;
+    private final Group upgradeMenusHolder;
     
     private Animation<TextureRegion> enemyAnimation;
     private Array<TextureRegionDrawable> enemyAnimation_drawables;
@@ -104,7 +106,7 @@ public class MenuScreen implements Screen {
     private boolean playerHasAnimation;
     private final JsonEntry shipConfigs;
     private JsonEntry shipConfig;
-    private float shipUpgradeAnimationPosition = 1;
+    public float shipUpgradeAnimationPosition = 1;
     private byte shipUpgradeAnimationDirection = -1;
     
     private final Texture fillTexture;
@@ -194,6 +196,7 @@ public class MenuScreen implements Screen {
         fireOffsetsX = new Array<>();
         fireOffsetsY = new Array<>();
         upgradeMenus = new Array<>();
+        upgradeMenusHolder = new Group();
         shipConfigs = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")));
         initializeShip();
         
@@ -382,16 +385,8 @@ public class MenuScreen implements Screen {
         
         menuCategoryManager.attach(menuStage);
         
-        for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.getString("item", i, "type").equals("category")) {
-                float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, treeJson.get(i).name);
-                upgradeMenus.add(new UpgradeMenu(
-                        compositeManager, menuStage, this, upgradeMenus,
-                        treeJson.get(i).name,
-                        new Vector2(coords[0], coords[1]),
-                        new Vector2(coords[2], coords[3])));
-            }
-        }
+        rebuildUpgradeMenus();
+        menuStage.addActor(upgradeMenusHolder);
         
         menuStage.addActor(infoTextPane);
         menuStage.addActor(playScreenTable);
@@ -801,40 +796,40 @@ public class MenuScreen implements Screen {
             }
             
             originalShipHeight = shipConfig.getFloat(1, "height");
-            originalShipWidth = shipConfig.getFloat(1, "width");;
+            originalShipWidth = shipConfig.getFloat(1, "width");
+            ;
             targetShipX = 210 - originalShipWidth * targetShipScaleFactor / 2f;
             
             updateShipSize();
             updateShipPosition((shipUpgradeAnimationPosition - 1) / targetShipScaleFactor);
             
             closeAllUpgradeMenus();
-            for(int i = 0; i<upgradeMenus.size; i++){
-                upgradeMenus.get(i).remove();
-            }
+            rebuildUpgradeMenus();
             
             lastFireEffect = " ";
             updateFire();
         }
     }
     
-    public void updateShipSize(){
+    public void updateShipSize() {
         ship.setSize(originalShipWidth * shipUpgradeAnimationPosition, originalShipHeight * shipUpgradeAnimationPosition);
     }
     
-    public void updateShipPosition(float shipUpgradeAnimationPosition_normalized){
+    public void updateShipPosition(float shipUpgradeAnimationPosition_normalized) {
         ship.setPosition(lerp(50, targetShipX, shipUpgradeAnimationPosition_normalized) + warpXOffset, 279 - ship.getHeight() / 2);
     }
     
-    public void rebuildUpgradeMenus(){
-        for (int i = 0; i < treeJson.size; i++) {
-            if (treeJson.getString("item", i, "type").equals("category")) {
-                float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, treeJson.get(i).name);
-                upgradeMenus.add(new UpgradeMenu(
-                        compositeManager, menuStage, this, upgradeMenus,
-                        treeJson.get(i).name,
-                        new Vector2(coords[0], coords[1]),
-                        new Vector2(coords[2], coords[3])));
-            }
+    public void rebuildUpgradeMenus() {
+        upgradeMenus.clear();
+        upgradeMenusHolder.clear();
+        JsonEntry upgradeMenusLocations = shipConfig.get("upgradeMenus");
+        for (int i = 0; i < upgradeMenusLocations.size; i++) {
+            float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, i);
+            upgradeMenus.add(new UpgradeMenu(
+                    compositeManager, upgradeMenusHolder, this, upgradeMenus,
+                    upgradeMenusLocations.get(i).name,
+                    new Vector2(coords[0], coords[1]),
+                    new Vector2(coords[2], coords[3])));
         }
     }
     

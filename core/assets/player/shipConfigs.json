@@ -16,12 +16,12 @@
             "fire1OffsetY": 40
         },
         "upgradeMenus": {
-            "category.engines": [28, 18, 300, 70],
-            "category.hulls": [40, 30, 300, -30],
             "category.weapons": [72, 20, 300, 40],
             "category.batteries": [52, 20, 300, -30],
             "category.shields": [70, 70, 300, -30],
             "category.cores": [62, 32, 400, 70],
+            "category.hulls": [40, 30, 300, -30],
+            "category.engines": [28, 18, 300, 70],
             "category.modules": [11, 51, 300, 30]
         }
     },
@@ -42,12 +42,12 @@
             "fire1OffsetY": 40
         },
         "upgradeMenus": {
-            "category.engines": [28, 18, 300, 70],
-            "category.hulls": [40, 30, 300, -30],
             "category.weapons": [72, 20, 300, 40],
             "category.batteries": [52, 20, 300, -30],
             "category.shields": [70, 70, 300, -30],
             "category.cores": [62, 32, 400, 70],
+            "category.hulls": [40, 30, 300, -30],
+            "category.engines": [28, 18, 300, 70],
             "category.modules": [11, 51, 300, 30]
         }
     },
@@ -68,12 +68,12 @@
             "fire1OffsetY": 40
         },
         "upgradeMenus": {
-            "category.engines": [28, 18, 300, 70],
-            "category.hulls": [40, 30, 300, -30],
             "category.weapons": [72, 20, 300, 40],
             "category.batteries": [52, 20, 300, -30],
             "category.shields": [70, 70, 300, -30],
             "category.cores": [62, 32, 400, 70],
+            "category.hulls": [40, 30, 300, -30],
+            "category.engines": [28, 18, 300, 70],
             "category.modules": [11, 51, 300, 30]
         }
     },
@@ -94,12 +94,12 @@
             "fire1OffsetY": 40
         },
         "upgradeMenus": {
-            "category.engines": [28, 18, 300, 70],
-            "category.hulls": [40, 30, 300, -30],
             "category.weapons": [72, 20, 300, 40],
             "category.batteries": [52, 20, 300, -30],
             "category.shields": [70, 70, 300, -30],
             "category.cores": [62, 32, 400, 70],
+            "category.hulls": [40, 30, 300, -30],
+            "category.engines": [28, 18, 300, 70],
             "category.modules": [11, 51, 300, 30]
         }
     },
@@ -128,13 +128,13 @@
             "fire3OffsetY": 62
         },
         "upgradeMenus": {
-            "category.engines": [28, 18, 300, 70],
-            "category.hulls": [40, 30, 300, -30],
-            "category.weapons": [72, 20, 300, 40],
-            "category.batteries": [52, 20, 300, -30],
+            "category.weapons": [140, 22, 300, 40],
+            "category.hulls": [45, 35, 300, -30],
+            "category.cores": [70, 35, 300, -30],
+            "category.batteries": [102, 35, 400, 70],
+            "category.engines": [18, 10, 300, 70],
             "category.shields": [70, 70, 300, -30],
-            "category.cores": [62, 32, 400, 70],
-            "category.modules": [11, 51, 300, 30]
+            "category.modules": [36, 51, 300, 30]
         }
     }
 }

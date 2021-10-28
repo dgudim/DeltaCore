@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -84,7 +84,7 @@ public class UpgradeMenu extends Actor {
     
     private final MenuScreen menuScreen;
     
-    public UpgradeMenu(CompositeManager compositeManager, Stage stage, MenuScreen menuScreen, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
+    public UpgradeMenu(CompositeManager compositeManager, Group group, MenuScreen menuScreen, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
         up = constructFilledImageWithColor(1, 1, Color.valueOf("#44444444"));
         over = constructFilledImageWithColor(1, 1, Color.valueOf("#66666644"));
         down = constructFilledImageWithColor(1, 1, Color.valueOf("#88888844"));
@@ -117,7 +117,7 @@ public class UpgradeMenu extends Actor {
         ship = menuScreen.ship;
         targetShipScaleFactor = menuScreen.targetShipScaleFactor + 1;
         originalShipPosition = new Vector2(ship.getX(), ship.getY());
-        originalShipDimensions = new Vector2(ship.getWidth(), ship.getHeight());
+        originalShipDimensions = new Vector2(ship.getWidth() / menuScreen.shipUpgradeAnimationPosition, ship.getHeight() / menuScreen.shipUpgradeAnimationPosition);
         originalAnchorPosition = anchorPosition;
         
         Vector2 anchorPosition_shifted = new Vector2(ship.getX() + anchorPosition.x, ship.getY() + anchorPosition.y);
@@ -153,8 +153,8 @@ public class UpgradeMenu extends Actor {
         lastBranch = connectingBranches.get(connectingBranches.size - 1);
         float width = originalBranchHeights.get(connectingBranches.size - 1);
         
-        stage.addActor(holder);
-        stage.addActor(openMenuCheckBox);
+        group.addActor(holder);
+        group.addActor(openMenuCheckBox);
         
         saveTo = treeJson.getString("errorSaving" + category, category, "saveTo");
         
@@ -180,12 +180,8 @@ public class UpgradeMenu extends Actor {
         itemSelection_outerHolder.setSize(width, 0);
         itemSelection_outerHolder.setupOverscroll(0, 0, 0);
         
-        stage.addActor(itemSelection_outerHolder);
-        stage.addActor(this);
-    }
-    
-    void setCoords(){
-    
+        group.addActor(itemSelection_outerHolder);
+        group.addActor(this);
     }
     
     void loadItemsForCategory(String category, Table addTo, float width, boolean root) {
@@ -233,6 +229,7 @@ public class UpgradeMenu extends Actor {
                                 updateStates();
                                 updateShip();
                             }
+                            
                             @Override
                             public void onStateChanged() {
                                 updateStates();
@@ -252,11 +249,11 @@ public class UpgradeMenu extends Actor {
         }
     }
     
-    public void updateFire(){
+    public void updateFire() {
         menuScreen.updateFire();
     }
     
-    public void updateShip(){
+    public void updateShip() {
         menuScreen.updateShip();
     }
     
@@ -318,6 +315,7 @@ public class UpgradeMenu extends Actor {
     public void act(float delta) {
         animate(delta);
         float scale = ship.getHeight() / originalShipDimensions.y;
+        
         if (scale != 1) {
             float xOffset = ship.getX() - originalShipPosition.x;
             float yOffset = ship.getY() - originalShipPosition.y;
