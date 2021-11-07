@@ -20,9 +20,8 @@ public class LocaleManager {
     
     Array<Properties> locales;
     String currentLocale;
-    int currentLocaleIndex = -1;
+    public int currentLocaleIndex = -1;
     String[] localeNames = {"en", "ru"};
-    String[] localeDisplayNames = {"English", "Russian"};
     
     public LocaleManager() {
         locales = new Array<>();
@@ -61,13 +60,35 @@ public class LocaleManager {
         log("current locale: " + currentLocale, DEBUG);
     }
     
-    String[] getLocales() {
-        return localeDisplayNames;
+    public String[] getLocales() {
+        return localeNames;
+    }
+    
+    public String getCurrentLocale() {
+        return localeNames[currentLocaleIndex];
+    }
+    
+    public void nextLocale() {
+        currentLocaleIndex++;
+        if (currentLocaleIndex >= localeNames.length) {
+            currentLocaleIndex = 0;
+        }
+        currentLocale = localeNames[currentLocaleIndex];
+        putString(Keys.locale, currentLocale);
+    }
+    
+    public void previousLocale() {
+        currentLocaleIndex--;
+        if (currentLocaleIndex < 0) {
+            currentLocaleIndex = localeNames.length - 1;
+        }
+        currentLocale = localeNames[currentLocaleIndex];
+        putString(Keys.locale, currentLocale);
     }
     
     public void setLocale(String locale) {
         for (int i = 0; i < locales.size; i++) {
-            if (localeNames[i].equals(locale) || localeDisplayNames[i].equals(locale)) {
+            if (localeNames[i].equals(locale)) {
                 currentLocaleIndex = i;
                 currentLocale = localeNames[i];
                 break;

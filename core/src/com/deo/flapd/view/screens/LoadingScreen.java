@@ -316,7 +316,7 @@ public class LoadingScreen implements Screen {
                         uiComposer.loadStyles(
                                 "defaultLight", "defaultDark", "sliderDefaultNormal", "checkBoxDefault", "gitHub", "trello",
                                 "workshopGreen", "workshopRed", "workshopCyan", "workshopPurple", "questionButton",
-                                "arrowRightSmall", "arrowLeftSmall", "circle", "questionButton", "pauseButton");
+                                "arrowRightSmall", "arrowLeftSmall", "circle", "questionButton", "pauseButton", "empty");
                         compositeManager.setUiComposer(uiComposer);
                     }
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);

@@ -2,6 +2,27 @@
   "fonts": ["fonts/pixel.ttf", "fonts/bold_main.ttf"],
   "separateTextures": [],
 
+  "empty":{
+    "type": "textButtonStyle",
+    "font": 1,
+    "up": {
+      "texture": "empty",
+      "size": [0, 0],
+      "fontColor": "#46D33E"
+    },
+    "over":{
+      "texture": "empty",
+      "size": [0, 0],
+      "fontColor": "#31FF25"
+    },
+    "down":{
+      "texture": "empty",
+      "size": [0, 0],
+      "fontColor": "#00DC00"
+    },
+    "loadFrom": "shop/ui.atlas"
+  },
+
   "trello":{
     "type": "buttonStyle",
     "up": {

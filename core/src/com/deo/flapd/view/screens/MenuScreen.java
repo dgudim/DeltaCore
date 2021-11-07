@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -246,6 +247,47 @@ public class MenuScreen implements Screen {
         settingsGroup.add(showFpsT).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(joystickOffsetX).padTop(5).padBottom(5).align(Align.left).row();
         settingsGroup.add(joystickOffsetY).padTop(5).padBottom(5).align(Align.left).row();
+        
+        Table language = new Table();
+        Label.LabelStyle style = new LabelStyle(font_main, Color.WHITE);
+        
+        Label langLabel = new Label("[#32ff32]" + localeManager.get("general.language") + ": ", style);
+        Label langNameLabel = new Label("[#32ff32]" + localeManager.get("general.localeName"), style);
+        langLabel.setFontScale(0.48f);
+        langNameLabel.setFontScale(0.48f);
+        TextButton nextLanguage = uiComposer.addTextButton("empty", ">>", 0.48f);
+        TextButton previousLanguage = uiComposer.addTextButton("empty", "<<", 0.48f);
+        TextButton apply = uiComposer.addTextButton("defaultLight", localeManager.get("general.apply"), 0.4f);
+        nextLanguage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                localeManager.nextLocale();
+                langLabel.setText("[#32ff32]" + localeManager.get("general.language") + ": ");
+                langNameLabel.setText("[#32ff32]" + localeManager.get("general.localeName"));
+                apply.setText(localeManager.get("general.apply"));
+            }
+        });
+        previousLanguage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                localeManager.previousLocale();
+                langLabel.setText("[#32ff32]" + localeManager.get("general.language") + ": ");
+                langNameLabel.setText("[#32ff32]" + localeManager.get("general.localeName"));
+                apply.setText(localeManager.get("general.apply"));
+            }
+        });
+        apply.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LoadingScreen(compositeManager));
+            }
+        });
+        language.add(langLabel);
+        language.add(previousLanguage).padLeft(5).padRight(5);
+        language.add(langNameLabel);
+        language.add(nextLanguage).padLeft(5).padRight(5);
+        language.add(apply);
+        settingsGroup.add(language).padTop(5).padBottom(5).align(Align.left).row();
         
         Table moreTable = new Table();
         moreTable.align(Align.topLeft);
