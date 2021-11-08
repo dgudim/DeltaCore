@@ -1,7 +1,7 @@
 {
   "textures": "bossStation.atlas",
   "spawnAt": [810, 0],
-  "music": "music/killswitch",
+  "music": "music/killswitch.ogg",
   "spawnConditions": {
     "score": 35000,
     "randomness": 1000
