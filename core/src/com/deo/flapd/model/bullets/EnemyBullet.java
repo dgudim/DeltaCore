@@ -154,7 +154,7 @@ public class EnemyBullet extends Entity {
         }
         
         if (overlaps(player.entityHitBox)) {
-            player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) / (data.isLaser ? delta : 1));
+            player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) * (data.isLaser ? delta * 1000 : 1));
             GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);
             explode();
         }

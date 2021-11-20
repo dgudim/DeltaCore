@@ -3,10 +3,12 @@ package com.deo.flapd.utils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.util.HashMap;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getNameFromPath;
 import static com.deo.flapd.utils.DUtils.log;
@@ -28,10 +30,10 @@ public class SoundManager {
         notifyVolumeUpdated();
     }
     
-    public void loadSounds(){
+    public void loadSounds() {
         for (String soundPath : soundPaths) {
             String name = getNameFromPath(soundPath);
-            if(!soundIds.containsKey(name)) {
+            if (!soundIds.containsKey(name)) {
                 log("Loaded sound " + name, DEBUG);
                 soundHandles.put(name, assetManager.get(soundPath));
                 soundIds.put(name, new Array<>());
@@ -47,21 +49,31 @@ public class SoundManager {
         return playSound(name, 1);
     }
     
-    public void playSound_noLink(String name){
+    public void playSound_noLink(String name) {
         playSound_noLink(name, 1);
     }
     
     //no need to call stopSound
-    public void playSound_noLink(String name, float pitch){
-        soundHandles.get(name).play(soundVolume, pitch, 0);
+    public void playSound_noLink(String name, float pitch) {
+        if (soundVolume > 0) {
+            try {
+                soundHandles.get(name).play(soundVolume, pitch, 0);
+            } catch (GdxRuntimeException e) {
+                log("error playing sound: " + name + ", sound handle: " + soundHandles.get(name), WARNING);
+            }
+        }
     }
     
     //need to call stopSound after the sound is no longer playing or needed
     public long playSound(String name, float pitch) {
         if (soundVolume > 0) {
-            long soundId = soundHandles.get(name).play(soundVolume, pitch, 0);
-            soundIds.get(name).add(soundId);
-            return soundId;
+            try {
+                long soundId = soundHandles.get(name).play(soundVolume, pitch, 0);
+                soundIds.get(name).add(soundId);
+                return soundId;
+            } catch (GdxRuntimeException e) {
+                log("error playing sound: " + name + ", sound handle: " + soundHandles.get(name), WARNING);
+            }
         }
         return -1;
     }

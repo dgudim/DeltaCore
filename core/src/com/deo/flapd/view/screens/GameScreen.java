@@ -115,7 +115,7 @@ public class GameScreen implements Screen {
         
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-    
+        
         drops = new Drops(assetManager, 48);
         compositeManager.setDrops(drops);
         
@@ -157,7 +157,7 @@ public class GameScreen implements Screen {
     
     @Override
     public void render(float delta) {
-    
+        
         delta = is_paused ? 0 : delta;
         float originalDelta = delta;
         float playerDelta = delta * playerDeltaMultiplier;
@@ -246,8 +246,8 @@ public class GameScreen implements Screen {
         if (warpSpeed == 0) {
             gameUi.draw(originalDelta);
         }
-    
-        if(drawScreenExtenders = handleDebugInput(camera, drawScreenExtenders)){
+        
+        if (drawScreenExtenders = handleDebugInput(camera, drawScreenExtenders)) {
             drawScreenExtenders(batch, fillTexture, verticalFillingThreshold, horizontalFillingThreshold);
         }
         
@@ -268,15 +268,20 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         updateCamera(camera, viewport, width, height);
         Gdx.gl.glLineWidth(1 / camera.zoom);
-    
+        
         int[] fillingThresholds = getVerticalAndHorizontalFillingThresholds(viewport);
         verticalFillingThreshold = fillingThresholds[0];
         horizontalFillingThreshold = fillingThresholds[1];
     }
     
     public static void screenShake(float intensity, float duration) {
-        screenShakeIntensity = intensity;
-        screenShakeIntensityDuration = duration;
+        if (!is_paused) {
+            screenShakeIntensity = intensity;
+            screenShakeIntensityDuration = duration;
+        } else {
+            screenShakeIntensity = 0;
+            screenShakeIntensityDuration = 0;
+        }
     }
     
     @Override

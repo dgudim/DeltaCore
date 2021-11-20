@@ -59,7 +59,7 @@
       "aimAngleLimit": [-10, 10],
       "bullet": {
         "hasCollisionWithPlayerBullets": false,
-        "texture": "bullet_minigun",
+        "texture": "bullet_part.minigun",
         "speed": 400,
         "damage": 4,
         "trail": "particles/bullet_trail_left_yellow.p",
@@ -140,7 +140,7 @@
       "aimAngleLimit": [-10, 10],
       "bullet": {
         "hasCollisionWithPlayerBullets": false,
-        "texture": "bullet_shotgun",
+        "texture": "bullet_part.shotgun",
         "speed": 210,
         "damage": 15,
         "trail": "particles/bullet_trail_left_yellow.p",

@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -49,7 +48,6 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.view.screens.GameScreen.is_paused;
 import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
@@ -1131,11 +1129,7 @@ class Barrel extends Entity {
                     Thread.sleep((int) (powerUpEffectShootDelay * 1000));
                     powerUpActive = false;
                     if (burstSpacing < 100) {
-                        try {
-                            base.soundManager.playSound_noLink(shootingSound);
-                        } catch (GdxRuntimeException e) {
-                            logException(e);
-                        }
+                        base.soundManager.playSound_noLink(shootingSound);
                     }
                     while (true) {
                         if (!is_paused) {

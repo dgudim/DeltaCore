@@ -1,7 +1,7 @@
 {
   "textures": "bossStarDestroyer.atlas",
   "spawnAt": [850, 170],
-  "music": "music/vhs",
+  "music": "music/vhs.ogg",
   "spawnConditions": {
     "score": 19000,
     "randomness": 1000

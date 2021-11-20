@@ -478,7 +478,7 @@ public class DUtils {
     }
     
     public static void scaleDrawables(float targetSize, Drawable... drawables) {
-        float scale = 80 / Math.max(drawables[0].getMinWidth(), drawables[0].getMinHeight());
+        float scale = targetSize / Math.max(drawables[0].getMinWidth(), drawables[0].getMinHeight());
         float width = drawables[0].getMinWidth() * scale;
         float height = drawables[0].getMinHeight() * scale;
         for (Drawable drawable : drawables) {

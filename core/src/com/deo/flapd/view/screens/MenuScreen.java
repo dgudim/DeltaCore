@@ -347,7 +347,6 @@ public class MenuScreen implements Screen {
                 localeManager.get("mainMenu.infoContent"),
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
         
-        
         final ItemSlotManager blackMarket = new ItemSlotManager(compositeManager);
         blackMarket.addShopSlots();
         blackMarket.setBounds(105, 70, 425, 400);
@@ -395,7 +394,7 @@ public class MenuScreen implements Screen {
                 setUpgradeMenuVisibility(!playScreenTable.isVisible());
             }
         });
-        ;
+        
         menuCategoryManager.addCategory(settingsPane, localeManager.get("mainMenu.settings")).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

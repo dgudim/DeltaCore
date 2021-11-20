@@ -2439,21 +2439,21 @@ item.laser_coil_enabled
   orig: 9, 9
   offset: 0, 0
   index: -1
-item.purple_warp_shard.png_disabled
+item.purple_warp_shard_disabled
   rotate: false
   xy: 1381, 527
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-item.purple_warp_shard.png_enabled
+item.purple_warp_shard_enabled
   rotate: false
   xy: 1404, 527
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-item.purple_warp_shard.png_over
+item.purple_warp_shard_over
   rotate: false
   xy: 1427, 527
   size: 21, 21
