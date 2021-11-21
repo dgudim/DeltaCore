@@ -156,8 +156,6 @@ public class LoadingScreen implements Screen {
         assetManager.load("Meteo.png", Texture.class);
         assetManager.load("fallingShip.png", Texture.class);
         
-        assetManager.load("uraniumCell.png", Texture.class);
-        
         assetManager.load("ui/menuUi.atlas", TextureAtlas.class);
         assetManager.load("ui/gameUi.atlas", TextureAtlas.class);
         

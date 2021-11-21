@@ -3,7 +3,6 @@ package com.deo.flapd.view.overlays;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -295,7 +294,8 @@ public class ItemSlotManager {
         uraniumCells_text.setFontScale(0.5f);
         cogs_text.setFontScale(0.5f);
         
-        Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
+        
+        Image uraniumCell = new Image(items.findRegion("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(30, 30);
         holder.add(uraniumCells_text).padLeft(5);

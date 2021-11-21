@@ -3,7 +3,6 @@ package com.deo.flapd.view.dialogues;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
@@ -127,7 +126,7 @@ public class PurchaseDialogue extends MoneyDialogue {
             cogs_text.setColor(Color.valueOf("#DD0000"));
         }
         
-        final Image uraniumCell = new Image((Texture) assetManager.get("uraniumCell.png"));
+        final Image uraniumCell = new Image(itemAtlas.findRegion("uraniumCell.png"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(40, 40);
         holder.add(uraniumCells_text).padLeft(4);
