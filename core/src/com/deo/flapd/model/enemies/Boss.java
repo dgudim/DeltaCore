@@ -24,7 +24,6 @@ import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
-import com.deo.flapd.model.loot.Bonuses;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
@@ -610,7 +609,7 @@ class BasePart extends Entity {
             drops.dropMoney(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), moneyTimer);
             
             if (getRandomInRange(0, 100) <= bonusChance) {
-                Bonuses.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
+                drops.dropBonus(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
             }
             
             drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));

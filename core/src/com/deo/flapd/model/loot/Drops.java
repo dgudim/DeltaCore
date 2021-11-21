@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.Keys;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
@@ -24,11 +25,18 @@ public class Drops {
     private final float maxSize;
     private final float uiScale;
     
-    public Drops(AssetManager assetManager, float maxSize) {
+    private final Bonuses bonuses;
+    
+    public Drops(AssetManager assetManager, float maxSize, Player player) {
         uiScale = getFloat(Keys.uiScale);
         itemAtlas = assetManager.get("items/items.atlas");
         drops = new Array<>();
         this.maxSize = maxSize;
+        bonuses = new Bonuses(assetManager, maxSize, player);
+    }
+    
+    public void dropBonus(int type, Rectangle enemy) {
+        bonuses.drop(type, enemy);
     }
     
     public void drop(Rectangle originEnemy, int count, float timer, int rarity) {
@@ -59,6 +67,7 @@ public class Drops {
                 removeDrop(i);
             }
         }
+        bonuses.draw(batch, delta);
     }
     
     private void removeDrop(int i) {
@@ -73,5 +82,6 @@ public class Drops {
     
     public void dispose() {
         drops.clear();
+        bonuses.dispose();
     }
 }

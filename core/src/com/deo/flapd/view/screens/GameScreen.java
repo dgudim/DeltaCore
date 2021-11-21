@@ -16,7 +16,6 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.model.environment.EnvironmentalEffects;
-import com.deo.flapd.model.loot.Bonuses;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
@@ -67,8 +66,6 @@ public class GameScreen implements Screen {
     private final MusicManager musicManager;
     private final SoundManager soundManager;
     
-    private final Bonuses bonuses;
-    
     private final Drops drops;
     
     private final PostProcessor postProcessor;
@@ -114,9 +111,6 @@ public class GameScreen implements Screen {
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         
-        drops = new Drops(assetManager, 48);
-        compositeManager.setDrops(drops);
-        
         enemies = new Enemies(compositeManager);
         enemies.loadEnemies();
         
@@ -127,8 +121,9 @@ public class GameScreen implements Screen {
         
         enemies.setTargetPlayer(player);
         bosses.setTargetPlayer(player);
-        
-        bonuses = new Bonuses(assetManager, 50, 50, player, bosses);
+    
+        drops = new Drops(assetManager, 50, player);
+        compositeManager.setDrops(drops);
         
         gameUi = new GameUi(viewport, compositeManager, player);
         
@@ -235,7 +230,6 @@ public class GameScreen implements Screen {
         
         player.drawShield(batch, delta);
         
-        bonuses.draw(batch, delta);
         drops.draw(batch, delta);
         
         if (warpSpeed == 0) {
@@ -302,7 +296,6 @@ public class GameScreen implements Screen {
         
         player.dispose();
         
-        bonuses.dispose();
         drops.dispose();
         
         enemies.dispose();
