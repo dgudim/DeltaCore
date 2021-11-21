@@ -26,7 +26,7 @@ public class Entity {
     public float speed;
     public boolean isDead = false;
     public boolean active = true;
-    public Color color = Color.WHITE;
+    public Color color = new Color(Color.WHITE);
     
     public Sprite entitySprite;
     public boolean hasAnimation;
@@ -54,6 +54,10 @@ public class Entity {
         originY = height / 2f;
     }
     
+    public void scaleBy(float scale) {
+        setSize(width * scale, height * scale);
+    }
+    
     protected void updateEntity(float delta) {
         entitySprite.setPosition(x, y);
         entitySprite.setRotation(rotation);
@@ -61,7 +65,7 @@ public class Entity {
         updateHealth(delta);
     }
     
-    protected void updateHealth(float delta){
+    protected void updateHealth(float delta) {
         if (health > 0) {
             entityHitBox.setPosition(x, y);
             if (regeneration > 0 && maxHealth > 0) {

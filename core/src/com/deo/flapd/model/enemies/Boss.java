@@ -24,9 +24,8 @@ import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
-import com.deo.flapd.model.loot.Bonus;
+import com.deo.flapd.model.loot.Bonuses;
 import com.deo.flapd.model.loot.Drops;
-import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
@@ -608,10 +607,10 @@ class BasePart extends Entity {
     
     void explode() {
         if (hasCollision && !type.equals("shield")) {
-            UraniumCell.Spawn(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), moneyTimer);
+            drops.dropMoney(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), moneyTimer);
             
             if (getRandomInRange(0, 100) <= bonusChance) {
-                Bonus.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
+                Bonuses.Spawn(getRandomInRange(bonusType[0], bonusType[1]), entityHitBox);
             }
             
             drops.drop(entityHitBox, getRandomInRange(itemCount[0], itemCount[1]), itemTimer, getRandomInRange(itemRarity[0], itemRarity[1]));

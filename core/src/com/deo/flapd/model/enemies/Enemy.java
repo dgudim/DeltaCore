@@ -17,9 +17,8 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.model.bullets.PlayerBullet;
-import com.deo.flapd.model.loot.Bonus;
+import com.deo.flapd.model.loot.Bonuses;
 import com.deo.flapd.model.loot.Drops;
-import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
@@ -313,9 +312,9 @@ public class Enemy extends Entity {
         
         GameLogic.enemiesKilled++;
         
-        UraniumCell.Spawn(entityHitBox, (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), data.moneyTimer);
+        drops.dropMoney(entityHitBox, (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), data.moneyTimer);
         if (getRandomInRange(0, 100) <= data.bonusChance) {
-            Bonus.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), entityHitBox);
+            Bonuses.Spawn(getRandomInRange(data.bonusType[0], data.bonusType[1]), entityHitBox);
         }
         
         drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));

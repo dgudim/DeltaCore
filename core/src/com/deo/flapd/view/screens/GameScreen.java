@@ -16,9 +16,8 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.model.environment.EnvironmentalEffects;
-import com.deo.flapd.model.loot.Bonus;
+import com.deo.flapd.model.loot.Bonuses;
 import com.deo.flapd.model.loot.Drops;
-import com.deo.flapd.model.loot.UraniumCell;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.MusicManager;
@@ -45,7 +44,6 @@ public class GameScreen implements Screen {
     private int verticalFillingThreshold;
     
     private final EnvironmentalEffects environmentalEffects;
-    private final UraniumCell uraniumCell;
     private final Checkpoint checkpoint;
     
     private final SpriteBatch batch;
@@ -69,7 +67,7 @@ public class GameScreen implements Screen {
     private final MusicManager musicManager;
     private final SoundManager soundManager;
     
-    private final Bonus bonus;
+    private final Bonuses bonuses;
     
     private final Drops drops;
     
@@ -130,9 +128,7 @@ public class GameScreen implements Screen {
         enemies.setTargetPlayer(player);
         bosses.setTargetPlayer(player);
         
-        uraniumCell = new UraniumCell(assetManager);
-        
-        bonus = new Bonus(assetManager, 50, 50, player, bosses);
+        bonuses = new Bonuses(assetManager, 50, 50, player, bosses);
         
         gameUi = new GameUi(viewport, compositeManager, player);
         
@@ -239,9 +235,8 @@ public class GameScreen implements Screen {
         
         player.drawShield(batch, delta);
         
-        bonus.draw(batch, delta);
+        bonuses.draw(batch, delta);
         drops.draw(batch, delta);
-        uraniumCell.draw(batch, delta);
         
         if (warpSpeed == 0) {
             gameUi.draw(originalDelta);
@@ -307,9 +302,8 @@ public class GameScreen implements Screen {
         
         player.dispose();
         
-        bonus.dispose();
+        bonuses.dispose();
         drops.dispose();
-        uraniumCell.dispose();
         
         enemies.dispose();
         bosses.dispose();

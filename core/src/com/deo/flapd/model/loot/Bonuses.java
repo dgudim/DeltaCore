@@ -22,7 +22,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
-public class Bonus {
+public class Bonuses {
     
     enum BonusType {HEALTH, SHIELD, CHARGE, PART, BULLETS, BOSS}
     
@@ -49,7 +49,7 @@ public class Bonus {
     
     private static float height, width;
     
-    public Bonus(AssetManager assetManager, float width, float height, Player player, Bosses bosses) {
+    public Bonuses(AssetManager assetManager, float width, float height, Player player, Bosses bosses) {
         
         this.bosses = bosses;
         
@@ -83,8 +83,8 @@ public class Bonus {
         bonus_bullets_t = new Image(bonusesAtlas.findRegion("bonus_bullets"));
         bonus_bullets_t.setBounds(319 - 475 * (uiScale - 1), 475 - 50 * uiScale, 50 * uiScale, 50 * uiScale);
         
-        Bonus.width = width;
-        Bonus.height = height;
+        Bonuses.width = width;
+        Bonuses.height = height;
         
         bonuses = new Array<>();
         types = new Array<>();
