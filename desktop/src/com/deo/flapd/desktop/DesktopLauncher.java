@@ -1,18 +1,17 @@
 package com.deo.flapd.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.deo.flapd.Main;
 
 public class DesktopLauncher {
 
     public static void main(String[] arg) {
-        final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1200;
-        config.height = 720;
-        config.title = "Deltacore";
-        config.fullscreen = false;
-        config.audioDeviceSimultaneousSources = 32;
-        new LwjglApplication(new Main(), config);
+        final Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("Deltacore");
+        config.setAudioConfig(32, 512, 10);
+        config.useVsync(true);
+        config.setWindowedMode(1200, 720);
+        new Lwjgl3Application(new Main(), config);
     }
 }
