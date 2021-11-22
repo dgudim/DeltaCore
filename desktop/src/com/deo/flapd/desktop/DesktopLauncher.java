@@ -12,6 +12,7 @@ public class DesktopLauncher {
         config.setAudioConfig(32, 512, 10);
         config.useVsync(true);
         config.setWindowedMode(1200, 720);
+        config.setWindowIcon("ic_launcher.png");
         new Lwjgl3Application(new Main(), config);
         System.exit(0);
     }

@@ -300,7 +300,7 @@ public class Boss {
 class BasePart extends Entity {
     
     AssetManager assetManager;
-    private Drops drops;
+    private final Drops drops;
     
     float movementOffsetX = 0;
     float movementOffsetY = 0;

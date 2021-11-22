@@ -220,6 +220,7 @@ public class DUtils {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public static void loadPrefsFromFile() throws FileNotFoundException {
         
         FileHandle file = Gdx.files.external(currentRootDir + "saveGame.save");

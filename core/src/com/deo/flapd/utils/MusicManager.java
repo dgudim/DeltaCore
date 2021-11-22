@@ -56,6 +56,7 @@ public class MusicManager {
         this.assetManager = assetManager;
     }
     
+    @SuppressWarnings("unchecked")
     private void loadNextMusic() {
         String path;
         String amplitudePath;
