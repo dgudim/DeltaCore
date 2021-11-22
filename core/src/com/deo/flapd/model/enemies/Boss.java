@@ -936,7 +936,7 @@ class Barrel extends Entity {
         if (hasAnimation) {
             entitySprite = new Sprite();
             entityAnimation = new Animation<>(
-                    config.getFloatWithFallback(baseConfig, true, 1, "frameDuration"),
+                    config.getFloatWithFallback(baseConfig, false, 1, "frameDuration"),
                     textures.findRegions(texture),
                     Animation.PlayMode.LOOP);
         } else {

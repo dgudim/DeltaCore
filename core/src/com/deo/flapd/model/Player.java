@@ -18,6 +18,7 @@ import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
@@ -154,7 +155,7 @@ public class Player extends Entity {
         aimRadius.setSize(0, 0);
         
         String module = getString(Keys.currentModule);
-        JsonEntry params_module = treeJson.get(module, "parameters");
+        JsonEntry params_module = treeJson.get(false, module, "parameters");
         
         if (!module.equals("none")) {
             for (int i = 0; i < params_module.size; i++) {
@@ -181,7 +182,7 @@ public class Player extends Entity {
                         }
                         break;
                     default:
-                        log("unknown parameter " + params_module.get(i).name + " for " + module, WARNING);
+                        log("Player: no need to load " + params_module.get(i).name + " from " + module + ", ignoring", INFO);
                         break;
                 }
             }
