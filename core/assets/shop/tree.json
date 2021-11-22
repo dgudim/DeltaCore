@@ -66,7 +66,9 @@
     "category": "category.engines",
     "type": "basePart",
     "parameters": {
-      "parameter.speed": 1
+      "parameter.speed": 250,
+      "parameter.accelerationForce": 130000,
+      "parameter.weight": 15
     },
     "usesEffect": "fire_engine_left_red_green"
   },
@@ -80,7 +82,8 @@
       "parameter.shooting_speed": 0.7,
       "parameter.bullet_speed": 1000,
       "parameter.bullets_per_shot": 1,
-      "parameter.power_consumption": 0
+      "parameter.power_consumption": 0,
+      "parameter.weight": 20
     },
     "usesEffect": "explosion3_2"
   },
@@ -90,7 +93,8 @@
     "type": "basePart",
     "parameters": {
       "parameter.health_multiplier": 1,
-      "parameter.power_generation": 3
+      "parameter.power_generation": 3,
+      "parameter.weight": 17
     },
     "usesEffect": "explosion2"
   },
@@ -109,7 +113,8 @@
     "parameters": {
       "parameter.health_multiplier": 1.5,
       "parameter.speed_multiplier": 1.1,
-      "parameter.power_generation": 4
+      "parameter.power_generation": 4,
+      "parameter.weight": 19
     },
     "usesEffect": "explosion2_green"
   },
@@ -130,7 +135,8 @@
       "parameter.health_multiplier": 1.8,
       "parameter.speed_multiplier": 1.3,
       "parameter.damage_multiplier": 1.3,
-      "parameter.power_generation": 6
+      "parameter.power_generation": 6,
+      "parameter.weight": 21
     },
     "usesEffect": "explosion2_cyan"
   },
@@ -154,7 +160,8 @@
       "parameter.speed_multiplier": 1.4,
       "parameter.damage_multiplier": 1.5,
       "parameter.charge_capacity_multiplier": 1.1,
-      "parameter.power_generation": 8.5
+      "parameter.power_generation": 8.5,
+      "parameter.weight": 22
     },
     "usesEffect": "explosion2_purple"
   },
@@ -171,7 +178,9 @@
     "requires": ["part.grasshopper_engine"],
     "type": "part",
     "parameters": {
-      "parameter.speed": 1.3
+      "parameter.speed": 1.3,
+      "parameter.accelerationForce": 60,
+      "parameter.weight": 20
     },
     "usesEffect": "fire_engine_left_red_purple"
   },
@@ -189,7 +198,9 @@
     "requires": ["part.nuclear_engine"],
     "type": "part",
     "parameters": {
-      "parameter.speed": 1.6
+      "parameter.speed": 1.6,
+      "parameter.accelerationForce": 80,
+      "parameter.weight": 25
     },
     "usesEffect": "fire_engine_left_blue_purple"
   },
@@ -233,7 +244,8 @@
       "parameter.shooting_speed": 2,
       "parameter.bullet_speed": 1200,
       "parameter.bullets_per_shot": 1,
-      "parameter.power_consumption": 0
+      "parameter.power_consumption": 0,
+      "parameter.weight": 20
     },
     "usesEffect": "explosion3_2"
   },
@@ -255,7 +267,8 @@
       "parameter.shooting_speed": 0.3,
       "parameter.bullet_speed": 900,
       "parameter.bullets_per_shot": 10,
-      "parameter.power_consumption": 0
+      "parameter.power_consumption": 0,
+      "parameter.weight": 18
     },
     "usesEffect": "explosion3_2"
   },
@@ -278,7 +291,8 @@
       "parameter.shooting_speed": 1,
       "parameter.bullet_speed": 2000,
       "parameter.bullets_per_shot": 1,
-      "parameter.power_consumption": 1
+      "parameter.power_consumption": 1,
+      "parameter.weight": 25
     },
     "usesEffect": "explosion3"
   },
@@ -301,7 +315,8 @@
       "parameter.shooting_speed": 1.1,
       "parameter.bullet_speed": 1500,
       "parameter.bullets_per_shot": 1,
-      "parameter.power_consumption": 1.25
+      "parameter.power_consumption": 1.25,
+      "parameter.weight": 18
     },
     "usesEffect": "explosion3_3",
     "usesTrail": true,
@@ -328,7 +343,8 @@
       "parameter.shooting_speed": 1,
       "parameter.bullet_speed": 1700,
       "parameter.bullets_per_shot": 1,
-      "parameter.power_consumption": 1.5
+      "parameter.power_consumption": 1.5,
+      "parameter.weight": 19
     },
     "usesEffect": "explosion3_3",
     "usesTrail": true,
@@ -354,7 +370,8 @@
       "parameter.spread": 0,
       "parameter.laser_beam_thickness": 9,
       "parameter.laser_pulse_duration": 3000,
-      "parameter.power_consumption": 2.1
+      "parameter.power_consumption": 2.1,
+      "parameter.weight": 25
     },
     "usesEffect": "fire3",
     "laserBeamColor": "#00d9ff"
@@ -378,7 +395,8 @@
       "parameter.spread": 0,
       "parameter.laser_beam_thickness": 11,
       "parameter.laser_pulse_duration": 5000,
-      "parameter.power_consumption": 2.1
+      "parameter.power_consumption": 2.1,
+      "parameter.weight": 27
     },
     "usesEffect": "fire3",
     "laserBeamColor": "#5721b5"
@@ -388,7 +406,8 @@
     "category": "category.hulls",
     "type": "basePart",
     "parameters": {
-      "parameter.health": 100
+      "parameter.health": 100,
+      "parameter.weight": 50
     }
   },
   "part.hull_mk1": {
@@ -403,7 +422,8 @@
     "requires": ["part.star_core"],
     "type": "part",
     "parameters": {
-      "parameter.health": 130
+      "parameter.health": 130,
+      "parameter.weight": 70
     }
   },
   "part.hull_mk2": {
@@ -419,7 +439,8 @@
     "requires": ["part.hull_mk1"],
     "type": "part",
     "parameters": {
-      "parameter.health": 170
+      "parameter.health": 170,
+      "parameter.weight": 90
     }
   },
   "part.hull_mk3": {
@@ -435,7 +456,8 @@
     "requires": ["part.hull_mk2"],
     "type": "part",
     "parameters": {
-      "parameter.health": 200
+      "parameter.health": 200,
+      "parameter.weight": 110
     }
   },
   "part.beast_hull": {
@@ -451,7 +473,8 @@
     "requires": ["part.hull_mk3"],
     "type": "part",
     "parameters": {
-      "parameter.health": 270
+      "parameter.health": 270,
+      "parameter.weight": 170
     }
   },
   "part.shield_generator_mk1": {
@@ -461,7 +484,8 @@
     "parameters": {
       "parameter.shield_capacity": 100,
       "parameter.power_consumption": 1,
-      "parameter.regeneration_speed": 1
+      "parameter.regeneration_speed": 1,
+      "parameter.weight": 9
     },
     "usesEffect": "ColdShield"
   },
@@ -482,7 +506,8 @@
     "parameters": {
       "parameter.shield_capacity": 130,
       "parameter.power_consumption": 0.8,
-      "parameter.regeneration_speed": 1
+      "parameter.regeneration_speed": 1,
+      "parameter.weight": 11
     },
     "usesEffect": "ColdShieldMk2"
   },
@@ -503,7 +528,8 @@
     "parameters": {
       "parameter.shield_capacity": 150,
       "parameter.power_consumption": 1,
-      "parameter.regeneration_speed": 1.5
+      "parameter.regeneration_speed": 1.5,
+      "parameter.weight": 13
     },
     "usesEffect": "ColdShieldMk3"
   },
@@ -524,7 +550,8 @@
     "parameters": {
       "parameter.shield_capacity": 190,
       "parameter.power_consumption": 1.9,
-      "parameter.regeneration_speed": 2
+      "parameter.regeneration_speed": 2,
+      "parameter.weight": 15
     },
     "usesEffect": "ColdShieldMk4"
   },
@@ -533,7 +560,8 @@
     "category": "category.batteries",
     "type": "basePart",
     "parameters": {
-      "parameter.capacity": 100
+      "parameter.capacity": 100,
+      "parameter.weight": 10
     }
   },
   "part.battery_mk2": {
@@ -551,7 +579,8 @@
     "requires": ["part.battery_mk1"],
     "type": "part",
     "parameters": {
-      "parameter.capacity": 130
+      "parameter.capacity": 130,
+      "parameter.weight": 11
     }
   },
   "part.battery_mk3": {
@@ -569,7 +598,8 @@
     "requires": ["part.battery_mk2"],
     "type": "part",
     "parameters": {
-      "parameter.capacity": 150
+      "parameter.capacity": 150,
+      "parameter.weight": 11
     }
   },
   "part.battery_mk4": {
@@ -587,7 +617,8 @@
     "requires": ["part.battery_mk3", "part.warp_core"],
     "type": "part",
     "parameters": {
-      "parameter.capacity": 200
+      "parameter.capacity": 200,
+      "parameter.weight": 12
     }
   },
   "part.magnet": {
@@ -605,7 +636,8 @@
     "type": "part",
     "parameters": {
       "parameter.power_consumption": 1,
-      "parameter.attraction_radius": 270
+      "parameter.attraction_radius": 270,
+      "parameter.weight": 5
     }
   },
   "part.repellent_field": {
@@ -623,7 +655,8 @@
     "type": "part",
     "parameters": {
       "parameter.power_consumption": 1,
-      "parameter.repellent_radius": 210
+      "parameter.repellent_radius": 210,
+      "parameter.weight": 7
     }
   },
   "part.radar": {
@@ -641,7 +674,8 @@
     "type": "part",
     "parameters": {
       "parameter.power_consumption": 1,
-      "parameter.aim_radius": 610
+      "parameter.aim_radius": 610,
+      "parameter.weight": 7
     }
   },
   "part.chronos_module": {
@@ -662,7 +696,8 @@
       "parameter.reload_time": 60,
       "parameter.active_time": 30,
       "parameter.world_speed_multiplier": 0.07,
-      "parameter.player_speed_multiplier": 0.5
+      "parameter.player_speed_multiplier": 0.5,
+      "parameter.weight": 11
     }
   },
   "item.reinforced_glass_pane": {

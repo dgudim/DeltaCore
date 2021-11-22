@@ -1,21 +1,17 @@
 package com.deo.flapd.control;
 
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomBoolean;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.environment.EnvironmentalEffects;
-import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getRandomBoolean;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.getString;
 
 
 public class GameLogic {
@@ -31,8 +27,6 @@ public class GameLogic {
     public static int score;
     public static int enemiesKilled;
     public static int money, moneyEarned;
-    
-    private final float speedMultiplier;
     
     private final Game game;
     
@@ -51,12 +45,6 @@ public class GameLogic {
         
         //difficulty = getFloat("difficulty");
         // TODO: 5/6/2021 implement difficulty
-        
-        JsonEntry treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-        
-        speedMultiplier = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.speed_multiplier")
-                * treeJson.getFloat(false, 1, getString(Keys.currentHull), "parameters", "parameter.speed_multiplier")
-                * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.speed_multiplier");
         
         if (!newGame) {
             bonuses_collected = getInteger(Keys.bonusesCollected);
@@ -80,30 +68,22 @@ public class GameLogic {
     }
     
     public void handleInput(float delta, float deltaX, float deltaY, boolean is_firing, boolean is_firing_secondary) {
-        deltaX *= speedMultiplier;
-        deltaY *= speedMultiplier;
-        
         if (Gdx.input.isKeyPressed(Input.Keys.W))
-            deltaY = speedMultiplier;
+            deltaY = 1;
         if (Gdx.input.isKeyPressed(Input.Keys.A))
-            deltaX = -speedMultiplier;
+            deltaX = -1;
         if (Gdx.input.isKeyPressed(Input.Keys.S))
-            deltaY = -speedMultiplier;
+            deltaY = -1;
         if (Gdx.input.isKeyPressed(Input.Keys.D))
-            deltaX = speedMultiplier;
+            deltaX = 1;
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
             is_firing = true;
         if (Gdx.input.isKeyPressed(Input.Keys.M))
             is_firing_secondary = true;
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             game.pause();
-        
-        if (delta > 0 && player.health > 0) {
-            player.setPositionAndRotation(player.x + 250 * deltaX * delta, player.y + 250 * deltaY * delta, clamp((deltaY - deltaX) * 7, -9, 9));
-        }
-        
-        player.x = clamp(player.x, 0, 800 - player.width);
-        player.y = clamp(player.y, 0, 480 - player.height);
+    
+        player.accelerate(deltaX, deltaY);
         
         if (is_firing) {
             playerBullet.spawn(1, false);

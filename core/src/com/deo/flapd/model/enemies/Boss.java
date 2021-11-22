@@ -1,5 +1,26 @@
 package com.deo.flapd.model.enemies;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.badlogic.gdx.math.MathUtils.random;
+import static com.deo.flapd.model.enemies.Bosses.secondThread;
+import static com.deo.flapd.model.enemies.Bosses.stopThread;
+import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.convertPercentsToAbsoluteValue;
+import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
+import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.view.screens.GameScreen.is_paused;
+import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
+import static java.lang.StrictMath.abs;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -29,27 +50,6 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.badlogic.gdx.math.MathUtils.random;
-import static com.deo.flapd.model.enemies.Bosses.secondThread;
-import static com.deo.flapd.model.enemies.Bosses.stopThread;
-import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
-import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
-import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
-import static com.deo.flapd.utils.DUtils.convertPercentsToAbsoluteValue;
-import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
-import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
-import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.view.screens.GameScreen.is_paused;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
-import static java.lang.StrictMath.abs;
 
 public class Boss {
     
@@ -1527,7 +1527,7 @@ class Action {
         active = actionValue.getBoolean(false, false, "active");
         changeTexture = actionValue.getString(false, "false", "changeTexture");
         if (this.target.hasAnimation && !changeTexture.equals("false")) {
-            frameDuration = actionValue.getFloat(this.target.entityAnimation.getFrameDuration(), "frameDuration");
+            frameDuration = actionValue.getFloat(false, this.target.entityAnimation.getFrameDuration(), "frameDuration");
         }
         
         if (boss.hasAi && this.target.equals(boss.body)) {
