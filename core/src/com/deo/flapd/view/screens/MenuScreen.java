@@ -496,7 +496,7 @@ public class MenuScreen implements Screen {
         prefsLoggingT.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                DUtils.logging = prefsLoggingT.isChecked();
+                DUtils.logPreferences = prefsLoggingT.isChecked();
                 putBoolean(Keys.logPreferences, prefsLoggingT.isChecked());
             }
         });

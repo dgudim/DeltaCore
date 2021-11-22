@@ -47,7 +47,7 @@ public class DUtils {
     private static final String androidRootDir = "Logs/";
     private static final String pcRootDir = "!DeltaCore/";
     private static final String currentRootDir = getRootDir();
-    public static boolean logging = prefs.getBoolean("logging");
+    public static boolean logPreferences = prefs.getBoolean(Keys.logPreferences);
     private static String lastLine = "";
     private static String logBuffer = "";
     private static final float logBufferSizeFlushThreshold = 500;
@@ -96,7 +96,7 @@ public class DUtils {
     public static void putInteger(String key, int val) {
         prefs.putInteger(key, val);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("put integer " + val + " with key " + key, DEBUG);
         }
     }
@@ -104,7 +104,7 @@ public class DUtils {
     public static void putString(String key, String val) {
         prefs.putString(key, val);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("put string " + val + " with key " + key, DEBUG);
         }
     }
@@ -112,7 +112,7 @@ public class DUtils {
     public static void putFloat(String key, float val) {
         prefs.putFloat(key, val);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("put float " + val + " with key " + key, DEBUG);
         }
     }
@@ -120,7 +120,7 @@ public class DUtils {
     public static void putBoolean(String key, boolean val) {
         prefs.putBoolean(key, val);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("put boolean " + val + " with key " + key, DEBUG);
         }
     }
@@ -128,7 +128,7 @@ public class DUtils {
     public static void putLong(String key, long val) {
         prefs.putLong(key, val);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("put long " + val + " with key " + key, DEBUG);
         }
     }
@@ -138,7 +138,7 @@ public class DUtils {
         int after = before + val;
         prefs.putInteger(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("added integer " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -148,7 +148,7 @@ public class DUtils {
         float after = before + val;
         prefs.putFloat(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("added float " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -158,7 +158,7 @@ public class DUtils {
         String after = before + val;
         prefs.putString(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("added string " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -168,7 +168,7 @@ public class DUtils {
         long after = before + val;
         prefs.putLong(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("added long " + val + " to integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -187,7 +187,7 @@ public class DUtils {
             prefsString.append(values[i]);
             prefsString.append(";\n");
         }
-        if (logging) {
+        if (logPreferences) {
             log("dumped preferences \n", DEBUG);
         }
         return prefsString.toString();
@@ -237,35 +237,35 @@ public class DUtils {
     }
     
     public static int getInteger(String key) {
-        if (logging) {
+        if (logPreferences) {
             log("got integer " + prefs.getInteger(key) + " with key " + key, DEBUG);
         }
         return prefs.getInteger(key);
     }
     
     public static float getFloat(String key) {
-        if (logging) {
+        if (logPreferences) {
             log("got float " + prefs.getFloat(key) + " with key " + key, DEBUG);
         }
         return prefs.getFloat(key);
     }
     
     public static boolean getBoolean(String key) {
-        if (logging) {
+        if (logPreferences) {
             log("got boolean " + prefs.getBoolean(key) + " with key " + key, DEBUG);
         }
         return prefs.getBoolean(key);
     }
     
     public static String getString(String key) {
-        if (logging) {
+        if (logPreferences) {
             log("got string " + prefs.getString(key) + " with key " + key, DEBUG);
         }
         return prefs.getString(key);
     }
     
     public static long getLong(String key) {
-        if (logging) {
+        if (logPreferences) {
             log("got long " + prefs.getLong(key) + " with key " + key, DEBUG);
         }
         return prefs.getLong(key);
@@ -274,13 +274,13 @@ public class DUtils {
     public static void removeKey(String key) {
         prefs.remove(key);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("removed key " + key, DEBUG);
         }
     }
     
     public static boolean containsKey(String key) {
-        if (logging) {
+        if (logPreferences) {
             if (prefs.contains(key)) {
                 log("preferences contain key " + key, DEBUG);
             } else {
@@ -295,7 +295,7 @@ public class DUtils {
         int after = before - val;
         prefs.putInteger(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("subtracted integer " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -305,7 +305,7 @@ public class DUtils {
         float after = before - val;
         prefs.putFloat(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("subtracted float " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -315,7 +315,7 @@ public class DUtils {
         long after = before - val;
         prefs.putLong(key, after);
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("subtracted long " + val + " from integer " + before + " with key " + key + " (" + before + "-->" + after + ")", DEBUG);
         }
     }
@@ -323,7 +323,7 @@ public class DUtils {
     public static void clearPrefs() {
         prefs.clear();
         prefs.flush();
-        if (logging) {
+        if (logPreferences) {
             log("cleared preferences", DEBUG);
         }
     }
