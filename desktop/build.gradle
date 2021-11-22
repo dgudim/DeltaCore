@@ -16,6 +16,7 @@ task run(dependsOn: classes, type: JavaExec) {
     def props = new Properties()
     file("../core/assets/version.properties").withInputStream { props.load(it) }
     String buildVer = props.getProperty("buildversion")
+    System.out.println(buildVer)
     String[] split = buildVer.split("\\.")
     if (Integer.parseInt(split[3].replace("b", "")) >= 500) {
         split[3] = "b0"
