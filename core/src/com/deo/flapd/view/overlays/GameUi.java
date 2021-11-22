@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deo.flapd.control.GameLogic;
@@ -75,6 +76,7 @@ public class GameUi {
     private final float uiScale;
     private final boolean showFps;
     private final boolean transparency;
+    private final Array<Float> fpsSmoothingArray;
     
     boolean chronosModuleEnabled;
     Image timeFreezeButton;
@@ -106,6 +108,8 @@ public class GameUi {
         LocaleManager localeManager = compositeManager.getLocaleManager();
         UIComposer uiComposer = compositeManager.getUiComposer();
         this.player = player;
+        
+        fpsSmoothingArray = new Array<>();
         
         uiScale = getFloat(Keys.uiScale);
         showFps = getBoolean(Keys.showFps);
@@ -412,7 +416,7 @@ public class GameUi {
         if (showFps) {
             font_main.setColor(Color.WHITE);
             font_main.getData().setScale(0.45f + 0.225f * (uiScale - 1));
-            font_main.draw(batch, "Fps: " + String.format(Locale.ROOT, "%.0f", 1 / delta), 3, 475);
+            font_main.draw(batch, "Fps: " + String.format(Locale.ROOT, "%.0f", getFps(delta)), 3, 475);
         }
         
         if (is_paused) {
@@ -478,5 +482,21 @@ public class GameUi {
     
     public float getDeltaY() {
         return deltaY;
+    }
+    
+    private float getFps(float delta) {
+        if (fpsSmoothingArray.size < 120) {
+            fpsSmoothingArray.add(delta);
+        } else {
+            for (int i = 0; i < fpsSmoothingArray.size - 1; i++) {
+                fpsSmoothingArray.set(i, fpsSmoothingArray.get(i + 1));
+            }
+            fpsSmoothingArray.set(fpsSmoothingArray.size - 1, delta);
+        }
+        float sum = 0;
+        for (int i = 0; i < fpsSmoothingArray.size; i++) {
+            sum += fpsSmoothingArray.get(i);
+        }
+        return fpsSmoothingArray.size / sum;
     }
 }
