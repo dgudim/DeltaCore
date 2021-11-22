@@ -1,5 +1,12 @@
 package com.deo.flapd.model;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -16,13 +23,6 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
-import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.log;
 
 public class Player extends Entity {
     
@@ -54,6 +54,12 @@ public class Player extends Entity {
     public float healthMultiplier = 1;
     
     public float bonusPowerConsumption;
+    
+    private float speed;
+    private final float acceleration;
+    
+    private float targetSpeedX, targetSpeedY;
+    private float speedX, speedY;
     
     private final float[] fireOffsetsX;
     private final float[] fireOffsetsY;
@@ -108,6 +114,9 @@ public class Player extends Entity {
             entitySprite = new Sprite(assetManager.get("items/items.atlas", TextureAtlas.class).findRegion(getString(Keys.currentHull)));
         }
         
+        float weight = 0;
+        speed = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.speed");
+        
         JsonEntry params_core = treeJson.get(getString(Keys.currentCore), "parameters");
         for (int i = 0; i < params_core.size; i++) {
             switch (params_core.get(i).name) {
@@ -122,6 +131,12 @@ public class Player extends Entity {
                     break;
                 case ("parameter.charge_capacity_multiplier"):
                     chargeCapacityMultiplier = params_core.getFloat(1, i);
+                    break;
+                case ("parameter.speed_multiplier"):
+                    speed *= params_core.getFloat(1, i);
+                    break;
+                case ("parameter.weight"):
+                    weight += params_core.getFloat(1, i);
                     break;
                 default:
                     log("unknown parameter " + params_core.get(i).name + " for " + getString(Keys.currentCore), WARNING);
@@ -140,6 +155,9 @@ public class Player extends Entity {
                     break;
                 case ("parameter.shield_capacity"):
                     shieldCapacity = params_shield.getFloat(1, i);
+                    break;
+                case ("parameter.weight"):
+                    weight += params_shield.getFloat(1, i);
                     break;
                 default:
                     log("unknown parameter " + params_shield.get(i).name + " for " + getString(Keys.currentShield), WARNING);
@@ -181,6 +199,9 @@ public class Player extends Entity {
                             aimRadius.setSize(radius, radius);
                         }
                         break;
+                    case ("parameter.weight"):
+                        weight += params_module.getFloat(1, i);
+                        break;
                     default:
                         log("Player: no need to load " + params_module.get(i).name + " from " + module + ", ignoring", INFO);
                         break;
@@ -190,6 +211,15 @@ public class Player extends Entity {
         
         chargeCapacity = treeJson.getFloat(1, getString(Keys.currentBattery), "parameters", "parameter.capacity");
         healthCapacity = treeJson.getFloat(1, getString(Keys.currentHull), "parameters", "parameter.health");
+        
+        float accelerationForce = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.accelerationForce");
+        
+        weight += treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.weight");
+        weight += treeJson.getFloat(false, 1, getString(Keys.currentWeapon), "parameters", "parameter.weight");
+        weight += treeJson.getFloat(false, 1, getString(Keys.currentBattery), "parameters", "parameter.weight");
+        weight += treeJson.getFloat(false, 1, getString(Keys.currentHull), "parameters", "parameter.weight");
+        
+        acceleration = accelerationForce / weight;
         
         shield = new Sprite(fields.findRegion(treeJson.getString("noValue", getString(Keys.currentShield), "usesEffect")));
         
@@ -219,6 +249,31 @@ public class Player extends Entity {
         damage_fire.start();
         
         bullet = new PlayerBullet(assetManager, this, enemies, newGame);
+    }
+    
+    public void accelerate(float deltaX, float deltaY) {
+        targetSpeedX = speed * deltaX * deltaX * (deltaX < 0 ? -1 : 1);
+        targetSpeedY = speed * deltaY * deltaY * (deltaY < 0 ? -1 : 1);
+    }
+    
+    public void updateSpeed(float delta) {
+        x += speedX * delta;
+        y += speedY * delta;
+        x = clamp(x, 0, 800 - width);
+        y = clamp(y, 0, 480 - height);
+        //rotation = clamp((speedY / speed - speedX / speed) * 2, -9, 9);
+        // TODO: 22/11/2021 this is utterly fucking retarded, the acceleration code doesn't work sfgsdghgfdasjkagfkjhdsg
+        if (targetSpeedX >= speedX) {
+            speedX = clamp(speedX + delta * acceleration, -speed, speed);
+        } else {
+            speedX = clamp(speedX - delta * acceleration, -speed, speed);
+        }
+        
+        if (targetSpeedY >= speedY) {
+            speedY = clamp(speedY + delta * acceleration, -speed, speed);
+        } else {
+            speedY = clamp(speedY - delta * acceleration, -speed, speed);
+        }
     }
     
     public void scaleFireMotion(float motionScale) {
@@ -262,6 +317,7 @@ public class Player extends Entity {
         entitySprite.setRotation(rotation);
         entitySprite.setColor(shipColor);
         updateHealth(delta);
+        updateSpeed(delta);
     }
     
     public void drawSprites(SpriteBatch batch, float delta) {
