@@ -1,6 +1,6 @@
 apply plugin: "java"
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = ["src/"]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
 project.ext.mainClassName = "com.deo.flapd.desktop.DesktopLauncher"
@@ -12,6 +12,29 @@ task run(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
+
+    def props = new Properties()
+    file("../core/assets/version.properties").withInputStream { props.load(it) }
+    String buildVer = props.getProperty("buildversion")
+    String[] split = buildVer.split("\\.")
+    if (Integer.parseInt(split[3].replace("b", "")) >= 500) {
+        split[3] = "b0"
+        if (Integer.parseInt(split[2]) >= 9) {
+            split[2] = "0"
+            if (Integer.parseInt(split[1]) >= 9) {
+                split[1] = "0"
+                split[0] = "v" + (Integer.parseInt(split[0].replace("v", "")) + 1)
+            } else {
+                split[1] = (Integer.parseInt(split[1]) + 1) + ""
+            }
+        } else {
+            split[2] = (Integer.parseInt(split[2]) + 1) + ""
+        }
+    } else {
+        split[3] = "b" + (Integer.parseInt(split[3].replace("b", "")) + 1)
+    }
+    props.setProperty("buildversion", split[0] + "." + split[1] + "." + split[2] + "." + split[3])
+    file("../core/assets/version.properties").withOutputStream { props.store(it, "") }
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
