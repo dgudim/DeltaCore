@@ -58,7 +58,6 @@ public class Player extends Entity {
     private float speed;
     private final float acceleration;
     
-    private float targetSpeedX, targetSpeedY;
     private float speedX, speedY;
     
     private final float[] fireOffsetsX;
@@ -251,29 +250,37 @@ public class Player extends Entity {
         bullet = new PlayerBullet(assetManager, this, enemies, newGame);
     }
     
-    public void accelerate(float deltaX, float deltaY) {
-        targetSpeedX = speed * deltaX * deltaX * (deltaX < 0 ? -1 : 1);
-        targetSpeedY = speed * deltaY * deltaY * (deltaY < 0 ? -1 : 1);
-    }
+    public void accelerate(float deltaX, float deltaY, float delta) {
+        //targetSpeedX = speed * deltaX * deltaX * (deltaX < 0 ? -1 : 1);
+        //targetSpeedY = speed * deltaY * deltaY * (deltaY < 0 ? -1 : 1);
+        speedX = clamp(speedX + acceleration * deltaX * deltaX * (deltaX < 0 ? -1 : 1) * delta, -speed, speed);
+        speedY = clamp(speedY + acceleration * deltaY * deltaY * (deltaY < 0 ? -1 : 1) * delta, -speed, speed);
+        
+        if (speedX > 0) {
+            if (speedX > speed * deltaX) {
+                speedX = clamp(speedX - acceleration * delta * ((speed - speedX) / speed + 0.5f), 0, speed);
+            }
+        } else {
+            if (speedX < speed * deltaX) {
+                speedX = clamp(speedX + acceleration * delta * ((speed + speedX) / speed + 0.5f), -speed, 0);
+            }
+        }
     
-    public void updateSpeed(float delta) {
+        if (speedY > 0) {
+            if (speedY > speed * deltaY) {
+                speedY = clamp(speedY - acceleration * delta * ((speed - speedY) / speed + 0.5f), 0, speed);
+            }
+        } else {
+            if (speedY < speed * deltaY) {
+                speedY = clamp(speedY + acceleration * delta * ((speed + speedY) / speed + 0.5f), -speed, 0);
+            }
+        }
+        
         x += speedX * delta;
         y += speedY * delta;
         x = clamp(x, 0, 800 - width);
         y = clamp(y, 0, 480 - height);
-        //rotation = clamp((speedY / speed - speedX / speed) * 2, -9, 9);
-        // TODO: 22/11/2021 this is utterly fucking retarded, the acceleration code doesn't work sfgsdghgfdasjkagfkjhdsg
-        if (targetSpeedX >= speedX) {
-            speedX = clamp(speedX + delta * acceleration, -speed, speed);
-        } else {
-            speedX = clamp(speedX - delta * acceleration, -speed, speed);
-        }
-        
-        if (targetSpeedY >= speedY) {
-            speedY = clamp(speedY + delta * acceleration, -speed, speed);
-        } else {
-            speedY = clamp(speedY - delta * acceleration, -speed, speed);
-        }
+        rotation = clamp((speedY / speed - speedX / speed) * 4, -9, 9);
     }
     
     public void scaleFireMotion(float motionScale) {
@@ -317,7 +324,6 @@ public class Player extends Entity {
         entitySprite.setRotation(rotation);
         entitySprite.setColor(shipColor);
         updateHealth(delta);
-        updateSpeed(delta);
     }
     
     public void drawSprites(SpriteBatch batch, float delta) {

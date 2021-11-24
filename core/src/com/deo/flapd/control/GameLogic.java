@@ -83,7 +83,7 @@ public class GameLogic {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             game.pause();
     
-        player.accelerate(deltaX, deltaY);
+        player.accelerate(deltaX, deltaY, delta);
         
         if (is_firing) {
             playerBullet.spawn(1, false);

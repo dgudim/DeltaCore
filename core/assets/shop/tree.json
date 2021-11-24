@@ -66,8 +66,8 @@
     "category": "category.engines",
     "type": "basePart",
     "parameters": {
-      "parameter.speed": 250,
-      "parameter.accelerationForce": 130000,
+      "parameter.speed": 310,
+      "parameter.accelerationForce": 150000,
       "parameter.weight": 15
     },
     "usesEffect": "fire_engine_left_red_green"
