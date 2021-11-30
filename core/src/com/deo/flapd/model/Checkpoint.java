@@ -9,15 +9,18 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.enemies.Bosses;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Checkpoint {
+    
+    private final ParticleEffectPoolLoader particleEffectPool;
     
     private final Sprite checkpoint_blue;
     private final Sprite checkpoint_green;
@@ -31,7 +34,10 @@ public class Checkpoint {
     private float destination_posX;
     private float destination_posY;
     
-    public Checkpoint(AssetManager assetManager, Player player) {
+    public Checkpoint(CompositeManager compositeManager, Player player) {
+        AssetManager assetManager = compositeManager.getAssetManager();
+        particleEffectPool = compositeManager.getParticleEffectPool();
+        
         checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
         checkpoint_green = new Sprite((Texture) assetManager.get("checkpoint_green.png"));
         
@@ -56,8 +62,8 @@ public class Checkpoint {
         
         bounds.setPosition(950, getRandomInRange(0, 201) + 100);
         
-        fire = particleEffectPoolLoader.getParticleEffectByPath("particles/fire_down.p");
-        fire2 = particleEffectPoolLoader.getParticleEffectByPath("particles/fire_down.p");
+        fire = particleEffectPool.getParticleEffectByPath("particles/fire_down.p");
+        fire2 = particleEffectPool.getParticleEffectByPath("particles/fire_down.p");
         
         effects = true;
         

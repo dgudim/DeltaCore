@@ -23,13 +23,13 @@ import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
+import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
 import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.lerpToColor;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Enemy extends Entity {
     
@@ -38,6 +38,7 @@ public class Enemy extends Entity {
     private final Array<EnemyBullet> bullets;
     
     private final CompositeManager compositeManager;
+    private final ParticleEffectPoolLoader particleEffectPool;
     private final AssetManager assetManager;
     private final Drops drops;
     
@@ -59,6 +60,7 @@ public class Enemy extends Entity {
         assetManager = compositeManager.getAssetManager();
         drops = compositeManager.getDrops();
         soundManager = compositeManager.getSoundManager();
+        particleEffectPool = compositeManager.getParticleEffectPool();
         
         this.data = data;
         this.enemies = enemies;
@@ -87,7 +89,7 @@ public class Enemy extends Entity {
         
         super.init();
         for (int i = 0; i < data.fireEffects.length; i++) {
-            ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath(data.fireEffects[i]);
+            ParticleEffectPool.PooledEffect fire = particleEffectPool.getParticleEffectByPath(data.fireEffects[i]);
             fire.scaleEffect(data.fireScales[i]);
             fire.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
@@ -96,7 +98,7 @@ public class Enemy extends Entity {
                             rotation + data.fireParticleEffectAngles.get(i)) * data.fireParticleEffectDistances.get(i));
             data.fireParticleEffects.set(i, fire);
         }
-        data.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(data.explosionEffect);
+        data.explosionParticleEffect = particleEffectPool.getParticleEffectByPath(data.explosionEffect);
         data.explosionParticleEffect.scaleEffect(data.explosionScale);
     }
     
@@ -272,7 +274,7 @@ public class Enemy extends Entity {
                 newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
             
-            bullets.add(new EnemyBullet(assetManager, newBulletData, player, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
+            bullets.add(new EnemyBullet(compositeManager, newBulletData, player, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
         }
         soundManager.playSound_noLink(data.shootingSound);
         data.millis = 0;

@@ -34,7 +34,6 @@ import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class ColorCustomizationDialogue extends Dialogue {
     
@@ -56,7 +55,7 @@ public class ColorCustomizationDialogue extends Dialogue {
         dialogStyle.background = textures.getDrawable("colorDialog");
         dialogStyle.titleFont = font;
     
-        ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + particleEffect + ".p");
+        ParticleEffectPool.PooledEffect fire = compositeManager.getParticleEffectPool().getParticleEffectByPath("particles/" + particleEffect + ".p");
         fire.scaleEffect(5f);
         
         dialog = new Dialog("", dialogStyle);

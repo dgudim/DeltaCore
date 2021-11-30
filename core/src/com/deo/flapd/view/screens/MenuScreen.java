@@ -79,7 +79,6 @@ import static com.deo.flapd.utils.DUtils.putLong;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class MenuScreen implements Screen {
     
@@ -739,7 +738,7 @@ public class MenuScreen implements Screen {
         fireOffsetsX.clear();
         fireOffsetsY.clear();
         for (int i = 0; i < fireCount; i++) {
-            ParticleEffectPool.PooledEffect fire = particleEffectPoolLoader.getParticleEffectByPath("particles/" + fireEffect + ".p");
+            ParticleEffectPool.PooledEffect fire = compositeManager.getParticleEffectPool().getParticleEffectByPath("particles/" + fireEffect + ".p");
             fireOffsetsX.add(shipConfig.getFloat(0, "fires", "fire" + i + "OffsetX"));
             fireOffsetsY.add(shipConfig.getFloat(0, "fires", "fire" + i + "OffsetY"));
             fires.add(fire);

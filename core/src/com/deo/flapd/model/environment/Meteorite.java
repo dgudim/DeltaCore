@@ -1,10 +1,8 @@
 package com.deo.flapd.model.environment;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
+import com.deo.flapd.utils.CompositeManager;
 
 public class Meteorite extends EnvironmentalEffect {
     
@@ -12,9 +10,9 @@ public class Meteorite extends EnvironmentalEffect {
     private final float rotationSpeed;
     public float radius;
     
-    public Meteorite(AssetManager assetManager, float x, float flyingDirection, float radius) {
+    public Meteorite(CompositeManager compositeManager, float x, float flyingDirection, float radius) {
         
-        entitySprite = new Sprite((Texture) assetManager.get("Meteo.png"));
+        entitySprite = new Sprite((Texture) compositeManager.getAssetManager().get("Meteo.png"));
         
         setSize(radius * 2, radius * 2);
         
@@ -25,7 +23,7 @@ public class Meteorite extends EnvironmentalEffect {
         
         init();
         
-        effect = particleEffectPoolLoader.getParticleEffectByPath("particles/particle_nowind.p");
+        effect = compositeManager.getParticleEffectPool().getParticleEffectByPath("particles/particle_nowind.p");
         effect.scaleEffect(radius / 25);
         effect.setPosition(x + originX, y + originY);
         

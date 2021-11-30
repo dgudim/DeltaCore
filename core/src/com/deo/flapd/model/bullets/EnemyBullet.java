@@ -10,12 +10,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
+import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.view.screens.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.min;
 
 public class EnemyBullet extends Entity {
@@ -31,7 +32,10 @@ public class EnemyBullet extends Entity {
     private final Player player;
     private final PlayerBullet playerBullet;
     
-    public EnemyBullet(AssetManager assetManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+    public EnemyBullet(CompositeManager compositeManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+        AssetManager assetManager = compositeManager.getAssetManager();
+        ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
+        
         if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)
             throw new IllegalArgumentException("no bullet texture with name: " + bulletData.texture);
         
@@ -45,10 +49,10 @@ public class EnemyBullet extends Entity {
         playerBullet = this.player.bullet;
         
         if (!data.isLaser) {
-            bulletData.explosionParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(bulletData.explosion);
+            bulletData.explosionParticleEffect = particleEffectPool.getParticleEffectByPath(bulletData.explosion);
             bulletData.explosionParticleEffect.scaleEffect(bulletData.explosionScale);
             
-            bulletData.trailParticleEffect = particleEffectPoolLoader.getParticleEffectByPath(bulletData.trail);
+            bulletData.trailParticleEffect = particleEffectPool.getParticleEffectByPath(bulletData.trail);
             bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
             bulletData.trailParticleEffect.setPosition(
                     x + width / 2f + MathUtils.cosDeg(

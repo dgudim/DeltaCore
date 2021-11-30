@@ -37,7 +37,6 @@ import static com.deo.flapd.utils.DUtils.flushLogBuffer;
 import static com.deo.flapd.utils.DUtils.getPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Main extends Game {
     
@@ -134,9 +133,6 @@ public class Main extends Game {
         flushLogBuffer();
         batch.dispose();
         blurProcessor.dispose();
-        if (particleEffectPoolLoader != null) {
-            particleEffectPoolLoader.dispose();
-        }
         compositeManager.dispose();
     }
 }

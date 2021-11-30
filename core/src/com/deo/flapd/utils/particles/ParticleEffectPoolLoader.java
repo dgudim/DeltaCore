@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.log;
 
@@ -74,6 +75,7 @@ public class ParticleEffectPoolLoader {
     }
     
     public ParticleEffectPool.PooledEffect getParticleEffectByPath(String path) {
+        log(effectCollections + "", WARNING);
         for (int i = 0; i < effectCollections.size; i++) {
             if (effectCollections.get(i).path.equals(path)) {
                 return effectCollections.get(i).obtainEffect();

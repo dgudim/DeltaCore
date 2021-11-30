@@ -18,7 +18,6 @@ import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.view.screens.GameScreen.is_paused;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 import static java.lang.StrictMath.abs;
 
 import com.badlogic.gdx.Gdx;
@@ -50,6 +49,7 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
+import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
 public class Boss {
     
@@ -337,10 +337,15 @@ class BasePart extends Entity {
     
     String explosionSound;
     SoundManager soundManager;
+    CompositeManager compositeManager;
+    ParticleEffectPoolLoader particleEffectPool;
     
     BasePart(JsonEntry newConfig, TextureAtlas textures, CompositeManager compositeManager) {
         
         log("loading " + newConfig.name, DEBUG);
+        
+        this.compositeManager = compositeManager;
+        particleEffectPool = compositeManager.getParticleEffectPool();
         
         active = false;
         currentConfig = newConfig;
@@ -395,7 +400,7 @@ class BasePart extends Entity {
             moneyCount = currentConfig.getIntArray(new int[]{3, 5}, "drops", "money", "count");
             moneyTimer = currentConfig.getFloat(1, "drops", "items", "timer");
             
-            explosionEffect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
+            explosionEffect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/explosion.p", "explosionEffect"));
             explosionEffect.scaleEffect(currentConfig.getFloat(1, "explosionScale"));
             log("creating explosion effect for " + newConfig.name, DEBUG);
         }
@@ -417,7 +422,7 @@ class BasePart extends Entity {
                 particleEffectDistances.add(getDistanceBetweenTwoPoints(0, 0, effectOffset[0], effectOffset[1]));
                 effectLayerFlags[i] = currentConfig.getBoolean(false, "effects", "drawOnTop" + i);
                 
-                ParticleEffectPool.PooledEffect effect = particleEffectPoolLoader.getParticleEffectByPath(currentConfig.getString("particles/fire2.p", "effects", "effect" + i));
+                ParticleEffectPool.PooledEffect effect = particleEffectPool.getParticleEffectByPath(currentConfig.getString("particles/fire2.p", "effects", "effect" + i));
                 effect.scaleEffect(currentConfig.getFloat(1, "effects", "scale" + i));
                 effect.setPosition(
                         x + width / 2f + MathUtils.cosDeg(
@@ -918,6 +923,8 @@ class Barrel extends Entity {
     
     Barrel(TextureAtlas textures, JsonEntry config, Cannon base) {
         
+        ParticleEffectPoolLoader particleEffectPool = base.particleEffectPool;
+        
         bullets = new Array<>();
         name = config.name;
         
@@ -1002,11 +1009,11 @@ class Barrel extends Entity {
         }
         
         if (hasPowerUpEffect) {
-            powerUpEffect = particleEffectPoolLoader.getParticleEffectByPath(powerUpEffectPath);
+            powerUpEffect = particleEffectPool.getParticleEffectByPath(powerUpEffectPath);
             powerUpEffect.scaleEffect(powerUpScale);
         }
         if (hasPowerDownEffect) {
-            powerDownEffect = particleEffectPoolLoader.getParticleEffectByPath(powerDownEffectPath);
+            powerDownEffect = particleEffectPool.getParticleEffectByPath(powerDownEffectPath);
             powerDownEffect.scaleEffect(powerDownScale);
         }
         
@@ -1161,7 +1168,7 @@ class Barrel extends Entity {
         
         newRot += getRandomInRange(-10, 10) * bulletSpread;
         
-        bullets.add(new EnemyBullet(base.assetManager, newBulletData, base.player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
+        bullets.add(new EnemyBullet(base.compositeManager, newBulletData, base.player, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
         if (burstSpacing >= 100) {
             base.soundManager.playSound_noLink(shootingSound);
         }

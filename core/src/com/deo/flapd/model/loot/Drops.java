@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 
 import static com.deo.flapd.utils.DUtils.addInteger;
@@ -27,12 +28,12 @@ public class Drops {
     
     private final Bonuses bonuses;
     
-    public Drops(AssetManager assetManager, float maxSize, Player player) {
+    public Drops(CompositeManager compositeManager, float maxSize, Player player) {
         uiScale = getFloat(Keys.uiScale);
-        itemAtlas = assetManager.get("items/items.atlas");
+        itemAtlas = compositeManager.getAssetManager().get("items/items.atlas");
         drops = new Array<>();
         this.maxSize = maxSize;
-        bonuses = new Bonuses(assetManager, maxSize, player);
+        bonuses = new Bonuses(compositeManager, maxSize, player);
     }
     
     public void dropBonus(int type, Rectangle enemy) {

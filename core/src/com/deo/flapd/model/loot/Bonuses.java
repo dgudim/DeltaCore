@@ -11,16 +11,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Player;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
 import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.view.screens.LoadingScreen.particleEffectPoolLoader;
 
 public class Bonuses {
     
     enum BonusType {HEALTH, SHIELD, ENERGY, PART, BULLETS}
     
-    TextureAtlas bonusesAtlas;
+    private final TextureAtlas bonusesAtlas;
+    private final ParticleEffectPoolLoader particleEffectPool;
     
     private final Player player;
     private static Array<Bonus> bonuses;
@@ -34,11 +36,14 @@ public class Bonuses {
     
     private static float size;
     
-    public Bonuses(AssetManager assetManager, float maxSize, Player player) {
+    public Bonuses(CompositeManager compositeManager, float maxSize, Player player) {
         
         this.player = player;
         
         uiScale = getFloat(Keys.uiScale);
+        
+        AssetManager assetManager = compositeManager.getAssetManager();
+        particleEffectPool = compositeManager.getParticleEffectPool();
         
         bonusesAtlas = assetManager.get("bonuses.atlas");
         
@@ -109,7 +114,7 @@ public class Bonuses {
                     path = "particles/explosion4_3.p";
                     break;
             }
-            ParticleEffectPool.PooledEffect explosionEffect = particleEffectPoolLoader.getParticleEffectByPath(path);
+            ParticleEffectPool.PooledEffect explosionEffect = particleEffectPool.getParticleEffectByPath(path);
             explosionEffect.setPosition(bonuses.get(i).x + bonuses.get(i).width / 2, bonuses.get(i).y + bonuses.get(i).height / 2);
             explosions.add(explosionEffect);
         }

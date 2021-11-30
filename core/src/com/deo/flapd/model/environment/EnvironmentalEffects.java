@@ -3,24 +3,25 @@ package com.deo.flapd.model.environment;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.utils.CompositeManager;
 
 public class EnvironmentalEffects {
 
     private final Array<EnvironmentalEffect> environmentalEffects;
-    private final AssetManager assetManager;
+    private final CompositeManager compositeManager;
     
-    public EnvironmentalEffects(AssetManager assetManager) {
-        this.assetManager = assetManager;
+    public EnvironmentalEffects(CompositeManager compositeManager) {
+        this.compositeManager = compositeManager;
         environmentalEffects = new Array<>();
     }
 
     public void spawnMeteorite(float x, float flyingDirection, float radius) {
-        Meteorite meteorite = new Meteorite(assetManager, x, flyingDirection, radius);
+        Meteorite meteorite = new Meteorite(compositeManager, x, flyingDirection, radius);
         environmentalEffects.add(meteorite);
     }
     
     public void spawnFallingShip(float x) {
-        FallingShip fallingShip = new FallingShip(assetManager, x);
+        FallingShip fallingShip = new FallingShip(compositeManager, x);
         environmentalEffects.add(fallingShip);
     }
     

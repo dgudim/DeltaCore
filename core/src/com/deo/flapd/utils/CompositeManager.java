@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.deo.flapd.model.loot.Drops;
+import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
 import com.deo.flapd.utils.postprocessing.effects.MotionBlur;
@@ -16,6 +17,8 @@ public class CompositeManager {
     private MusicManager musicManager;
     private SoundManager soundManager;
     private LocaleManager localeManager;
+    
+    private ParticleEffectPoolLoader particleEffectPool;
     
     private PostProcessor blurProcessor;
     private Bloom bloom;
@@ -81,6 +84,14 @@ public class CompositeManager {
         return drops;
     }
     
+    public ParticleEffectPoolLoader getParticleEffectPool(){
+        return particleEffectPool;
+    }
+    
+    public void setParticleEffectPool(ParticleEffectPoolLoader particleEffectPool){
+        this.particleEffectPool = particleEffectPool;
+    }
+    
     public void setDrops(Drops drops) {
         this.drops = drops;
     }
@@ -134,6 +145,7 @@ public class CompositeManager {
     }
     
     public void dispose() {
+        particleEffectPool.dispose();
         assetManager.dispose();
     }
 }

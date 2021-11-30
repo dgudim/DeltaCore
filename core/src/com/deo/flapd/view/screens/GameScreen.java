@@ -122,14 +122,14 @@ public class GameScreen implements Screen {
         enemies.setTargetPlayer(player);
         bosses.setTargetPlayer(player);
     
-        drops = new Drops(assetManager, 50, player);
+        drops = new Drops(compositeManager, 50, player);
         compositeManager.setDrops(drops);
         
         gameUi = new GameUi(viewport, compositeManager, player);
         
-        environmentalEffects = new EnvironmentalEffects(assetManager);
+        environmentalEffects = new EnvironmentalEffects(compositeManager);
         
-        checkpoint = new Checkpoint(assetManager, player);
+        checkpoint = new Checkpoint(compositeManager, player);
         
         gameLogic = new GameLogic(player, newGame, game, environmentalEffects, checkpoint);
         

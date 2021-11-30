@@ -49,7 +49,6 @@ public class LoadingScreen implements Screen {
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
     private final LocaleManager localeManager;
-    public static ParticleEffectPoolLoader particleEffectPoolLoader;
     private final SpriteBatch batch;
     private final BitmapFont font_main;
     private final Game game;
@@ -320,9 +319,9 @@ public class LoadingScreen implements Screen {
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
                     game.setScreen(new MenuScreen(compositeManager));
                 }
-                if (particleEffectPoolLoader == null) {
+                if (compositeManager.getParticleEffectPool() == null) {
                     if (loadingState.equals(LoadingState.LOADING_PARTICLES)) {
-                        particleEffectPoolLoader = new ParticleEffectPoolLoader();
+                        compositeManager.setParticleEffectPool(new ParticleEffectPoolLoader());
                     } else {
                         setLoadingState(LoadingState.LOADING_PARTICLES);
                     }
