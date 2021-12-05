@@ -1,5 +1,21 @@
 package com.deo.flapd.view.overlays;
 
+import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getLong;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.putLong;
+import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.subtractInteger;
+import static com.deo.flapd.view.overlays.SlotManagerMode.INVENTORY;
+import static com.deo.flapd.view.overlays.SlotManagerMode.SHOP;
+import static java.lang.StrictMath.sqrt;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -35,22 +51,6 @@ import com.deo.flapd.view.dialogues.PurchaseDialogue;
 import com.deo.flapd.view.dialogues.SellScrapDialogue;
 
 import java.util.concurrent.TimeUnit;
-
-import static com.badlogic.gdx.utils.TimeUtils.millis;
-import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getLong;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.putLong;
-import static com.deo.flapd.utils.DUtils.putString;
-import static com.deo.flapd.utils.DUtils.subtractInteger;
-import static com.deo.flapd.view.overlays.SlotManagerMode.INVENTORY;
-import static com.deo.flapd.view.overlays.SlotManagerMode.SHOP;
-import static java.lang.StrictMath.sqrt;
 
 enum SlotManagerMode {INVENTORY, SHOP}
 
@@ -295,7 +295,7 @@ public class ItemSlotManager {
         cogs_text.setFontScale(0.5f);
         
         
-        Image uraniumCell = new Image(items.findRegion("uraniumCell.png"));
+        Image uraniumCell = new Image(items.findRegion("uraniumCell"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(30, 30);
         holder.add(uraniumCells_text).padLeft(5);

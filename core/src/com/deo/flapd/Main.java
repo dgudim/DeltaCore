@@ -1,5 +1,14 @@
 package com.deo.flapd;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
+import static com.deo.flapd.utils.DUtils.clearLog;
+import static com.deo.flapd.utils.DUtils.flushLogBuffer;
+import static com.deo.flapd.utils.DUtils.getPrefs;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -28,15 +37,6 @@ import com.deo.flapd.view.screens.LoadingScreen;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
-
-import static com.deo.flapd.utils.DUtils.LogLevel.CRITICAL_ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
-import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
-import static com.deo.flapd.utils.DUtils.clearLog;
-import static com.deo.flapd.utils.DUtils.flushLogBuffer;
-import static com.deo.flapd.utils.DUtils.getPrefs;
-import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.logException;
 
 public class Main extends Game {
     
@@ -122,7 +122,7 @@ public class Main extends Game {
             super.render();
         } catch (Exception e) {
             logException(e);
-            log("global error occurred, dump of preferences\n" + getPrefs() + "\n", CRITICAL_ERROR);
+            log("rendering error occurred, dump of preferences\n" + getPrefs() + "\n", CRITICAL_ERROR);
             log("force exiting", INFO);
             Gdx.app.exit();
         }
