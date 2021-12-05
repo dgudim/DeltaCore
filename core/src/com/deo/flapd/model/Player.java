@@ -212,7 +212,7 @@ public class Player extends Entity {
         chargeCapacity = treeJson.getFloat(1, getString(Keys.currentBattery), "parameters", "parameter.capacity");
         healthCapacity = treeJson.getFloat(1, getString(Keys.currentHull), "parameters", "parameter.health");
         
-        float accelerationForce = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.accelerationForce");
+        float accelerationForce = treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.acceleration_force");
         
         weight += treeJson.getFloat(false, 1, getString(Keys.currentEngine), "parameters", "parameter.weight");
         weight += treeJson.getFloat(false, 1, getString(Keys.currentWeapon), "parameters", "parameter.weight");

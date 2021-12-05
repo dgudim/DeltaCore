@@ -67,7 +67,7 @@
     "type": "basePart",
     "parameters": {
       "parameter.speed": 330,
-      "parameter.accelerationForce": 300000,
+      "parameter.acceleration_force": 300000,
       "parameter.weight": 15
     },
     "usesEffect": "fire_engine_left_red_green"
@@ -179,7 +179,7 @@
     "type": "part",
     "parameters": {
       "parameter.speed": 350,
-      "parameter.accelerationForce": 500000,
+      "parameter.acceleration_force": 500000,
       "parameter.weight": 20
     },
     "usesEffect": "fire_engine_left_red_purple"
@@ -199,7 +199,7 @@
     "type": "part",
     "parameters": {
       "parameter.speed": 360,
-      "parameter.accelerationForce": 750000,
+      "parameter.acceleration_force": 750000,
       "parameter.weight": 25
     },
     "usesEffect": "fire_engine_left_blue_purple"
