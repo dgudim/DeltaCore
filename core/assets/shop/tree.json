@@ -66,8 +66,8 @@
     "category": "category.engines",
     "type": "basePart",
     "parameters": {
-      "parameter.speed": 310,
-      "parameter.accelerationForce": 150000,
+      "parameter.speed": 330,
+      "parameter.accelerationForce": 300000,
       "parameter.weight": 15
     },
     "usesEffect": "fire_engine_left_red_green"
@@ -178,8 +178,8 @@
     "requires": ["part.grasshopper_engine"],
     "type": "part",
     "parameters": {
-      "parameter.speed": 1.3,
-      "parameter.accelerationForce": 60,
+      "parameter.speed": 350,
+      "parameter.accelerationForce": 500000,
       "parameter.weight": 20
     },
     "usesEffect": "fire_engine_left_red_purple"
@@ -198,8 +198,8 @@
     "requires": ["part.nuclear_engine"],
     "type": "part",
     "parameters": {
-      "parameter.speed": 1.6,
-      "parameter.accelerationForce": 80,
+      "parameter.speed": 360,
+      "parameter.accelerationForce": 750000,
       "parameter.weight": 25
     },
     "usesEffect": "fire_engine_left_blue_purple"
