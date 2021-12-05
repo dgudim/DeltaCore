@@ -1,5 +1,21 @@
 package com.deo.flapd.view.screens;
 
+import static com.deo.flapd.Main.VERSION_NAME;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
+import static com.deo.flapd.utils.DUtils.clearPrefs;
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.updateCamera;
+
+import static java.lang.StrictMath.max;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,20 +43,6 @@ import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
-
-import static com.deo.flapd.Main.VERSION_NAME;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
-import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
-import static com.deo.flapd.utils.DUtils.clearPrefs;
-import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.utils.DUtils.putFloat;
-import static com.deo.flapd.utils.DUtils.putString;
-import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class LoadingScreen implements Screen {
     
@@ -251,7 +253,9 @@ public class LoadingScreen implements Screen {
         font_main.draw(batch, (int) (assetManager.getProgress() * 100) + "%", 0, 49, 800, 1, false);
         font_main.getData().setScale(0.3f);
         font_main.draw(batch, VERSION_NAME, 2, 478);
-        assetManager.update();
+        for(int i = 0; i < max(0.03333 / max(delta, 0.0083333), 1); i++) {
+            assetManager.update();
+        }
         batch.end();
         
         if (enableShader) {
