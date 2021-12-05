@@ -5,6 +5,7 @@ import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.lerpWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 
 import com.badlogic.gdx.Gdx;
@@ -251,36 +252,11 @@ public class Player extends Entity {
     }
     
     public void accelerate(float deltaX, float deltaY, float delta) {
-        //targetSpeedX = speed * deltaX * deltaX * (deltaX < 0 ? -1 : 1);
-        //targetSpeedY = speed * deltaY * deltaY * (deltaY < 0 ? -1 : 1);
-        speedX = clamp(speedX + acceleration * deltaX * deltaX * (deltaX < 0 ? -1 : 1) * delta, -speed, speed);
-        speedY = clamp(speedY + acceleration * deltaY * deltaY * (deltaY < 0 ? -1 : 1) * delta, -speed, speed);
-        
-        if (speedX > 0) {
-            if (speedX > speed * deltaX) {
-                speedX = clamp(speedX - acceleration * delta * ((speed - speedX) / speed + 0.5f), 0, speed);
-            }
-        } else {
-            if (speedX < speed * deltaX) {
-                speedX = clamp(speedX + acceleration * delta * ((speed + speedX) / speed + 0.5f), -speed, 0);
-            }
-        }
-    
-        if (speedY > 0) {
-            if (speedY > speed * deltaY) {
-                speedY = clamp(speedY - acceleration * delta * ((speed - speedY) / speed + 0.5f), 0, speed);
-            }
-        } else {
-            if (speedY < speed * deltaY) {
-                speedY = clamp(speedY + acceleration * delta * ((speed + speedY) / speed + 0.5f), -speed, 0);
-            }
-        }
-        
-        x += speedX * delta;
-        y += speedY * delta;
-        x = clamp(x, 0, 800 - width);
-        y = clamp(y, 0, 480 - height);
-        rotation = clamp((speedY / speed - speedX / speed) * 4, -9, 9);
+        speedX = lerpWithConstantSpeed(speedX, speed * deltaX, acceleration, delta);
+        speedY = lerpWithConstantSpeed(speedY, speed * deltaY, acceleration, delta);
+        x = clamp(x + speedX * delta, 0, 800 - width);
+        y = clamp(y + speedY * delta, 0, 480 - height);
+        rotation = clamp((speedY / speed - speedX / speed) * 5, -9, 9);
     }
     
     public void scaleFireMotion(float motionScale) {
