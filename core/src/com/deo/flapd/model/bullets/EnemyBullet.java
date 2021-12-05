@@ -94,12 +94,12 @@ public class EnemyBullet extends Entity {
                 x = data.newX;
                 y = data.newY + data.height / 2f;
                 rotation = data.newRot + 180;
+                entitySprite.setRotation(rotation);
             }
             entitySprite.setColor(color);
             float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
             entitySprite.setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
-            entitySprite.setRotation(rotation);
             entitySprite.setSize(data.width, scaledHeight);
         } else {
             super.updateEntity(delta);
