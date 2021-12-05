@@ -1,5 +1,9 @@
 package com.deo.flapd.model.bullets;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
+import static java.lang.StrictMath.min;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -15,13 +19,10 @@ import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.view.screens.GameScreen;
 
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static java.lang.StrictMath.min;
-
 public class EnemyBullet extends Entity {
     
     private final BulletData data;
+    private final BeamAimer beamAimer;
     
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
@@ -32,18 +33,22 @@ public class EnemyBullet extends Entity {
     private final Player player;
     private final PlayerBullet playerBullet;
     
-    public EnemyBullet(CompositeManager compositeManager, BulletData bulletData, Player player, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+    public EnemyBullet(CompositeManager compositeManager, BulletData bulletData, Player player, BeamAimer beamAimer, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
         AssetManager assetManager = compositeManager.getAssetManager();
         ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
         
         if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)
-            throw new IllegalArgumentException("no bullet texture with name: " + bulletData.texture);
+            throw new IllegalArgumentException("No bullet texture with name: " + bulletData.texture);
+    
+        if(bulletData.isBeam && beamAimer == null)
+            throw new IllegalArgumentException("Can't initialize beam bullet without beam data: " + bulletData.texture);
         
         entitySprite = new Sprite(assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture));
         
         this.hasCollisionWithPlayerBullets = hasCollisionWithPlayerBullets;
         
         data = bulletData;
+        this.beamAimer = beamAimer;
         
         this.player = player;
         playerBullet = this.player.bullet;
@@ -84,10 +89,17 @@ public class EnemyBullet extends Entity {
     @Override
     protected void updateEntity(float delta) {
         if (data.isLaser) {
+            if(data.isBeam){
+                beamAimer.recalculateAim();
+                x = beamAimer.newX;
+                y = beamAimer.newY + data.height / 2f;
+                rotation = beamAimer.newRot + 180;
+            }
             entitySprite.setColor(color);
             float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
             entitySprite.setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
+            entitySprite.setRotation(rotation);
             entitySprite.setSize(data.width, scaledHeight);
         } else {
             super.updateEntity(delta);

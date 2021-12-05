@@ -1,16 +1,17 @@
 package com.deo.flapd.model.bullets;
 
+import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
+
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.utils.JsonEntry;
-
-import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 
 public class BulletData {
     
     public String texture;
     
     boolean isLaser;
+    public boolean isBeam;
     public boolean hasCollisionWithPlayerBullets;
     
     public float width;
@@ -52,6 +53,7 @@ public class BulletData {
         texture = bulletData.getString("noTexture", "texture");
         
         isLaser = bulletData.getBoolean(false, false, "isLaser");
+        isBeam = bulletData.getBoolean(false, false, "isBeam");
         if (isLaser) {
             fadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
             maxFadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
@@ -88,3 +90,4 @@ public class BulletData {
         screenShakeDuration = bulletData.getFloat(false, 0, "screenShakeDuration");
     }
 }
+

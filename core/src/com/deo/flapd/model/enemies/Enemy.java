@@ -1,5 +1,11 @@
 package com.deo.flapd.model.enemies;
 
+import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
+import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.lerpToColor;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -24,12 +30,6 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
-
-import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.lerpToColor;
 
 public class Enemy extends Entity {
     
@@ -274,7 +274,7 @@ public class Enemy extends Entity {
                 newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
             }
             
-            bullets.add(new EnemyBullet(compositeManager, newBulletData, player, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
+            bullets.add(new EnemyBullet(compositeManager, newBulletData, player, null, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
         }
         soundManager.playSound_noLink(data.shootingSound);
         data.millis = 0;
