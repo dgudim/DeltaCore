@@ -45,6 +45,10 @@ public class BulletData {
     
     String color;
     
+    protected float newX;
+    protected float newY;
+    protected float newRot;
+    
     public BulletData(JsonEntry bulletData) {
         loadFromBulletData(bulletData);
     }
@@ -89,5 +93,7 @@ public class BulletData {
         screenShakeIntensity = bulletData.getFloat(false, 0, "screenShakeOnHit");
         screenShakeDuration = bulletData.getFloat(false, 0, "screenShakeDuration");
     }
+    
+    public void calculateAim(){}
 }
 

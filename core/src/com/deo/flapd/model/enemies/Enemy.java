@@ -264,17 +264,20 @@ public class Enemy extends Entity {
     
     private void shoot() {
         for (int i = 0; i < data.bulletsPerShot; i++) {
-            BulletData newBulletData = new BulletData(data.enemyInfo.get("bullet"));
+            BulletData newBulletData = new BulletData(data.enemyInfo.get("bullet")) {
+                @Override
+                public void calculateAim() {
+                    this.newX = Enemy.this.x + Enemy.this.width / 2f + MathUtils.cosDeg(Enemy.this.rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
+                    this.newY = Enemy.this.y + Enemy.this.height / 2f + MathUtils.sinDeg(Enemy.this.rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
+                    
+                    this.newRot = getRandomInRange(-10, 10) * data.bulletSpread + Enemy.this.rotation;
+                    if (data.canAim) {
+                        this.newRot += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(this.newY - playerBounds.getY(), this.newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
+                    }
+                }
+            };
             
-            float newX = x + width / 2f + MathUtils.cosDeg(rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
-            float newY = y + height / 2f + MathUtils.sinDeg(rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
-            
-            float newAngle = getRandomInRange(-10, 10) * data.bulletSpread + rotation;
-            if (data.canAim) {
-                newAngle += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(newY - playerBounds.getY(), newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
-            }
-            
-            bullets.add(new EnemyBullet(compositeManager, newBulletData, player, null, newX, newY, newAngle, newBulletData.hasCollisionWithPlayerBullets));
+            bullets.add(new EnemyBullet(compositeManager, newBulletData, player, newBulletData.hasCollisionWithPlayerBullets));
         }
         soundManager.playSound_noLink(data.shootingSound);
         data.millis = 0;
@@ -320,7 +323,7 @@ public class Enemy extends Entity {
         
         drops.drop(entityHitBox, (int) (getRandomInRange(data.dropCount[0], data.dropCount[1]) * difficulty), data.dropTimer, getRandomInRange(data.dropRarity[0], data.dropRarity[1]));
         
-       soundManager.playSound_noLink(data.explosionSound);
+        soundManager.playSound_noLink(data.explosionSound);
     }
 }
 

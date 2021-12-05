@@ -42,7 +42,6 @@ import com.deo.flapd.control.EnemyAi;
 import com.deo.flapd.control.GameLogic;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.model.bullets.BeamAimer;
 import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.model.loot.Drops;
@@ -1161,28 +1160,18 @@ class Barrel extends Entity {
     }
     
     void spawnBullet() {
-        BulletData newBulletData = new BulletData(base.currentConfig.get("bullet"));
+        BulletData newBulletData = new BulletData(base.currentConfig.get("bullet")) {
+            @Override
+            public void calculateAim() {
+                this.newX = Barrel.this.x + Barrel.this.width / 2f - bulletData.width / 2f + MathUtils.cosDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
+                this.newY = Barrel.this.y + Barrel.this.height / 2f - bulletData.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
+                this.newRot = base.currentAimAngle;
+                
+                this.newRot += getRandomInRange(-10, 10) * bulletSpread;
+            }
+        };
         
-        float newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
-        float newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
-        float newRot = base.currentAimAngle;
-    
-        BeamAimer beamData = null;
-        
-        if(newBulletData.isBeam){
-            beamData = new BeamAimer(){
-                @Override
-                public void recalculateAim() {
-                    this.newX = x + width / 2f - bulletData.width / 2f + MathUtils.cosDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
-                    this.newY = y + height / 2f - bulletData.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
-                    this.newRot = base.currentAimAngle;
-                }
-            };
-        }
-        
-        newRot += getRandomInRange(-10, 10) * bulletSpread;
-        
-        bullets.add(new EnemyBullet(base.compositeManager, newBulletData, base.player, beamData, newX, newY, newRot, bulletData.hasCollisionWithPlayerBullets));
+        bullets.add(new EnemyBullet(base.compositeManager, newBulletData, base.player, bulletData.hasCollisionWithPlayerBullets));
         if (burstSpacing >= 100) {
             base.soundManager.playSound_noLink(shootingSound);
         }

@@ -22,7 +22,6 @@ import com.deo.flapd.view.screens.GameScreen;
 public class EnemyBullet extends Entity {
     
     private final BulletData data;
-    private final BeamAimer beamAimer;
     
     public boolean queuedForDeletion = false;
     private boolean explosionFinished = false;
@@ -33,22 +32,23 @@ public class EnemyBullet extends Entity {
     private final Player player;
     private final PlayerBullet playerBullet;
     
-    public EnemyBullet(CompositeManager compositeManager, BulletData bulletData, Player player, BeamAimer beamAimer, float x, float y, float rotation, boolean hasCollisionWithPlayerBullets) {
+    public EnemyBullet(CompositeManager compositeManager, BulletData bulletData, Player player, boolean hasCollisionWithPlayerBullets) {
         AssetManager assetManager = compositeManager.getAssetManager();
         ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
         
         if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)
             throw new IllegalArgumentException("No bullet texture with name: " + bulletData.texture);
     
-        if(bulletData.isBeam && beamAimer == null)
-            throw new IllegalArgumentException("Can't initialize beam bullet without beam data: " + bulletData.texture);
+        bulletData.calculateAim();
+        float x = bulletData.newX;
+        float y = bulletData.newY;
+        float rotation = bulletData.newRot;
         
         entitySprite = new Sprite(assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture));
         
         this.hasCollisionWithPlayerBullets = hasCollisionWithPlayerBullets;
         
         data = bulletData;
-        this.beamAimer = beamAimer;
         
         this.player = player;
         playerBullet = this.player.bullet;
@@ -90,10 +90,10 @@ public class EnemyBullet extends Entity {
     protected void updateEntity(float delta) {
         if (data.isLaser) {
             if(data.isBeam){
-                beamAimer.recalculateAim();
-                x = beamAimer.newX;
-                y = beamAimer.newY + data.height / 2f;
-                rotation = beamAimer.newRot + 180;
+                data.calculateAim();
+                x = data.newX;
+                y = data.newY + data.height / 2f;
+                rotation = data.newRot + 180;
             }
             entitySprite.setColor(color);
             float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
