@@ -1,5 +1,15 @@
 package com.deo.flapd.view.screens;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.badlogic.gdx.math.MathUtils.random;
+import static com.deo.flapd.utils.DUtils.drawBg;
+import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
+import static com.deo.flapd.utils.DUtils.handleDebugInput;
+import static com.deo.flapd.utils.DUtils.updateCamera;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -23,16 +33,6 @@ import com.deo.flapd.utils.MusicManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.view.overlays.GameUi;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.badlogic.gdx.math.MathUtils.random;
-import static com.deo.flapd.utils.DUtils.drawBg;
-import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
-import static com.deo.flapd.utils.DUtils.handleDebugInput;
-import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameScreen implements Screen {
     
@@ -154,26 +154,7 @@ public class GameScreen implements Screen {
         float playerDelta = delta * playerDeltaMultiplier;
         delta *= globalDeltaMultiplier;
         
-        if (screenShakeIntensityDuration > 0) {
-            float nextShakeX = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
-            float nextShakeY = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
-            if (cameraZoomOffset == 0) {
-                cameraZoomOffset = screenShakeIntensity / 300f;
-                camera.zoom -= screenShakeIntensity / 300f;
-            }
-            camera.translate(nextShakeX - previousShakeOffsetX, nextShakeY - previousShakeOffsetY);
-            camera.update();
-            previousShakeOffsetX = nextShakeX;
-            previousShakeOffsetY = nextShakeY;
-            screenShakeIntensityDuration -= delta;
-        } else if (previousShakeOffsetX != 0 || previousShakeOffsetY != 0) {
-            camera.zoom += cameraZoomOffset;
-            cameraZoomOffset = 0;
-            camera.translate(-previousShakeOffsetX, -previousShakeOffsetY);
-            camera.update();
-            previousShakeOffsetX = 0;
-            previousShakeOffsetY = 0;
-        }
+        updateScreenShake(delta);
         
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -261,6 +242,29 @@ public class GameScreen implements Screen {
         int[] fillingThresholds = getVerticalAndHorizontalFillingThresholds(viewport);
         verticalFillingThreshold = fillingThresholds[0];
         horizontalFillingThreshold = fillingThresholds[1];
+    }
+    
+    private void updateScreenShake(float delta){
+        if (screenShakeIntensityDuration > 0) {
+            float nextShakeX = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
+            float nextShakeY = (float) ((random() - 0.5) * 2 * screenShakeIntensity);
+            if (cameraZoomOffset == 0) {
+                cameraZoomOffset = screenShakeIntensity / 300f;
+                camera.zoom -= screenShakeIntensity / 300f;
+            }
+            camera.translate(nextShakeX - previousShakeOffsetX, nextShakeY - previousShakeOffsetY);
+            camera.update();
+            previousShakeOffsetX = nextShakeX;
+            previousShakeOffsetY = nextShakeY;
+            screenShakeIntensityDuration -= delta;
+        } else if (previousShakeOffsetX != 0 || previousShakeOffsetY != 0) {
+            camera.zoom += cameraZoomOffset;
+            cameraZoomOffset = 0;
+            camera.translate(-previousShakeOffsetX, -previousShakeOffsetY);
+            camera.update();
+            previousShakeOffsetX = 0;
+            previousShakeOffsetY = 0;
+        }
     }
     
     public static void screenShake(float intensity, float duration) {
