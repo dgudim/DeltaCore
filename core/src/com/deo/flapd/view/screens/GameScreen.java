@@ -63,6 +63,7 @@ public class GameScreen implements Screen {
     
     private final Game game;
     
+    private final CompositeManager compositeManager;
     private final MusicManager musicManager;
     private final SoundManager soundManager;
     
@@ -91,18 +92,19 @@ public class GameScreen implements Screen {
     
     public GameScreen(CompositeManager compositeManager, boolean newGame) {
         
+        this.compositeManager = compositeManager;
         AssetManager assetManager = compositeManager.getAssetManager();
         game = compositeManager.getGame();
         musicManager = compositeManager.getMusicManager();
         soundManager = compositeManager.getSoundManager();
         batch = compositeManager.getBatch();
         postProcessor = compositeManager.getBlurProcessor();
+        shapeRenderer = compositeManager.getShapeRenderer();
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
         drawDebug = getBoolean(Keys.drawDebug);
-        shapeRenderer = compositeManager.getShapeRenderer();
         
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
         bg2 = assetManager.get("backgrounds/bg_layer2.png");
@@ -295,6 +297,7 @@ public class GameScreen implements Screen {
         player.dispose();
         
         drops.dispose();
+        compositeManager.setDrops(null);
         
         enemies.dispose();
         bosses.dispose();

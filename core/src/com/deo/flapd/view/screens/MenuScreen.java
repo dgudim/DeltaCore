@@ -690,6 +690,7 @@ public class MenuScreen implements Screen {
     
     @Override
     public void dispose() {
+        environmentalEffects.dispose();
         menuStage.dispose();
         clearFireArray();
     }
