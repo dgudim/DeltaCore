@@ -1,5 +1,16 @@
 package com.deo.flapd.view.overlays;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.view.screens.GameScreen.globalDeltaMultiplier;
+import static com.deo.flapd.view.screens.GameScreen.is_paused;
+import static com.deo.flapd.view.screens.GameScreen.playerDeltaMultiplier;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -39,17 +50,6 @@ import com.deo.flapd.view.screens.GameScreen;
 import com.deo.flapd.view.screens.MenuScreen;
 
 import java.util.Locale;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.utils.DUtils.putInteger;
-import static com.deo.flapd.view.screens.GameScreen.globalDeltaMultiplier;
-import static com.deo.flapd.view.screens.GameScreen.is_paused;
-import static com.deo.flapd.view.screens.GameScreen.playerDeltaMultiplier;
 
 
 public class GameUi {
@@ -244,6 +244,8 @@ public class GameUi {
             font_numbers.setColor(0, 1, 1, 0.5f);
             heartIcon.setColor(1, 1, 1, 0.7f);
             shieldIcon.setColor(1, 1, 1, 0.7f);
+            fireButton.setColor(1, 1, 1, 0.7f);
+            weaponChangeButton.setColor(1, 1, 1, 0.7f);
         } else {
             font_numbers.setColor(0, 1, 1, 1);
         }
