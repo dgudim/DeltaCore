@@ -1,7 +1,6 @@
 package com.deo.flapd.control;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getRandomBoolean;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 import com.badlogic.gdx.Game;
@@ -10,7 +9,6 @@ import com.badlogic.gdx.Input;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.PlayerBullet;
-import com.deo.flapd.model.environment.EnvironmentalEffects;
 import com.deo.flapd.utils.Keys;
 
 
@@ -31,16 +29,14 @@ public class GameLogic {
     private final Game game;
     
     private final PlayerBullet playerBullet;
-    private final EnvironmentalEffects environmentalEffects;
     private final Checkpoint checkpoint;
     
-    public GameLogic(Player player, boolean newGame, Game game, EnvironmentalEffects environmentalEffects, Checkpoint checkpoint) {
+    public GameLogic(Player player, boolean newGame, Game game, Checkpoint checkpoint) {
         this.player = player;
         
         this.game = game;
         
         playerBullet = this.player.bullet;
-        this.environmentalEffects = environmentalEffects;
         this.checkpoint = checkpoint;
         
         //difficulty = getFloat("difficulty");
@@ -95,14 +91,6 @@ public class GameLogic {
         
         if (playerBullet.isLaser) {
             playerBullet.updateLaser(is_firing || is_firing_secondary);
-        }
-        
-        if (getRandomBoolean(0.05f) && delta > 0) {
-            environmentalEffects.spawnMeteorite(getRandomInRange(0, 480), (getRandomInRange(0, 60) - 30) / 10f, getRandomInRange(0, 10) + 5);
-        }
-        
-        if (getRandomBoolean(0.005f) && delta > 0) {
-            environmentalEffects.spawnFallingShip(getRandomInRange(0, 480));
         }
         
         if (!bossWave) {

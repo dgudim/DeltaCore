@@ -1,5 +1,31 @@
 package com.deo.flapd.view.screens;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.badlogic.gdx.math.MathUtils.lerp;
+import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.deo.flapd.Main.VERSION_NAME;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.clearPrefs;
+import static com.deo.flapd.utils.DUtils.drawBg;
+import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
+import static com.deo.flapd.utils.DUtils.handleDebugInput;
+import static com.deo.flapd.utils.DUtils.initNewGame;
+import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
+import static com.deo.flapd.utils.DUtils.log;
+import static com.deo.flapd.utils.DUtils.logException;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putLong;
+import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.savePrefsToFile;
+import static com.deo.flapd.utils.DUtils.updateCamera;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -40,6 +66,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.deo.flapd.model.environment.EnvironmentalEffects;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
@@ -53,32 +80,6 @@ import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.overlays.CategoryManager;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 import com.deo.flapd.view.overlays.UpgradeMenu;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.badlogic.gdx.math.MathUtils.lerp;
-import static com.badlogic.gdx.utils.TimeUtils.millis;
-import static com.deo.flapd.Main.VERSION_NAME;
-import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
-import static com.deo.flapd.utils.DUtils.addInteger;
-import static com.deo.flapd.utils.DUtils.clearPrefs;
-import static com.deo.flapd.utils.DUtils.drawBg;
-import static com.deo.flapd.utils.DUtils.drawScreenExtenders;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
-import static com.deo.flapd.utils.DUtils.handleDebugInput;
-import static com.deo.flapd.utils.DUtils.initNewGame;
-import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
-import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.logException;
-import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.utils.DUtils.putFloat;
-import static com.deo.flapd.utils.DUtils.putLong;
-import static com.deo.flapd.utils.DUtils.putString;
-import static com.deo.flapd.utils.DUtils.savePrefsToFile;
-import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class MenuScreen implements Screen {
     
@@ -133,6 +134,7 @@ public class MenuScreen implements Screen {
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
     
+    private final EnvironmentalEffects environmentalEffects;
     private final CompositeManager compositeManager;
     private final AssetManager assetManager;
     private final PostProcessor blurProcessor;
@@ -168,6 +170,8 @@ public class MenuScreen implements Screen {
         soundManager = compositeManager.getSoundManager();
         musicManager = compositeManager.getMusicManager();
         localeManager = compositeManager.getLocaleManager();
+    
+        environmentalEffects = new EnvironmentalEffects(compositeManager);
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
@@ -625,7 +629,7 @@ public class MenuScreen implements Screen {
         batch.begin();
         batch.enableBlending();
         batch.setColor(1, 1, 1, 1);
-        drawBg(batch, bg1, bg2, warpSpeed, movement);
+        drawBg(batch, bg1, bg2, warpSpeed, movement, environmentalEffects, delta);
         
         updateAnimations(delta);
         

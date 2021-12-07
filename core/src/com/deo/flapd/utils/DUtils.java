@@ -1,5 +1,16 @@
 package com.deo.flapd.utils;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
+import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.sqrt;
+import static java.lang.StrictMath.cos;
+import static java.lang.StrictMath.sin;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.enemies.Bosses;
+import com.deo.flapd.model.environment.EnvironmentalEffects;
 
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
@@ -29,17 +41,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
-
-import static com.badlogic.gdx.math.MathUtils.random;
-import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
-import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
-import static java.lang.Math.abs;
-import static java.lang.Math.floor;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import static java.lang.Math.sqrt;
-import static java.lang.StrictMath.cos;
-import static java.lang.StrictMath.sin;
 
 public class DUtils {
     
@@ -561,21 +562,23 @@ public class DUtils {
         }
     }
     
-    public static void drawBg(SpriteBatch batch, Texture bg1, Texture bg2, float warpSpeed, float movement) {
+    public static void drawBg(SpriteBatch batch, Texture bg1, Texture bg2, float warpSpeed, float movement, EnvironmentalEffects environmentalEffects, float delta) {
         if (warpSpeed > 0) {
             batch.setColor(1, 1, 1, 0.5f);
+        } else {
+            environmentalEffects.update(delta);
+            environmentalEffects.drawEffects(batch);
+            environmentalEffects.drawBase(batch);
+            batch.setColor(1, 1, 1, 0.85f);
         }
         for (int i = 0; i < warpSpeed / 7 + 1; i++) {
             batch.draw(bg1, 0, 0, (int) (movement * 50) - i * 3, -240, 800, 720);
         }
-        if (warpSpeed > 0) {
-            batch.setColor(1, 1, 1, 1);
-        }
         if (warpSpeed < 20) {
             batch.setColor(1, 1, 1, (35 - warpSpeed) / 35f);
             batch.draw(bg2, 0, 0, (int) (movement * 53), -240, 800, 720);
-            batch.setColor(1, 1, 1, 1);
         }
+        batch.setColor(1, 1, 1, 1);
     }
     
     public static boolean handleDebugInput(OrthographicCamera camera, boolean drawScreenExtenders) {

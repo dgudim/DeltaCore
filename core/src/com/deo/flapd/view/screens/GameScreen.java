@@ -129,7 +129,7 @@ public class GameScreen implements Screen {
         
         checkpoint = new Checkpoint(compositeManager, player);
         
-        gameLogic = new GameLogic(player, newGame, game, environmentalEffects, checkpoint);
+        gameLogic = new GameLogic(player, newGame, game, checkpoint);
         
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         this.musicManager.setVolume(getFloat(Keys.musicVolume) / 100f);
@@ -166,10 +166,6 @@ public class GameScreen implements Screen {
         batch.begin();
         batch.enableBlending();
         
-        environmentalEffects.update(delta);
-        environmentalEffects.drawEffects(batch);
-        environmentalEffects.drawBase(batch);
-        
         if (warpSpeed > 0) {
             warpTime += delta;
             player.scaleFireMotion((1 / previousFireMotionScale) * (warpSpeed / 17.5f + 1));
@@ -181,7 +177,7 @@ public class GameScreen implements Screen {
             warpSoundPlaying = false;
         }
         
-        drawBg(batch, bg1, bg2, warpSpeed, movement);
+        drawBg(batch, bg1, bg2, warpSpeed, movement, environmentalEffects, delta);
         if (warpTime > 1 && warpSpeed > 0) {
             warpSpeed = clamp(warpSpeed - delta * 100, 0, warpSpeed);
         }

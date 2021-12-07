@@ -1,10 +1,10 @@
 package com.deo.flapd.model.environment;
 
+import static com.deo.flapd.utils.DUtils.getRandomBoolean;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.deo.flapd.utils.CompositeManager;
-
-import static com.deo.flapd.utils.DUtils.getRandomBoolean;
 
 public class FallingShip extends EnvironmentalEffect {
     
