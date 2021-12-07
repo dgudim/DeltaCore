@@ -71,7 +71,7 @@ public class Boss {
     String bossMusic;
     MusicManager musicManager;
     
-    Boss(String bossName, CompositeManager compositeManager) {
+    Boss(String bossName, CompositeManager compositeManager, Player player) {
         log("------------------------------------------------------\n", DEBUG);
         log("---------loading " + bossName, DEBUG);
         long genTime = TimeUtils.millis();
@@ -199,6 +199,8 @@ public class Boss {
         log("loaded " + bossName + " in " + TimeUtils.timeSinceMillis(genTime) + "ms", DEBUG);
         log(parts.size + " parts", DEBUG);
         log(phases.size + " phases", DEBUG);
+        
+        setTargetPlayer(player);
     }
     
     void draw(SpriteBatch batch, float delta) {
@@ -260,7 +262,7 @@ public class Boss {
         phases.get(0).activate();
     }
     
-    void setTargetPlayer(Player player) {
+    private void setTargetPlayer(Player player) {
         if (hasAi) {
             bossAi.initialize(player, body);
         }

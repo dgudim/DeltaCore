@@ -1,6 +1,8 @@
 package com.deo.flapd.model.loot;
 
-import com.badlogic.gdx.assets.AssetManager;
+import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.getFloat;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
@@ -10,15 +12,12 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 
-import static com.deo.flapd.utils.DUtils.addInteger;
-import static com.deo.flapd.utils.DUtils.getFloat;
-
 public class Drops {
     
     String[] availableDrops = {
             "item.coloring_crystal", "item.ore", "item.metal_shard", "item.rubber", "item.plastic", "item.wire", "item.bolt", "item.cog",
             "item.glass_shard", "item.metal_sheet", "item.red_crystal",
-            "item.energy_cell", "item.cyan_warp_shard", "item.green_warp_shard", "item.purple_crystal", "item.core_shard"};
+            "item.energy_cell",  "item.green_warp_shard", "item.cyan_warp_shard", "item.purple_crystal", "item.core_shard"};
     
     private final TextureAtlas itemAtlas;
     private final Array<Drop> drops;

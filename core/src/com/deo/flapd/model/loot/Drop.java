@@ -1,15 +1,15 @@
 package com.deo.flapd.model.loot;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static java.lang.StrictMath.abs;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.deo.flapd.model.Entity;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static java.lang.StrictMath.abs;
 
 public class Drop extends Entity {
     
@@ -31,7 +31,7 @@ public class Drop extends Entity {
             type = "uraniumCell";
             pack_level = clamp((getRandomInRange(0, 3) + 1), 1, 4);
         }else{
-            type = drops.availableDrops[clamp(getRandomInRange(1, rarity + 10), 0, drops.availableDrops.length)];
+            type = drops.availableDrops[clamp(getRandomInRange(0, rarity + 11), 0, drops.availableDrops.length)];
         }
         
         entitySprite = new Sprite(itemAtlas.findRegion(type));

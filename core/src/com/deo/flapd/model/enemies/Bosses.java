@@ -1,5 +1,7 @@
 package com.deo.flapd.model.enemies;
 
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
@@ -9,8 +11,6 @@ import com.deo.flapd.utils.CompositeManager;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-
 public class Bosses {
     
     public static Array<Boss> bosses;
@@ -18,19 +18,10 @@ public class Bosses {
     static final ExecutorService secondThread = Executors.newFixedThreadPool(10);
     static boolean stopThread = false;
     
-    public Bosses() {
+    public Bosses(CompositeManager compositeManager, Player player) {
         bosses = new Array<>();
-    }
-    
-    public void loadBosses(CompositeManager compositeManager) {
         for (String bossName : bossNames) {
-            bosses.add(new Boss(bossName, compositeManager));
-        }
-    }
-    
-    public void setTargetPlayer(Player player) {
-        for (int i = 0; i < bosses.size; i++) {
-            bosses.get(i).setTargetPlayer(player);
+            bosses.add(new Boss(bossName, compositeManager, player));
         }
     }
     

@@ -114,16 +114,14 @@ public class GameScreen implements Screen {
         enemies = new Enemies(compositeManager);
         enemies.loadEnemies();
         
-        bosses = new Bosses();
-        bosses.loadBosses(compositeManager);
-        
         player = new Player(compositeManager, 0, 204, newGame, enemies);
-        
-        enemies.setTargetPlayer(player);
-        bosses.setTargetPlayer(player);
     
         drops = new Drops(compositeManager, 50, player);
         compositeManager.setDrops(drops);
+        
+        bosses = new Bosses(compositeManager, player);
+        
+        enemies.setTargetPlayer(player);
         
         gameUi = new GameUi(viewport, compositeManager, player);
         

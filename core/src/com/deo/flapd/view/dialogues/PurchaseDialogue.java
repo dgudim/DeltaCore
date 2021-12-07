@@ -1,5 +1,11 @@
 package com.deo.flapd.view.dialogues;
 
+import static com.deo.flapd.utils.DUtils.addInteger;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.putString;
+import static com.deo.flapd.utils.DUtils.subtractInteger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -30,12 +36,6 @@ import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
-
-import static com.deo.flapd.utils.DUtils.addInteger;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.putString;
-import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 public class PurchaseDialogue extends MoneyDialogue {
     
@@ -126,7 +126,7 @@ public class PurchaseDialogue extends MoneyDialogue {
             cogs_text.setColor(Color.valueOf("#DD0000"));
         }
         
-        final Image uraniumCell = new Image(itemAtlas.findRegion("uraniumCell.png"));
+        final Image uraniumCell = new Image(itemAtlas.findRegion("uraniumCell"));
         uraniumCell.setScaling(Scaling.fit);
         holder.add(uraniumCell).size(40, 40);
         holder.add(uraniumCells_text).padLeft(4);
