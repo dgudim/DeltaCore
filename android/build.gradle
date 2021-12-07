@@ -24,7 +24,7 @@ android {
         applicationId "com.deo.flapd"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 1
+        versionCode Integer.parseInt(props.getProperty("buildversion").substring(0, props.getProperty("buildversion").indexOf("b")).replace(".", "").replace("v", ""))
         versionName props.getProperty("buildversion")
     }
     buildTypes {
