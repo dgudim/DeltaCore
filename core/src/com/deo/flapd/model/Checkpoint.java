@@ -1,5 +1,13 @@
 package com.deo.flapd.model;
 
+import static com.deo.flapd.control.GameVariables.bossWave;
+import static com.deo.flapd.control.GameVariables.score;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.putBoolean;
+import static com.deo.flapd.utils.DUtils.putFloat;
+import static com.deo.flapd.utils.DUtils.putInteger;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
@@ -10,14 +18,6 @@ import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
-
-import static com.deo.flapd.control.GameVariables.bossWave;
-import static com.deo.flapd.control.GameVariables.score;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.putBoolean;
-import static com.deo.flapd.utils.DUtils.putFloat;
-import static com.deo.flapd.utils.DUtils.putInteger;
 
 public class Checkpoint extends Entity {
     
