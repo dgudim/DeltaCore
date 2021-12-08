@@ -1,12 +1,5 @@
 package com.deo.flapd.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.util.ArrayList;
-
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.lerp;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
@@ -16,6 +9,13 @@ import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.readObjectFromFile;
 import static com.deo.flapd.utils.MusicManager.SourceType.COLLECTION;
 import static com.deo.flapd.utils.MusicManager.SourceType.SINGLE;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.util.ArrayList;
 
 public class MusicManager {
     

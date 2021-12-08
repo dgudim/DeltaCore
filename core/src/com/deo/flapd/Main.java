@@ -124,6 +124,7 @@ public class Main extends Game {
             logException(e);
             log("rendering error occurred, dump of preferences\n" + getPrefs() + "\n", CRITICAL_ERROR);
             log("force exiting", INFO);
+            dispose();
             System.exit(0);
         }
     }

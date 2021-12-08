@@ -4,6 +4,7 @@ import static com.deo.flapd.control.GameVariables.bossWave;
 import static com.deo.flapd.control.GameVariables.score;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.lerpWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
@@ -33,6 +34,7 @@ public class Checkpoint extends Entity {
     private float destination_posY;
     
     private int lastCheckpoint;
+    private int checkpointSpawnSpacing = 5000;
     
     public Checkpoint(CompositeManager compositeManager, Player player, boolean newGame) {
         assetManager = compositeManager.getAssetManager();
@@ -43,6 +45,7 @@ public class Checkpoint extends Entity {
         setPositionAndRotation(1000, 1000, 0);
         init();
         
+        speed = 100;
         this.player = player;
         
         if (!newGame) {
@@ -55,17 +58,20 @@ public class Checkpoint extends Entity {
     public void update(float delta) {
         updateEntity(delta);
         if (!bossWave) {
-            if (score > lastCheckpoint + 10) {
+            if (score > lastCheckpoint + checkpointSpawnSpacing) {
                 lastCheckpoint = score;
-                spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100, 1);
+                spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100);
             }
         }
+        x = lerpWithConstantSpeed(x, destination_posX, speed, delta);
+        y = lerpWithConstantSpeed(y, destination_posY, speed, delta);
     }
     
-    public void spawn(float destination_posX, float destination_posY, float speed) {
+    public void spawn(float destination_posX, float destination_posY) {
         this.destination_posX = destination_posX;
         this.destination_posY = destination_posY;
-        this.speed = speed;
+        
+        entitySprite.setRegion((Texture) assetManager.get("checkpoint.png"));
         
         x = 950;
         y = getRandomInRange(0, 201) + 100;
@@ -90,26 +96,12 @@ public class Checkpoint extends Entity {
     
     public void drawBase(SpriteBatch batch) {
         
-        if (destination_posX < x) {
-            x -= speed;
-        }
-        
-        if (destination_posY < y) {
-            y -= speed;
-        }
-        
-        if (destination_posY > y) {
-            y += speed;
-        }
-        
         entitySprite.draw(batch);
         
         if (player.overlaps(this) && player.health > 0 && !checkpointState) {
             checkpointState = true;
             entitySprite.setRegion((Texture) assetManager.get("checkpoint_green.png"));
             destination_posY = 900;
-            destination_posX = x;
-            speed = 5;
             putInteger(Keys.enemiesKilled, GameVariables.enemiesKilled);
             putInteger(Keys.moneyEarned, GameVariables.moneyEarned);
             putInteger(Keys.moneyAmount, GameVariables.money);
