@@ -401,6 +401,9 @@ public class GameUi {
                 setWarpButtonState(WarpButtonState.AVAILABLE);
             }
         }
+    
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+            game.pause();
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             soundManager.playSound_noLink("click");

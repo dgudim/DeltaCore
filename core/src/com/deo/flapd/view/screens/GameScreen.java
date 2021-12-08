@@ -149,7 +149,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         
-        delta = is_paused ? 0 : delta;
+        delta = (is_paused && warpSpeed == 0) ? 0 : delta;
         float originalDelta = delta;
         float playerDelta = delta * playerDeltaMultiplier;
         delta *= globalDeltaMultiplier;
@@ -160,7 +160,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.setProjectionMatrix(camera.combined);
         
-        gameLogic.handleInput(playerDelta, gameUi.getDeltaX(), gameUi.getDeltaY(), gameUi.is_firing, gameUi.is_firing_secondary);
+        player.update(gameUi.getDeltaX(), gameUi.getDeltaY(), playerDelta, gameUi.is_firing, gameUi.is_firing_secondary);
         
         if (enableShader) {
             postProcessor.capture();
@@ -190,7 +190,6 @@ public class GameScreen implements Screen {
         bosses.update(delta);
         player.drawEffects(batch, playerDelta);
         player.drawBullets(batch, delta);
-        player.updateBulletReload(playerDelta);
         enemies.drawEffects(batch, delta);
         checkpoint.drawEffects(batch, delta);
         

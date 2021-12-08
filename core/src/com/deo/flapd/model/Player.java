@@ -9,6 +9,7 @@ import static com.deo.flapd.utils.DUtils.lerpWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -251,7 +252,44 @@ public class Player extends Entity {
         bullet = new PlayerBullet(assetManager, this, enemies, newGame);
     }
     
-    public void accelerate(float deltaX, float deltaY, float delta) {
+    public void update(float deltaX, float deltaY, float delta, boolean shooting, boolean shootingSecondary){
+        updateWeapon(shooting, shootingSecondary, delta);
+        updateSpeed(deltaX, deltaY, delta);
+    }
+    
+    public void updateWeapon(boolean shooting, boolean shootingSecondary, float delta){
+    
+        bullet.updateReload(delta);
+        
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
+            shooting = true;
+        if (Gdx.input.isKeyPressed(Input.Keys.M))
+            shootingSecondary = true;
+        
+        if (shooting) {
+            bullet.spawn(1, false);
+        }
+    
+        if (shootingSecondary) {
+            bullet.spawn(1.5f, true);
+        }
+    
+        if (bullet.isLaser) {
+            bullet.updateLaser(shooting || shootingSecondary);
+        }
+    }
+    
+    public void updateSpeed(float deltaX, float deltaY, float delta) {
+    
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
+            deltaY = 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.A))
+            deltaX = -1;
+        if (Gdx.input.isKeyPressed(Input.Keys.S))
+            deltaY = -1;
+        if (Gdx.input.isKeyPressed(Input.Keys.D))
+            deltaX = 1;
+        
         speedX = lerpWithConstantSpeed(speedX, speed * deltaX, acceleration, delta);
         speedY = lerpWithConstantSpeed(speedY, speed * deltaY, acceleration, delta);
         x = clamp(x + speedX * delta, 0, 800 - width);
@@ -288,10 +326,6 @@ public class Player extends Entity {
     
     public void drawBullets(SpriteBatch batch, float delta) {
         bullet.draw(batch, delta);
-    }
-    
-    public void updateBulletReload(float delta) {
-        bullet.updateReload(delta);
     }
     
     @Override
