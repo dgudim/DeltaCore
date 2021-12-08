@@ -31,7 +31,7 @@ public class Drop extends Entity {
             type = "uraniumCell";
             pack_level = clamp((getRandomInRange(0, 3) + 1), 1, 4);
         }else{
-            type = drops.availableDrops[clamp(getRandomInRange(0, rarity + 10), 0, drops.availableDrops.length)];
+            type = drops.availableDrops[clamp(getRandomInRange(0, rarity + 10), 0, drops.availableDrops.length - 1)];
         }
         
         entitySprite = new Sprite(itemAtlas.findRegion(type));

@@ -23,7 +23,7 @@
       "drops": {
         "items": {
           "timer": 1.3,
-          "rarity": [3, 7],
+          "rarity": [3, 6],
           "count": [1, 5]
         },
         "money": {
