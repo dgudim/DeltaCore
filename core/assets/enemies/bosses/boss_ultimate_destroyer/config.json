@@ -2,7 +2,7 @@
   "textures": "bossUltimateDestroyer.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": -25000,
+    "score": 25000,
     "randomness": 1000
   },
   "parts": {
