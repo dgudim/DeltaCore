@@ -34,7 +34,7 @@ public class Checkpoint extends Entity {
     private float destination_posY;
     
     private int lastCheckpoint;
-    private int checkpointSpawnSpacing = 5000;
+    private final int checkpointSpawnSpacing = 5000;
     
     public Checkpoint(CompositeManager compositeManager, Player player, boolean newGame) {
         assetManager = compositeManager.getAssetManager();
@@ -45,6 +45,8 @@ public class Checkpoint extends Entity {
         setPositionAndRotation(1000, 1000, 0);
         init();
         
+        destination_posX = 1000;
+        destination_posY = 1000;
         speed = 100;
         this.player = player;
         

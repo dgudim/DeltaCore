@@ -111,7 +111,7 @@ public class ItemSlotManager {
             slotCount = loadSlots();
         }
         if (slotCount == 0) {
-            final TextButton update = uiComposer.addTextButton("workshopGreen", localeManager.get("workshop.market.reset"), 0.48f);
+            final TextButton update = uiComposer.addTextButton("defaultLight", localeManager.get("workshop.market.reset"), 0.27f);
             update.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
