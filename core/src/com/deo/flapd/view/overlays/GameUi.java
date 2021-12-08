@@ -37,7 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
@@ -414,8 +414,8 @@ public class GameUi {
         stage.act(delta);
         batch.begin();
         font_numbers.getData().setScale(0.3f * uiScale);
-        font_numbers.draw(batch, "" + GameLogic.score, 537 - 263 * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
-        font_numbers.draw(batch, "" + GameLogic.money, (537 - 122) - (263 + 122) * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
+        font_numbers.draw(batch, "" + GameVariables.score, 537 - 263 * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
+        font_numbers.draw(batch, "" + GameVariables.money, (537 - 122) - (263 + 122) * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
         font_main.getData().setScale(0.27f * uiScale);
         
         if (showFps) {
@@ -476,7 +476,7 @@ public class GameUi {
         stage.dispose();
         pauseStage.dispose();
         
-        putInteger(Keys.moneyAmount, GameLogic.money);
+        putInteger(Keys.moneyAmount, GameVariables.money);
         
         setTimeWarpState(1, 1, 0, false, true);
     }

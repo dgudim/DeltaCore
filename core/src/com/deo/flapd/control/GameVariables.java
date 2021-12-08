@@ -11,10 +11,7 @@ import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.utils.Keys;
 
 
-public class GameLogic {
-    
-    private final Player player;
-    
+public class GameVariables {
     public static int bonuses_collected;
     
     public static boolean bossWave;
@@ -23,20 +20,7 @@ public class GameLogic {
     public static int enemiesKilled;
     public static int money, moneyEarned;
     
-    private final Game game;
-    
-    private final PlayerBullet playerBullet;
-    
-    public GameLogic(Player player, boolean newGame, Game game, Checkpoint checkpoint) {
-        this.player = player;
-        
-        this.game = game;
-        
-        playerBullet = this.player.bullet;
-        
-        //difficulty = getFloat("difficulty");
-        // TODO: 5/6/2021 implement difficulty
-        
+    public static void init(boolean newGame) {
         if (!newGame) {
             bonuses_collected = getInteger(Keys.bonusesCollected);
             

@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Enemies;
@@ -222,7 +222,7 @@ public class PlayerBullet {
     public void spawn(float damageMultiplier, boolean is_charged) {
         
         if (!isLaser) {
-            if (player.charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameLogic.bonuses_collected + 1) / 10.0f)) {
+            if (player.charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameVariables.bonuses_collected + 1) / 10.0f)) {
                 for (int i = 0; i < bulletsPerShot; i++) {
                     Rectangle bullet = new Rectangle();
                     
@@ -291,7 +291,7 @@ public class PlayerBullet {
                 millis = 0;
             }
         } else {
-            damage = baseDamage * (GameLogic.bonuses_collected + 1) / 10f;
+            damage = baseDamage * (GameVariables.bonuses_collected + 1) / 10f;
         }
     }
     
@@ -445,7 +445,7 @@ public class PlayerBullet {
     }
     
     public void updateReload(float delta) {
-        millis = millis + 50 * (GameLogic.bonuses_collected / 100.0f + 1) * delta * gunCount;
+        millis = millis + 50 * (GameVariables.bonuses_collected / 100.0f + 1) * delta * gunCount;
     }
     
     public void dispose() {

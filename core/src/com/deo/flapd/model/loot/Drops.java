@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
@@ -72,8 +72,8 @@ public class Drops {
     
     private void removeDrop(int i) {
         if (drops.get(i).isMoneyDrop) {
-            GameLogic.money += drops.get(i).pack_level;
-            GameLogic.moneyEarned += drops.get(i).pack_level;
+            GameVariables.money += drops.get(i).pack_level;
+            GameVariables.moneyEarned += drops.get(i).pack_level;
         } else {
             addInteger("item_" + drops.get(i).type, 1);
         }

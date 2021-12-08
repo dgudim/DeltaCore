@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Checkpoint;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.enemies.Bosses;
@@ -50,7 +50,6 @@ public class GameScreen implements Screen {
     
     private final Player player;
     private final GameUi gameUi;
-    private final GameLogic gameLogic;
     
     private final OrthographicCamera camera;
     private final ScreenViewport viewport;
@@ -131,7 +130,7 @@ public class GameScreen implements Screen {
         
         checkpoint = new Checkpoint(compositeManager, player, newGame);
         
-        gameLogic = new GameLogic(player, newGame, game, checkpoint);
+        GameVariables.init(newGame);
         
         this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
         this.musicManager.setVolume(getFloat(Keys.musicVolume) / 100f);

@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deo.flapd.control.EnemyAi;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.BulletData;
@@ -220,7 +220,7 @@ public class Boss {
     }
     
     void update(float delta) {
-        if (GameLogic.score >= spawnScore && !hasAlreadySpawned) {
+        if (GameVariables.score >= spawnScore && !hasAlreadySpawned) {
             spawn();
         }
         if (visible) {
@@ -255,7 +255,7 @@ public class Boss {
         visible = true;
         hasAlreadySpawned = true;
         putBoolean("boss_spawned_" + bossName, true);
-        GameLogic.bossWave = true;
+        GameVariables.bossWave = true;
         if (!bossMusic.equals("")) {
             musicManager.setNewMusicSource(bossMusic, 1);
         }
@@ -281,7 +281,7 @@ public class Boss {
         visible = false;
         body.x = 1500;
         body.y = 1500;
-        GameLogic.bossWave = false;
+        GameVariables.bossWave = false;
         
         if (!bossMusic.equals("")) {
             this.musicManager.setNewMusicSource("music/main", 1, 5, 5);

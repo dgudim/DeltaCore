@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.BulletData;
@@ -200,13 +200,13 @@ public class Enemy extends Entity {
             if (damage > 0) {
                 color = Color.valueOf(data.hitColor);
                 health -= damage;
-                GameLogic.score += 30 + 10 * (damage / 50 - 1);
+                GameVariables.score += 30 + 10 * (damage / 50 - 1);
             }
             
             if (overlaps(playerBullet.laser.getBoundingRectangle())) {
                 color = Color.valueOf(data.hitColor);
                 if (health > 0) {
-                    GameLogic.score += 10;
+                    GameVariables.score += 10;
                 }
                 health -= playerBullet.damage / 10f;
             }
@@ -314,7 +314,7 @@ public class Enemy extends Entity {
         data.explosionParticleEffect.setPosition(x + originX, y + originY);
         isDead = true;
         
-        GameLogic.enemiesKilled++;
+        GameVariables.enemiesKilled++;
         
         drops.dropMoney(entityHitBox, (int) (getRandomInRange(data.moneyCount[0], data.moneyCount[1]) * difficulty), data.moneyTimer);
         if (getRandomInRange(0, 100) <= data.bonusChance) {

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
@@ -71,10 +71,10 @@ public class Bonuses {
                 removeBonus(i, !(bonuses.get(i).y < -bonuses.get(i).height) && !(bonuses.get(i).y > 480) && !(bonuses.get(i).x < -bonuses.get(i).width) && !(bonuses.get(i).x > 800));
             }
         }
-        if (GameLogic.bonuses_collected > 0) {
+        if (GameVariables.bonuses_collected > 0) {
             font_text.setColor(Color.WHITE);
             font_text.getData().setScale(0.3f * uiScale);
-            font_text.draw(batch, "X" + GameLogic.bonuses_collected, 333 - 463 * (uiScale - 1), 425 - 55 * (uiScale - 1), 24 * uiScale, 1, false);
+            font_text.draw(batch, "X" + GameVariables.bonuses_collected, 333 - 463 * (uiScale - 1), 425 - 55 * (uiScale - 1), 24 * uiScale, 1, false);
             bonus_bullets_t.draw(batch, 1);
             font_text.setColor(Color.BLACK);
         }

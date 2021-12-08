@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.Keys;
@@ -67,8 +67,8 @@ public class Bonus extends Entity {
                     player.health = clamp(player.health + 15, -1000, player.healthCapacity * player.healthMultiplier);
                     break;
                 case BULLETS:
-                    if (GameLogic.bonuses_collected < 10) {
-                        GameLogic.bonuses_collected += 1;
+                    if (GameVariables.bonuses_collected < 10) {
+                        GameVariables.bonuses_collected += 1;
                     } else {
                         addInteger(Keys.cogAmount, 1);
                     }

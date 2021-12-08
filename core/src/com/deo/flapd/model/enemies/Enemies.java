@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
@@ -81,11 +81,11 @@ public class Enemies {
             EnemyData currentData = enemies.get(i);
             if (currentData.millis > currentData.spawnDelay * 100
                     && getRandomInRange(0, 45) >= 15
-                    && currentData.onBossWave == GameLogic.bossWave
-                    && GameLogic.score >= currentData.scoreSpawnConditions[0]
-                    && GameLogic.score <= currentData.scoreSpawnConditions[1]
-                    && GameLogic.enemiesKilled >= currentData.enemyCountSpawnConditions[0]
-                    && GameLogic.enemiesKilled <= currentData.enemyCountSpawnConditions[1]) {
+                    && currentData.onBossWave == GameVariables.bossWave
+                    && GameVariables.score >= currentData.scoreSpawnConditions[0]
+                    && GameVariables.score <= currentData.scoreSpawnConditions[1]
+                    && GameVariables.enemiesKilled >= currentData.enemyCountSpawnConditions[0]
+                    && GameVariables.enemiesKilled <= currentData.enemyCountSpawnConditions[1]) {
                 SpawnEnemy(currentData);
                 currentData.millis = 0;
             }

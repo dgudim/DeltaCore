@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
@@ -66,7 +66,7 @@ public class GameOverScreen implements Screen {
         AssetManager assetManager = compositeManager.getAssetManager();
         
         enableShader = getBoolean(Keys.enableBloom);
-        score = GameLogic.score;
+        score = GameVariables.score;
         highScore = getInteger(Keys.highScore);
         difficulty = getFloat(Keys.difficulty);
         
@@ -78,11 +78,11 @@ public class GameOverScreen implements Screen {
             isNewHighScore = false;
         }
         
-        enemiesKilled = GameLogic.enemiesKilled;
+        enemiesKilled = GameVariables.enemiesKilled;
         
         bulletsShot = player.bulletsShot;
         
-        moneyEarned = GameLogic.moneyEarned;
+        moneyEarned = GameVariables.moneyEarned;
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);

@@ -5,16 +5,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.deo.flapd.control.GameLogic;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
-import static com.deo.flapd.control.GameLogic.bossWave;
-import static com.deo.flapd.control.GameLogic.score;
+import static com.deo.flapd.control.GameVariables.bossWave;
+import static com.deo.flapd.control.GameVariables.score;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.putBoolean;
@@ -112,9 +110,9 @@ public class Checkpoint extends Entity {
             destination_posY = 900;
             destination_posX = x;
             speed = 5;
-            putInteger(Keys.enemiesKilled, GameLogic.enemiesKilled);
-            putInteger(Keys.moneyEarned, GameLogic.moneyEarned);
-            putInteger(Keys.moneyAmount, GameLogic.money);
+            putInteger(Keys.enemiesKilled, GameVariables.enemiesKilled);
+            putInteger(Keys.moneyEarned, GameVariables.moneyEarned);
+            putInteger(Keys.moneyAmount, GameVariables.money);
             putInteger(Keys.playerScore, score);
             putFloat(Keys.playerHealthValue, player.health);
             putFloat(Keys.playerShieldValue, player.shieldCharge);
@@ -122,7 +120,7 @@ public class Checkpoint extends Entity {
             for (int i = 0; i < Bosses.bosses.size; i++) {
                 putBoolean("boss_spawned_" + Bosses.bossNames[i], Bosses.bosses.get(i).hasAlreadySpawned);
             }
-            putInteger(Keys.bonusesCollected, GameLogic.bonuses_collected);
+            putInteger(Keys.bonusesCollected, GameVariables.bonuses_collected);
             putInteger(Keys.lastCheckpointScore, lastCheckpoint);
             putInteger(Keys.bulletsShot, player.bulletsShot);
             putFloat(Keys.lastPLayerX, player.x);
