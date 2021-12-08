@@ -31,7 +31,6 @@ public class Bonus extends Entity {
         entitySprite = new Sprite(bonusesAtlas.findRegion(("bonus_" + bonusType).toLowerCase()));
         setSize(maxSize, maxSize);
         setPositionAndRotation(spawnAt.getX() + spawnAt.width / 2f - width / 2, spawnAt.getY() + spawnAt.height / 2f - height / 2, 0);
-        health = 1;
         init();
         angle = getRandomInRange(0, 1000) / 500f - 1;
     }

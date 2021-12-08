@@ -20,8 +20,6 @@ public class GameLogic {
     
     public static boolean bossWave;
     
-    public static int lastCheckpoint;
-    
     public static int score;
     public static int enemiesKilled;
     public static int money, moneyEarned;
@@ -29,7 +27,6 @@ public class GameLogic {
     private final Game game;
     
     private final PlayerBullet playerBullet;
-    private final Checkpoint checkpoint;
     
     public GameLogic(Player player, boolean newGame, Game game, Checkpoint checkpoint) {
         this.player = player;
@@ -37,14 +34,12 @@ public class GameLogic {
         this.game = game;
         
         playerBullet = this.player.bullet;
-        this.checkpoint = checkpoint;
         
         //difficulty = getFloat("difficulty");
         // TODO: 5/6/2021 implement difficulty
         
         if (!newGame) {
             bonuses_collected = getInteger(Keys.bonusesCollected);
-            lastCheckpoint = getInteger(Keys.lastCheckpointScore);
             
             score = getInteger(Keys.playerScore);
             moneyEarned = getInteger(Keys.moneyEarned);
@@ -52,7 +47,6 @@ public class GameLogic {
             enemiesKilled = getInteger(Keys.enemiesKilled);
         } else {
             bonuses_collected = 0;
-            lastCheckpoint = 0;
             
             score = 0;
             moneyEarned = 0;
@@ -91,13 +85,6 @@ public class GameLogic {
         
         if (playerBullet.isLaser) {
             playerBullet.updateLaser(is_firing || is_firing_secondary);
-        }
-        
-        if (!bossWave) {
-            if (score > lastCheckpoint + 9000) {
-                lastCheckpoint = score;
-                checkpoint.spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100, 1);
-            }
         }
     }
 }

@@ -101,6 +101,7 @@ public class EnemyBullet extends Entity {
             entitySprite.setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
             entitySprite.setSize(data.width, scaledHeight);
+            updateHealth(delta);
         } else {
             super.updateEntity(delta);
         }
@@ -178,12 +179,10 @@ public class EnemyBullet extends Entity {
         if (!isDead) {
             if (data.isLaser) {
                 data.fadeOutTimer = clamp(data.fadeOutTimer - delta, 0f, data.maxFadeOutTimer);
-                updateEntity(delta);
                 if (data.fadeOutTimer <= 0) {
-                    entityHitBox.setPosition(-1000, -1000);
-                    isDead = true;
-                    health = 0;
+                    die();
                 }
+                updateEntity(delta);
             } else {
                 if (data.isHoming) {
                     rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
@@ -235,8 +234,7 @@ public class EnemyBullet extends Entity {
             data.explosionParticleEffect.setPosition(x + originX, y + originY);
             explosionStarted = true;
             entitySprite.setPosition(-100, -100);
-            isDead = true;
-            health = 0;
+            die();
         }
     }
     

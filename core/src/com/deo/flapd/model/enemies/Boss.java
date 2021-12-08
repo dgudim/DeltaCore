@@ -382,9 +382,6 @@ class BasePart extends Entity {
         if (hasCollision) {
             health = currentConfig.getFloat(1, "health");
             regeneration = currentConfig.getFloat(false, 0, "regeneration");
-        } else {
-            health = 1;
-            regeneration = 0;
         }
         maxHealth = health;
         width = currentConfig.getFloat(1, "width");

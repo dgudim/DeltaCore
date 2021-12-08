@@ -20,7 +20,7 @@ public class Entity {
     public float originX;
     public float originY;
     public float rotation = 0;
-    public float health;
+    public float health = 1;
     public float maxHealth;
     public float regeneration = 0;
     public float speed;
@@ -81,6 +81,11 @@ public class Entity {
         shapeRenderer.rect(entityHitBox.x, entityHitBox.y, entityHitBox.width, entityHitBox.height);
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.circle(x + originX, y + originY, 5);
+    }
+    
+    public void die(){
+        health = 0;
+        isDead = true;
     }
     
     public boolean overlaps(Entity entity) {

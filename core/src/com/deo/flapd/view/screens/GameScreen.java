@@ -129,7 +129,7 @@ public class GameScreen implements Screen {
         
         environmentalEffects = new EnvironmentalEffects(compositeManager);
         
-        checkpoint = new Checkpoint(compositeManager, player);
+        checkpoint = new Checkpoint(compositeManager, player, newGame);
         
         gameLogic = new GameLogic(player, newGame, game, checkpoint);
         
@@ -203,6 +203,7 @@ public class GameScreen implements Screen {
         player.drawSprites(batch, delta);
         enemies.draw(batch);
         enemies.update(delta);
+        checkpoint.update(delta);
         checkpoint.drawBase(batch);
         
         player.drawShield(batch, delta);

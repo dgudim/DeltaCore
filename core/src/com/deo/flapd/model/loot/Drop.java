@@ -39,7 +39,6 @@ public class Drop extends Entity {
         width = entitySprite.getWidth();
         height = entitySprite.getHeight();
         scaleBy(maxSize / Math.max(height, width));
-        health = 1;
         init();
         
         this.timer = timer * (getRandomInRange(0, 1000) / 1000f + 1);

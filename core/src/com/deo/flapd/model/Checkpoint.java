@@ -13,46 +13,55 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
+import static com.deo.flapd.control.GameLogic.bossWave;
+import static com.deo.flapd.control.GameLogic.score;
+import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putInteger;
 
-public class Checkpoint {
+public class Checkpoint extends Entity {
     
     private final ParticleEffectPoolLoader particleEffectPool;
     
-    private final Sprite checkpoint_blue;
-    private final Sprite checkpoint_green;
+    private final AssetManager assetManager;
+    
     private boolean checkpointState, effects;
-    private final Polygon bounds;
-    private final Rectangle shipBounds;
     private final Player player;
     private ParticleEffectPool.PooledEffect fire;
     private ParticleEffectPool.PooledEffect fire2;
-    private float speed;
     private float destination_posX;
     private float destination_posY;
     
-    public Checkpoint(CompositeManager compositeManager, Player player) {
-        AssetManager assetManager = compositeManager.getAssetManager();
+    private int lastCheckpoint;
+    
+    public Checkpoint(CompositeManager compositeManager, Player player, boolean newGame) {
+        assetManager = compositeManager.getAssetManager();
         particleEffectPool = compositeManager.getParticleEffectPool();
         
-        checkpoint_blue = new Sprite((Texture) assetManager.get("checkpoint.png"));
-        checkpoint_green = new Sprite((Texture) assetManager.get("checkpoint_green.png"));
-        
-        bounds = new Polygon(new float[]{0f, 0f, 102, 0f, 102, 102, 0f, 102});
+        entitySprite = new Sprite((Texture) assetManager.get("checkpoint.png"));
+        setSize(100, 100);
+        setPositionAndRotation(1000, 1000, 0);
+        init();
         
         this.player = player;
         
-        shipBounds = this.player.entityHitBox;
-        
-        bounds.setPosition(-200, -200);
-        
-        checkpoint_blue.setSize(0, 0);
-        checkpoint_green.setSize(0, 0);
-        checkpoint_blue.setPosition(1000, 1000);
-        checkpoint_green.setPosition(1000, 1000);
+        if (!newGame) {
+            lastCheckpoint = getInteger(Keys.lastCheckpointScore);
+        } else {
+            lastCheckpoint = 0;
+        }
+    }
+    
+    public void update(float delta) {
+        updateEntity(delta);
+        if (!bossWave) {
+            if (score > lastCheckpoint + 10) {
+                lastCheckpoint = score;
+                spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100, 1);
+            }
+        }
     }
     
     public void spawn(float destination_posX, float destination_posY, float speed) {
@@ -60,7 +69,8 @@ public class Checkpoint {
         this.destination_posY = destination_posY;
         this.speed = speed;
         
-        bounds.setPosition(950, getRandomInRange(0, 201) + 100);
+        x = 950;
+        y = getRandomInRange(0, 201) + 100;
         
         fire = particleEffectPool.getParticleEffectByPath("particles/fire_down.p");
         fire2 = particleEffectPool.getParticleEffectByPath("particles/fire_down.p");
@@ -72,8 +82,8 @@ public class Checkpoint {
     
     public void drawEffects(SpriteBatch batch, float delta) {
         if (effects) {
-            fire.setPosition(bounds.getX() + 18, bounds.getY() + 14);
-            fire2.setPosition(bounds.getX() + 84, bounds.getY() + 14);
+            fire.setPosition(x + 18, y + 14);
+            fire2.setPosition(x + 82, y + 14);
             
             fire.draw(batch, delta);
             fire2.draw(batch, delta);
@@ -82,39 +92,30 @@ public class Checkpoint {
     
     public void drawBase(SpriteBatch batch) {
         
-        if (destination_posX < bounds.getX()) {
-            bounds.setPosition(bounds.getX() - speed, bounds.getY());
+        if (destination_posX < x) {
+            x -= speed;
         }
         
-        if (destination_posY < bounds.getY()) {
-            bounds.setPosition(bounds.getX(), bounds.getY() - speed);
+        if (destination_posY < y) {
+            y -= speed;
         }
         
-        if (destination_posY > bounds.getY()) {
-            bounds.setPosition(bounds.getX(), bounds.getY() + speed);
+        if (destination_posY > y) {
+            y += speed;
         }
         
-        if (checkpointState) {
-            checkpoint_green.setPosition(bounds.getX(), bounds.getY());
-            checkpoint_green.setOrigin(bounds.getBoundingRectangle().getWidth() / 2, bounds.getBoundingRectangle().getHeight() / 2);
-            checkpoint_green.setSize(bounds.getBoundingRectangle().getWidth(), bounds.getBoundingRectangle().getHeight());
-            checkpoint_green.draw(batch);
-        } else {
-            checkpoint_blue.setPosition(bounds.getX(), bounds.getY());
-            checkpoint_blue.setOrigin(bounds.getBoundingRectangle().getWidth() / 2, bounds.getBoundingRectangle().getHeight() / 2);
-            checkpoint_blue.setSize(bounds.getBoundingRectangle().getWidth(), bounds.getBoundingRectangle().getHeight());
-            checkpoint_blue.draw(batch);
-        }
+        entitySprite.draw(batch);
         
-        if (shipBounds.overlaps(bounds.getBoundingRectangle()) && player.health > 0 && !checkpointState) {
+        if (player.overlaps(this) && player.health > 0 && !checkpointState) {
             checkpointState = true;
+            entitySprite.setRegion((Texture) assetManager.get("checkpoint_green.png"));
             destination_posY = 900;
-            destination_posX = bounds.getX();
+            destination_posX = x;
             speed = 5;
             putInteger(Keys.enemiesKilled, GameLogic.enemiesKilled);
             putInteger(Keys.moneyEarned, GameLogic.moneyEarned);
             putInteger(Keys.moneyAmount, GameLogic.money);
-            putInteger(Keys.playerScore, GameLogic.score);
+            putInteger(Keys.playerScore, score);
             putFloat(Keys.playerHealthValue, player.health);
             putFloat(Keys.playerShieldValue, player.shieldCharge);
             putFloat(Keys.playerChargeValue, player.charge);
@@ -122,16 +123,17 @@ public class Checkpoint {
                 putBoolean("boss_spawned_" + Bosses.bossNames[i], Bosses.bosses.get(i).hasAlreadySpawned);
             }
             putInteger(Keys.bonusesCollected, GameLogic.bonuses_collected);
-            putInteger(Keys.lastCheckpointScore, GameLogic.lastCheckpoint);
+            putInteger(Keys.lastCheckpointScore, lastCheckpoint);
             putInteger(Keys.bulletsShot, player.bulletsShot);
-            putFloat(Keys.lastPLayerX, shipBounds.getX());
-            putFloat(Keys.lastPLayerY, shipBounds.getY());
+            putFloat(Keys.lastPLayerX, player.x);
+            putFloat(Keys.lastPLayerY, player.y);
         }
         
-        if (bounds.getY() > 850 && checkpointState) {
+        if (y > 850 && checkpointState) {
             fire.free();
             fire2.free();
             checkpointState = false;
+            entitySprite.setRegion((Texture) assetManager.get("checkpoint.png"));
             effects = false;
         }
         
