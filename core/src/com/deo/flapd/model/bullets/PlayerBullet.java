@@ -1,5 +1,6 @@
 package com.deo.flapd.model.bullets;
 
+import static com.deo.flapd.control.GameVariables.bulletsShot;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -186,9 +187,9 @@ public class PlayerBullet extends Entity{
         explosionTimers = new Array<>();
         
         if (!newGame) {
-            this.player.bulletsShot = getInteger(Keys.bulletsShot);
+            bulletsShot = getInteger(Keys.bulletsShot);
         } else {
-            this.player.bulletsShot = 0;
+            bulletsShot = 0;
         }
         
         laser = new Sprite(bullets.findRegion("bullet_laser"));
@@ -277,7 +278,7 @@ public class PlayerBullet extends Entity{
                         trail.start();
                         trails.add(trail);
                     }
-                    player.bulletsShot++;
+                    bulletsShot++;
                 }
                 
                 if (soundVolume > 0) {

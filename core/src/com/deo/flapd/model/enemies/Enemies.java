@@ -1,5 +1,8 @@
 package com.deo.flapd.model.enemies;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,9 +16,6 @@ import com.deo.flapd.utils.Keys;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
 
 public class Enemies {
     

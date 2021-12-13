@@ -31,9 +31,15 @@ public class CompositeManager {
     
     private Game game;
     
+    private ScreenManager screenManager;
+    
     private Drops drops;
     
     public CompositeManager() {
+    }
+    
+    public ScreenManager getScreenManager() {
+        return screenManager;
     }
     
     public UIComposer getUiComposer() {
@@ -92,6 +98,10 @@ public class CompositeManager {
         this.particleEffectPool = particleEffectPool;
     }
     
+    public void setScreenManager(ScreenManager screenManager){
+        this.screenManager = screenManager;
+    }
+    
     public void setDrops(Drops drops) {
         this.drops = drops;
     }
@@ -147,5 +157,8 @@ public class CompositeManager {
     public void dispose() {
         particleEffectPool.dispose();
         assetManager.dispose();
+        screenManager.dispose();
+        blurProcessor.dispose();
+        batch.dispose();
     }
 }

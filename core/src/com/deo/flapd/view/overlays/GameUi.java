@@ -11,7 +11,6 @@ import static com.deo.flapd.view.screens.GameScreen.globalDeltaMultiplier;
 import static com.deo.flapd.view.screens.GameScreen.is_paused;
 import static com.deo.flapd.view.screens.GameScreen.playerDeltaMultiplier;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -43,11 +42,9 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
+import com.deo.flapd.utils.ScreenManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.ui.UIComposer;
-import com.deo.flapd.view.screens.GameOverScreen;
-import com.deo.flapd.view.screens.GameScreen;
-import com.deo.flapd.view.screens.MenuScreen;
 
 import java.util.Locale;
 
@@ -91,7 +88,7 @@ public class GameUi {
     private boolean timeWarpActive = false;
     private float powerConsumption;
     
-    private final Game game;
+    private final ScreenManager screenManager;
     private final CompositeManager compositeManager;
     private final SoundManager soundManager;
     
@@ -100,7 +97,7 @@ public class GameUi {
     public GameUi(ScreenViewport viewport, CompositeManager compositeManager, Player player) {
         
         this.compositeManager = compositeManager;
-        game = compositeManager.getGame();
+        screenManager = compositeManager.getScreenManager();
         soundManager = compositeManager.getSoundManager();
         AssetManager assetManager = compositeManager.getAssetManager();
         batch = compositeManager.getBatch();
@@ -360,7 +357,7 @@ public class GameUi {
             public void clicked(InputEvent event, float x, float y) {
                 soundManager.playSound_noLink("click");
                 if (is_paused) {
-                    game.setScreen(new MenuScreen(compositeManager));
+                    screenManager.setCurrentScreenMenuScreen();
                     is_paused = false;
                 }
             }
@@ -371,7 +368,7 @@ public class GameUi {
             public void clicked(InputEvent event, float x, float y) {
                 soundManager.playSound_noLink("click");
                 if (is_paused) {
-                    game.setScreen(new GameScreen(compositeManager, true));
+                    screenManager.setCurrentScreenGameScreen(true);
                     is_paused = false;
                 }
             }
@@ -401,13 +398,13 @@ public class GameUi {
                 setWarpButtonState(WarpButtonState.AVAILABLE);
             }
         }
-    
+        
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
-            game.pause();
+            screenManager.pauseGame();
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             soundManager.playSound_noLink("click");
-            game.pause();
+            screenManager.pauseGame();
         }
         
         stage.draw();
@@ -451,7 +448,7 @@ public class GameUi {
         }
         
         if (player.isDead && player.explosionEffect.isComplete()) {
-            game.setScreen(new GameOverScreen(compositeManager, player));
+            screenManager.setCurrentScreenGameOverScreen();
         }
     }
     

@@ -13,10 +13,8 @@ import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.utils.DUtils.putFloat;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.updateCamera;
-
 import static java.lang.StrictMath.max;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -40,6 +38,7 @@ import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
+import com.deo.flapd.utils.ScreenManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
@@ -53,16 +52,17 @@ public class LoadingScreen implements Screen {
     private final LocaleManager localeManager;
     private final SpriteBatch batch;
     private final BitmapFont font_main;
-    private final Game game;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private final ProgressBar loadingBar;
     private final ShapeRenderer shapeRenderer;
-    private float rotation, halfRotation, progress, millis;
     private final PostProcessor blurProcessor;
-    private final boolean enableShader;
-    private final long loadingTime;
     
+    private final ScreenManager screenManager;
+    
+    private float rotation, halfRotation, progress, millis;
+    private boolean enableShader;
+    private long loadingTime;
     private LoadingState loadingState;
     private String loadingStateName;
     
@@ -73,7 +73,7 @@ public class LoadingScreen implements Screen {
         blurProcessor = compositeManager.getBlurProcessor();
         assetManager = compositeManager.getAssetManager();
         localeManager = compositeManager.getLocaleManager();
-        game = compositeManager.getGame();
+        screenManager = compositeManager.getScreenManager();
         
         if (getFloat(Keys.uiScale) <= 0) {
             putFloat(Keys.uiScale, 1);
@@ -117,10 +117,20 @@ public class LoadingScreen implements Screen {
         loadingBar.setAnimateDuration(0.01f);
         
         enableShader = getBoolean(Keys.enableBloom);
-        
         setLoadingState(LoadingState.LOADING_TEXTURES);
         
         load();
+    }
+    
+    public void reset(){
+        enableShader = getBoolean(Keys.enableBloom);
+        millis = 0;
+        rotation = 0;
+        progress = 0;
+        halfRotation = 0;
+        loadingTime = 0;
+        loadingBar.setValue(0);
+        setLoadingState(LoadingState.LOADING_TEXTURES);
     }
     
     @Override
@@ -281,7 +291,6 @@ public class LoadingScreen implements Screen {
     
     @Override
     public void hide() {
-        game.getScreen().dispose();
     }
     
     public void dispose() {
@@ -321,7 +330,7 @@ public class LoadingScreen implements Screen {
                         compositeManager.setUiComposer(uiComposer);
                     }
                     log("loaded, took " + TimeUtils.timeSinceMillis(loadingTime) / 1000.0f + "s", INFO);
-                    game.setScreen(new MenuScreen(compositeManager));
+                    screenManager.setCurrentScreenMenuScreen();
                 }
                 if (compositeManager.getParticleEffectPool() == null) {
                     if (loadingState.equals(LoadingState.LOADING_PARTICLES)) {

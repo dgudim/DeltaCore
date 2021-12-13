@@ -68,7 +68,6 @@ public class Player extends Entity {
     private final Array<ParticleEffect> fires;
     
     public PlayerBullet bullet;
-    public int bulletsShot;
     
     public Player(CompositeManager compositeManager, float x, float y, boolean newGame, Enemies enemies) {
         AssetManager assetManager = compositeManager.getAssetManager();

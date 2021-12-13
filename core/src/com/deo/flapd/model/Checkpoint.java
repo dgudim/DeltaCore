@@ -1,6 +1,7 @@
 package com.deo.flapd.model;
 
 import static com.deo.flapd.control.GameVariables.bossWave;
+import static com.deo.flapd.control.GameVariables.bulletsShot;
 import static com.deo.flapd.control.GameVariables.score;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
@@ -116,7 +117,7 @@ public class Checkpoint extends Entity {
             }
             putInteger(Keys.bonusesCollected, GameVariables.bonuses_collected);
             putInteger(Keys.lastCheckpointScore, lastCheckpoint);
-            putInteger(Keys.bulletsShot, player.bulletsShot);
+            putInteger(Keys.bulletsShot, bulletsShot);
             putFloat(Keys.lastPLayerX, player.x);
             putFloat(Keys.lastPLayerY, player.y);
         }

@@ -27,21 +27,18 @@ import com.badlogic.gdx.utils.PropertiesUtils;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.ScreenManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.postprocessing.ShaderLoader;
 import com.deo.flapd.utils.postprocessing.effects.Bloom;
 import com.deo.flapd.utils.postprocessing.effects.MotionBlur;
-import com.deo.flapd.view.screens.LoadingScreen;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
 public class Main extends Game {
-    
-    private SpriteBatch batch;
-    private PostProcessor blurProcessor;
     
     private CompositeManager compositeManager;
     
@@ -57,8 +54,8 @@ public class Main extends Game {
             VERSION_NAME = "unspecified";
             log("Build version is not specified", WARNING);
         }
-        
-        batch = new SpriteBatch();
+    
+        SpriteBatch batch = new SpriteBatch();
         AssetManager assetManager = new AssetManager();
         
         clearLog();
@@ -66,7 +63,7 @@ public class Main extends Game {
         log("|-new session-|" + "  " + DateFormat.getDateTimeInstance().format(date) + "\n", INFO);
         
         ShaderLoader.BasePath = "shaders/";
-        blurProcessor = new PostProcessor(false, false, Gdx.app.getType() == Application.ApplicationType.Desktop);
+        PostProcessor blurProcessor = new PostProcessor(false, false, Gdx.app.getType() == Application.ApplicationType.Desktop);
         Bloom bloom = new Bloom((int) (Gdx.graphics.getWidth() * 0.25f), (int) (Gdx.graphics.getHeight() * 0.25f));
         MotionBlur motionBlur = new MotionBlur();
         motionBlur.setBlurOpacity(0);
@@ -100,6 +97,8 @@ public class Main extends Game {
         }
         
         compositeManager = new CompositeManager();
+        compositeManager.setGame(this);
+        compositeManager.setScreenManager(new ScreenManager(compositeManager));
         compositeManager.setLocaleManager(new LocaleManager());
         compositeManager.setAssetManager(assetManager);
         compositeManager.setBlurProcessor(blurProcessor);
@@ -107,13 +106,12 @@ public class Main extends Game {
         compositeManager.setMotionBlur(motionBlur);
         compositeManager.setMusicManager(new MusicManager(assetManager));
         compositeManager.setSoundManager(new SoundManager(assetManager));
-        compositeManager.setGame(this);
         compositeManager.setBatch(batch);
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
         compositeManager.setShapeRenderer(shapeRenderer);
         
-        this.setScreen(new LoadingScreen(compositeManager));
+        compositeManager.getScreenManager().setCurrentScreenLoadingScreen();
     }
     
     @Override
@@ -132,8 +130,6 @@ public class Main extends Game {
     @Override
     public void dispose() {
         flushLogBuffer();
-        batch.dispose();
-        blurProcessor.dispose();
         compositeManager.dispose();
     }
 }

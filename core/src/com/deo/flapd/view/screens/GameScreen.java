@@ -10,7 +10,6 @@ import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThreshol
 import static com.deo.flapd.utils.DUtils.handleDebugInput;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -42,14 +41,14 @@ public class GameScreen implements Screen {
     private int horizontalFillingThreshold;
     private int verticalFillingThreshold;
     
-    private final EnvironmentalEffects environmentalEffects;
-    private final Checkpoint checkpoint;
+    private EnvironmentalEffects environmentalEffects;
+    private Checkpoint checkpoint;
     
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
     
-    private final Player player;
-    private final GameUi gameUi;
+    private Player player;
+    private GameUi gameUi;
     
     private final OrthographicCamera camera;
     private final ScreenViewport viewport;
@@ -60,23 +59,21 @@ public class GameScreen implements Screen {
     
     private float movement;
     
-    private final Game game;
-    
     private final CompositeManager compositeManager;
     private final MusicManager musicManager;
     private final SoundManager soundManager;
     
-    private final Drops drops;
+    private Drops drops;
     
     private final PostProcessor postProcessor;
     
-    private final boolean enableShader;
+    private boolean enableShader;
     
-    private final Enemies enemies;
-    private final Bosses bosses;
+    private Enemies enemies;
+    private Bosses bosses;
     
     private boolean drawScreenExtenders = true;
-    private final boolean drawDebug;
+    private boolean drawDebug;
     
     private static float screenShakeIntensity;
     private static float screenShakeIntensityDuration;
@@ -93,7 +90,6 @@ public class GameScreen implements Screen {
         
         this.compositeManager = compositeManager;
         AssetManager assetManager = compositeManager.getAssetManager();
-        game = compositeManager.getGame();
         musicManager = compositeManager.getMusicManager();
         soundManager = compositeManager.getSoundManager();
         batch = compositeManager.getBatch();
@@ -103,8 +99,6 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
         
-        drawDebug = getBoolean(Keys.drawDebug);
-        
         bg1 = assetManager.get("backgrounds/bg_layer1.png");
         bg2 = assetManager.get("backgrounds/bg_layer2.png");
         fillTexture = assetManager.get("screenFill.png");
@@ -112,32 +106,60 @@ public class GameScreen implements Screen {
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         bg2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         
+        reset(newGame);
+    }
+    
+    public void reset(boolean newGame) {
+        drawDebug = getBoolean(Keys.drawDebug);
+        
+        warpTime = 0;
+        warpSpeed = 70;
+        
+        if(enemies != null){
+            enemies.dispose();
+        }
         enemies = new Enemies(compositeManager);
         enemies.loadEnemies();
-        
+    
+        if(player != null){
+            player.dispose();
+        }
         player = new Player(compositeManager, 0, 204, newGame, enemies);
     
+        if(drops != null){
+            drops.dispose();
+        }
         drops = new Drops(compositeManager, 50, player);
         compositeManager.setDrops(drops);
-        
+    
+        if(bosses != null){
+            bosses.dispose();
+        }
         bosses = new Bosses(compositeManager, player);
-        
+    
         enemies.setTargetPlayer(player);
         
+        if(gameUi != null){
+            gameUi.dispose();
+        }
         gameUi = new GameUi(viewport, compositeManager, player);
-        
+    
+        if(environmentalEffects != null){
+            environmentalEffects.dispose();
+        }
         environmentalEffects = new EnvironmentalEffects(compositeManager);
         
         checkpoint = new Checkpoint(compositeManager, player, newGame);
-        
+    
         GameVariables.init(newGame);
-        
-        this.musicManager.setNewMusicSource("music/main", 1, 5, 5);
-        this.musicManager.setVolume(getFloat(Keys.musicVolume) / 100f);
-        
+    
+        musicManager.setNewMusicSource("music/main", 1, 5, 5);
+        musicManager.setVolume(getFloat(Keys.musicVolume) / 100f);
+    
         enableShader = getBoolean(Keys.enableBloom);
-        
+    
         soundManager.playSound("ftl_flight");
+        
     }
     
     @Override
@@ -284,19 +306,16 @@ public class GameScreen implements Screen {
     
     @Override
     public void hide() {
-        game.getScreen().dispose();
     }
     
     @Override
     public void dispose() {
-        
         gameUi.dispose();
         environmentalEffects.dispose();
         
         player.dispose();
         
         drops.dispose();
-        compositeManager.setDrops(null);
         
         enemies.dispose();
         bosses.dispose();

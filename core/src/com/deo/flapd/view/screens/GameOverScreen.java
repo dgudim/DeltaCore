@@ -1,6 +1,11 @@
 package com.deo.flapd.view.screens;
 
-import com.badlogic.gdx.Game;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.putInteger;
+import static com.deo.flapd.utils.DUtils.updateCamera;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -20,26 +25,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.control.GameVariables;
-import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
+import com.deo.flapd.utils.ScreenManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
-
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.putInteger;
-import static com.deo.flapd.utils.DUtils.updateCamera;
 
 public class GameOverScreen implements Screen {
     
-    private final int score;
-    private final int enemiesKilled;
-    private final int bulletsShot;
+    private int score;
+    private int enemiesKilled;
+    private int bulletsShot;
     private int highScore;
-    private final int moneyEarned;
+    private int moneyEarned;
     
-    private final float difficulty;
+    private float difficulty;
     
     private final Stage stage;
     
@@ -50,39 +49,19 @@ public class GameOverScreen implements Screen {
     
     private final BitmapFont font_main;
     
-    private final Game game;
+    private boolean isNewHighScore;
+    private boolean enableShader;
     
-    private final boolean isNewHighScore;
-    private final boolean enableShader;
+    private final ScreenManager screenManager;
     
-    private final CompositeManager compositeManager;
+    public GameOverScreen(CompositeManager compositeManager) {
     
-    public GameOverScreen(CompositeManager compositeManager, Player player) {
-        
-        this.compositeManager = compositeManager;
-        game = compositeManager.getGame();
+        screenManager = compositeManager.getScreenManager();
         batch = compositeManager.getBatch();
         blurProcessor = compositeManager.getBlurProcessor();
         AssetManager assetManager = compositeManager.getAssetManager();
         
-        enableShader = getBoolean(Keys.enableBloom);
-        score = GameVariables.score;
-        highScore = getInteger(Keys.highScore);
-        difficulty = getFloat(Keys.difficulty);
-        
-        if (score > highScore) {
-            putInteger(Keys.highScore, score);
-            highScore = score;
-            isNewHighScore = true;
-        } else {
-            isNewHighScore = false;
-        }
-        
-        enemiesKilled = GameVariables.enemiesKilled;
-        
-        bulletsShot = player.bulletsShot;
-        
-        moneyEarned = GameVariables.moneyEarned;
+        reset();
         
         camera = new OrthographicCamera(800, 480);
         viewport = new ScreenViewport(camera);
@@ -119,20 +98,39 @@ public class GameOverScreen implements Screen {
         menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MenuScreen(compositeManager));
+                screenManager.setCurrentScreenMenuScreen();
             }
         });
         
         restart.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(compositeManager, true));
+                screenManager.setCurrentScreenGameScreen(true);
                 GameScreen.is_paused = false;
             }
         });
-        
+    }
+    
+    public void reset(){
+        enableShader = getBoolean(Keys.enableBloom);
+    
+        enemiesKilled = GameVariables.enemiesKilled;
+        bulletsShot = GameVariables.bulletsShot;
+        moneyEarned = GameVariables.moneyEarned;
+        score = GameVariables.score;
+    
+        highScore = getInteger(Keys.highScore);
+        difficulty = getFloat(Keys.difficulty);
+    
+        if (score > highScore) {
+            putInteger(Keys.highScore, score);
+            highScore = score;
+            isNewHighScore = true;
+        } else {
+            isNewHighScore = false;
+        }
+    
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
-        
     }
     
     @Override
@@ -144,7 +142,7 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            game.setScreen(new MenuScreen(compositeManager));
+            screenManager.setCurrentScreenMenuScreen();
         }
         
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -207,7 +205,7 @@ public class GameOverScreen implements Screen {
     
     @Override
     public void hide() {
-        game.getScreen().dispose();
+    
     }
     
     @Override

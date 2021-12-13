@@ -2,12 +2,6 @@ package com.deo.flapd.control;
 
 import static com.deo.flapd.utils.DUtils.getInteger;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.deo.flapd.model.Checkpoint;
-import com.deo.flapd.model.Player;
-import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.utils.Keys;
 
 
@@ -18,7 +12,7 @@ public class GameVariables {
     
     public static int score;
     public static int enemiesKilled;
-    public static int money, moneyEarned;
+    public static int money, moneyEarned, bulletsShot;
     
     public static void init(boolean newGame) {
         if (!newGame) {

@@ -26,7 +26,6 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.savePrefsToFile;
 import static com.deo.flapd.utils.DUtils.updateCamera;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -73,6 +72,7 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.MusicManager;
+import com.deo.flapd.utils.ScreenManager;
 import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
@@ -123,8 +123,7 @@ public class MenuScreen implements Screen {
     
     private final MusicManager musicManager;
     private final SoundManager soundManager;
-    
-    private final Game game;
+    private final ScreenManager screenManager;
     
     private final Array<ParticleEffectPool.PooledEffect> fires;
     private final Array<Float> fireOffsetsX;
@@ -142,6 +141,7 @@ public class MenuScreen implements Screen {
     
     private boolean enableShader;
     
+    private final CategoryManager menuCategoryManager;
     private final CategoryManager workshopCategoryManager;
     
     private final Slider musicVolumeS;
@@ -164,7 +164,7 @@ public class MenuScreen implements Screen {
         log("time to generate menu", INFO);
         
         this.compositeManager = compositeManager;
-        game = compositeManager.getGame();
+        screenManager = compositeManager.getScreenManager();
         blurProcessor = compositeManager.getBlurProcessor();
         assetManager = compositeManager.getAssetManager();
         batch = compositeManager.getBatch();
@@ -283,7 +283,7 @@ public class MenuScreen implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LoadingScreen(compositeManager));
+                screenManager.setCurrentScreenLoadingScreen();
             }
         });
         language.add(langLabel);
@@ -301,7 +301,7 @@ public class MenuScreen implements Screen {
         final TextButton exportGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.exportData"), 0.3f);
         TextButton importGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.importData"), 0.3f);
         TextButton clearGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.clearData"), 0.3f);
-        
+        // TODO: 13/12/2021 fix clearing and importing
         final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/bold_main.ttf"), 0.3f);
         exportMessage.setWrap(true);
         
@@ -317,7 +317,7 @@ public class MenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     loadPrefsFromFile();
-                    game.setScreen(new LoadingScreen(compositeManager));
+                    screenManager.setCurrentScreenLoadingScreen();
                 } catch (Exception e) {
                     exportMessage.setText("[#FF3300]" + e.getMessage());
                 }
@@ -328,7 +328,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clearPrefs();
-                game.setScreen(new LoadingScreen(compositeManager));
+                screenManager.setCurrentScreenLoadingScreen();
             }
         });
         
@@ -383,7 +383,7 @@ public class MenuScreen implements Screen {
         workshopCategoryManager.setTableBackgroundBounds(10, 70, 95, 400);
         workshopCategoryManager.setVisible(false);
         
-        CategoryManager menuCategoryManager = new CategoryManager(compositeManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
+        menuCategoryManager = new CategoryManager(compositeManager, 250, 75, 2.5f, 0.5f, "defaultDark", "infoBg", "", true, "lastClickedMenuButton");
         menuCategoryManager.addCategory(playScreenTable, localeManager.get("mainMenu.play")).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -467,7 +467,7 @@ public class MenuScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         initNewGame(treeJson);
-                        startWarpAnimation(menuCategoryManager, true);
+                        startWarpAnimation(true);
                     }
                 });
             }
@@ -477,7 +477,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (getFloat(Keys.playerHealthValue) > 0) {
-                    startWarpAnimation(menuCategoryManager, false);
+                    startWarpAnimation(false);
                 }
             }
         });
@@ -532,6 +532,27 @@ public class MenuScreen implements Screen {
         log("done, took " + TimeUtils.timeSinceMillis(genTime) + "ms", INFO);
     }
     
+    public void reset() {
+        for(int i = 0; i < fires.size; i++){
+            fires.get(i).update(100); // hide previous partially visible warp flame
+        }
+        drawScreenExtenders = true;
+        isConfirmationDialogActive = false;
+        warpSpeed = 0;
+        warpXOffset = 0;
+        warpAnimationActive = false;
+        newGameAfterWarp = true;
+        animationPosition = 0;
+        shipUpgradeAnimationPosition = 1;
+        shipUpgradeAnimationDirection = -1;
+        scaleFire(1, 1);
+        updateShipPosition(0);
+        updateFirePositions();
+        menuCategoryManager.setTouchable(Touchable.enabled);
+        ship.setTouchable(Touchable.enabled);
+        setUpgradeMenuVisibility(true);
+    }
+    
     private void closeAllUpgradeMenus() {
         for (int i = 0; i < upgradeMenus.size; i++) {
             upgradeMenus.get(i).close();
@@ -566,7 +587,7 @@ public class MenuScreen implements Screen {
                 soundManager.playSound("ftl");
                 warpAnimationActive = false;
                 soundManager.stopSound("ftl_flight");
-                game.setScreen(new GameScreen(compositeManager, newGameAfterWarp));
+                screenManager.setCurrentScreenGameScreen(newGameAfterWarp);
             }
             
             newFireMotionScale = warpSpeed / 17.5f;
@@ -686,7 +707,7 @@ public class MenuScreen implements Screen {
     
     @Override
     public void hide() {
-        game.getScreen().dispose();
+    
     }
     
     @Override
@@ -696,9 +717,9 @@ public class MenuScreen implements Screen {
         clearFireArray();
     }
     
-    public void startWarpAnimation(CategoryManager categoryManager, boolean newGameAfterWarp) {
-        categoryManager.closeAll();
-        categoryManager.setTouchable(Touchable.disabled);
+    public void startWarpAnimation(boolean newGameAfterWarp) {
+        menuCategoryManager.closeAll();
+        menuCategoryManager.setTouchable(Touchable.disabled);
         warpAnimationActive = true;
         this.newGameAfterWarp = newGameAfterWarp;
         shipUpgradeAnimationDirection = -1;
