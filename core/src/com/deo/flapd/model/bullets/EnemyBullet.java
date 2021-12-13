@@ -170,7 +170,6 @@ public class EnemyBullet extends Entity {
                         playerBullet.removeBullet(i, true);
                     }
                     health -= playerBulletHealth;
-                    System.out.println(health);
                     if(health <= 0){
                         explode();
                     }
