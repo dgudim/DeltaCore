@@ -208,7 +208,7 @@ public class Enemy extends Entity {
                 if (health > 0) {
                     GameVariables.score += 10;
                 }
-                health -= playerBullet.damage / 10f;
+                health -= playerBullet.health / 10f;
             }
             
             if (overlaps(playerBounds)) {

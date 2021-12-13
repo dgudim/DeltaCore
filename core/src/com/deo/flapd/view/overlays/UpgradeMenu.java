@@ -1,5 +1,12 @@
 package com.deo.flapd.view.overlays;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.utils.DUtils.connectFortyFiveDegreeBranch;
+import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
+import static com.deo.flapd.utils.DUtils.getBoolean;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.scaleDrawables;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -29,13 +36,6 @@ import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.CraftingDialogue;
 import com.deo.flapd.view.dialogues.DialogueActionListener;
 import com.deo.flapd.view.screens.MenuScreen;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.connectFortyFiveDegreeBranch;
-import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
-import static com.deo.flapd.utils.DUtils.getBoolean;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.scaleDrawables;
 
 public class UpgradeMenu extends Actor {
     

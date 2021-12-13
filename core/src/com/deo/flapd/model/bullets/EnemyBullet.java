@@ -164,8 +164,16 @@ public class EnemyBullet extends Entity {
         if (hasCollisionWithPlayerBullets) {
             for (int i = 0; i < playerBullet.bullets.size; i++) {
                 if (overlaps(playerBullet.bullets.get(i)) && !playerBullet.remove_Bullet.get(i)) {
-                    explode();
-                    playerBullet.removeBullet(i, true);
+                    float playerBulletHealth = playerBullet.damages.get(i);
+                    playerBullet.damages.set(i, playerBulletHealth - health);
+                    if(playerBulletHealth - health <= 0){
+                        playerBullet.removeBullet(i, true);
+                    }
+                    health -= playerBulletHealth;
+                    System.out.println(health);
+                    if(health <= 0){
+                        explode();
+                    }
                 }
             }
         }

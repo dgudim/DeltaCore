@@ -915,7 +915,7 @@
   },
   "item.processor_mk3": {
     "items": {
-      "item.processor_mk2": 16,
+      "item.processor_mk2": 4,
       "item.metal_sheet": 1,
       "item.wire": 7,
       "item.cooling_unit": 1
@@ -1193,7 +1193,7 @@
   },
   "item.ore": {
     "description": "item.ore.description",
-    "price": 225,
+    "price": 50,
     "type": "endItem"
   },
   "item.green_warp_shard": {
@@ -1218,7 +1218,7 @@
   },
   "item.plastic": {
     "description": "item.plastic.description",
-    "price": 100,
+    "price": 70,
     "type": "endItem"
   },
   "item.rubber": {

@@ -1,5 +1,12 @@
 package com.deo.flapd.model.bullets;
 
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
+import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
+import static com.deo.flapd.utils.DUtils.getString;
+import static com.deo.flapd.utils.DUtils.log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -20,21 +27,14 @@ import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 
-import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
-import static com.deo.flapd.utils.DUtils.getFloat;
-import static com.deo.flapd.utils.DUtils.getInteger;
-import static com.deo.flapd.utils.DUtils.getRandomInRange;
-import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.log;
-
-public class PlayerBullet {
+public class PlayerBullet extends Entity{
     
     // TODO: 7/22/2021 rework this crap
     private final Player player;
     private final Enemies enemies;
     private final Rectangle playerBounds;
     public final Array<Rectangle> bullets;
-    private final Array<Float> damages;
+    public final Array<Float> damages;
     private final Array<ParticleEffect> trails;
     private final Array<ParticleEffect> disposedTrails;
     private final Array<Float> trailCountDownTimers;
@@ -42,7 +42,6 @@ public class PlayerBullet {
     private final Array<Float> explosionTimers;
     private final Array<ParticleEffect> explosions;
     private final Array<Boolean> types;
-    private final Sprite bullet;
     
     private Music laserSaw;
     private Sound shot;
@@ -63,9 +62,6 @@ public class PlayerBullet {
     private final String bulletTrailEffect;
     private final boolean hasTrail;
     
-    private float width, height;
-    
-    public float damage;
     private float baseDamage;
     private float bulletSpeed;
     private int bulletsPerShot;
@@ -128,8 +124,8 @@ public class PlayerBullet {
         for (int i = 0; i < params_weapon.size; i++) {
             switch (params_weapon.get(i).name) {
                 case ("parameter.damage"):
-                    damage = params_weapon.getFloat(1, i);
-                    baseDamage = damage;
+                    health = params_weapon.getFloat(1, i);
+                    baseDamage = health;
                     break;
                 case ("parameter.shooting_speed"):
                     shootingSpeedMultiplier = params_weapon.getFloat(1, i);
@@ -161,14 +157,14 @@ public class PlayerBullet {
         }
         
         if (isLaser) {
-            bullet = new Sprite();
+            entitySprite = new Sprite();
             laserColor = currentWeapon.getString("#00FFFF", "laserBeamColor");
         } else {
-            bullet = new Sprite(bullets.findRegion("bullet_" + getString(Keys.currentWeapon)));
+            entitySprite = new Sprite(bullets.findRegion("bullet_" + getString(Keys.currentWeapon)));
         }
         
         float damageMultiplier = treeJson.getFloat(false,1, getString(Keys.currentCore), "parameters", "parameter.damage_multiplier");
-        damage *= damageMultiplier;
+        health *= damageMultiplier;
         baseDamage *= damageMultiplier;
         
         isHoming = currentWeapon.getBoolean(false, false, "homing");
@@ -209,14 +205,14 @@ public class PlayerBullet {
             shot = assetManager.get("sfx/gun4.ogg");
         }
         
-        width = bullet.getWidth();
-        height = bullet.getHeight();
+        width = entitySprite.getWidth();
+        height = entitySprite.getHeight();
         
         float scale = 10 / height;
         width = width * scale;
         height = 10;
-        
-        bullet.setOrigin(0, 5);
+    
+        entitySprite.setOrigin(0, 5);
     }
     
     public void spawn(float damageMultiplier, boolean is_charged) {
@@ -242,11 +238,11 @@ public class PlayerBullet {
                     remove_Bullet.add(false);
                     if (player.charge >= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f && is_charged) {
                         types.add(true);
-                        damages.add(damage * damageMultiplier);
+                        damages.add(health * damageMultiplier);
                         player.charge -= powerConsumption * damageMultiplier / bulletsPerShot + 0.5f;
                     } else {
                         types.add(false);
-                        damages.add(damage);
+                        damages.add(health);
                         player.charge -= powerConsumption / bulletsPerShot;
                     }
                     
@@ -291,7 +287,7 @@ public class PlayerBullet {
                 millis = 0;
             }
         } else {
-            damage = baseDamage * (GameVariables.bonuses_collected + 1) / 10f;
+            health = baseDamage * (GameVariables.bonuses_collected + 1) / 10f;
         }
     }
     
@@ -321,12 +317,12 @@ public class PlayerBullet {
                     trails.get(i).setPosition(bullet.x + bullet.width / 2, bullet.y + bullet.height / 2);
                 }
                 
-                this.bullet.setPosition(bullet.x, bullet.y);
-                this.bullet.setSize(bullet.width, bullet.height);
+                this.entitySprite.setPosition(bullet.x, bullet.y);
+                this.entitySprite.setSize(bullet.width, bullet.height);
                 if (types.get(i)) {
-                    this.bullet.setColor(Color.GREEN);
+                    this.entitySprite.setColor(Color.GREEN);
                 } else {
-                    this.bullet.setColor(Color.WHITE);
+                    this.entitySprite.setColor(Color.WHITE);
                 }
                 
                 if (!isHoming) {
@@ -334,7 +330,7 @@ public class PlayerBullet {
                     bullet.x += MathUtils.cosDeg(angle) * bulletSpeed * delta;
                     bullet.y += MathUtils.sinDeg(angle) * bulletSpeed * delta;
                     
-                    this.bullet.setRotation(angle);
+                    this.entitySprite.setRotation(angle);
                 } else {
                     
                     float posX = playerBounds.getX() + 1000;
@@ -346,7 +342,7 @@ public class PlayerBullet {
                         }
                     }
                     degrees.set(i, MathUtils.lerpAngleDeg(angle, MathUtils.radiansToDegrees * MathUtils.atan2(bullet.y - posY, bullet.x - posX), homingSpeed / 700f));
-                    this.bullet.setRotation(angle + 180);
+                    this.entitySprite.setRotation(angle + 180);
                     bullet.x += MathUtils.cosDeg(angle + 180) * bulletSpeed * delta;
                     bullet.y += MathUtils.sinDeg(angle + 180) * bulletSpeed * delta;
                     explosionTimers.set(i, explosionTimers.get(i) - delta);
@@ -355,7 +351,7 @@ public class PlayerBullet {
                         removeBullet(i, true);
                     }
                 }
-                this.bullet.draw(batch);
+                this.entitySprite.draw(batch);
                 
                 if (bullet.x > 800 || bullet.x < Math.max(bullet.height, bullet.width) || bullet.y > 480 || bullet.y < -Math.max(bullet.height, bullet.width)) {
                     removeBullet(i, false);

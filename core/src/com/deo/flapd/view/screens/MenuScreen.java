@@ -149,6 +149,7 @@ public class MenuScreen implements Screen {
     private final JsonEntry treeJson;
     
     private String currentShip = "";
+    private String currentEngine = "";
     private String lastFireEffect;
     
     private boolean isConfirmationDialogActive = false;
@@ -170,7 +171,7 @@ public class MenuScreen implements Screen {
         soundManager = compositeManager.getSoundManager();
         musicManager = compositeManager.getMusicManager();
         localeManager = compositeManager.getLocaleManager();
-    
+        
         environmentalEffects = new EnvironmentalEffects(compositeManager);
         
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
@@ -852,6 +853,9 @@ public class MenuScreen implements Screen {
             rebuildUpgradeMenus();
             
             lastFireEffect = " ";
+            updateFire();
+        } else if (!currentEngine.equals(getString(Keys.currentEngine))) {
+            currentEngine = getString(Keys.currentEngine);
             updateFire();
         }
     }
