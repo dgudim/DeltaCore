@@ -5,7 +5,6 @@ import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
 import static com.deo.flapd.utils.DUtils.getString;
-import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putInteger;
 import static com.deo.flapd.view.screens.GameScreen.globalDeltaMultiplier;
 import static com.deo.flapd.view.screens.GameScreen.is_paused;
@@ -81,10 +80,11 @@ public class GameUi {
     Image timeFreezeButton_active;
     private int maxTimeCharge;
     private float timeCharge;
+    private float timeSinceLastActivation;
+    private TimeFreezeButtonState timeFreezeButtonState;
     private float reloadTime;
     private float worldSpeedMultiplier;
     private float playerSpeedMultiplier;
-    private boolean timeWarpAvailable = true;
     private boolean timeWarpActive = false;
     private float powerConsumption;
     
@@ -121,6 +121,7 @@ public class GameUi {
             timeCharge = maxTimeCharge;
             reloadTime = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.reload_time") * 1000;
             powerConsumption = treeJson.getFloat(1, "part.chronos_module", "parameters", "parameter.power_consumption");
+            timeFreezeButtonState = TimeFreezeButtonState.AVAILABLE;
         }
         
         TextureAtlas gameUiAtlas = assetManager.get("ui/gameUi.atlas");
@@ -147,7 +148,7 @@ public class GameUi {
         timeFreezeButton.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
         timeFreezeButton_disabled.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
         timeFreezeButton_active.setBounds(0, 480 - uiScale * 52.5f, 66 * uiScale, 52.5f * uiScale);
-        setWarpButtonState(WarpButtonState.AVAILABLE);
+        setTimeFreezeButtonState(TimeFreezeButtonState.AVAILABLE);
         
         heartIcon.setBounds(658 - 142 * (uiScale - 1), 410 - 70 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
         shieldIcon.setBounds(658 - 142 * (uiScale - 1), 432 - 48 * (uiScale - 1), 18 * uiScale, 18 * uiScale);
@@ -306,29 +307,17 @@ public class GameUi {
         timeFreezeButton_active.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setTimeWarpState(1, 1, 0, false, false);
-                setWarpButtonState(WarpButtonState.DISABLED);
+                setTimeWarpState(1, 1, 0, false);
+                setTimeFreezeButtonState(TimeFreezeButtonState.DISABLED);
+                timeSinceLastActivation = 0;
             }
         });
         
         timeFreezeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new Thread(() -> {
-                    try {
-                        Gdx.app.postRunnable(() -> {
-                            setTimeWarpState(playerSpeedMultiplier, worldSpeedMultiplier, 0.97f, true, false);
-                            setWarpButtonState(WarpButtonState.ACTIVE);
-                        });
-                        Thread.sleep(maxTimeCharge);
-                        Gdx.app.postRunnable(() -> {
-                            setTimeWarpState(1, 1, 0, false, false);
-                            setWarpButtonState(WarpButtonState.DISABLED);
-                        });
-                    } catch (InterruptedException e) {
-                        logException(e);
-                    }
-                }).start();
+                setTimeWarpState(playerSpeedMultiplier, worldSpeedMultiplier, 0.97f, true);
+                setTimeFreezeButtonState(TimeFreezeButtonState.ACTIVE);
             }
         });
         
@@ -384,18 +373,27 @@ public class GameUi {
         
         if (chronosModuleEnabled) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.LIME);
+            shapeRenderer.setColor(timeFreezeButtonState == TimeFreezeButtonState.AVAILABLE ? Color.valueOf("#800000") : Color.LIME);
             shapeRenderer.rect(5, 480 - uiScale * 52.5f + 5, 66 * uiScale - 10, (52.5f * uiScale - 10) * (timeCharge / (float) maxTimeCharge));
             shapeRenderer.end();
             if (timeWarpActive) {
-                timeCharge = clamp(timeCharge - delta * 1000, 0, maxTimeCharge);
-                player.charge -= powerConsumption * delta;
+                if (player.charge >= powerConsumption * delta && timeCharge > 0) {
+                    timeCharge = clamp(timeCharge - delta * 1000, 0, maxTimeCharge);
+                    player.charge -= powerConsumption * delta;
+                } else {
+                    setTimeFreezeButtonState(TimeFreezeButtonState.DISABLED);
+                    setTimeWarpState(1, 1, 0, false);
+                    timeWarpActive = false;
+                    timeSinceLastActivation = -1;
+                }
             } else {
                 timeCharge = clamp(timeCharge + delta * 1000 * maxTimeCharge / reloadTime, 0, maxTimeCharge);
             }
-            if (!timeWarpAvailable && timeCharge == maxTimeCharge) {
-                timeWarpAvailable = true;
-                setWarpButtonState(WarpButtonState.AVAILABLE);
+            
+            if(timeSinceLastActivation > 1 && timeCharge > 10 && timeFreezeButtonState == TimeFreezeButtonState.DISABLED){
+                setTimeFreezeButtonState(TimeFreezeButtonState.AVAILABLE);
+            }else {
+                timeSinceLastActivation += delta;
             }
         }
         
@@ -452,20 +450,20 @@ public class GameUi {
         }
     }
     
-    private enum WarpButtonState {AVAILABLE, ACTIVE, DISABLED}
+    private enum TimeFreezeButtonState {AVAILABLE, ACTIVE, DISABLED}
     
-    private void setWarpButtonState(WarpButtonState warpButtonState) {
-        timeFreezeButton.setVisible(warpButtonState == WarpButtonState.AVAILABLE);
-        timeFreezeButton_disabled.setVisible(warpButtonState == WarpButtonState.DISABLED);
-        timeFreezeButton_active.setVisible(warpButtonState == WarpButtonState.ACTIVE);
+    private void setTimeFreezeButtonState(TimeFreezeButtonState timeFreezeButtonState) {
+        this.timeFreezeButtonState = timeFreezeButtonState;
+        timeFreezeButton.setVisible(timeFreezeButtonState == TimeFreezeButtonState.AVAILABLE);
+        timeFreezeButton_disabled.setVisible(timeFreezeButtonState == TimeFreezeButtonState.DISABLED);
+        timeFreezeButton_active.setVisible(timeFreezeButtonState == TimeFreezeButtonState.ACTIVE);
     }
     
-    private void setTimeWarpState(float playerDelta, float globalDelta, float motionBlurOpacity, boolean active, boolean available) {
+    private void setTimeWarpState(float playerDelta, float globalDelta, float motionBlurOpacity, boolean active) {
         compositeManager.getMotionBlur().setBlurOpacity(motionBlurOpacity);
         globalDeltaMultiplier = globalDelta;
         playerDeltaMultiplier = playerDelta;
         timeWarpActive = active;
-        timeWarpAvailable = available;
     }
     
     public void dispose() {
@@ -475,7 +473,7 @@ public class GameUi {
         
         putInteger(Keys.moneyAmount, GameVariables.money);
         
-        setTimeWarpState(1, 1, 0, false, true);
+        setTimeWarpState(1, 1, 0, false);
     }
     
     public float getDeltaX() {
