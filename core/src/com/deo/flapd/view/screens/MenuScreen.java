@@ -143,6 +143,8 @@ public class MenuScreen implements Screen {
     
     private final CategoryManager menuCategoryManager;
     private final CategoryManager workshopCategoryManager;
+    final ItemSlotManager inventory;
+    final ItemSlotManager blackMarket;
     
     private final Slider musicVolumeS;
     
@@ -351,11 +353,11 @@ public class MenuScreen implements Screen {
                 localeManager.get("mainMenu.infoContent"),
                 font_main, 0.48f, true, false, 5, 100, 531, 410);
         
-        final ItemSlotManager blackMarket = new ItemSlotManager(compositeManager);
+        blackMarket = new ItemSlotManager(compositeManager);
         blackMarket.addShopSlots();
         blackMarket.setBounds(105, 70, 425, 400);
         
-        final ItemSlotManager inventory = new ItemSlotManager(compositeManager);
+        inventory = new ItemSlotManager(compositeManager);
         inventory.addInventorySlots();
         inventory.setBounds(105, 70, 425, 400);
         
@@ -551,6 +553,11 @@ public class MenuScreen implements Screen {
         menuCategoryManager.setTouchable(Touchable.enabled);
         ship.setTouchable(Touchable.enabled);
         setUpgradeMenuVisibility(true);
+        
+        inventory.update();
+        blackMarket.update();
+    
+        musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
     }
     
     private void closeAllUpgradeMenus() {

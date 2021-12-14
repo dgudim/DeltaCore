@@ -31,8 +31,17 @@ public class ScreenManager {
     }
     
     public void setCurrentScreenMenuScreen() {
+        setCurrentScreenMenuScreen(false);
+    }
+    
+    public void setCurrentScreenMenuScreen(boolean force) {
         if (menuScreen != null) {
-            menuScreen.reset();
+            if(force){
+                menuScreen.dispose();
+                menuScreen = new MenuScreen(compositeManager);
+            }else {
+                menuScreen.reset();
+            }
         } else {
             menuScreen = new MenuScreen(compositeManager);
         }
