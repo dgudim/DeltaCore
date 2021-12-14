@@ -30,6 +30,8 @@ import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.ScreenManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 
+import java.util.Locale;
+
 public class GameOverScreen implements Screen {
     
     private int score;
@@ -55,7 +57,7 @@ public class GameOverScreen implements Screen {
     private final ScreenManager screenManager;
     
     public GameOverScreen(CompositeManager compositeManager) {
-    
+        
         screenManager = compositeManager.getScreenManager();
         batch = compositeManager.getBatch();
         blurProcessor = compositeManager.getBlurProcessor();
@@ -111,17 +113,17 @@ public class GameOverScreen implements Screen {
         });
     }
     
-    public void reset(){
+    public void reset() {
         enableShader = getBoolean(Keys.enableBloom);
-    
+        
         enemiesKilled = GameVariables.enemiesKilled;
         bulletsShot = GameVariables.bulletsShot;
         moneyEarned = GameVariables.moneyEarned;
         score = GameVariables.score;
-    
+        
         highScore = getInteger(Keys.highScore);
         difficulty = getFloat(Keys.difficulty);
-    
+        
         if (score > highScore) {
             putInteger(Keys.highScore, score);
             highScore = score;
@@ -129,7 +131,7 @@ public class GameOverScreen implements Screen {
         } else {
             isNewHighScore = false;
         }
-    
+        
         Gdx.input.setCatchKey(Input.Keys.BACK, true);
     }
     
@@ -171,7 +173,7 @@ public class GameOverScreen implements Screen {
         font_main.draw(batch, "", 305, 165, 200, 1, false);
         font_main.setColor(new Color().fromHsv(Math.abs(120 - difficulty * 20), 1.5f, 1).add(0, 0, 0, 1));
         font_main.getData().setScale(0.6f);
-        font_main.draw(batch, "Difficulty: " + difficulty + "X", 51, 455, 200, 1, false);
+        font_main.draw(batch, "Difficulty: " + String.format(Locale.ROOT, "%.1f", difficulty) + "X", 51, 455, 200, 1, false);
         font_main.getData().setScale(0.7f);
         
         

@@ -235,7 +235,7 @@ public class MenuScreen implements Screen {
         final CheckBox bloomT, showFpsT, transparentUIT, prefsLoggingT;
         musicVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]" + localeManager.get("settings.musicVolume") + " ", "%", Keys.musicVolume, settingsPane);
         soundVolumeT = uiComposer.addSlider("sliderDefaultNormal", 0, 100, 1, "[#32ff32]" + localeManager.get("settings.soundVolume") + " ", "%", Keys.soundVolume, settingsPane);
-        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 0.5f, 1.5f, 0.25f, "[#32ff32]" + localeManager.get("settings.uiScale") + " ", "X", Keys.uiScale, settingsPane);
+        uiScaleT = uiComposer.addSlider("sliderDefaultNormal", 0.5f, 1.5f, 0.1f, "[#32ff32]" + localeManager.get("settings.uiScale") + " ", "X", Keys.uiScale, settingsPane);
         bloomT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.bloom"), Keys.enableBloom);
         transparentUIT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.uiTransparency"), Keys.transparentUi);
         prefsLoggingT = uiComposer.addCheckBox("checkBoxDefault", "[#32ff32]" + localeManager.get("settings.logPreferences"), Keys.logPreferences);
