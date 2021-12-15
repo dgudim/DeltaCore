@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
-import com.deo.flapd.model.bullets.BulletData;
 import com.deo.flapd.model.bullets.EnemyBullet;
 import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.loot.Drops;
@@ -200,15 +199,11 @@ public class Enemy extends Entity {
             if (damage > 0) {
                 color = Color.valueOf(data.hitColor);
                 health -= damage;
-                GameVariables.score += 30 + 10 * (damage / 50 - 1);
             }
             
             if (overlaps(playerBullet.laser.getBoundingRectangle())) {
                 color = Color.valueOf(data.hitColor);
-                if (health > 0) {
-                    GameVariables.score += 10;
-                }
-                health -= playerBullet.health / 10f;
+                health -= playerBullet.health * delta * 300;
             }
             
             if (overlaps(playerBounds)) {
@@ -264,20 +259,18 @@ public class Enemy extends Entity {
     
     private void shoot() {
         for (int i = 0; i < data.bulletsPerShot; i++) {
-            BulletData newBulletData = new BulletData(data.enemyInfo.get("bullet")) {
+            bullets.add(new EnemyBullet(compositeManager, data.enemyInfo.get("bullet"), player){
                 @Override
-                public void calculateAim() {
+                public void calculateSpawnPosition() {
                     this.newX = Enemy.this.x + Enemy.this.width / 2f + MathUtils.cosDeg(Enemy.this.rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
                     this.newY = Enemy.this.y + Enemy.this.height / 2f + MathUtils.sinDeg(Enemy.this.rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
-                    
+        
                     this.newRot = getRandomInRange(-10, 10) * data.bulletSpread + Enemy.this.rotation;
                     if (data.canAim) {
                         this.newRot += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(this.newY - playerBounds.getY(), this.newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
                     }
                 }
-            };
-            
-            bullets.add(new EnemyBullet(compositeManager, newBulletData, player, newBulletData.hasCollisionWithPlayerBullets));
+            });
         }
         soundManager.playSound_noLink(data.shootingSound);
         data.millis = 0;

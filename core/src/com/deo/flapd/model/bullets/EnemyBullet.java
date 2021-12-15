@@ -1,176 +1,81 @@
 package com.deo.flapd.model.bullets;
 
-import static com.badlogic.gdx.math.MathUtils.clamp;
-import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-import static java.lang.StrictMath.min;
+import static com.deo.flapd.utils.DUtils.getDistanceBetweenTwoPoints;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
-import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
+import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.screens.GameScreen;
 
-public class EnemyBullet extends Entity {
-    
-    private final BulletData data;
-    
-    public boolean queuedForDeletion = false;
-    private boolean explosionFinished = false;
-    private boolean explosionStarted;
-    
-    private final boolean hasCollisionWithPlayerBullets;
-    
+public class EnemyBullet extends Bullet {
+   
     private final Player player;
     private final PlayerBullet playerBullet;
     
-    public EnemyBullet(CompositeManager compositeManager, BulletData bulletData, Player player, boolean hasCollisionWithPlayerBullets) {
-        AssetManager assetManager = compositeManager.getAssetManager();
-        ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
-        
-        if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture) == null)
-            throw new IllegalArgumentException("No bullet texture with name: " + bulletData.texture);
-    
-        bulletData.calculateAim();
-        float x = bulletData.newX;
-        float y = bulletData.newY;
-        float rotation = bulletData.newRot;
-        
-        entitySprite = new Sprite(assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(bulletData.texture));
-        
-        this.hasCollisionWithPlayerBullets = hasCollisionWithPlayerBullets;
-        
-        data = bulletData;
-        
+    public EnemyBullet(CompositeManager compositeManager, JsonEntry bulletData, Player player) {
+        super(compositeManager, bulletData);
         this.player = player;
         playerBullet = this.player.bullet;
+    }
+    
+    @Override
+    void loadBulletData(JsonEntry bulletData) {
+        data.texture = bulletData.getString("noTexture", "texture");
         
-        if (!data.isLaser) {
-            bulletData.explosionParticleEffect = particleEffectPool.getParticleEffectByPath(bulletData.explosion);
-            bulletData.explosionParticleEffect.scaleEffect(bulletData.explosionScale);
+        data.isLaser = bulletData.getBoolean(false, false, "isLaser");
+        data.isBeam = bulletData.getBoolean(false, false, "isBeam");
+        if (data.isLaser) {
+            data.fadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
+            data.maxFadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
+            color = Color.valueOf(bulletData.getString("ffffffff", "color"));
+        } else {
+            color = Color.WHITE;
+            width = bulletData.getFloat(1, "width");
             
-            bulletData.trailParticleEffect = particleEffectPool.getParticleEffectByPath(bulletData.trail);
-            bulletData.trailParticleEffect.scaleEffect(bulletData.trailScale);
-            bulletData.trailParticleEffect.setPosition(
-                    x + width / 2f + MathUtils.cosDeg(
-                            rotation + data.trailOffsetAngle * data.trailOffsetDistance),
-                    y + height / 2f + MathUtils.sinDeg(
-                            rotation + data.trailOffsetAngle * data.trailOffsetDistance));
+            speed = bulletData.getFloat(130, "speed");
+            
+            data.trail = bulletData.getString("particles/bullet_trail_left.p", "trail");
+            data.trailScale = bulletData.getFloat(1, "trailScale");
+            data.drawTrailOnTop = bulletData.getBoolean(false, false, "drawTrailOnTop");
+            float[] trailOffset = bulletData.getFloatArray(new float[]{0, 0}, "trailOffset");
+            data.trailOffsetAngle = MathUtils.atan2(trailOffset[1], trailOffset[0]) * MathUtils.radiansToDegrees;
+            data.trailOffsetDistance = getDistanceBetweenTwoPoints(0, 0, trailOffset[0], trailOffset[1]);
+            
+            data.explosion = bulletData.getString("particles/explosion2.p", "explosionEffect");
+            data.explosionScale = bulletData.getFloat(1, "explosionScale");
+            
+            data.isHoming = bulletData.getBoolean(false, false, "homing");
+            if (data.isHoming) {
+                data.explosionTimer = bulletData.getFloat(3, "explosionTimer");
+                data.homingSpeed = bulletData.getFloat(5, "homingSpeed");
+            }
         }
         
-        if (bulletData.isLaser) {
-            bulletData.width = 600;
-            y += bulletData.height / 2f;
-            color = Color.valueOf(bulletData.color);
-        }
+        height = bulletData.getFloat(1, "height");
         
-        setPositionAndRotation(x, y, rotation + (bulletData.isLaser ? 180 : 0));
-        setSize(bulletData.width, bulletData.height);
-        health = bulletData.damage;
-        init();
+        data.hasCollisionWithEnemyBullets = bulletData.getBoolean(false, false, "hasCollisionWithPlayerBullets");
+        
+        health = bulletData.getFloat(1, "damage");
+        
+        data.screenShakeIntensity = bulletData.getFloat(false, 0, "screenShakeOnHit");
+        data.screenShakeDuration = bulletData.getFloat(false, 0, "screenShakeDuration");
     }
     
     @Override
-    public void setSize(float width, float height) {
-        this.width = width;
-        this.height = height;
-        originX = data.isLaser ? 0 : width / 2f;
-        originY = height / 2f;
-    }
-    
-    @Override
-    protected void updateEntity(float delta) {
-        if (data.isLaser) {
-            if(data.isBeam){
-                data.calculateAim();
-                x = data.newX;
-                y = data.newY + data.height / 2f;
-                rotation = data.newRot + 180;
-                entitySprite.setRotation(rotation);
-            }
-            entitySprite.setColor(color);
-            float scaledHeight = data.height * data.fadeOutTimer / data.maxFadeOutTimer;
-            entitySprite.setOrigin(0, scaledHeight / 2f);
-            entitySprite.setOriginBasedPosition(x, y);
-            entitySprite.setSize(data.width, scaledHeight);
-            updateHealth(delta);
-        } else {
-            super.updateEntity(delta);
-        }
-    }
-    
-    @Override
-    public boolean overlaps(Rectangle hitBox) {
-        if (data.isLaser) {
-            return checkLaserIntersection(hitBox);
-        } else {
-            return super.overlaps(hitBox);
-        }
-    }
-    
-    private boolean checkLaserIntersection(Rectangle hitBox) {
-        if (hitBox.width <= 5 || hitBox.height <= 5) return false;
-        float step = min(hitBox.width, hitBox.height) / 3f;
-        float X1 = hitBox.x;
-        float Y1 = hitBox.y;
-        float X2 = hitBox.x + hitBox.width;
-        float Y2 = hitBox.y + hitBox.height;
-        for (int i = 0; i < width; i += step) {
-            float pointX = x + MathUtils.cosDeg(rotation) * i;
-            float pointY = y + MathUtils.sinDeg(rotation) * i;
-            if (pointX > X1 && pointX < X2 && pointY > Y1 && pointY < Y2) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public void draw(SpriteBatch batch, float delta) {
-        if (!isDead) {
-            if (!data.drawTrailOnTop && !data.isLaser) {
-                data.trailParticleEffect.draw(batch, delta);
-            }
-            entitySprite.draw(batch);
-            if (data.drawTrailOnTop && !data.isLaser) {
-                data.trailParticleEffect.draw(batch, delta);
-            }
-        } else {
-            if (!data.isLaser) {
-                data.explosionParticleEffect.draw(batch, delta);
-            }
-        }
-    }
-    
-    @Override
-    public void drawDebug(ShapeRenderer shapeRenderer) {
-        if (!data.isLaser) {
-            super.drawDebug(shapeRenderer);
-            shapeRenderer.setColor(Color.YELLOW);
-            drawParticleEffectBounds(shapeRenderer, data.trailParticleEffect);
-        } else {
-            shapeRenderer.rectLine(x, y, x + MathUtils.cosDeg(rotation) * width, y + MathUtils.sinDeg(rotation) * width, height);
-        }
-    }
-    
-    public void update(float delta) {
-        if (hasCollisionWithPlayerBullets) {
+    public void checkCollisions(float delta) {
+        if (data.hasCollisionWithEnemyBullets) {
             for (int i = 0; i < playerBullet.bullets.size; i++) {
                 if (overlaps(playerBullet.bullets.get(i)) && !playerBullet.remove_Bullet.get(i)) {
                     float playerBulletHealth = playerBullet.damages.get(i);
                     playerBullet.damages.set(i, playerBulletHealth - health);
-                    if(playerBulletHealth - health <= 0){
+                    if (playerBulletHealth - health <= 0) {
                         playerBullet.removeBullet(i, true);
                     }
                     health -= playerBulletHealth;
-                    if(health <= 0){
+                    if (health <= 0) {
                         explode();
                     }
                 }
@@ -182,68 +87,15 @@ public class EnemyBullet extends Entity {
             GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);
             explode();
         }
-        
-        if (!isDead) {
-            if (data.isLaser) {
-                data.fadeOutTimer = clamp(data.fadeOutTimer - delta, 0f, data.maxFadeOutTimer);
-                if (data.fadeOutTimer <= 0) {
-                    die();
-                }
-                updateEntity(delta);
-            } else {
-                if (data.isHoming) {
-                    rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
-                            MathUtils.radiansToDegrees * MathUtils.atan2(
-                                    y - (player.y + player.height / 2f),
-                                    x - (player.x + player.width / 2f)),
-                            data.homingSpeed, delta);
-                    data.explosionTimer -= delta;
-                }
-                x -= MathUtils.cosDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
-                y -= MathUtils.sinDeg(rotation) * data.speed * delta * (data.isHoming ? 2 : 1);
-                updateEntity(delta);
-                
-                data.trailParticleEffect.setPosition(
-                        x + width / 2f + MathUtils.cosDeg(
-                                rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
-                        y + height / 2f + MathUtils.sinDeg(
-                                rotation + data.trailOffsetAngle) * data.trailOffsetDistance);
-                
-                if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
-                    isDead = true;
-                    explosionFinished = true;
-                }
-                
-                if (data.isHoming && data.explosionTimer <= 0) {
-                    explode();
-                }
-            }
-        }
-        if (data.isLaser) {
-            queuedForDeletion = isDead;
-        } else {
-            queuedForDeletion = (data.explosionParticleEffect.isComplete() || explosionFinished) && isDead;
-        }
     }
     
-    public void dispose() {
-        if (!data.isLaser) {
-            data.explosionParticleEffect.free();
-            if (!explosionStarted) {
-                data.trailParticleEffect.free();
-            }
-        }
+    @Override
+    public void updateHomingLogic(float delta) {
+        rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
+                MathUtils.radiansToDegrees * MathUtils.atan2(
+                        y - (player.y + player.height / 2f),
+                        x - (player.x + player.width / 2f)),
+                data.homingSpeed, delta);
+        data.explosionTimer -= delta;
     }
-    
-    private void explode() {
-        if (!data.isLaser) {
-            data.trailParticleEffect.free();
-            data.explosionParticleEffect.setPosition(x + originX, y + originY);
-            explosionStarted = true;
-            entitySprite.setPosition(-100, -100);
-            die();
-        }
-    }
-    
 }
-

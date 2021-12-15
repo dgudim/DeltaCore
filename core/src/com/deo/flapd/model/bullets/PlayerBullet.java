@@ -28,7 +28,7 @@ import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 
-public class PlayerBullet extends Entity{
+public class PlayerBullet extends Bullet{
     
     // TODO: 7/22/2021 rework this crap
     private final Player player;
@@ -63,7 +63,6 @@ public class PlayerBullet extends Entity{
     private final String bulletTrailEffect;
     private final boolean hasTrail;
     
-    private float baseDamage;
     private float bulletSpeed;
     private int bulletsPerShot;
     private final float bulletTrailTimer;
@@ -126,7 +125,6 @@ public class PlayerBullet extends Entity{
             switch (params_weapon.get(i).name) {
                 case ("parameter.damage"):
                     health = params_weapon.getFloat(1, i);
-                    baseDamage = health;
                     break;
                 case ("parameter.shooting_speed"):
                     shootingSpeedMultiplier = params_weapon.getFloat(1, i);
@@ -166,7 +164,6 @@ public class PlayerBullet extends Entity{
         
         float damageMultiplier = treeJson.getFloat(false,1, getString(Keys.currentCore), "parameters", "parameter.damage_multiplier");
         health *= damageMultiplier;
-        baseDamage *= damageMultiplier;
         
         isHoming = currentWeapon.getBoolean(false, false, "homing");
         if (isHoming) {
@@ -216,10 +213,20 @@ public class PlayerBullet extends Entity{
         entitySprite.setOrigin(0, 5);
     }
     
+    @Override
+    public void calculateSpawnPosition() {
+        newX = playerBounds.getX() + gunOffsetsX[currentActiveGun];
+        newY = playerBounds.getY() + gunOffsetsY[currentActiveGun];
+        if (currentActiveGun++ >= gunCount) {
+            currentActiveGun = 0;
+        }
+        
+    }
+    
     public void spawn(float damageMultiplier, boolean is_charged) {
         
         if (!isLaser) {
-            if (player.charge >= powerConsumption && millis > 11 / (shootingSpeedMultiplier + (GameVariables.bonuses_collected + 1) / 10.0f)) {
+            if (player.charge >= powerConsumption && millis > 10 * shootingSpeedMultiplier) {
                 for (int i = 0; i < bulletsPerShot; i++) {
                     Rectangle bullet = new Rectangle();
                     
@@ -287,8 +294,6 @@ public class PlayerBullet extends Entity{
                 
                 millis = 0;
             }
-        } else {
-            health = baseDamage * (GameVariables.bonuses_collected + 1) / 10f;
         }
     }
     
