@@ -16,6 +16,7 @@ import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.getVerticalAndHorizontalFillingThresholds;
 import static com.deo.flapd.utils.DUtils.handleDebugInput;
 import static com.deo.flapd.utils.DUtils.initNewGame;
+import static com.deo.flapd.utils.DUtils.initPrefs;
 import static com.deo.flapd.utils.DUtils.loadPrefsFromFile;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
@@ -285,7 +286,7 @@ public class MenuScreen implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                screenManager.setCurrentScreenLoadingScreen();
+                screenManager.setCurrentScreenMenuScreen(true);
             }
         });
         language.add(langLabel);
@@ -303,7 +304,7 @@ public class MenuScreen implements Screen {
         final TextButton exportGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.exportData"), 0.3f);
         TextButton importGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.importData"), 0.3f);
         TextButton clearGameData = uiComposer.addTextButton("defaultLight", localeManager.get("more.clearData"), 0.3f);
-        // TODO: 13/12/2021 fix clearing and importing
+        
         final Label exportMessage = uiComposer.addText("", assetManager.get("fonts/bold_main.ttf"), 0.3f);
         exportMessage.setWrap(true);
         
@@ -319,7 +320,7 @@ public class MenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     loadPrefsFromFile();
-                    screenManager.setCurrentScreenLoadingScreen();
+                    screenManager.setCurrentScreenMenuScreen(true);
                 } catch (Exception e) {
                     exportMessage.setText("[#FF3300]" + e.getMessage());
                 }
@@ -330,7 +331,8 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clearPrefs();
-                screenManager.setCurrentScreenLoadingScreen();
+                initPrefs();
+                screenManager.setCurrentScreenMenuScreen(true);
             }
         });
         

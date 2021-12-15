@@ -3,6 +3,7 @@ package com.deo.flapd.utils;
 import static com.badlogic.gdx.math.MathUtils.random;
 import static com.deo.flapd.utils.DUtils.LogLevel.DEBUG;
 import static com.deo.flapd.utils.DUtils.LogLevel.ERROR;
+import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.deo.flapd.model.enemies.Bosses;
 import com.deo.flapd.model.environment.EnvironmentalEffects;
@@ -235,7 +237,6 @@ public class DUtils {
             logException(e);
             throw new FileNotFoundException("no save file found in " + file.file().getPath());
         }
-        
     }
     
     public static int getInteger(String key) {
@@ -327,6 +328,25 @@ public class DUtils {
         prefs.flush();
         if (logPreferences) {
             log("cleared preferences", DEBUG);
+        }
+    }
+    
+    public static void initPrefs(){
+        putFloat(Keys.uiScale, 1);
+        putFloat(Keys.soundVolume, 100);
+        putFloat(Keys.musicVolume, 100);
+        putFloat(Keys.difficulty, 1);
+        putBoolean(Keys.transparentUi, true);
+        putBoolean(Keys.enableBloom, true);
+        JsonEntry tree = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
+        for (int i = 0; i < tree.size; i++) {
+            if (tree.getString("part", i, "type").equals("category")) {
+                putBoolean("unlocked_" + tree.getString("noDefaultPartSpecified", i, "default"), true);
+                if (tree.getString("noSaveToLocation", i, "saveTo").equals("noSaveToLocation")) {
+                    log("No save to location specified for " + tree.get(i) + " (item at index " + i + ")", WARNING);
+                }
+                putString(tree.getString("noSaveToLocation", i, "saveTo"), tree.get(i).getString("noDefaultPartSpecified", "default"));
+            }
         }
     }
     

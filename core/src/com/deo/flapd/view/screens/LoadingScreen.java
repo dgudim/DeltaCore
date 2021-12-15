@@ -7,6 +7,7 @@ import static com.deo.flapd.utils.DUtils.clearPrefs;
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.initPrefs;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
 import static com.deo.flapd.utils.DUtils.putBoolean;
@@ -76,22 +77,7 @@ public class LoadingScreen implements Screen {
         screenManager = compositeManager.getScreenManager();
         
         if (getFloat(Keys.uiScale) <= 0) {
-            putFloat(Keys.uiScale, 1);
-            putFloat(Keys.soundVolume, 100);
-            putFloat(Keys.musicVolume, 100);
-            putFloat(Keys.difficulty, 1);
-            putBoolean(Keys.transparentUi, true);
-            putBoolean(Keys.enableBloom, true);
-            JsonEntry tree = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
-            for (int i = 0; i < tree.size; i++) {
-                if (tree.getString("part", i, "type").equals("category")) {
-                    putBoolean("unlocked_" + tree.getString("noDefaultPartSpecified", i, "default"), true);
-                    if (tree.getString("noSaveToLocation", i, "saveTo").equals("noSaveToLocation")) {
-                        log("No save to location specified for " + tree.get(i) + " (item at index " + i + ")", WARNING);
-                    }
-                    putString(tree.getString("noSaveToLocation", i, "saveTo"), tree.get(i).getString("noDefaultPartSpecified", "default"));
-                }
-            }
+            initPrefs();
             log("------------first launch------------\n", INFO);
         }
         
