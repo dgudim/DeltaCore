@@ -319,7 +319,6 @@ class BasePart extends Entity {
     int layer;
     
     ParticleEffectPool.PooledEffect explosionEffect;
-    boolean exploded;
     
     boolean hasEffects;
     int effectCount;
@@ -355,7 +354,7 @@ class BasePart extends Entity {
         explosionSound = currentConfig.getString(false, "explosion", "explosionSound");
         drops = compositeManager.getDrops();
         
-        exploded = false;
+        isDead = false;
         name = newConfig.name;
         this.textures = textures;
         links = new Array<>();
@@ -501,7 +500,7 @@ class BasePart extends Entity {
             drawSpriteWithEffects(batch, delta);
             drawHealthBar(batch);
         }
-        if (exploded) {
+        if (isDead) {
             explosionEffect.draw(batch);
         }
     }
@@ -562,22 +561,14 @@ class BasePart extends Entity {
                                 rotation + movementRotation + particleEffectAngles.get(i)) * particleEffectDistances.get(i));
             }
         }
-        if (exploded) {
+        if (isDead) {
             explosionEffect.update(delta);
         }
     }
     
     void updateCollisions() {
-        if (hasCollision && collisionEnabled && health > 0) {
-            health -= player.bullet.overlaps(entityHitBox, true);
-        }
-        if (health <= 0 && !exploded) {
-            explode();
-            for (int i = 0; i < links.size; i++) {
-                if (!links.get(i).exploded) {
-                    links.get(i).explode();
-                }
-            }
+        if (hasCollision && collisionEnabled) {
+            player.collideWithBullet(this);
         }
     }
     
@@ -607,7 +598,8 @@ class BasePart extends Entity {
         links.add(part);
     }
     
-    void explode() {
+    @Override
+    public void explode() {
         if (hasCollision && !type.equals("shield")) {
             drops.dropMoney(entityHitBox, getRandomInRange(moneyCount[0], moneyCount[1]), moneyTimer);
             
@@ -621,8 +613,16 @@ class BasePart extends Entity {
             
             soundManager.playSound_noLink(explosionSound);
             
-            exploded = true;
+            health = 0;
+            isDead = true;
         }
+    
+        for (int i = 0; i < links.size; i++) {
+            if (!links.get(i).isDead) {
+                links.get(i).explode();
+            }
+        }
+        
         active = false;
     }
     
@@ -635,7 +635,7 @@ class BasePart extends Entity {
         visible = true;
         active = false;
         collisionEnabled = false;
-        exploded = false;
+        isDead = false;
         rotation = 0;
     }
 }
@@ -689,7 +689,7 @@ class Part extends BasePart {
             drawSpriteWithEffects(batch, delta);
             drawHealthBar(batch);
         }
-        if (exploded) {
+        if (isDead) {
             explosionEffect.draw(batch);
         }
     }
@@ -705,7 +705,8 @@ class Shield extends Part {
     void updateCollisions() {
         entitySprite.setAlpha(health / maxHealth);
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
-            health = clamp(health - player.bullet.overlaps(entityHitBox, true), 1, maxHealth);
+            //health = clamp(health - player.bullet.overlaps(entityHitBox, true), 1, maxHealth);
+            // TODO: 16/12/2021 make proper collisions
         }
     }
 }
@@ -845,7 +846,7 @@ class Cannon extends Part {
         
         drawSpriteWithEffects(batch, delta);
         
-        if (exploded) {
+        if (isDead) {
             explosionEffect.draw(batch);
         }
     }
@@ -1166,7 +1167,7 @@ class Barrel extends Entity {
                 this.newY = Barrel.this.y + Barrel.this.height / 2f - this.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
                 this.newRot = base.currentAimAngle;
     
-                this.newRot += getRandomInRange(-10, 10) * bulletSpread;
+                this.newRot += getRandomInRange(-10, 10) * bulletSpread + 180;
             }
         });
         if (burstSpacing >= 100) {

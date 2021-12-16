@@ -30,7 +30,7 @@ public class ParticleEffectPoolLoader {
             {"particles/explosion4.p", " "},
             {"particles/explosion4_1.p", " "},
             {"particles/explosion4_2.p", " "},
-            {"particles/explosion4_3.p", " "},
+            {"particles/explosion4_3.p", " "}, // TODO: 16/12/2021 give names, transfer to getByName
             {"particles/explosion_destroyer.p", " "},
             {"particles/explosion_evil.p", " "},
             {"particles/explosion_evil_small.p", " "},

@@ -21,7 +21,6 @@ import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.model.bullets.EnemyBullet;
-import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.loot.Drops;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
@@ -37,8 +36,6 @@ public class Enemy extends Entity {
     private final Array<EnemyBullet> bullets;
     
     private final CompositeManager compositeManager;
-    private final ParticleEffectPoolLoader particleEffectPool;
-    private final AssetManager assetManager;
     private final Drops drops;
     
     boolean queuedForDeletion = false;
@@ -52,21 +49,19 @@ public class Enemy extends Entity {
     
     private final Player player;
     private final Rectangle playerBounds;
-    private final PlayerBullet playerBullet;
     
     Enemy(CompositeManager compositeManager, EnemyData data, Enemies enemies, Player player) {
         this.compositeManager = compositeManager;
-        assetManager = compositeManager.getAssetManager();
+        AssetManager assetManager = compositeManager.getAssetManager();
         drops = compositeManager.getDrops();
         soundManager = compositeManager.getSoundManager();
-        particleEffectPool = compositeManager.getParticleEffectPool();
+        ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
         
         this.data = data;
         this.enemies = enemies;
         this.player = player;
         hasAnimation = data.hasAnimation;
         playerBounds = this.player.entityHitBox;
-        playerBullet = this.player.bullet;
         difficulty = getFloat(Keys.difficulty);
         
         bullets = new Array<>();
@@ -190,29 +185,16 @@ public class Enemy extends Entity {
             }
             
             if (data.isHoming && data.explosionTimer <= 0) {
-                kill();
+                explode();
             }
             
             animationPosition += delta;
+    
+            player.collideWithBullet(this);
             
-            float damage = playerBullet.overlaps(entityHitBox, true);
-            if (damage > 0) {
-                color = Color.valueOf(data.hitColor);
-                health -= damage;
-            }
-            
-            if (overlaps(playerBullet.laser.getBoundingRectangle())) {
-                color = Color.valueOf(data.hitColor);
-                health -= playerBullet.health * delta * 300;
-            }
-            
-            if (overlaps(playerBounds)) {
-                kill();
+            if (overlaps(player)) {
+                explode();
                 player.takeDamage(health / 3f);
-            }
-            
-            if (health <= 0) {
-                kill();
             }
             
             if (overlaps(player.repellentField.getBoundingRectangle()) && player.charge >= player.bonusPowerConsumption * delta) {
@@ -262,12 +244,12 @@ public class Enemy extends Entity {
             bullets.add(new EnemyBullet(compositeManager, data.enemyInfo.get("bullet"), player){
                 @Override
                 public void calculateSpawnPosition() {
-                    this.newX = Enemy.this.x + Enemy.this.width / 2f + MathUtils.cosDeg(Enemy.this.rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
-                    this.newY = Enemy.this.y + Enemy.this.height / 2f + MathUtils.sinDeg(Enemy.this.rotation + data.bulletOffsetAngle) * data.bulletOffsetDistance;
+                    this.newX = Enemy.this.x + Enemy.this.width / 2f + MathUtils.cosDeg(Enemy.this.rotation + Enemy.this.data.bulletOffsetAngle) * Enemy.this.data.bulletOffsetDistance;
+                    this.newY = Enemy.this.y + Enemy.this.height / 2f + MathUtils.sinDeg(Enemy.this.rotation + Enemy.this.data.bulletOffsetAngle) * Enemy.this.data.bulletOffsetDistance;
         
-                    this.newRot = getRandomInRange(-10, 10) * data.bulletSpread + Enemy.this.rotation;
-                    if (data.canAim) {
-                        this.newRot += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(this.newY - playerBounds.getY(), this.newX - playerBounds.getX()), data.aimMinAngle, data.aimMaxAngle);
+                    this.newRot = getRandomInRange(-10, 10) * Enemy.this.data.bulletSpread + Enemy.this.rotation + 180;
+                    if (Enemy.this.data.canAim) {
+                        this.newRot += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(this.newY - playerBounds.getY(), this.newX - playerBounds.getX()), Enemy.this.data.aimMinAngle, Enemy.this.data.aimMaxAngle);
                     }
                 }
             });
@@ -298,8 +280,8 @@ public class Enemy extends Entity {
             bullets.get(i).dispose();
         }
     }
-    
-    private void kill() {
+    @Override
+    public void explode() {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             data.fireParticleEffects.get(i).free();
         }

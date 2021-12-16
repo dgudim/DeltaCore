@@ -1,9 +1,12 @@
 package com.deo.flapd.model;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
+import static com.deo.flapd.control.GameVariables.bulletsShot;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.LogLevel.WARNING;
 import static com.deo.flapd.utils.DUtils.getFloat;
+import static com.deo.flapd.utils.DUtils.getInteger;
+import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.lerpWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
@@ -19,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.control.GameVariables;
 import com.deo.flapd.model.bullets.PlayerBullet;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.CompositeManager;
@@ -67,9 +71,26 @@ public class Player extends Entity {
     
     private final Array<ParticleEffect> fires;
     
-    public PlayerBullet bullet;
+    CompositeManager compositeManager;
+    Enemies enemies;
+    
+    public Array<PlayerBullet> bullets;
+    private float bulletReloadTimer;
+    
+    private float bulletSpread;
+    private float shootingSpeedMultiplier;
+    private float powerConsumption;
+    
+    private int bulletsPerShot;
+    
+    private int gunCount;
+    private int currentActiveGun;
+    private float[] gunOffsetsX;
+    private float[] gunOffsetsY;
     
     public Player(CompositeManager compositeManager, float x, float y, boolean newGame, Enemies enemies) {
+        this.compositeManager = compositeManager;
+        this.enemies = enemies;
         AssetManager assetManager = compositeManager.getAssetManager();
         soundManager = compositeManager.getSoundManager();
         
@@ -248,38 +269,76 @@ public class Player extends Entity {
         
         damage_fire.start();
         
-        bullet = new PlayerBullet(assetManager, this, enemies, newGame);
+        if (!newGame) {
+            bulletsShot = getInteger(Keys.bulletsShot);
+        } else {
+            bulletsShot = 0;
+        }
+        
+        gunCount = shipConfig.getInt(1, "gunCount");
+        currentActiveGun = 0;
+        
+        gunOffsetsX = new float[gunCount];
+        gunOffsetsY = new float[gunCount];
+        
+        for (int i = 0; i < gunCount; i++) {
+            gunOffsetsX[i] = shipConfig.getFloat(0, "guns", "gun" + i + "OffsetX");
+            gunOffsetsY[i] = shipConfig.getFloat(0, "guns", "gun" + i + "OffsetY");
+        }
+        
+        JsonEntry params_weapon = treeJson.get(getString(Keys.currentWeapon), "parameters");
+        
+        shootingSpeedMultiplier = params_weapon.getFloat(1, "parameter.shooting_speed");
+        powerConsumption = params_weapon.getFloat(1, "parameter.power_consumption");
+        bulletsPerShot = params_weapon.getInt(1, "parameter.bullets_per_shot");
+        bulletSpread = params_weapon.getFloat(1, "parameter.spread");
+        
+        bullets = new Array<>();
     }
     
-    public void update(float deltaX, float deltaY, float delta, boolean shooting, boolean shootingSecondary){
+    public void update(float deltaX, float deltaY, float delta, boolean shooting, boolean shootingSecondary) {
         updateWeapon(shooting, shootingSecondary, delta);
         updateSpeed(deltaX, deltaY, delta);
     }
     
-    public void updateWeapon(boolean shooting, boolean shootingSecondary, float delta){
-    
-        bullet.updateReload(delta);
+    public void updateWeapon(boolean shooting, boolean shootingSecondary, float delta) {
+        
+        bulletReloadTimer = bulletReloadTimer + 50 * (GameVariables.bonuses_collected / 100.0f + 1) * delta * gunCount;
         
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
             shooting = true;
         if (Gdx.input.isKeyPressed(Input.Keys.M))
             shootingSecondary = true;
         
-        if (shooting) {
-            bullet.spawn(1, false);
-        }
-    
-        if (shootingSecondary) {
-            bullet.spawn(1.5f, true);
-        }
-    
-        if (bullet.isLaser) {
-            bullet.updateLaser(shooting || shootingSecondary);
+        if (shooting && charge >= powerConsumption && bulletReloadTimer > 10 / shootingSpeedMultiplier) {
+            charge -= powerConsumption;
+            for (int i = 0; i < bulletsPerShot; i++) {
+                bullets.add(new PlayerBullet(compositeManager, enemies) {
+                    @Override
+                    public void calculateSpawnPosition() {
+                        newX = Player.this.entityHitBox.getX() + gunOffsetsX[currentActiveGun];
+                        newY = Player.this.entityHitBox.getY() + gunOffsetsY[currentActiveGun];
+                        currentActiveGun++;
+                        if (currentActiveGun >= gunCount) {
+                            currentActiveGun = 0;
+                        }
+                        float degree = Player.this.rotation;
+                        // TODO: 16/12/2021 implement module's logic (aim etc)
+                        
+                        degree += getRandomInRange(-10, 10) * bulletSpread;
+                        
+                        newRot = degree;
+                    }
+                });
+            }
+            bulletReloadTimer = 0;
+            bulletsShot += bulletsPerShot;
+            soundManager.playSound_noLink("gun4");
         }
     }
     
     public void updateSpeed(float deltaX, float deltaY, float delta) {
-    
+        
         if (Gdx.input.isKeyPressed(Input.Keys.W))
             deltaY = 1;
         if (Gdx.input.isKeyPressed(Input.Keys.A))
@@ -324,7 +383,14 @@ public class Player extends Entity {
     }
     
     public void drawBullets(SpriteBatch batch, float delta) {
-        bullet.draw(batch, delta);
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).update(delta);
+            bullets.get(i).draw(batch, delta);
+            if (bullets.get(i).queuedForDeletion) {
+                bullets.get(i).dispose();
+                bullets.removeIndex(i);
+            }
+        }
     }
     
     @Override
@@ -333,6 +399,19 @@ public class Player extends Entity {
         entitySprite.setRotation(rotation);
         entitySprite.setColor(shipColor);
         updateHealth(delta);
+    }
+    
+    public void collideWithBullet(Entity entity){
+        if(!entity.isDead){
+            for(int i = 0; i < bullets.size; i++){
+                if(bullets.get(i).overlaps(entity)){
+                    float damage = bullets.get(i).health;
+                    bullets.get(i).takeDamage(entity.health);
+                    entity.takeDamage(damage);
+                    break;
+                }
+            }
+        }
     }
     
     public void drawSprites(SpriteBatch batch, float delta) {
@@ -400,7 +479,9 @@ public class Player extends Entity {
         
         explosionEffect.dispose();
         damage_fire.dispose();
-        bullet.dispose();
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).dispose();
+        }
     }
     
     private void set_tintRed(boolean shield) {
@@ -411,17 +492,22 @@ public class Player extends Entity {
         }
     }
     
+    @Override
     public void takeDamage(float damage) {
         if (shieldCharge >= damage) {
             shieldCharge -= damage;
             set_tintRed(true);
         } else {
             health -= (damage - shieldCharge) / 5;
+            if(health <= 0){
+                explode();
+            }
             shieldCharge = 0;
             set_tintRed(false);
         }
     }
     
+    @Override
     public void explode() {
         explosionEffect.setPosition(x + 25.6f, y + 35.2f);
         explosionEffect.start();

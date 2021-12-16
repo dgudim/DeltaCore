@@ -25,7 +25,9 @@ public class Bullet extends Entity {
     protected float newY;
     protected float newRot;
     
-    BulletData data;
+    protected BulletData data;
+    
+    AssetManager assetManager;
     
     public boolean queuedForDeletion = false;
     boolean explosionFinished = false;
@@ -33,9 +35,10 @@ public class Bullet extends Entity {
     
     Bullet(CompositeManager compositeManager, JsonEntry bulletData) {
         data = new BulletData();
+        assetManager = compositeManager.getAssetManager();
         loadBulletData(bulletData);
         
-        AssetManager assetManager = compositeManager.getAssetManager();
+        assetManager = compositeManager.getAssetManager();
         ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
         
         if (assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(data.texture) == null)
@@ -83,7 +86,7 @@ public class Bullet extends Entity {
             }
             entitySprite.setColor(color);
             float scaledHeight = height * data.fadeOutTimer / data.maxFadeOutTimer;
-            entitySprite.setOrigin(0, scaledHeight / 2f);
+            setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
             entitySprite.setSize(width, scaledHeight);
             updateHealth(delta);
@@ -93,11 +96,11 @@ public class Bullet extends Entity {
     }
     
     @Override
-    public boolean overlaps(Rectangle hitBox) {
+    public boolean overlaps(Entity entity) {
         if (data.isLaser) {
-            return checkLaserIntersection(hitBox);
+            return checkLaserIntersection(entity.entityHitBox);
         } else {
-            return super.overlaps(hitBox);
+            return super.overlaps(entity);
         }
     }
     
@@ -169,8 +172,8 @@ public class Bullet extends Entity {
                 if (data.isHoming) {
                     updateHomingLogic(delta);
                 }
-                x -= MathUtils.cosDeg(rotation) * speed * delta * (data.isHoming ? 2 : 1);
-                y -= MathUtils.sinDeg(rotation) * speed * delta * (data.isHoming ? 2 : 1);
+                x += MathUtils.cosDeg(rotation) * speed * delta * (data.isHoming ? 2 : 1);
+                y += MathUtils.sinDeg(rotation) * speed * delta * (data.isHoming ? 2 : 1);
                 updateEntity(delta);
                 
                 data.trailParticleEffect.setPosition(
@@ -205,7 +208,8 @@ public class Bullet extends Entity {
         }
     }
     
-    void explode() {
+    @Override
+    public void explode() {
         if (!data.isLaser) {
             data.trailParticleEffect.free();
             data.explosionParticleEffect.setPosition(x + originX, y + originY);
@@ -257,8 +261,6 @@ class BulletData {
     
     BulletData() {
     }
-    
-    ;
 }
 
 

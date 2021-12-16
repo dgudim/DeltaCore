@@ -101,7 +101,7 @@ public class Checkpoint extends Entity {
         
         entitySprite.draw(batch);
         
-        if (player.overlaps(this) && player.health > 0 && !checkpointState) {
+        if (player.overlaps(this) && !player.isDead && !checkpointState) {
             checkpointState = true;
             entitySprite.setRegion((Texture) assetManager.get("checkpoint_green.png"));
             destination_posY = 900;
@@ -131,5 +131,4 @@ public class Checkpoint extends Entity {
         }
         
     }
-    
 }

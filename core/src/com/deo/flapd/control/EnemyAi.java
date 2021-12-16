@@ -1,15 +1,16 @@
 package com.deo.flapd.control;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.deo.flapd.model.Entity;
-import com.deo.flapd.model.Player;
-import com.deo.flapd.model.bullets.PlayerBullet;
-
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.lerpWithConstantSpeed;
 import static java.lang.StrictMath.abs;
+
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.deo.flapd.model.Entity;
+import com.deo.flapd.model.Player;
+import com.deo.flapd.model.bullets.PlayerBullet;
 
 public class EnemyAi {
     
@@ -26,7 +27,7 @@ public class EnemyAi {
     float playerInsideEntityMaxTime;
     
     Player player;
-    PlayerBullet playerBullet;
+    Array<PlayerBullet> playerBullets;
     Entity targetEntity;
     Rectangle playerBounds;
     
@@ -45,7 +46,7 @@ public class EnemyAi {
     public void initialize(Player player, Entity targetEntity) {
         this.player = player;
         this.targetEntity = targetEntity;
-        playerBullet = player.bullet;
+        playerBullets = player.bullets;
         playerBounds = player.entityHitBox;
     }
     
@@ -60,7 +61,7 @@ public class EnemyAi {
                     playerNotDamagedTimer = 0;
                 }
                 playerInsideEntityTimer = clamp(playerInsideEntityTimer - delta, 0, playerInsideEntityMaxTime);
-                if (targetEntity.overlaps(playerBounds)) {
+                if (targetEntity.overlaps(player)) {
                     playerInsideEntityTimer += delta * 2;
                 }
                 if (playerInsideEntityTimer > playerInsideEntityMaxTime) {
@@ -79,10 +80,10 @@ public class EnemyAi {
             if (dodgeBullets && playerInsideEntityTimer <= playerInsideEntityMaxTime / 2f) {
                 Rectangle nearestBullet = null;
                 float nearestX = 0;
-                for (int i = 0; i < playerBullet.bullets.size; i++) {
-                    if (playerBullet.bullets.get(i).getX() > nearestX && playerBullet.bullets.get(i).getX() < targetEntity.x + targetEntity.width && !playerBullet.remove_Bullet.get(i)) {
-                        nearestX = playerBullet.bullets.get(i).getX();
-                        nearestBullet = playerBullet.bullets.get(i);
+                for (int i = 0; i < playerBullets.size; i++) {
+                    if (playerBullets.get(i).x > nearestX && playerBullets.get(i).x < targetEntity.x + targetEntity.width && !playerBullets.get(i).isDead) {
+                        nearestX = playerBullets.get(i).x;
+                        nearestBullet =  playerBullets.get(i).entityHitBox;
                     }
                 }
                 if (nearestBullet != null) {

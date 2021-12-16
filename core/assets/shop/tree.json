@@ -320,8 +320,7 @@
     },
     "usesEffect": "explosion3_3",
     "usesTrail": true,
-    "trailEffect": "bullet_trail_highEmission",
-    "trailFadeOutTimer": 0.5
+    "trailEffect": "bullet_trail_highEmission"
   },
   "part.rail_gun": {
     "items": {
@@ -348,8 +347,7 @@
     },
     "usesEffect": "explosion3_3",
     "usesTrail": true,
-    "trailEffect": "bullet_trail_highEmission",
-    "trailFadeOutTimer": 0.5
+    "trailEffect": "bullet_trail_highEmission"
   },
   "part.laser_beam_gun": {
     "items": {

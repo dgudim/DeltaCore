@@ -1,13 +1,13 @@
 package com.deo.flapd.model;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-
-import static com.badlogic.gdx.math.MathUtils.clamp;
 
 public class Entity {
     
@@ -54,6 +54,11 @@ public class Entity {
         originY = height / 2f;
     }
     
+    public void setOrigin(float originX, float originY){
+        this.originX = originX;
+        this.originY = originY;
+    }
+    
     public void scaleBy(float scale) {
         setSize(width * scale, height * scale);
     }
@@ -83,17 +88,26 @@ public class Entity {
         shapeRenderer.circle(x + originX, y + originY, 5);
     }
     
+    public void explode(){}
+    
     public void die(){
         health = 0;
         isDead = true;
     }
     
-    public boolean overlaps(Entity entity) {
-        return entity.entityHitBox.overlaps(entityHitBox) && !entity.isDead && !isDead;
+    public void takeDamage(float damage){
+        health -= damage;
+        if(health <= 0){
+            explode();
+        }
     }
     
-    public boolean overlaps(Rectangle hitBox) {
-        return hitBox.overlaps(entityHitBox) && !isDead;
+    public boolean overlaps(Entity entity) {
+        return !entity.isDead && !isDead && entityHitBox.overlaps(entity.entityHitBox);
+    }
+    
+    public boolean overlaps(Rectangle entityHitBox) {
+        return !isDead && entityHitBox.overlaps(entityHitBox);
     }
     
 }

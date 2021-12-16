@@ -13,12 +13,10 @@ import com.deo.flapd.view.screens.GameScreen;
 public class EnemyBullet extends Bullet {
    
     private final Player player;
-    private final PlayerBullet playerBullet;
     
     public EnemyBullet(CompositeManager compositeManager, JsonEntry bulletData, Player player) {
         super(compositeManager, bulletData);
         this.player = player;
-        playerBullet = this.player.bullet;
     }
     
     @Override
@@ -29,10 +27,9 @@ public class EnemyBullet extends Bullet {
         data.isBeam = bulletData.getBoolean(false, false, "isBeam");
         if (data.isLaser) {
             data.fadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
-            data.maxFadeOutTimer = bulletData.getFloat(3, "fadeOutTimer");
+            data.maxFadeOutTimer = data.fadeOutTimer;
             color = Color.valueOf(bulletData.getString("ffffffff", "color"));
         } else {
-            color = Color.WHITE;
             width = bulletData.getFloat(1, "width");
             
             speed = bulletData.getFloat(130, "speed");
@@ -66,23 +63,8 @@ public class EnemyBullet extends Bullet {
     
     @Override
     public void checkCollisions(float delta) {
-        if (data.hasCollisionWithEnemyBullets) {
-            for (int i = 0; i < playerBullet.bullets.size; i++) {
-                if (overlaps(playerBullet.bullets.get(i)) && !playerBullet.remove_Bullet.get(i)) {
-                    float playerBulletHealth = playerBullet.damages.get(i);
-                    playerBullet.damages.set(i, playerBulletHealth - health);
-                    if (playerBulletHealth - health <= 0) {
-                        playerBullet.removeBullet(i, true);
-                    }
-                    health -= playerBulletHealth;
-                    if (health <= 0) {
-                        explode();
-                    }
-                }
-            }
-        }
-        
-        if (overlaps(player.entityHitBox)) {
+        player.collideWithBullet(this);
+        if (overlaps(player)) {
             player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) * (data.isLaser ? delta * 1000 : 1));
             GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);
             explode();
