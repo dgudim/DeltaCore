@@ -369,8 +369,8 @@
     "parameters": {
       "parameter.damage": 170,
       "parameter.spread": 0,
-      "parameter.laser_beam_thickness": 9,
-      "parameter.laser_pulse_duration": 3000,
+      "parameter.laser_beam_thickness": 15,
+      "parameter.laser_pulse_duration": 1,
       "parameter.power_consumption": 2.1,
       "parameter.weight": 25
     },

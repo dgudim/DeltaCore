@@ -1166,7 +1166,7 @@ class Barrel extends Entity {
                 this.newY = Barrel.this.y + Barrel.this.height / 2f - this.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
                 this.newRot = base.currentAimAngle;
     
-                this.newRot += getRandomInRange(-10, 10) * bulletSpread + 180;
+                this.newRot += getRandomInRange(-10, 10) * bulletSpread;
             }
         });
         if (burstSpacing >= 100) {

@@ -16,10 +16,8 @@ public class PlayerBullet extends Bullet {
     protected final Enemies enemies;
     
     public PlayerBullet(CompositeManager compositeManager, Enemies enemies) {
-        super(compositeManager, new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json"))));
+        super(compositeManager, new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json"))), 0);
         this.enemies = enemies;
-        angleOffset = 180;
-        setOrigin(0, 5);
         init();
     }
     
@@ -60,6 +58,7 @@ public class PlayerBullet extends Bullet {
             width *= scale;
             height *= scale;
         }
+        setSize(width, height);
         
         health *= treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.damage_multiplier");
         

@@ -40,7 +40,7 @@ public class Bullet extends Entity {
     
     boolean hasCollisionWithEnemyBullets = true;
     
-    Bullet(CompositeManager compositeManager, JsonEntry bulletData) {
+    Bullet(CompositeManager compositeManager, JsonEntry bulletData, float angleOffset) {
         data = new BulletData();
         assetManager = compositeManager.getAssetManager();
         loadBulletData(bulletData);
@@ -54,7 +54,8 @@ public class Bullet extends Entity {
         calculateSpawnPosition();
         float x = newX;
         float y = newY;
-        float rotation = newRot;
+        float rotation = newRot + angleOffset;
+        this.angleOffset = angleOffset;
         
         entitySprite = new Sprite(assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(data.texture));
         
@@ -66,9 +67,9 @@ public class Bullet extends Entity {
             data.trailParticleEffect.scaleEffect(data.trailScale);
             data.trailParticleEffect.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
-                            rotation + data.trailOffsetAngle + angleOffset) * data.trailOffsetDistance,
+                            rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
                     y + height / 2f + MathUtils.sinDeg(
-                            rotation + data.trailOffsetAngle + angleOffset) * data.trailOffsetDistance);
+                            rotation + data.trailOffsetAngle) * data.trailOffsetDistance);
         }
         
         if (data.isLaser) {
@@ -76,7 +77,7 @@ public class Bullet extends Entity {
             y += height / 2f;
         }
         
-        setPositionAndRotation(x, y, rotation + (data.isLaser ? 180 : 0));
+        setPositionAndRotation(x, y, rotation);
         setSize(width, height);
         init();
     }
@@ -88,7 +89,7 @@ public class Bullet extends Entity {
                 calculateSpawnPosition();
                 x = newX;
                 y = newY + height / 2f;
-                rotation = newRot + 180;
+                rotation = newRot + angleOffset;
                 entitySprite.setRotation(rotation);
             }
             entitySprite.setColor(color);
@@ -189,7 +190,7 @@ public class Bullet extends Entity {
                 rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
                                 y - (homingTarget.y + homingTarget.height / 2f),
-                                x - (homingTarget.x + homingTarget.width / 2f)) + angleOffset,
+                                x - (homingTarget.x + homingTarget.width / 2f)),
                         data.homingSpeed, delta);
                 data.explosionTimer -= delta;
             }

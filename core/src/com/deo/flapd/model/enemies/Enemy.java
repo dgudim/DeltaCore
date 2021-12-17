@@ -251,7 +251,8 @@ public class Enemy extends Entity {
                     this.newX = Enemy.this.x + Enemy.this.width / 2f + MathUtils.cosDeg(Enemy.this.rotation + Enemy.this.data.bulletOffsetAngle) * Enemy.this.data.bulletOffsetDistance;
                     this.newY = Enemy.this.y + Enemy.this.height / 2f + MathUtils.sinDeg(Enemy.this.rotation + Enemy.this.data.bulletOffsetAngle) * Enemy.this.data.bulletOffsetDistance;
         
-                    this.newRot = getRandomInRange(-10, 10) * Enemy.this.data.bulletSpread + Enemy.this.rotation + 180;
+                    this.newRot = getRandomInRange(-10, 10) * Enemy.this.data.bulletSpread + Enemy.this.rotation;
+                    
                     if (Enemy.this.data.canAim) {
                         this.newRot += MathUtils.clamp(MathUtils.radiansToDegrees * MathUtils.atan2(this.newY - playerBounds.getY(), this.newX - playerBounds.getX()), Enemy.this.data.aimMinAngle, Enemy.this.data.aimMaxAngle);
                     }
