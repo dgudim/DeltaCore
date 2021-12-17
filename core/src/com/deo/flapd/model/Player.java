@@ -415,6 +415,12 @@ public class Player extends Entity {
         return 0;
     }
     
+    public void setHomingTarget(Entity homingTarget){
+        for(int i = 0; i < bullets.size; i++){
+            bullets.get(i).setHomingTarget(homingTarget);
+        }
+    }
+    
     public void collideWithBullet(Entity entity){
         collideWithBullet(entity, false);
     }

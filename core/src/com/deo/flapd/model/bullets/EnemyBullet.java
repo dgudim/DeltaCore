@@ -16,6 +16,7 @@ public class EnemyBullet extends Bullet {
     
     public EnemyBullet(CompositeManager compositeManager, JsonEntry bulletData, Player player) {
         super(compositeManager, bulletData);
+        setHomingTarget(player);
         this.player = player;
     }
     
@@ -71,15 +72,5 @@ public class EnemyBullet extends Bullet {
             GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);
             explode();
         }
-    }
-    
-    @Override
-    public void updateHomingLogic(float delta) {
-        rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
-                MathUtils.radiansToDegrees * MathUtils.atan2(
-                        y - (player.y + player.height / 2f),
-                        x - (player.x + player.width / 2f)),
-                data.homingSpeed, delta);
-        data.explosionTimer -= delta;
     }
 }

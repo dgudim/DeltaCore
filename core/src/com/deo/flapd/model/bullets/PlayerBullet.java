@@ -5,9 +5,12 @@ import static com.deo.flapd.utils.DUtils.getString;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 

@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Entity;
 import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
@@ -26,6 +27,8 @@ public class Bullet extends Entity {
     protected float newRot;
     
     protected BulletData data;
+    
+    Entity homingTarget;
     
     AssetManager assetManager;
     
@@ -168,7 +171,27 @@ public class Bullet extends Entity {
         originY = height / 2f;
     }
     
+    public void setHomingTarget(Entity homingTarget) {
+        if (this.homingTarget != null) {
+            if (this.homingTarget.isDead) {
+                this.homingTarget = homingTarget;
+            }
+        } else {
+            this.homingTarget = homingTarget;
+        }
+    }
+    
     public void updateHomingLogic(float delta) {
+        if (homingTarget != null) {
+            if (!homingTarget.isDead) {
+                rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
+                        MathUtils.radiansToDegrees * MathUtils.atan2(
+                                y - (homingTarget.y + homingTarget.height / 2f),
+                                x - (homingTarget.x + homingTarget.width / 2f)),
+                        data.homingSpeed, delta);
+                data.explosionTimer -= delta;
+            }
+        }
     }
     
     public void update(float delta) {

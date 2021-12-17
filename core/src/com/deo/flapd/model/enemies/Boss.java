@@ -51,7 +51,7 @@ import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
 public class Boss {
-    // TODO: 12/17/21 reset all particle effects on death
+    
     public JsonEntry bossConfig;
     private final Array<BasePart> parts;
     private final Array<Phase> phases;
