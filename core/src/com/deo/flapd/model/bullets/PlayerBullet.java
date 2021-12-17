@@ -32,6 +32,7 @@ public class PlayerBullet extends Bullet {
         data.explosionScale = 1;
         
         data.trail = "particles/" + currentWeapon.getString("bullet_trail_left", "trailEffect") + ".p";
+        data.trailScale = 0.5f;
         
         JsonEntry params_weapon = currentWeapon.get("parameters");
         health = params_weapon.getFloat(1, "parameter.damage");

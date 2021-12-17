@@ -85,7 +85,8 @@
       "parameter.power_consumption": 0,
       "parameter.weight": 20
     },
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "trailEffect": "bullet_trail_left_yellow"
   },
   "part.star_core": {
     "description": "part.star_core.description",
@@ -224,7 +225,8 @@
       "parameter.bullets_per_shot": 1,
       "parameter.power_consumption": 0
     },
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "trailEffect": "bullet_trail_left_yellow"
   },
   "part.minigun": {
     "items": {
@@ -247,7 +249,8 @@
       "parameter.power_consumption": 0,
       "parameter.weight": 20
     },
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "trailEffect": "bullet_trail_left_yellow"
   },
   "part.shotgun": {
     "items": {
@@ -270,7 +273,8 @@
       "parameter.power_consumption": 0,
       "parameter.weight": 18
     },
-    "usesEffect": "explosion3_2"
+    "usesEffect": "explosion3_2",
+    "trailEffect": "bullet_trail_left_yellow"
   },
   "part.laser_gun": {
     "items": {
@@ -294,7 +298,8 @@
       "parameter.power_consumption": 1,
       "parameter.weight": 25
     },
-    "usesEffect": "explosion3"
+    "usesEffect": "explosion3",
+    "trailEffect": "bullet_trail_left"
   },
   "part.coil_gun": {
     "items": {
@@ -319,8 +324,7 @@
       "parameter.weight": 18
     },
     "usesEffect": "explosion3_3",
-    "usesTrail": true,
-    "trailEffect": "bullet_trail_highEmission"
+    "trailEffect": "bullet_trail_left_blue"
   },
   "part.rail_gun": {
     "items": {
@@ -346,8 +350,7 @@
       "parameter.weight": 19
     },
     "usesEffect": "explosion3_3",
-    "usesTrail": true,
-    "trailEffect": "bullet_trail_highEmission"
+    "trailEffect": "bullet_trail_left_blue"
   },
   "part.laser_beam_gun": {
     "items": {

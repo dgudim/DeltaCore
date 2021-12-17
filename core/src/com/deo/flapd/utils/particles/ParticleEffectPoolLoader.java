@@ -13,7 +13,6 @@ public class ParticleEffectPoolLoader {
     
     Array<PooledParticleEffectCollection> effectCollections = new Array<>();
     String[][] allParticleEffects = new String[][]{
-            {"particles/bullet_trail_highEmission.p", " "},
             {"particles/bullet_trail_left.p", " "},
             {"particles/bullet_trail_left_blue.p", " "},
             {"particles/bullet_trail_left_yellow.p", " "},

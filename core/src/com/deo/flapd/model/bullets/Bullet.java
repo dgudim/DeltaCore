@@ -61,9 +61,9 @@ public class Bullet extends Entity {
             data.trailParticleEffect.scaleEffect(data.trailScale);
             data.trailParticleEffect.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
-                            rotation + data.trailOffsetAngle * data.trailOffsetDistance),
+                            rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
                     y + height / 2f + MathUtils.sinDeg(
-                            rotation + data.trailOffsetAngle * data.trailOffsetDistance));
+                            rotation + data.trailOffsetAngle) * data.trailOffsetDistance);
         }
         
         if (data.isLaser) {
