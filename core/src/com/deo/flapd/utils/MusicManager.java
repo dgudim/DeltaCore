@@ -3,6 +3,7 @@ package com.deo.flapd.utils;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.lerp;
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
+import static com.deo.flapd.utils.DUtils.getRandomBoolean;
 import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.logException;
@@ -102,7 +103,7 @@ public class MusicManager {
             float amplitudeNext = amplitude.get(arrayPos + 1);
             return lerp(amplitudeCurr, amplitudeNext, lerpPos);
         }
-        return 0;
+        return getRandomBoolean(35) ? getRandomInRange(0, 1000) / 1000f : 0;
     }
     
     public void update(float delta) {
