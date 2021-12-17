@@ -33,6 +33,8 @@ public class Bullet extends Entity {
     boolean explosionFinished = false;
     boolean explosionStarted;
     
+    boolean hasCollisionWithEnemyBullets = true;
+    
     Bullet(CompositeManager compositeManager, JsonEntry bulletData) {
         data = new BulletData();
         assetManager = compositeManager.getAssetManager();
@@ -97,10 +99,18 @@ public class Bullet extends Entity {
     
     @Override
     public boolean overlaps(Entity entity) {
-        if (data.isLaser) {
-            return checkLaserIntersection(entity.entityHitBox);
+        return overlaps(entity, false);
+    }
+    
+    public boolean overlaps(Entity entity, boolean withBullet) {
+        if (!withBullet || hasCollisionWithEnemyBullets) {
+            if (data.isLaser) {
+                return checkLaserIntersection(entity.entityHitBox);
+            } else {
+                return super.overlaps(entity);
+            }
         } else {
-            return super.overlaps(entity);
+            return false;
         }
     }
     

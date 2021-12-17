@@ -401,10 +401,27 @@ public class Player extends Entity {
         updateHealth(delta);
     }
     
-    public void collideWithBullet(Entity entity){
+    public float getCollisionDamageWithBullet(Entity entity){
         if(!entity.isDead){
             for(int i = 0; i < bullets.size; i++){
                 if(bullets.get(i).overlaps(entity)){
+                    float damage = bullets.get(i).health;
+                    bullets.get(i).explode();
+                    return damage;
+                }
+            }
+        }
+        return 0;
+    }
+    
+    public void collideWithBullet(Entity entity){
+        collideWithBullet(entity, false);
+    }
+    
+    public void collideWithBullet(Entity entity, boolean withBullet){
+        if(!entity.isDead){
+            for(int i = 0; i < bullets.size; i++){
+                if(bullets.get(i).overlaps(entity, withBullet)){
                     float damage = bullets.get(i).health;
                     bullets.get(i).takeDamage(entity.health);
                     entity.takeDamage(damage);

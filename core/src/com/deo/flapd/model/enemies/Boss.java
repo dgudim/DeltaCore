@@ -705,8 +705,7 @@ class Shield extends Part {
     void updateCollisions() {
         entitySprite.setAlpha(health / maxHealth);
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
-            //health = clamp(health - player.bullet.overlaps(entityHitBox, true), 1, maxHealth);
-            // TODO: 16/12/2021 make proper collisions
+            health = clamp(health - player.getCollisionDamageWithBullet(this), 1, maxHealth);
         }
     }
 }

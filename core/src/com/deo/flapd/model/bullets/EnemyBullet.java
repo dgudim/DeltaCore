@@ -63,7 +63,9 @@ public class EnemyBullet extends Bullet {
     
     @Override
     public void checkCollisions(float delta) {
-        player.collideWithBullet(this);
+        if(data.hasCollisionWithEnemyBullets){
+            player.collideWithBullet(this, true);
+        }
         if (overlaps(player)) {
             player.takeDamage(health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1) * (data.isLaser ? delta * 1000 : 1));
             GameScreen.screenShake(data.screenShakeIntensity * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer : 1), data.screenShakeDuration);

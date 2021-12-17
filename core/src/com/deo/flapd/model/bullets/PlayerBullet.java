@@ -19,7 +19,6 @@ public class PlayerBullet extends Bullet {
         super(compositeManager, new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json"))));
         this.enemies = enemies;
         
-        scaleBy(10 / entitySprite.getHeight());
         setOrigin(0, 5);
         init();
     }
@@ -40,7 +39,6 @@ public class PlayerBullet extends Bullet {
         
         if (params_weapon.getFloat(false, -1, "parameter.laser_beam_thickness") > 0) {
             height = params_weapon.getFloat(1, "parameter.laser_beam_thickness");
-            // TODO: 16/12/2021 fix height
             
             data.fadeOutTimer = params_weapon.getFloat(1, "parameter.laser_pulse_duration");
             data.maxFadeOutTimer = data.fadeOutTimer;
@@ -56,6 +54,10 @@ public class PlayerBullet extends Bullet {
         
         if (data.isLaser) {
             color = Color.valueOf(currentWeapon.getString("#00FFFF", "laserBeamColor"));
+        }else{
+            float scale = 10 / height;
+            width *= scale;
+            height *= scale;
         }
         
         health *= treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.damage_multiplier");
