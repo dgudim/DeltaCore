@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameVariables;
@@ -484,6 +485,14 @@ public class Player extends Entity {
             shieldColor.r = clamp(shieldColor.r + 3.5f * delta, 0, 1);
             shieldColor.g = clamp(shieldColor.g + 3.5f * delta, 0, 1);
             shieldColor.b = clamp(shieldColor.b + 3.5f * delta, 0, 1);
+        }
+    }
+    
+    @Override
+    public void drawDebug(ShapeRenderer shapeRenderer) {
+        super.drawDebug(shapeRenderer);
+        for(int i = 0; i < bullets.size; i++){
+            bullets.get(i).drawDebug(shapeRenderer);
         }
     }
     

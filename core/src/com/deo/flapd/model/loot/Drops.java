@@ -5,6 +5,7 @@ import static com.deo.flapd.utils.DUtils.getFloat;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.deo.flapd.control.GameVariables;
@@ -68,6 +69,10 @@ public class Drops {
             }
         }
         bonuses.draw(batch, delta);
+    }
+    
+    public void drawDebug(ShapeRenderer shapeRenderer){
+        bonuses.drawDebug(shapeRenderer);
     }
     
     private void removeDrop(int i) {

@@ -243,6 +243,7 @@ public class GameScreen implements Screen {
         if (drawDebug) {
             shapeRenderer.begin();
             bosses.drawDebug(shapeRenderer);
+            drops.drawDebug(shapeRenderer);
             player.drawDebug(shapeRenderer);
             enemies.drawDebug(shapeRenderer);
             shapeRenderer.end();

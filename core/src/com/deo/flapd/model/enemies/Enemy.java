@@ -125,6 +125,8 @@ public class Enemy extends Entity {
         for (int i = 0; i < data.fireParticleEffects.size; i++) {
             drawParticleEffectBounds(shapeRenderer, data.fireParticleEffects.get(i));
         }
+        shapeRenderer.setColor(Color.ORANGE);
+        drawParticleEffectBounds(shapeRenderer, data.explosionParticleEffect);
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).drawDebug(shapeRenderer);
         }

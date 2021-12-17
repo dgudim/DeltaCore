@@ -153,6 +153,8 @@ public class Bullet extends Entity {
             super.drawDebug(shapeRenderer);
             shapeRenderer.setColor(Color.YELLOW);
             drawParticleEffectBounds(shapeRenderer, data.trailParticleEffect);
+            shapeRenderer.setColor(Color.ORANGE);
+            drawParticleEffectBounds(shapeRenderer, data.explosionParticleEffect);
         } else {
             shapeRenderer.rectLine(x, y, x + MathUtils.cosDeg(rotation) * width, y + MathUtils.sinDeg(rotation) * width, height);
         }

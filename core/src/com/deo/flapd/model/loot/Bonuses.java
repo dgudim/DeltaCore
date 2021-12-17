@@ -1,11 +1,14 @@
 package com.deo.flapd.model.loot;
 
+import static com.deo.flapd.utils.DUtils.getFloat;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -14,8 +17,6 @@ import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
-
-import static com.deo.flapd.utils.DUtils.getFloat;
 
 public class Bonuses {
     
@@ -84,6 +85,12 @@ public class Bonuses {
                 explosions.get(i3).free();
                 explosions.removeIndex(i3);
             }
+        }
+    }
+    
+    public void drawDebug(ShapeRenderer shapeRenderer){
+        for (int i = 0; i < bonuses.size; i++) {
+            bonuses.get(i).drawDebug(shapeRenderer);
         }
     }
     
