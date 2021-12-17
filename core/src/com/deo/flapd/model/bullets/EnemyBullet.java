@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.deo.flapd.model.Player;
 import com.deo.flapd.utils.CompositeManager;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.view.screens.GameScreen;
 

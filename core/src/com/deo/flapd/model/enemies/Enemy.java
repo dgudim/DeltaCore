@@ -137,6 +137,8 @@ public class Enemy extends Entity {
         
         if (!isDead) {
             
+            player.setHomingTarget(this);
+            
             if (!data.isHoming) {
                 x = MathUtils.clamp(x, -width - 500, 800);
                 y = MathUtils.clamp(y, 0, 480 - height);

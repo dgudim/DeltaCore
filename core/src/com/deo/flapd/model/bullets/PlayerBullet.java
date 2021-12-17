@@ -5,12 +5,9 @@ import static com.deo.flapd.utils.DUtils.getString;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonReader;
-import com.deo.flapd.model.Entity;
 import com.deo.flapd.model.enemies.Enemies;
 import com.deo.flapd.utils.CompositeManager;
-import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 
@@ -21,7 +18,7 @@ public class PlayerBullet extends Bullet {
     public PlayerBullet(CompositeManager compositeManager, Enemies enemies) {
         super(compositeManager, new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json"))));
         this.enemies = enemies;
-        
+        angleOffset = 180;
         setOrigin(0, 5);
         init();
     }

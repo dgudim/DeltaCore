@@ -26,6 +26,8 @@ public class Bullet extends Entity {
     protected float newY;
     protected float newRot;
     
+    protected float angleOffset = 0;
+    
     protected BulletData data;
     
     Entity homingTarget;
@@ -64,9 +66,9 @@ public class Bullet extends Entity {
             data.trailParticleEffect.scaleEffect(data.trailScale);
             data.trailParticleEffect.setPosition(
                     x + width / 2f + MathUtils.cosDeg(
-                            rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
+                            rotation + data.trailOffsetAngle + angleOffset) * data.trailOffsetDistance,
                     y + height / 2f + MathUtils.sinDeg(
-                            rotation + data.trailOffsetAngle) * data.trailOffsetDistance);
+                            rotation + data.trailOffsetAngle + angleOffset) * data.trailOffsetDistance);
         }
         
         if (data.isLaser) {
@@ -187,7 +189,7 @@ public class Bullet extends Entity {
                 rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
                                 y - (homingTarget.y + homingTarget.height / 2f),
-                                x - (homingTarget.x + homingTarget.width / 2f)),
+                                x - (homingTarget.x + homingTarget.width / 2f)) + angleOffset,
                         data.homingSpeed, delta);
                 data.explosionTimer -= delta;
             }
