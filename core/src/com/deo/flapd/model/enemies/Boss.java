@@ -1027,7 +1027,7 @@ class Barrel extends Entity {
     }
     
     void draw(SpriteBatch batch, float delta, boolean draw) {
-        if (draw) {
+        if (draw && !base.isDead) {
             if (powerDownActive) {
                 powerDownEffect.draw(batch);
             }
@@ -1043,7 +1043,7 @@ class Barrel extends Entity {
                 bullets.removeIndex(i);
             }
         }
-        if (draw) {
+        if (draw && !base.isDead) {
             if (!drawBulletsOnTop) {
                 drawSpriteSpriteWithEffects(batch);
             }
