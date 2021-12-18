@@ -114,6 +114,7 @@ public class GameScreen implements Screen {
         
         warpTime = 0;
         warpSpeed = 70;
+        warpSoundPlaying = true;
         
         if(enemies != null){
             enemies.dispose();

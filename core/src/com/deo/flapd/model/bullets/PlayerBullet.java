@@ -38,10 +38,6 @@ public class PlayerBullet extends Bullet {
         health = params_weapon.getFloat(1, "parameter.damage");
         speed = params_weapon.getFloat(1, "parameter.bullet_speed");
         
-        TextureAtlas.AtlasRegion bulletRegion = assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(data.texture);
-        height = bulletRegion.originalHeight;
-        width = bulletRegion.originalWidth;
-        
         if (params_weapon.getFloat(false, -1, "parameter.laser_beam_thickness") > 0) {
             height = params_weapon.getFloat(1, "parameter.laser_beam_thickness");
             
@@ -52,6 +48,12 @@ public class PlayerBullet extends Bullet {
         }
         
         data.texture = data.isLaser ? "bullet_laser" : ("bullet_" + getString(Keys.currentWeapon));
+    
+        TextureAtlas.AtlasRegion bulletRegion = assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(data.texture);
+        if(!data.isLaser){
+            height = bulletRegion.originalHeight;
+        }
+        width = bulletRegion.originalWidth;
         
         if (data.isLaser) {
             color = Color.valueOf(currentWeapon.getString("#00FFFF", "laserBeamColor"));

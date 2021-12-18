@@ -1,12 +1,12 @@
 package com.deo.flapd.utils.particles;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-
 import static com.deo.flapd.utils.DUtils.LogLevel.INFO;
 import static com.deo.flapd.utils.DUtils.log;
 import static com.deo.flapd.utils.DUtils.putInteger;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 
 public class PooledParticleEffectCollection {
     
@@ -37,7 +37,7 @@ public class PooledParticleEffectCollection {
             protected PooledEffect newObject() {
                 if (initialized[0]) {
                     currentCapacity++;
-                    putInteger("pool_" + path, currentCapacity);
+                    putInteger("pool_" + path, (int)(currentCapacity * 0.2f + initialCapacity * 0.8f));
                     log("expanding pooled particle effect collection: " + name + ", path: " + path + ", new size: " + currentCapacity + ", overhead: " + currentCapacity / (float) initialCapacity * 100 + "%", INFO);
                 }
                 return super.newObject();
