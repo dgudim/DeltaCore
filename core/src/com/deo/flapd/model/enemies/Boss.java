@@ -67,6 +67,8 @@ public class Boss {
     
     public String bossName;
     
+    Player player;
+    
     String bossMusic;
     MusicManager musicManager;
     
@@ -74,6 +76,8 @@ public class Boss {
         log("------------------------------------------------------\n", DEBUG);
         log("---------loading " + bossName, DEBUG);
         long genTime = TimeUtils.millis();
+        
+        this.player = player;
         
         AssetManager assetManager = compositeManager.getAssetManager();
         musicManager = compositeManager.getMusicManager();
@@ -233,6 +237,9 @@ public class Boss {
                 if (!parts.get(i).equals(body)) {
                     parts.get(i).x = body.x + parts.get(i).offsetX;
                     parts.get(i).y = body.y + parts.get(i).offsetY;
+                    if(!parts.get(i).isDead && parts.get(i).active){
+                        player.setHomingTarget(parts.get(i));
+                    }
                 }
                 parts.get(i).update(delta);
             }
@@ -566,15 +573,15 @@ class BasePart extends Entity {
         }
     }
     
-    void updateCollisions() {
+    void updateCollisions(float delta) {
         if (hasCollision && collisionEnabled) {
-            player.collideWithBullet(this);
+            player.collideWithBullet(this, delta);
         }
     }
     
     void update(float delta) {
         updateEntityAndHealthBar(delta);
-        updateCollisions();
+        updateCollisions(delta);
         updateEffects(delta);
     }
     
@@ -616,7 +623,7 @@ class BasePart extends Entity {
             health = 0;
             isDead = true;
         }
-    
+        
         for (int i = 0; i < links.size; i++) {
             if (!links.get(i).isDead) {
                 links.get(i).explode();
@@ -702,10 +709,10 @@ class Shield extends Part {
     }
     
     @Override
-    void updateCollisions() {
+    void updateCollisions(float delta) {
         entitySprite.setAlpha(health / maxHealth);
         if (hasCollision && collisionEnabled && health / maxHealth > 0.1f) {
-            health = clamp(health - player.getCollisionDamageWithBullet(this), 1, maxHealth);
+            health = clamp(health - player.getCollisionDamageWithBullet(this, delta), 1, maxHealth);
         }
     }
 }
@@ -1159,13 +1166,13 @@ class Barrel extends Entity {
     void spawnBullet() {
         
         bullets.add(new EnemyBullet(base.compositeManager,
-                currentConfig.getWithFallBack(base.currentConfig.get(true, "bullet"), false, "bullet"), base.player){
+                currentConfig.getWithFallBack(base.currentConfig.get(true, "bullet"), false, "bullet"), base.player) {
             @Override
             public void calculateSpawnPosition() {
                 this.newX = Barrel.this.x + Barrel.this.width / 2f - this.width / 2f + MathUtils.cosDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
                 this.newY = Barrel.this.y + Barrel.this.height / 2f - this.height / 2f + MathUtils.sinDeg(base.currentAimAngle + bulletOffsetAngle) * bulletOffsetDistance;
                 this.newRot = base.currentAimAngle;
-    
+                
                 this.newRot += getRandomInRange(-10, 10) * bulletSpread;
             }
         });
@@ -1710,20 +1717,12 @@ class PhaseTrigger {
         }
         switch (triggerModifier) {
             case ("<"):
-                if (partValue < value) {
-                    conditionsMet = true;
-                }
-                break;
-            case (">"):
-                if (partValue > value) {
-                    conditionsMet = true;
-                }
-                break;
             case ("<="):
                 if (partValue <= value) {
                     conditionsMet = true;
                 }
                 break;
+            case (">"):
             case (">="):
                 if (partValue >= value) {
                     conditionsMet = true;

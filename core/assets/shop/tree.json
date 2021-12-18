@@ -78,15 +78,17 @@
     "type": "basePart",
     "parameters": {
       "parameter.damage": 50,
-      "parameter.spread": 1.4,
+      "parameter.spread": 14,
       "parameter.shooting_speed": 0.7,
       "parameter.bullet_speed": 1000,
-      "parameter.bullets_per_shot": 1,
+      "parameter.bullets_per_shot": 10,
       "parameter.power_consumption": 0,
       "parameter.weight": 20
     },
     "usesEffect": "explosion3_2",
-    "trailEffect": "bullet_trail_left_yellow"
+    "trailEffect": "bullet_trail_left_yellow",
+    "homing": true,
+    "homingSpeed": 400
   },
   "part.star_core": {
     "description": "part.star_core.description",
@@ -367,7 +369,7 @@
     "requires": ["part.machine_gun", "part.energy_core"],
     "type": "part",
     "parameters": {
-      "parameter.damage": 170,
+      "parameter.damage": 190,
       "parameter.spread": 0,
       "parameter.laser_beam_thickness": 15,
       "parameter.laser_pulse_duration": 1,

@@ -194,7 +194,7 @@ public class Enemy extends Entity {
             
             animationPosition += delta;
             
-            player.collideWithBullet(this);
+            player.collideWithBullet(this, delta);
             
             if (overlaps(player)) {
                 explode();

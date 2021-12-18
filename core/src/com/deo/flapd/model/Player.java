@@ -402,11 +402,11 @@ public class Player extends Entity {
         updateHealth(delta);
     }
     
-    public float getCollisionDamageWithBullet(Entity entity){
+    public float getCollisionDamageWithBullet(Entity entity, float delta){
         if(!entity.isDead){
             for(int i = 0; i < bullets.size; i++){
                 if(bullets.get(i).overlaps(entity)){
-                    float damage = bullets.get(i).health;
+                    float damage = bullets.get(i).getDamage(delta);
                     bullets.get(i).explode();
                     return damage;
                 }
@@ -421,15 +421,15 @@ public class Player extends Entity {
         }
     }
     
-    public void collideWithBullet(Entity entity){
-        collideWithBullet(entity, false);
+    public void collideWithBullet(Entity entity, float delta){
+        collideWithBullet(entity, false, delta);
     }
     
-    public void collideWithBullet(Entity entity, boolean withBullet){
+    public void collideWithBullet(Entity entity, boolean withBullet, float delta){
         if(!entity.isDead){
             for(int i = 0; i < bullets.size; i++){
                 if(bullets.get(i).overlaps(entity, withBullet)){
-                    float damage = bullets.get(i).health;
+                    float damage = bullets.get(i).getDamage(delta);
                     bullets.get(i).takeDamage(entity.health);
                     entity.takeDamage(damage);
                     break;

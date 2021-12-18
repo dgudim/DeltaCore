@@ -119,7 +119,7 @@ public class GameOverScreen implements Screen {
         enemiesKilled = GameVariables.enemiesKilled;
         bulletsShot = GameVariables.bulletsShot;
         moneyEarned = GameVariables.moneyEarned;
-        score = GameVariables.score;
+        score = (int)GameVariables.score;
         
         highScore = getInteger(Keys.highScore);
         difficulty = getFloat(Keys.difficulty);

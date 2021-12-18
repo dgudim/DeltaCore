@@ -1,5 +1,6 @@
 package com.deo.flapd.model.bullets;
 
+import static com.deo.flapd.control.GameVariables.score;
 import static com.deo.flapd.utils.DUtils.getString;
 
 import com.badlogic.gdx.Gdx;
@@ -69,5 +70,12 @@ public class PlayerBullet extends Bullet {
         }
         
         data.hasCollisionWithEnemyBullets = !data.isLaser;
+    }
+    
+    @Override
+    public float getDamage(float delta) {
+        float damage = super.getDamage(delta);
+        score += damage / 5f;
+        return damage;
     }
 }

@@ -62,7 +62,7 @@ public class Checkpoint extends Entity {
         updateEntity(delta);
         if (!bossWave) {
             if (score > lastCheckpoint + checkpointSpawnSpacing) {
-                lastCheckpoint = score;
+                lastCheckpoint = (int)score;
                 spawn(getRandomInRange(0, 300) + 150, getRandomInRange(0, 201) + 100);
             }
         }
@@ -108,7 +108,7 @@ public class Checkpoint extends Entity {
             putInteger(Keys.enemiesKilled, GameVariables.enemiesKilled);
             putInteger(Keys.moneyEarned, GameVariables.moneyEarned);
             putInteger(Keys.moneyAmount, GameVariables.money);
-            putInteger(Keys.playerScore, score);
+            putInteger(Keys.playerScore, (int)score);
             putFloat(Keys.playerHealthValue, player.health);
             putFloat(Keys.playerShieldValue, player.shieldCharge);
             putFloat(Keys.playerChargeValue, player.charge);

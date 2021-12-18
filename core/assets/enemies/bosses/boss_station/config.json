@@ -1079,7 +1079,7 @@
       "triggers": {
         "rearCannonsHealthTrigger": {
           "triggerType": "health",
-          "triggerModifier": "<",
+          "triggerModifier": "<=",
           "target": "group:rearCannonsSmallAndStandard",
           "value": 0
         }
@@ -1094,7 +1094,7 @@
       "triggers": {
         "coreCoverHealthTrigger": {
           "triggerType": "health",
-          "triggerModifier": "<",
+          "triggerModifier": "<=",
           "target": "coreCover",
           "value": 0
         }

@@ -488,7 +488,7 @@
       "triggers": {
         "trigger0": {
           "triggerType": "health",
-          "triggerModifier": "<",
+          "triggerModifier": "<=",
           "target": "body",
           "value": 0
         }

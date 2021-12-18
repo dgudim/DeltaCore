@@ -26,7 +26,7 @@ public class Bullet extends Entity {
     protected float newY;
     protected float newRot;
     
-    protected float angleOffset = 0;
+    protected float angleOffset;
     
     protected BulletData data;
     
@@ -37,8 +37,6 @@ public class Bullet extends Entity {
     public boolean queuedForDeletion = false;
     boolean explosionFinished = false;
     boolean explosionStarted;
-    
-    boolean hasCollisionWithEnemyBullets = true;
     
     Bullet(CompositeManager compositeManager, JsonEntry bulletData, float angleOffset) {
         data = new BulletData();
@@ -87,14 +85,14 @@ public class Bullet extends Entity {
         if (data.isLaser) {
             if (data.isBeam) {
                 calculateSpawnPosition();
-                x = newX;
+                x = newX + width / 2f;
                 y = newY + height / 2f;
                 rotation = newRot + angleOffset;
                 entitySprite.setRotation(rotation);
             }
             entitySprite.setColor(color);
             float scaledHeight = height * data.fadeOutTimer / data.maxFadeOutTimer;
-            setOrigin(0, scaledHeight / 2f);
+            entitySprite.setOrigin(0, scaledHeight / 2f);
             entitySprite.setOriginBasedPosition(x, y);
             entitySprite.setSize(width, scaledHeight);
             updateHealth(delta);
@@ -109,7 +107,7 @@ public class Bullet extends Entity {
     }
     
     public boolean overlaps(Entity entity, boolean withBullet) {
-        if (!withBullet || hasCollisionWithEnemyBullets) {
+        if (!withBullet || data.hasCollisionWithEnemyBullets) {
             if (data.isLaser) {
                 return checkLaserIntersection(entity.entityHitBox);
             } else {
@@ -190,7 +188,7 @@ public class Bullet extends Entity {
                 rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
                                 y - (homingTarget.y + homingTarget.height / 2f),
-                                x - (homingTarget.x + homingTarget.width / 2f)),
+                                x - (homingTarget.x + homingTarget.width / 2f)) + 180,
                         data.homingSpeed, delta);
                 data.explosionTimer -= delta;
             }
@@ -210,8 +208,8 @@ public class Bullet extends Entity {
                 if (data.isHoming) {
                     updateHomingLogic(delta);
                 }
-                x += MathUtils.cosDeg(rotation) * speed * delta * (data.isHoming ? 2 : 1);
-                y += MathUtils.sinDeg(rotation) * speed * delta * (data.isHoming ? 2 : 1);
+                x += MathUtils.cosDeg(rotation) * speed * delta;
+                y += MathUtils.sinDeg(rotation) * speed * delta;
                 updateEntity(delta);
                 
                 data.trailParticleEffect.setPosition(
@@ -237,6 +235,13 @@ public class Bullet extends Entity {
         }
     }
     
+    @Override
+    public void takeDamage(float damage) {
+        if(!data.isLaser){
+            super.takeDamage(damage);
+        }
+    }
+    
     public void dispose() {
         if (!data.isLaser) {
             data.explosionParticleEffect.free();
@@ -255,6 +260,10 @@ public class Bullet extends Entity {
             entitySprite.setPosition(-100, -100);
             die();
         }
+    }
+    
+    public float getDamage(float delta){
+        return health * (data.isLaser ? data.fadeOutTimer / data.maxFadeOutTimer * delta : 1);
     }
     
     public void checkCollisions(float delta) {

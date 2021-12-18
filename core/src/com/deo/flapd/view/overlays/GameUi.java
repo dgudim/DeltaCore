@@ -409,7 +409,7 @@ public class GameUi {
         stage.act(delta);
         batch.begin();
         font_numbers.getData().setScale(0.3f * uiScale);
-        font_numbers.draw(batch, "" + GameVariables.score, 537 - 263 * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
+        font_numbers.draw(batch, "" + (int)GameVariables.score, 537 - 263 * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
         font_numbers.draw(batch, "" + GameVariables.money, (537 - 122) - (263 + 122) * (uiScale - 1), 467 - 12 * (uiScale - 1), 100 * uiScale, 1, false);
         font_main.getData().setScale(0.27f * uiScale);
         

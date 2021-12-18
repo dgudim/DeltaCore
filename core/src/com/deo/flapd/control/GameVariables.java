@@ -10,7 +10,7 @@ public class GameVariables {
     
     public static boolean bossWave;
     
-    public static int score;
+    public static float score;
     public static int enemiesKilled;
     public static int money, moneyEarned, bulletsShot;
     

@@ -8,7 +8,7 @@
   "parts": {
     "body": {
       "type": "basePart",
-      "health": 10000,
+      "health": 8000,
       "regeneration": 70,
       "hasCollision": true,
       "width": 324,
@@ -47,7 +47,7 @@
       "type": "cannon",
       "drawBulletsOnTop": false,
       "hasCollision": true,
-      "health": 5000,
+      "health": 3000,
       "width": 146,
       "height": 42,
       "originX": 103,
@@ -127,7 +127,7 @@
     "artillery": {
       "type": "cannon",
       "drawBulletsOnTop": false,
-      "health": 6000,
+      "health": 4000,
       "width": 146,
       "height": 42,
       "originX": 103,
@@ -193,7 +193,7 @@
     "laser": {
       "type": "cannon",
       "drawBulletsOnTop": false,
-      "health": 7000,
+      "health": 5000,
       "width": 110,
       "height": 38,
       "hasCollision": true,
@@ -208,7 +208,7 @@
         "isBeam": true,
         "texture": "bullet_laser",
         "fadeOutTimer": 1.3,
-        "damage": 0.05,
+        "damage": 50,
         "height": 20,
         "color": "ff0000ff",
         "screenShakeOnHit": 5,

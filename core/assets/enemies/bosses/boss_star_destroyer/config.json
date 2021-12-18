@@ -115,7 +115,7 @@
         "isBeam": true,
         "texture": "bullet_laser",
         "fadeOutTimer": 1,
-        "damage": 0.05,
+        "damage": 50,
         "height": 20,
         "color": "ff0000ff",
         "screenShakeOnHit": 3,
