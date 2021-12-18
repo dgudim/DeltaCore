@@ -75,7 +75,7 @@ public class PlayerBullet extends Bullet {
     @Override
     public float getDamage(float delta) {
         float damage = super.getDamage(delta);
-        score += damage / 5f;
+        score += damage / 7f;
         return damage;
     }
 }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deo.flapd.control.GameVariables;
@@ -31,12 +32,11 @@ import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.SoundManager;
 
-public class Player extends Entity {
+public class Player extends EntityWithAim {
     
     private final Sprite shield;
     public Sprite magnetField;
     public Sprite repellentField;
-    public Sprite aimRadius;
     
     private final ParticleEffect damage_fire;
     public ParticleEffect explosionEffect;
@@ -72,22 +72,22 @@ public class Player extends Entity {
     
     private final Array<ParticleEffect> fires;
     
-    CompositeManager compositeManager;
-    Enemies enemies;
+    private final CompositeManager compositeManager;
+    private final Enemies enemies;
     
     public Array<PlayerBullet> bullets;
     private float bulletReloadTimer;
     
-    private float bulletSpread;
-    private float shootingSpeedMultiplier;
-    private float powerConsumption;
+    private final float bulletSpread;
+    private final float shootingSpeedMultiplier;
+    private final float powerConsumption;
     
-    private int bulletsPerShot;
+    private final int bulletsPerShot;
     
-    private int gunCount;
+    private final int gunCount;
     private int currentActiveGun;
-    private float[] gunOffsetsX;
-    private float[] gunOffsetsY;
+    private final float[] gunOffsetsX;
+    private final float[] gunOffsetsY;
     
     public Player(CompositeManager compositeManager, float x, float y, boolean newGame, Enemies enemies) {
         this.compositeManager = compositeManager;
@@ -189,43 +189,36 @@ public class Player extends Entity {
         
         magnetField = new Sprite(fields.findRegion("field_attractor"));
         repellentField = new Sprite(fields.findRegion("field_repellent"));
-        aimRadius = new Sprite(fields.findRegion("circle"));
         magnetField.setSize(0, 0);
         repellentField.setSize(0, 0);
-        aimRadius.setSize(0, 0);
         
-        String module = getString(Keys.currentModule);
-        JsonEntry params_module = treeJson.get(false, module, "parameters");
+        String currentModule = getString(Keys.currentModule);
+        canAim = currentModule.equals("part.radar");
+        JsonEntry params_module = treeJson.get(false, currentModule, "parameters");
         
-        if (!module.equals("none")) {
+        if (!currentModule.equals("none")) {
             for (int i = 0; i < params_module.size; i++) {
                 switch (params_module.get(i).name) {
                     case ("parameter.power_consumption"):
                         bonusPowerConsumption = params_module.getFloat(1, i);
                         break;
                     case ("parameter.attraction_radius"):
-                        if (module.equals("part.magnet")) {
+                        if (currentModule.equals("part.magnet")) {
                             float radius = params_module.getFloat(1, i);
                             magnetField.setSize(radius, radius);
                         }
                         break;
                     case ("parameter.repellent_radius"):
-                        if (module.equals("part.repellent_field")) {
+                        if (currentModule.equals("part.repellent_field")) {
                             float radius = params_module.getFloat(1, i);
                             repellentField.setSize(radius, radius);
-                        }
-                        break;
-                    case ("parameter.aim_radius"):
-                        if (module.equals("part.radar")) {
-                            float radius = params_module.getFloat(1, i);
-                            aimRadius.setSize(radius, radius);
                         }
                         break;
                     case ("parameter.weight"):
                         weight += params_module.getFloat(1, i);
                         break;
                     default:
-                        log("Player: no need to load " + params_module.get(i).name + " from " + module + ", ignoring", INFO);
+                        log("Player: no need to load " + params_module.get(i).name + " from " + currentModule + ", ignoring", INFO);
                         break;
                 }
             }
@@ -311,24 +304,42 @@ public class Player extends Entity {
         if (Gdx.input.isKeyPressed(Input.Keys.M))
             shootingSecondary = true;
         
-        if (shooting && charge >= powerConsumption && bulletReloadTimer > 10 / shootingSpeedMultiplier) {
-            charge -= powerConsumption;
+        float multiplier = shootingSecondary ? 1.9f : 1;
+        
+        if ((shooting || shootingSecondary) && charge >= powerConsumption * multiplier && bulletReloadTimer > 10 / shootingSpeedMultiplier) {
+            charge -= powerConsumption * multiplier;
             for (int i = 0; i < bulletsPerShot; i++) {
+                boolean finalShootingSecondary = shootingSecondary;
                 bullets.add(new PlayerBullet(compositeManager, enemies) {
                     @Override
                     public void calculateSpawnPosition() {
-                        newX = Player.this.entityHitBox.getX() + gunOffsetsX[currentActiveGun];
-                        newY = Player.this.entityHitBox.getY() + gunOffsetsY[currentActiveGun];
+                        newX = Player.this.x + gunOffsetsX[currentActiveGun];
+                        newY = Player.this.y + gunOffsetsY[currentActiveGun] - height / 2f;
                         currentActiveGun++;
                         if (currentActiveGun >= gunCount) {
                             currentActiveGun = 0;
                         }
                         float degree = Player.this.rotation;
-                        // TODO: 16/12/2021 implement module's logic (aim etc)
+                        
+                        if (Player.this.canAim && Player.this.homingTarget != null) {
+                            if (!Player.this.homingTarget.isDead) {
+                                degree += MathUtils.radiansToDegrees * MathUtils.atan2(
+                                        Player.this.y + gunOffsetsY[currentActiveGun] - (Player.this.homingTarget.y + Player.this.homingTarget.height / 2f),
+                                        Player.this.x + gunOffsetsX[currentActiveGun] - (Player.this.homingTarget.x + Player.this.homingTarget.width / 2f)) + 180;
+                                if (degree < 315 + Player.this.rotation && degree > 45 + Player.this.rotation) {
+                                    degree = 0;
+                                }
+                            }
+                        }
                         
                         degree += getRandomInRange(-10, 10) * bulletSpread;
                         
                         newRot = degree;
+                        
+                        health *= multiplier;
+                        if (finalShootingSecondary) {
+                            color = Color.GREEN;
+                        }
                     }
                 });
             }
@@ -402,10 +413,10 @@ public class Player extends Entity {
         updateHealth(delta);
     }
     
-    public float getCollisionDamageWithBullet(Entity entity, float delta){
-        if(!entity.isDead){
-            for(int i = 0; i < bullets.size; i++){
-                if(bullets.get(i).overlaps(entity)){
+    public float getCollisionDamageWithBullet(Entity entity, float delta) {
+        if (!entity.isDead) {
+            for (int i = 0; i < bullets.size; i++) {
+                if (bullets.get(i).overlaps(entity)) {
                     float damage = bullets.get(i).getDamage(delta);
                     bullets.get(i).explode();
                     return damage;
@@ -415,20 +426,22 @@ public class Player extends Entity {
         return 0;
     }
     
-    public void setHomingTarget(Entity homingTarget){
-        for(int i = 0; i < bullets.size; i++){
+    @Override
+    public void setHomingTarget(Entity homingTarget) {
+        super.setHomingTarget(homingTarget);
+        for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).setHomingTarget(homingTarget);
         }
     }
     
-    public void collideWithBullet(Entity entity, float delta){
+    public void collideWithBullet(Entity entity, float delta) {
         collideWithBullet(entity, false, delta);
     }
     
-    public void collideWithBullet(Entity entity, boolean withBullet, float delta){
-        if(!entity.isDead){
-            for(int i = 0; i < bullets.size; i++){
-                if(bullets.get(i).overlaps(entity, withBullet)){
+    public void collideWithBullet(Entity entity, boolean withBullet, float delta) {
+        if (!entity.isDead) {
+            for (int i = 0; i < bullets.size; i++) {
+                if (bullets.get(i).overlaps(entity, withBullet)) {
                     float damage = bullets.get(i).getDamage(delta);
                     bullets.get(i).takeDamage(entity.health);
                     entity.takeDamage(damage);
@@ -444,7 +457,6 @@ public class Player extends Entity {
             
             magnetField.setPosition(x + width / 2 - magnetField.getWidth() / 2, y + height / 2 - magnetField.getHeight() / 2);
             repellentField.setPosition(x + width / 2 - repellentField.getWidth() / 2, y + height / 2 - repellentField.getHeight() / 2);
-            aimRadius.setPosition(x + width / 2 - aimRadius.getWidth() / 2, y + height / 2 - aimRadius.getHeight() / 2);
             
             shipColor.r = clamp(shipColor.r + 3.5f * delta, 0, 1);
             shipColor.g = clamp(shipColor.g + 3.5f * delta, 0, 1);
@@ -452,7 +464,6 @@ public class Player extends Entity {
             
             magnetField.draw(batch, charge / (chargeCapacity * chargeCapacityMultiplier));
             repellentField.draw(batch, charge / (chargeCapacity * chargeCapacityMultiplier));
-            aimRadius.draw(batch, 1);
             
             if (hasAnimation) {
                 entitySprite.setRegion(entityAnimation.getKeyFrame(animationPosition));
@@ -497,9 +508,10 @@ public class Player extends Entity {
     @Override
     public void drawDebug(ShapeRenderer shapeRenderer) {
         super.drawDebug(shapeRenderer);
-        for(int i = 0; i < bullets.size; i++){
+        for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).drawDebug(shapeRenderer);
         }
+        drawAim(shapeRenderer, gunOffsetsX[currentActiveGun], gunOffsetsY[currentActiveGun], Color.BLUE);
     }
     
     public void dispose() {
@@ -531,7 +543,7 @@ public class Player extends Entity {
             set_tintRed(true);
         } else {
             health -= (damage - shieldCharge) / 5;
-            if(health <= 0){
+            if (health <= 0) {
                 explode();
             }
             shieldCharge = 0;

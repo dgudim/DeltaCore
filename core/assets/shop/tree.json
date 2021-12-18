@@ -78,17 +78,15 @@
     "type": "basePart",
     "parameters": {
       "parameter.damage": 50,
-      "parameter.spread": 14,
+      "parameter.spread": 0,
       "parameter.shooting_speed": 0.7,
-      "parameter.bullet_speed": 1000,
-      "parameter.bullets_per_shot": 10,
+      "parameter.bullet_speed": 800,
+      "parameter.bullets_per_shot": 1,
       "parameter.power_consumption": 0,
       "parameter.weight": 20
     },
     "usesEffect": "explosion3_2",
-    "trailEffect": "bullet_trail_left_yellow",
-    "homing": true,
-    "homingSpeed": 400
+    "trailEffect": "bullet_trail_left_yellow"
   },
   "part.star_core": {
     "description": "part.star_core.description",
@@ -677,7 +675,6 @@
     "type": "part",
     "parameters": {
       "parameter.power_consumption": 1,
-      "parameter.aim_radius": 610,
       "parameter.weight": 7
     }
   },

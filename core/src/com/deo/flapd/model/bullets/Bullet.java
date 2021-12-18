@@ -15,12 +15,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.deo.flapd.model.Entity;
+import com.deo.flapd.model.EntityWithAim;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.DUtils;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.particles.ParticleEffectPoolLoader;
 
-public class Bullet extends Entity {
+public class Bullet extends EntityWithAim {
     
     protected float newX;
     protected float newY;
@@ -29,8 +30,6 @@ public class Bullet extends Entity {
     protected float angleOffset;
     
     protected BulletData data;
-    
-    Entity homingTarget;
     
     AssetManager assetManager;
     
@@ -42,6 +41,7 @@ public class Bullet extends Entity {
         data = new BulletData();
         assetManager = compositeManager.getAssetManager();
         loadBulletData(bulletData);
+        canAim = data.isHoming;
         
         assetManager = compositeManager.getAssetManager();
         ParticleEffectPoolLoader particleEffectPool = compositeManager.getParticleEffectPool();
@@ -159,6 +159,9 @@ public class Bullet extends Entity {
             drawParticleEffectBounds(shapeRenderer, data.trailParticleEffect);
             shapeRenderer.setColor(Color.ORANGE);
             drawParticleEffectBounds(shapeRenderer, data.explosionParticleEffect);
+            if(data.isHoming){
+                drawAim(shapeRenderer, originX, originY, Color.LIGHT_GRAY);
+            }
         } else {
             shapeRenderer.rectLine(x, y, x + MathUtils.cosDeg(rotation) * width, y + MathUtils.sinDeg(rotation) * width, height);
         }
@@ -172,23 +175,13 @@ public class Bullet extends Entity {
         originY = height / 2f;
     }
     
-    public void setHomingTarget(Entity homingTarget) {
-        if (this.homingTarget != null) {
-            if (this.homingTarget.isDead) {
-                this.homingTarget = homingTarget;
-            }
-        } else {
-            this.homingTarget = homingTarget;
-        }
-    }
-    
     public void updateHomingLogic(float delta) {
         if (homingTarget != null) {
             if (!homingTarget.isDead) {
                 rotation = DUtils.lerpAngleWithConstantSpeed(rotation,
                         MathUtils.radiansToDegrees * MathUtils.atan2(
-                                y - (homingTarget.y + homingTarget.height / 2f),
-                                x - (homingTarget.x + homingTarget.width / 2f)) + 180,
+                                y + originY - (homingTarget.y + homingTarget.height / 2f),
+                                x + originX - (homingTarget.x + homingTarget.width / 2f)) + 180,
                         data.homingSpeed, delta);
                 data.explosionTimer -= delta;
             }

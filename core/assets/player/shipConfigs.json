@@ -4,8 +4,8 @@
         "height": 57.6,
         "gunCount": 1,
         "guns":{
-         "gun0OffsetX": 68,
-         "gun0OffsetY": 12.5
+         "gun0OffsetX": 72,
+         "gun0OffsetY": 20
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -30,8 +30,8 @@
         "height": 57.6,
         "gunCount": 1,
         "guns":{
-            "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5
+            "gun0OffsetX": 72,
+            "gun0OffsetY": 20
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -56,8 +56,8 @@
         "height": 57.6,
         "gunCount": 1,
         "guns":{
-            "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5
+            "gun0OffsetX": 72,
+            "gun0OffsetY": 20
         },
         "hasAnimation": false,
         "fireCount": 2,
@@ -82,8 +82,8 @@
         "height": 57.6,
         "gunCount": 1,
         "guns":{
-            "gun0OffsetX": 68,
-            "gun0OffsetY": 12.5
+            "gun0OffsetX": 72,
+            "gun0OffsetY": 20
         },
         "hasAnimation": false,
         "fireCount": 2,
