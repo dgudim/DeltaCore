@@ -345,7 +345,6 @@ public class Player extends EntityWithAim {
             }
             bulletReloadTimer = 0;
             bulletsShot += bulletsPerShot;
-            soundManager.playSound_noLink("gun4");
         }
     }
     

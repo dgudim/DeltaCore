@@ -20,6 +20,7 @@ public class PlayerBullet extends Bullet {
         super(compositeManager, new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json"))), 0);
         this.enemies = enemies;
         init();
+        compositeManager.getSoundManager().playSound_noLink(data.isLaser ? "laser" : "gun4");
     }
     
     @Override
@@ -36,7 +37,7 @@ public class PlayerBullet extends Bullet {
         JsonEntry params_weapon = currentWeapon.get("parameters");
         health = params_weapon.getFloat(1, "parameter.damage");
         speed = params_weapon.getFloat(1, "parameter.bullet_speed");
-    
+        
         TextureAtlas.AtlasRegion bulletRegion = assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(data.texture);
         height = bulletRegion.originalHeight;
         width = bulletRegion.originalWidth;
@@ -54,7 +55,7 @@ public class PlayerBullet extends Bullet {
         
         if (data.isLaser) {
             color = Color.valueOf(currentWeapon.getString("#00FFFF", "laserBeamColor"));
-        }else{
+        } else {
             float scale = 10 / height;
             width *= scale;
             height *= scale;
