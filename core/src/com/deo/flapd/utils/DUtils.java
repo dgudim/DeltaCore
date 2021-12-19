@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -549,6 +550,13 @@ public class DUtils {
         if (from.b < to.b) {
             from.b = MathUtils.clamp(from.b + delta * speed, 0, 1);
         }
+    }
+    
+    public static boolean lineRectIntersect(double x, double y, double x_end, double y_end, Rectangle hitBox){
+        return linesIntersect(x, y, x_end, y_end, hitBox.x, hitBox.y, hitBox.x, hitBox.y + hitBox.height) ||
+                linesIntersect(x, y, x_end, y_end, hitBox.x, hitBox.y, hitBox.x + hitBox.width, hitBox.y) ||
+                linesIntersect(x, y, x_end, y_end, hitBox.x, hitBox.y + hitBox.height, hitBox.x + hitBox.width, hitBox.y + hitBox.height) ||
+                linesIntersect(x, y, x_end, y_end, hitBox.x + hitBox.width, hitBox.y, hitBox.x + hitBox.width, hitBox.y + hitBox.height);
     }
     
     public static boolean linesIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
