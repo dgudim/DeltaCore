@@ -2,8 +2,7 @@ package com.deo.flapd.model.bullets;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.deo.flapd.utils.DUtils.drawParticleEffectBounds;
-
-import static java.lang.StrictMath.min;
+import static com.deo.flapd.utils.DUtils.linesIntersect;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -109,7 +108,10 @@ public class Bullet extends EntityWithAim {
     public boolean overlaps(Entity entity, boolean withBullet) {
         if (!withBullet || data.hasCollisionWithEnemyBullets) {
             if (data.isLaser) {
-                return checkLaserIntersection(entity.entityHitBox);
+                long time = System.nanoTime();
+                boolean intersect = checkLaserIntersection(entity.entityHitBox);
+                System.out.println(System.nanoTime() - time);
+                return intersect;
             } else {
                 return super.overlaps(entity);
             }
@@ -119,20 +121,13 @@ public class Bullet extends EntityWithAim {
     }
     
     private boolean checkLaserIntersection(Rectangle hitBox) {
-        if (hitBox.width <= 5 || hitBox.height <= 5) return false;
-        float step = min(hitBox.width, hitBox.height) / 3f;
-        float X1 = hitBox.x;
-        float Y1 = hitBox.y;
-        float X2 = hitBox.x + hitBox.width;
-        float Y2 = hitBox.y + hitBox.height;
-        for (int i = 0; i < width; i += step) {
-            float pointX = x + MathUtils.cosDeg(rotation) * i;
-            float pointY = y + MathUtils.sinDeg(rotation) * i;
-            if (pointX > X1 && pointX < X2 && pointY > Y1 && pointY < Y2) {
-                return true;
-            }
-        }
-        return false;
+        float x_end = x + MathUtils.cosDeg(rotation) * width;
+        float y_end = y + MathUtils.sinDeg(rotation) * width;
+        
+        return linesIntersect(x, y, x_end, y_end, hitBox.x, hitBox.y, hitBox.x, hitBox.y + hitBox.height) ||
+                linesIntersect(x, y, x_end, y_end, hitBox.x, hitBox.y, hitBox.x + hitBox.width, hitBox.y) ||
+                linesIntersect(x, y, x_end, y_end, hitBox.x, hitBox.y + hitBox.height, hitBox.x + hitBox.width, hitBox.y + hitBox.height) ||
+                linesIntersect(x, y, x_end, y_end, hitBox.x + hitBox.width, hitBox.y, hitBox.x + hitBox.width, hitBox.y + hitBox.height);
     }
     
     public void draw(SpriteBatch batch, float delta) {
