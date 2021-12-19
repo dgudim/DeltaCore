@@ -367,11 +367,13 @@
     "requires": ["part.machine_gun", "part.energy_core"],
     "type": "part",
     "parameters": {
-      "parameter.damage": 190,
+      "parameter.damage": 350,
       "parameter.spread": 0,
       "parameter.laser_beam_thickness": 15,
-      "parameter.laser_pulse_duration": 1,
-      "parameter.power_consumption": 2.1,
+      "parameter.laser_pulse_duration": 2,
+      "parameter.shooting_speed": 0.5,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 7,
       "parameter.weight": 25
     },
     "usesEffect": "fire3",

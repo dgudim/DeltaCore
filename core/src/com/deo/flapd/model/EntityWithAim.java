@@ -10,8 +10,9 @@ public class EntityWithAim extends Entity {
     
     public void setHomingTarget(Entity homingTarget) {
         if(canAim){
-            
-            if (this.homingTarget != null) {
+            if(homingTarget == null){
+                this.homingTarget = null;
+            } else if (this.homingTarget != null) {
                 if (this.homingTarget.isDead) {
                     if (homingTarget.x - x > 100) {
                         this.homingTarget = homingTarget;

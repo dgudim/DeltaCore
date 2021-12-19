@@ -96,9 +96,11 @@ public class Entity {
     }
     
     public void takeDamage(float damage){
-        health -= damage;
-        if(health <= 0){
-            explode();
+        if(!isDead){
+            health -= damage;
+            if(health <= 0){
+                explode();
+            }
         }
     }
     

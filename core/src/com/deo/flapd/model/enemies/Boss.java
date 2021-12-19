@@ -302,6 +302,8 @@ public class Boss {
         for (int i = 0; i < phases.size; i++) {
             phases.get(i).reset();
         }
+        
+        player.setHomingTarget(null);
     }
 }
 

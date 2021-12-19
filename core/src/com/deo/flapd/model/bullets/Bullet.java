@@ -188,9 +188,9 @@ public class Bullet extends EntityWithAim {
                 
                 data.trailParticleEffect.setPosition(
                         x + width / 2f + MathUtils.cosDeg(
-                                rotation + data.trailOffsetAngle) * data.trailOffsetDistance,
+                                rotation + data.trailOffsetAngle + angleOffset) * data.trailOffsetDistance,
                         y + height / 2f + MathUtils.sinDeg(
-                                rotation + data.trailOffsetAngle) * data.trailOffsetDistance);
+                                rotation + data.trailOffsetAngle + angleOffset) * data.trailOffsetDistance);
                 
                 if (x < -width - 30 || x > 800 + width + 30 || y > 480 + 30 || y < -width - 30) {
                     isDead = true;

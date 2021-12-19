@@ -263,6 +263,12 @@ public class Enemy extends Entity {
         data.millis = 0;
     }
     
+    @Override
+    public void takeDamage(float damage) {
+        color = Color.valueOf(data.hitColor);
+        super.takeDamage(damage);
+    }
+    
     private void spawnDrone() {
         float x = this.x + width / 2f + MathUtils.cosDeg(rotation + data.droneAngle) * data.droneDistance;
         float y = this.y + height / 2f + MathUtils.sinDeg(rotation + data.droneAngle) * data.droneDistance;
@@ -292,6 +298,7 @@ public class Enemy extends Entity {
         }
         data.fireParticleEffects.clear();
         data.explosionParticleEffect.setPosition(x + originX, y + originY);
+        health = 0;
         isDead = true;
         
         GameVariables.enemiesKilled++;

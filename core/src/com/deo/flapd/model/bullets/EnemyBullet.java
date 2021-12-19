@@ -15,7 +15,7 @@ public class EnemyBullet extends Bullet {
     
     public EnemyBullet(CompositeManager compositeManager, JsonEntry bulletData, Player player) {
         super(compositeManager, bulletData, 180);
-        setHomingTarget(player);
+        homingTarget = player;
         this.player = player;
     }
     

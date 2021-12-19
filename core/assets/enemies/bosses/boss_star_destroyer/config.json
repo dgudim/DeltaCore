@@ -3,7 +3,7 @@
   "spawnAt": [850, 170],
   "music": "music/vhs.ogg",
   "spawnConditions": {
-    "score": 19000,
+    "score": -19000,
     "randomness": 1000
   },
   "hasAi": true,
@@ -51,14 +51,14 @@
       "bullet": {
         "hasCollisionWithPlayerBullets": true,
         "texture": "bullet_destroyer_rocket",
-        "speed": 90,
+        "speed": 180,
         "damage": 15,
         "homing": true,
         "explosionTimer": 3.5,
         "homingSpeed": 130,
         "trail": "particles/bullet_trail_left_yellow.p",
         "trailScale": 0.3,
-        "trailOffset": [13, 0],
+        "trailOffset": [6, 0],
         "explosionEffect": "particles/explosion.p",
         "explosionScale": 0.3,
         "height": 8,

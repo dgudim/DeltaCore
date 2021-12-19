@@ -444,7 +444,6 @@ public class Player extends EntityWithAim {
                     float damage = bullets.get(i).getDamage(delta);
                     bullets.get(i).takeDamage(entity.health);
                     entity.takeDamage(damage);
-                    break;
                 }
             }
         }
