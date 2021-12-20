@@ -409,7 +409,7 @@ public class DUtils {
                         * treeJson.getFloat(false, 1, getString(Keys.currentCore), "parameters", "parameter.shield_strength_multiplier"));
         
         for (int i = 0; i < Bosses.bossNames.length; i++) {
-            putBoolean("boss_spawned_" + Bosses.bossNames[i], false);
+            putBoolean("boss_defeated_" + Bosses.bossNames[i], false);
         }
         putInteger(Keys.bonusesCollected, 0);
         putInteger(Keys.lastCheckpointScore, 0);

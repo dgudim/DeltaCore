@@ -113,7 +113,7 @@ public class Checkpoint extends Entity {
             putFloat(Keys.playerShieldValue, player.shieldCharge);
             putFloat(Keys.playerChargeValue, player.charge);
             for (int i = 0; i < Bosses.bosses.size; i++) {
-                putBoolean("boss_spawned_" + Bosses.bossNames[i], Bosses.bosses.get(i).hasAlreadySpawned);
+                putBoolean("boss_defeated_" + Bosses.bossNames[i], Bosses.bosses.get(i).hasBeenDefeated);
             }
             putInteger(Keys.bonusesCollected, GameVariables.bonuses_collected);
             putInteger(Keys.lastCheckpointScore, lastCheckpoint);

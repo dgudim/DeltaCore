@@ -3,7 +3,7 @@
   "spawnAt": [850, 170],
   "music": "music/vhs.ogg",
   "spawnConditions": {
-    "score": -19000,
+    "score": 19000,
     "randomness": 1000
   },
   "hasAi": true,

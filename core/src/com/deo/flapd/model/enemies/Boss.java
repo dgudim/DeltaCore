@@ -16,7 +16,6 @@ import static com.deo.flapd.utils.DUtils.getRandomInRange;
 import static com.deo.flapd.utils.DUtils.getTargetsFromGroup;
 import static com.deo.flapd.utils.DUtils.lerpAngleWithConstantSpeed;
 import static com.deo.flapd.utils.DUtils.log;
-import static com.deo.flapd.utils.DUtils.putBoolean;
 import static com.deo.flapd.view.screens.GameScreen.is_paused;
 import static java.lang.StrictMath.abs;
 
@@ -59,6 +58,7 @@ public class Boss {
     boolean visible;
     Array<Movement> animations;
     public boolean hasAlreadySpawned;
+    public boolean hasBeenDefeated;
     private final int spawnScore;
     public BasePart body;
     
@@ -90,7 +90,7 @@ public class Boss {
         bossAtlas.addRegion("noTexture", new TextureRegion(bossAtlas.getRegions().get(0), 0, 0, 0, 0));
         parts = new Array<>();
         animations = new Array<>();
-        hasAlreadySpawned = getBoolean("boss_spawned_" + bossName);
+        hasAlreadySpawned = getBoolean("boss_defeated_" + bossName);
         spawnScore = bossConfig.getInt(-1, "spawnConditions", "score") + getRandomInRange(-bossConfig.getInt(0, "spawnConditions", "randomness"), bossConfig.getInt(0, "spawnConditions", "randomness"));
         spawnAt = bossConfig.getIntArray(new int[]{500, 500}, "spawnAt");
         bossMusic = bossConfig.getString(false, "", "music");
@@ -260,7 +260,6 @@ public class Boss {
         body.y = spawnAt[1];
         visible = true;
         hasAlreadySpawned = true;
-        putBoolean("boss_spawned_" + bossName, true);
         GameVariables.bossWave = true;
         if (!bossMusic.equals("")) {
             musicManager.setNewMusicSource(bossMusic, 1);
@@ -288,6 +287,7 @@ public class Boss {
         body.x = 1500;
         body.y = 1500;
         GameVariables.bossWave = false;
+        hasBeenDefeated = true;
         
         if (!bossMusic.equals("")) {
             this.musicManager.setNewMusicSource("music/main", 1, 5, 5);

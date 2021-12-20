@@ -2,7 +2,7 @@
   "textures": "bossUFO.atlas",
   "spawnAt": [850, 170],
   "spawnConditions": {
-    "score": 5000,
+    "score": 2000,
     "randomness": 250
   },
   "parts": {

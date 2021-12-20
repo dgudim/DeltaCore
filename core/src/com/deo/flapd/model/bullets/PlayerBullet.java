@@ -27,16 +27,9 @@ public class PlayerBullet extends Bullet {
     void loadBulletData(JsonEntry treeJson) {
         
         JsonEntry currentWeapon = treeJson.get(getString(Keys.currentWeapon));
-        
-        data.explosion = "particles/" + currentWeapon.getString("explosion3", "usesEffect") + ".p";
-        data.explosionScale = 1;
-        
-        data.trail = "particles/" + currentWeapon.getString("bullet_trail_left", "trailEffect") + ".p";
-        data.trailScale = 0.5f;
-        
         JsonEntry params_weapon = currentWeapon.get("parameters");
+        
         health = params_weapon.getFloat(1, "parameter.damage");
-        speed = params_weapon.getFloat(1, "parameter.bullet_speed");
         
         if (params_weapon.getFloat(false, -1, "parameter.laser_beam_thickness") > 0) {
             height = params_weapon.getFloat(1, "parameter.laser_beam_thickness");
@@ -45,12 +38,19 @@ public class PlayerBullet extends Bullet {
             data.maxFadeOutTimer = data.fadeOutTimer;
             
             data.isLaser = true;
+        } else {
+            data.explosion = "particles/" + currentWeapon.getString("explosion3", "usesEffect") + ".p";
+            data.explosionScale = 1;
+            
+            data.trail = "particles/" + currentWeapon.getString("bullet_trail_left", "trailEffect") + ".p";
+            data.trailScale = 0.5f;
+            speed = params_weapon.getFloat(1, "parameter.bullet_speed");
         }
         
         data.texture = data.isLaser ? "bullet_laser" : ("bullet_" + getString(Keys.currentWeapon));
-    
+        
         TextureAtlas.AtlasRegion bulletRegion = assetManager.get("bullets/bullets.atlas", TextureAtlas.class).findRegion(data.texture);
-        if(!data.isLaser){
+        if (!data.isLaser) {
             height = bulletRegion.originalHeight;
         }
         width = bulletRegion.originalWidth;

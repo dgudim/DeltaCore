@@ -394,11 +394,13 @@
     "requires": ["part.machine_gun", "part.thermonuclear_core"],
     "type": "part",
     "parameters": {
-      "parameter.damage": 280,
+      "parameter.damage": 500,
       "parameter.spread": 0,
       "parameter.laser_beam_thickness": 11,
-      "parameter.laser_pulse_duration": 5000,
-      "parameter.power_consumption": 2.1,
+      "parameter.laser_pulse_duration": 3,
+      "parameter.shooting_speed": 0.5,
+      "parameter.bullets_per_shot": 1,
+      "parameter.power_consumption": 9,
       "parameter.weight": 27
     },
     "usesEffect": "fire3",
