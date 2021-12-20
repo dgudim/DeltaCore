@@ -136,7 +136,6 @@ public class UpgradeMenu extends Actor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 animationDirection *= -1;
-                playerStatsPanel.toggle();
                 if (animationDirection == 1) {
                     for (int i = 0; i < upgradeMenus.size; i++) {
                         if (upgradeMenus.get(i) != UpgradeMenu.this) {
@@ -304,7 +303,6 @@ public class UpgradeMenu extends Actor {
     public void close() {
         openMenuCheckBox.setChecked(false);
         animationDirection = -1;
-        playerStatsPanel.close();
     }
     
     void animate(float delta) {

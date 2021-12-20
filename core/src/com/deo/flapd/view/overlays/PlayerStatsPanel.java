@@ -75,10 +75,6 @@ public class PlayerStatsPanel extends Group {
         animationDirection *= -1;
     }
     
-    public void close(){
-        animationDirection = -1;
-    }
-    
     public void rebuild(){
     
         statsContainer.clear();
@@ -142,7 +138,7 @@ public class PlayerStatsPanel extends Group {
     
     @Override
     public void act(float delta) {
-        animationPosition = clamp(animationPosition + delta * animationDirection, 0, 1);
+        animationPosition = clamp(animationPosition + delta * animationDirection * 3, 0, 1);
         setColor(1, 1, 1, animationPosition);
         if(animationPosition == 0 && isVisible()){
             setVisible(false);
