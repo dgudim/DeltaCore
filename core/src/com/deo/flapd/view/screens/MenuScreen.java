@@ -80,6 +80,7 @@ import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.overlays.CategoryManager;
 import com.deo.flapd.view.overlays.ItemSlotManager;
+import com.deo.flapd.view.overlays.PlayerStatsPanel;
 import com.deo.flapd.view.overlays.UpgradeMenu;
 
 public class MenuScreen implements Screen {
@@ -111,6 +112,7 @@ public class MenuScreen implements Screen {
     private JsonEntry shipConfig;
     public float shipUpgradeAnimationPosition = 1;
     private byte shipUpgradeAnimationDirection = -1;
+    private PlayerStatsPanel playerStatsPanel;
     
     private final Texture fillTexture;
     private final Image lamp;
@@ -435,6 +437,8 @@ public class MenuScreen implements Screen {
         menuStage.addActor(buildNumber);
         
         menuCategoryManager.attach(menuStage);
+    
+        playerStatsPanel = new PlayerStatsPanel(compositeManager, menuStage);
         
         rebuildUpgradeMenus();
         menuStage.addActor(upgradeMenusHolder);
@@ -905,7 +909,7 @@ public class MenuScreen implements Screen {
         for (int i = 0; i < upgradeMenusLocations.size; i++) {
             float[] coords = shipConfig.get("upgradeMenus").getFloatArray(new float[]{0, 0, 0, 0}, i);
             upgradeMenus.add(new UpgradeMenu(
-                    compositeManager, upgradeMenusHolder, this, upgradeMenus,
+                    compositeManager, upgradeMenusHolder, this, playerStatsPanel, upgradeMenus,
                     upgradeMenusLocations.get(i).name,
                     new Vector2(coords[0], coords[1]),
                     new Vector2(coords[2], coords[3])));

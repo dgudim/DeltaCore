@@ -3,44 +3,59 @@ menuUi.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+stats
+  rotate: false
+  xy: 1, 195
+  size: 200, 316
+  orig: 200, 316
+  offset: 0, 0
+  index: -1
 menuBg
   rotate: false
-  xy: 1, 51
+  xy: 1, 1
   size: 320, 192
   orig: 320, 192
   offset: 0, 0
   index: -1
 infoBg
   rotate: false
-  xy: 323, 163
+  xy: 203, 431
   size: 104, 80
   orig: 104, 80
   offset: 0, 0
   index: -1
 infoBg2
   rotate: false
-  xy: 323, 81
+  xy: 203, 349
   size: 104, 80
   orig: 104, 80
   offset: 0, 0
   index: -1
 treeBg
   rotate: false
-  xy: 323, 1
+  xy: 309, 433
   size: 102, 78
   orig: 102, 78
   offset: 0, 0
   index: -1
+tv
+  rotate: false
+  xy: 203, 270
+  size: 81, 77
+  split: 55, 4, 35, 4
+  orig: 81, 77
+  offset: 0, 0
+  index: -1
 greyishButton
   rotate: false
-  xy: 429, 223
+  xy: 413, 491
   size: 60, 20
   orig: 60, 20
   offset: 0, 0
   index: -1
 tableBg
   rotate: false
-  xy: 1, 17
+  xy: 309, 399
   size: 32, 32
   split: 7, 7, 7, 7
   orig: 32, 32
@@ -48,7 +63,7 @@ tableBg
   index: -1
 9bg
   rotate: false
-  xy: 429, 205
+  xy: 203, 252
   size: 16, 16
   split: 5, 5, 5, 5
   orig: 16, 16
@@ -56,7 +71,7 @@ tableBg
   index: -1
 lamp
   rotate: false
-  xy: 491, 229
+  xy: 286, 333
   size: 10, 14
   orig: 10, 14
   offset: 0, 0

@@ -83,8 +83,11 @@ public class UpgradeMenu extends Actor {
     JsonEntry treeJson;
     
     private final MenuScreen menuScreen;
+    private final PlayerStatsPanel playerStatsPanel;
     
-    public UpgradeMenu(CompositeManager compositeManager, Group group, MenuScreen menuScreen, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
+    public UpgradeMenu(CompositeManager compositeManager, Group group, MenuScreen menuScreen, PlayerStatsPanel playerStatsPanel, Array<UpgradeMenu> upgradeMenus, String category, Vector2 anchorPosition, Vector2 targetPosition) {
+        this.playerStatsPanel = playerStatsPanel;
+        
         up = constructFilledImageWithColor(1, 1, Color.valueOf("#44444444"));
         over = constructFilledImageWithColor(1, 1, Color.valueOf("#66666644"));
         down = constructFilledImageWithColor(1, 1, Color.valueOf("#88888844"));
@@ -133,6 +136,7 @@ public class UpgradeMenu extends Actor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 animationDirection *= -1;
+                playerStatsPanel.toggle();
                 if (animationDirection == 1) {
                     for (int i = 0; i < upgradeMenus.size; i++) {
                         if (upgradeMenus.get(i) != UpgradeMenu.this) {
@@ -226,12 +230,14 @@ public class UpgradeMenu extends Actor {
                         new CraftingDialogue(compositeManager, addTo.getStage(), treeJson.get(finalI).name, new DialogueActionListener() {
                             @Override
                             public void onConfirm() {
+                                playerStatsPanel.rebuild();
                                 updateStates();
                                 updateShip();
                             }
                             
                             @Override
                             public void onStateChanged() {
+                                playerStatsPanel.rebuild();
                                 updateStates();
                                 updateShip();
                             }
@@ -298,6 +304,7 @@ public class UpgradeMenu extends Actor {
     public void close() {
         openMenuCheckBox.setChecked(false);
         animationDirection = -1;
+        playerStatsPanel.close();
     }
     
     void animate(float delta) {
