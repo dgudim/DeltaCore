@@ -34,8 +34,6 @@ public class PlayerStatsPanel extends Group {
     private float animationPosition = 0;
     private float animationDirection = -1;
     
-   
-    
     public PlayerStatsPanel(CompositeManager compositeManager, Stage stage) {
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
         
@@ -74,7 +72,7 @@ public class PlayerStatsPanel extends Group {
     }
     
     public void toggle(){
-        animationDirection = 1;
+        animationDirection *= -1;
     }
     
     public void close(){
