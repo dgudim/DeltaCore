@@ -112,7 +112,7 @@ public class MenuScreen implements Screen {
     private JsonEntry shipConfig;
     public float shipUpgradeAnimationPosition = 1;
     private byte shipUpgradeAnimationDirection = -1;
-    private PlayerStatsPanel playerStatsPanel;
+    private final PlayerStatsPanel playerStatsPanel;
     
     private final Texture fillTexture;
     private final Image lamp;
@@ -213,10 +213,20 @@ public class MenuScreen implements Screen {
         
         Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
         buildNumber.setBounds(5, 5, 150, 50);
+    
+        UIComposer uiComposer = compositeManager.getUiComposer();
+        
+        TextButton openStats = uiComposer.addTextButton("defaultLight", localeManager.get("stats.open"), 0.27f);
+        openStats.getLabel().setWrap(true);
+        openStats.setBounds(385, 5, 150, 50);
+        openStats.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                playerStatsPanel.toggle();
+            }
+        });
         
         long uiGenTime = millis();
-        
-        UIComposer uiComposer = compositeManager.getUiComposer();
         
         Table playScreenTable = new Table();
         playScreenTable.align(Align.topLeft);
@@ -435,6 +445,7 @@ public class MenuScreen implements Screen {
         menuStage.addActor(menuBg);
         menuStage.addActor(ship_touchLayer);
         menuStage.addActor(buildNumber);
+        menuStage.addActor(openStats);
         
         menuCategoryManager.attach(menuStage);
     
@@ -590,6 +601,7 @@ public class MenuScreen implements Screen {
         float prevAnimPos = shipUpgradeAnimationPosition;
         shipUpgradeAnimationPosition = clamp(shipUpgradeAnimationPosition + delta * shipUpgradeAnimationDirection * 1.5f, 1, targetShipScaleFactor + 1);
         float shipUpgradeAnimationPosition_normalized = (shipUpgradeAnimationPosition - 1) / targetShipScaleFactor;
+        shipUpgradeAnimationPosition_normalized *= shipUpgradeAnimationPosition_normalized;
         boolean upgradeAnimationActive = !(prevAnimPos - shipUpgradeAnimationPosition == 0);
         
         if (warpAnimationActive) {

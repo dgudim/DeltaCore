@@ -31,8 +31,8 @@ public class PlayerStatsPanel extends Group {
     
     private final Table statsContainer;
     
-    private float animationPosition = 0;
-    private float animationDirection = -1;
+    private float animationPosition = 1;
+    private float animationDirection = 1;
     
     public PlayerStatsPanel(CompositeManager compositeManager, Stage stage) {
         treeJson = new JsonEntry(new JsonReader().parse(Gdx.files.internal("shop/tree.json")));
@@ -45,15 +45,15 @@ public class PlayerStatsPanel extends Group {
         rebuild();
         
         statsContainer.setBackground(new TextureRegionDrawable(assetManager.get("ui/menuUi.atlas", TextureAtlas.class).findRegion("stats")));
-        statsContainer.setBounds(545, 5, 250, 395);
+        statsContainer.setSize(250, 395);
         statsContainer.align(Align.top);
-    
+        
         Image touchBlock = new Image();
-        touchBlock.setBounds(545, 5, 250, 395);
+        touchBlock.setSize(250, 395);
         
         addActor(touchBlock);
         addActor(statsContainer);
-        setVisible(false);
+        setPosition(800, 5);
         stage.addActor(this);
     }
     
@@ -63,7 +63,7 @@ public class PlayerStatsPanel extends Group {
         if (title) {
             titleTable.setBackground(constructFilledImageWithColor(1, 1, Color.valueOf("#262626")));
         }
-        Label categoryLabel = uiComposer.addText(text, assetManager.get("fonts/pixel.ttf"), title? 0.48f : 0.42f);
+        Label categoryLabel = uiComposer.addText(text, assetManager.get("fonts/pixel.ttf"), title ? 0.48f : 0.42f);
         categoryLabel.getStyle().fontColor = Color.valueOf(color);
         categoryLabel.setFillParent(true);
         categoryLabel.setAlignment(title ? Align.center : Align.left);
@@ -71,12 +71,12 @@ public class PlayerStatsPanel extends Group {
         statsContainer.add(titleTable).width(246).row();
     }
     
-    public void toggle(){
+    public void toggle() {
         animationDirection *= -1;
     }
     
-    public void rebuild(){
-    
+    public void rebuild() {
+        
         statsContainer.clear();
         
         JsonEntry weaponConfig = treeJson.get(getString(Keys.currentWeapon), "parameters");
@@ -86,7 +86,7 @@ public class PlayerStatsPanel extends Group {
         JsonEntry hullConfig = treeJson.get(getString(Keys.currentHull), "parameters");
         JsonEntry batteryConfig = treeJson.get(getString(Keys.currentBattery), "parameters");
         JsonEntry shieldConfig = treeJson.get(getString(Keys.currentShield), "parameters");
-    
+        
         float weight =
                 weaponConfig.getFloat(false, 1, "parameter.weight") +
                         coreConfig.getFloat(false, 1, "parameter.weight") +
@@ -95,34 +95,34 @@ public class PlayerStatsPanel extends Group {
                         hullConfig.getFloat(false, 1, "parameter.weight") +
                         batteryConfig.getFloat(false, 1, "parameter.weight") +
                         shieldConfig.getFloat(false, 1, "parameter.weight");
-    
+        
         float accelerationForce = engineConfig.getFloat(false, 1, "parameter.acceleration_force");
         float acceleration = accelerationForce / weight;
-    
+        
         float topSpeed = engineConfig.getFloat(false, 1, "parameter.speed")
                 * coreConfig.getFloat(false, 1, "parameter.speed_multiplier");
-    
+        
         float damage = weaponConfig.getFloat(false, 1, "parameter.damage")
                 * coreConfig.getFloat(false, 1, "parameter.damage_multiplier");
-    
+        
         float health = hullConfig.getFloat(false, 1, "parameter.health")
                 * coreConfig.getFloat(false, 1, "parameter.health_multiplier");
-    
+        
         float shield_health = shieldConfig.getFloat(false, 1, "parameter.shield_capacity")
                 * coreConfig.getFloat(false, 1, "parameter.shield_strength_multiplier");
-    
+        
         float shield_regeneration = shieldConfig.getFloat(false, 1, "parameter.regeneration_speed");
-    
+        
         float capacity = batteryConfig.getFloat(false, 1, "parameter.capacity")
                 * coreConfig.getFloat(false, 1, "parameter.charge_capacity_multiplier");
-    
+        
         float powerGeneration = coreConfig.getFloat(false, 1, "parameter.power_generation");
-    
+        
         float powerConsumption =
                 weaponConfig.getFloat(false, 0, "parameter.power_consumption") +
                         (moduleConfig == null ? 0 : moduleConfig.getFloat(false, 1, "parameter.power_consumption")) +
                         shieldConfig.getFloat(false, 1, "parameter.power_consumption");
-    
+        
         addText(localeManager.get("menu.player_stats"), true, "#ffb121");
         addText(localeManager.get("stats.total_damage") + ": " + damage, false, "#ff5141");
         addText(localeManager.get("stats.total_health") + ": " + health, false, "#ff5141");
@@ -138,13 +138,8 @@ public class PlayerStatsPanel extends Group {
     
     @Override
     public void act(float delta) {
-        animationPosition = clamp(animationPosition + delta * animationDirection * 3, 0, 1);
-        setColor(1, 1, 1, animationPosition);
-        if(animationPosition == 0 && isVisible()){
-            setVisible(false);
-        }else if(animationPosition > 0 && !isVisible()){
-            setVisible(true);
-        }
+        animationPosition = clamp(animationPosition + delta * animationDirection * 2, 0, 1);
+        setPosition(545 + animationPosition * animationPosition * 255, 5);
     }
     
 }
