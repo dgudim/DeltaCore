@@ -211,20 +211,7 @@ public class MenuScreen implements Screen {
         shipConfigs = new JsonEntry(new JsonReader().parse(Gdx.files.internal("player/shipConfigs.json")));
         initializeShip();
         
-        Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
-        buildNumber.setBounds(5, 5, 150, 50);
-    
         UIComposer uiComposer = compositeManager.getUiComposer();
-        
-        TextButton openStats = uiComposer.addTextButton("defaultLight", localeManager.get("stats.open"), 0.27f);
-        openStats.getLabel().setWrap(true);
-        openStats.setBounds(385, 5, 150, 50);
-        openStats.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                playerStatsPanel.toggle();
-            }
-        });
         
         long uiGenTime = millis();
         
@@ -439,6 +426,19 @@ public class MenuScreen implements Screen {
         menuCategoryManager.setBounds(545, 3, 400);
         menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
+    
+        Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
+        buildNumber.setBounds(5, 5, 150, 50);
+    
+        TextButton openStats = uiComposer.addTextButton("defaultLight", localeManager.get("stats.open"), 0.27f);
+        openStats.getLabel().setWrap(true);
+        openStats.setBounds(385, 5, 150, 50);
+        openStats.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                playerStatsPanel.toggle();
+            }
+        });
         
         menuStage.addActor(ship);
         menuStage.addActor(shipShield);
