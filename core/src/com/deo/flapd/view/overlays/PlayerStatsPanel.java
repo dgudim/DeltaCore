@@ -22,6 +22,8 @@ import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 
+import java.util.Locale;
+
 public class PlayerStatsPanel extends Group {
     
     private final UIComposer uiComposer;
@@ -81,7 +83,7 @@ public class PlayerStatsPanel extends Group {
         
         JsonEntry weaponConfig = treeJson.get(getString(Keys.currentWeapon), "parameters");
         JsonEntry coreConfig = treeJson.get(getString(Keys.currentCore), "parameters");
-        JsonEntry moduleConfig = treeJson.get(getString(Keys.currentModule), "parameters");
+        JsonEntry moduleConfig = treeJson.get(false, getString(Keys.currentModule), "parameters");
         JsonEntry engineConfig = treeJson.get(getString(Keys.currentEngine), "parameters");
         JsonEntry hullConfig = treeJson.get(getString(Keys.currentHull), "parameters");
         JsonEntry batteryConfig = treeJson.get(getString(Keys.currentBattery), "parameters");
@@ -90,13 +92,13 @@ public class PlayerStatsPanel extends Group {
         System.out.println(moduleConfig);
         
         float weight =
-                weaponConfig.getFloat(false, 1, "parameter.weight") +
-                        coreConfig.getFloat(false, 1, "parameter.weight") +
-                        (moduleConfig.isNull() ? 0 : moduleConfig.getFloat(false, 1, "parameter.weight")) +
-                        engineConfig.getFloat(false, 1, "parameter.weight") +
-                        hullConfig.getFloat(false, 1, "parameter.weight") +
-                        batteryConfig.getFloat(false, 1, "parameter.weight") +
-                        shieldConfig.getFloat(false, 1, "parameter.weight");
+                weaponConfig.getFloat( 1, "parameter.weight") +
+                        coreConfig.getFloat( 1, "parameter.weight") +
+                        (moduleConfig.isNull() ? 0 : moduleConfig.getFloat( 1, "parameter.weight")) +
+                        engineConfig.getFloat( 1, "parameter.weight") +
+                        hullConfig.getFloat( 1, "parameter.weight") +
+                        batteryConfig.getFloat( 1, "parameter.weight") +
+                        shieldConfig.getFloat( 1, "parameter.weight");
         
         float accelerationForce = engineConfig.getFloat(false, 1, "parameter.acceleration_force");
         float acceleration = accelerationForce / weight;
@@ -131,7 +133,7 @@ public class PlayerStatsPanel extends Group {
         addText(localeManager.get("stats.total_shield_health") + ": " + shield_health, false, "#21b1ff");
         addText(localeManager.get("stats.shield_regeneration") + ": " + shield_regeneration, false, "#21b1ff");
         addText(localeManager.get("stats.top_speed") + ": " + topSpeed, false, "#efff21");
-        addText(localeManager.get("stats.acceleration") + ": " + acceleration, false, "#efff21");
+        addText(localeManager.get("stats.acceleration") + ": " + String.format(Locale.ROOT, "%.1f", acceleration), false, "#efff21");
         addText(localeManager.get("stats.capacity") + ": " + capacity, false, "#ffffcc");
         addText(localeManager.get("stats.power_generation") + ": " + powerGeneration, false, "#ffffcc");
         addText(localeManager.get("stats.power_consumption") + ": " + powerConsumption, false, "#ffffcc");

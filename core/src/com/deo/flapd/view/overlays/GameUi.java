@@ -416,7 +416,7 @@ public class GameUi {
         if (showFps) {
             font_main.setColor(Color.WHITE);
             font_main.getData().setScale(0.45f + 0.225f * (uiScale - 1));
-            font_main.draw(batch, "Fps: " + String.format(Locale.ROOT, "%.0f", getFps(delta)), 3, 475);
+            font_main.draw(batch, "Fps: " + getFps(delta), 3, 475);
         }
         
         if (is_paused) {
@@ -484,7 +484,7 @@ public class GameUi {
         return deltaY;
     }
     
-    private float getFps(float delta) {
+    private int getFps(float delta) {
         if (fpsSmoothingArray.size < 120) {
             fpsSmoothingArray.add(delta);
         } else {
@@ -497,6 +497,6 @@ public class GameUi {
         for (int i = 0; i < fpsSmoothingArray.size; i++) {
             sum += fpsSmoothingArray.get(i);
         }
-        return fpsSmoothingArray.size / sum;
+        return (int)(fpsSmoothingArray.size / sum);
     }
 }
