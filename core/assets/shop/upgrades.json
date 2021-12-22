@@ -1,0 +1,92 @@
+{
+  "part.grasshopper_engine": {
+    "l1": {
+      "node0": {
+        "type": "root",
+        "icon": "self"
+      }
+    },
+    "l2": {
+      "node0": {
+        "type": "upgrade",
+        "upgradeType": "parameter.speed",
+        "upgradeValue": "X1.3",
+        "upgradePrice": {
+          "item.cyan_crystal": 4
+        },
+        "icon": "speed_icon",
+        "connections": {
+          "l1:node0": "self"
+        },
+        "dependencyHandling": "any"
+      },
+      "node1": {
+        "type": "upgrade",
+        "upgradeType": "parameter.acceleration_force",
+        "upgradeValue": "X1.2",
+        "upgradePrice": {
+          "item.red_fuel_cell": 2
+        },
+        "icon": "acceleration_icon",
+        "connections": {
+          "l1:node0": "self"
+        },
+        "dependencyHandling": "any"
+      },
+      "node2": {
+        "type": "upgrade",
+        "upgradeType": "parameter.weight",
+        "upgradeValue": "X0.7",
+        "upgradePrice": {
+          "money": 4500
+        },
+        "icon": "money_icon",
+        "connections": {
+          "l1:node0": "self"
+        },
+        "dependencyHandling": "all"
+      }
+    },
+    "l3": {
+      "node0": {
+        "type": "upgrade",
+        "upgradeType": "parameter.speed",
+        "upgradeValue": "X1.5",
+        "upgradePrice": {
+          "item.purple_crystal": 2
+        },
+        "icon": "speed_icon",
+        "connections": {
+          "l2:node0": "self"
+        },
+        "dependencyHandling": "any"
+      },
+      "node1": {
+        "type": "upgrade",
+        "upgradeType": "parameter.acceleration_force",
+        "upgradeValue": "X1.4",
+        "upgradePrice": {
+          "item.cyan_fuel_cell": 2
+        },
+        "icon": "acceleration_icon",
+        "connections": {
+          "l2:node1": "self"
+        },
+        "dependencyHandling": "any"
+      },
+      "node2": {
+        "type": "upgrade",
+        "upgradeType": "parameter.weight",
+        "upgradeValue": "X0.5",
+        "upgradePrice": {
+          "money": 6000
+        },
+        "icon": "money_icon",
+        "connections": {
+          "l2:node2": "self"
+        },
+        "dependencyHandling": "all"
+      }
+    }
+  }
+}
