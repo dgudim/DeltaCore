@@ -78,7 +78,7 @@
     "type": "basePart",
     "parameters": {
       "parameter.damage": 50,
-      "parameter.spread": 9,
+      "parameter.spread": 0.9,
       "parameter.shooting_speed": 0.7,
       "parameter.bullet_speed": 800,
       "parameter.bullets_per_shot": 1,

@@ -82,15 +82,17 @@ public class PlayerStatsPanel extends Group {
         JsonEntry weaponConfig = treeJson.get(getString(Keys.currentWeapon), "parameters");
         JsonEntry coreConfig = treeJson.get(getString(Keys.currentCore), "parameters");
         JsonEntry moduleConfig = treeJson.get(getString(Keys.currentModule), "parameters");
-        JsonEntry engineConfig = treeJson.get(getString(Keys.currentModule), "parameters");
+        JsonEntry engineConfig = treeJson.get(getString(Keys.currentEngine), "parameters");
         JsonEntry hullConfig = treeJson.get(getString(Keys.currentHull), "parameters");
         JsonEntry batteryConfig = treeJson.get(getString(Keys.currentBattery), "parameters");
         JsonEntry shieldConfig = treeJson.get(getString(Keys.currentShield), "parameters");
         
+        System.out.println(moduleConfig);
+        
         float weight =
                 weaponConfig.getFloat(false, 1, "parameter.weight") +
                         coreConfig.getFloat(false, 1, "parameter.weight") +
-                        (moduleConfig == null ? 0 : moduleConfig.getFloat(false, 1, "parameter.weight")) +
+                        (moduleConfig.isNull() ? 0 : moduleConfig.getFloat(false, 1, "parameter.weight")) +
                         engineConfig.getFloat(false, 1, "parameter.weight") +
                         hullConfig.getFloat(false, 1, "parameter.weight") +
                         batteryConfig.getFloat(false, 1, "parameter.weight") +
@@ -120,7 +122,7 @@ public class PlayerStatsPanel extends Group {
         
         float powerConsumption =
                 weaponConfig.getFloat(false, 0, "parameter.power_consumption") +
-                        (moduleConfig == null ? 0 : moduleConfig.getFloat(false, 1, "parameter.power_consumption")) +
+                        (moduleConfig.isNull() ? 0 : moduleConfig.getFloat(false, 1, "parameter.power_consumption")) +
                         shieldConfig.getFloat(false, 1, "parameter.power_consumption");
         
         addText(localeManager.get("menu.player_stats"), true, "#ffb121");
