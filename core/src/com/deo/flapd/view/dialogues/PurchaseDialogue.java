@@ -7,23 +7,18 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -33,39 +28,24 @@ import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
-import com.deo.flapd.utils.LocaleManager;
-import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
 public class PurchaseDialogue extends MoneyDialogue {
     
     public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final Dialogue previousDialogue) {
-        new PurchaseDialogue(compositeManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
+        this(compositeManager, stage, result, availableQuantity, requestedQuantity, null, previousDialogue);
     }
     
     public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, final ItemSlotManager itemSlotManager) {
-        new PurchaseDialogue(compositeManager, stage, result, availableQuantity, 1, itemSlotManager, null);
+        this(compositeManager, stage, result, availableQuantity, 1, itemSlotManager, null);
     }
     
     public PurchaseDialogue(CompositeManager compositeManager, final Stage stage, final String result, int availableQuantity, int requestedQuantity, final ItemSlotManager itemSlotManager, final Dialogue previousDialogue) {
-        
-        AssetManager assetManager = compositeManager.getAssetManager();
-        LocaleManager localeManager = compositeManager.getLocaleManager();
+        super(compositeManager, "craftingTerminal");
         
         requestedQuantity = MathUtils.clamp(requestedQuantity, 1, availableQuantity);
         
-        BitmapFont font = assetManager.get("fonts/pixel.ttf");
-        Skin skin = new Skin();
-        skin.addRegions(assetManager.get("shop/workshop.atlas"));
-        
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
-        
-        UIComposer uiComposer = compositeManager.getUiComposer();
-        
-        Window.WindowStyle dialogStyle = new Window.WindowStyle();
-        dialogStyle.titleFont = font;
-        dialogStyle.background = skin.getDrawable("craftingTerminal");
-        final Dialog dialog = new Dialog("", dialogStyle);
         
         Label.LabelStyle yellowLabelStyle = new Label.LabelStyle();
         yellowLabelStyle.font = font;

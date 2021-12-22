@@ -1,9 +1,15 @@
 package com.deo.flapd.view.dialogues;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 
-public abstract class MoneyDialogue extends Dialogue {
+public class MoneyDialogue extends Dialogue {
+    
+    MoneyDialogue(CompositeManager compositeManager, String dialogTextureName) {
+        super(compositeManager, dialogTextureName);
+    }
+    
     public static int[] getPrice(String result, JsonEntry treeJson, float priceCoefficient) {
         String type = treeJson.getString("item", result, "type");
         int price = treeJson.getInt(false, 0, result, "price");

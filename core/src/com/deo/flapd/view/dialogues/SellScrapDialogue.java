@@ -5,25 +5,20 @@ import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -33,29 +28,15 @@ import com.badlogic.gdx.utils.Scaling;
 import com.deo.flapd.utils.CompositeManager;
 import com.deo.flapd.utils.JsonEntry;
 import com.deo.flapd.utils.Keys;
-import com.deo.flapd.utils.LocaleManager;
-import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 
 public class SellScrapDialogue extends MoneyDialogue {
     
     public SellScrapDialogue(CompositeManager compositeManager, final Stage stage, final ItemSlotManager itemSlotManager, int availableQuantity, final String item) {
         
-        AssetManager assetManager = compositeManager.getAssetManager();
-        LocaleManager localeManager = compositeManager.getLocaleManager();
-        
-        BitmapFont font = assetManager.get("fonts/pixel.ttf");
-        Skin skin = new Skin();
-        skin.addRegions(assetManager.get("shop/workshop.atlas"));
-        
-        UIComposer uiComposer = compositeManager.getUiComposer();
-        
+        super(compositeManager, "blankDialogue");
+       
         final TextureAtlas itemAtlas = assetManager.get("items/items.atlas");
-        
-        Window.WindowStyle dialogStyle = new Window.WindowStyle();
-        dialogStyle.titleFont = font;
-        dialogStyle.background = skin.getDrawable("blankDialogue");
-        final Dialog dialog = new Dialog("", dialogStyle);
         
         Label.LabelStyle yellowLabelStyle = new Label.LabelStyle();
         yellowLabelStyle.font = font;

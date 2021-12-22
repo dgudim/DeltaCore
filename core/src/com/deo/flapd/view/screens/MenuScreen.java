@@ -78,6 +78,7 @@ import com.deo.flapd.utils.SoundManager;
 import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
+import com.deo.flapd.view.dialogues.DialogueActionListener;
 import com.deo.flapd.view.overlays.CategoryManager;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 import com.deo.flapd.view.overlays.PlayerStatsPanel;
@@ -426,14 +427,14 @@ public class MenuScreen implements Screen {
         menuCategoryManager.setBounds(545, 3, 400);
         menuCategoryManager.setBackgroundBounds(5, 65, 531, 410);
         menuCategoryManager.addOverrideActor(workshopCategoryManager);
-    
+        
         Image buildNumber = new Image(menuUiAtlas.findRegion("greyishButton"));
         buildNumber.setBounds(5, 5, 150, 50);
-    
+        
         TextButton openStats = uiComposer.addTextButton("defaultLight", localeManager.get("stats.open"), 0.27f);
         openStats.getLabel().setWrap(true);
         openStats.setBounds(385, 5, 150, 50);
-        openStats.addListener(new ClickListener(){
+        openStats.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 playerStatsPanel.toggle();
@@ -448,7 +449,7 @@ public class MenuScreen implements Screen {
         menuStage.addActor(openStats);
         
         menuCategoryManager.attach(menuStage);
-    
+        
         playerStatsPanel = new PlayerStatsPanel(compositeManager, menuStage);
         
         rebuildUpgradeMenus();
@@ -482,9 +483,9 @@ public class MenuScreen implements Screen {
         newGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("newGame.alert"), new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("newGame.alert"), new DialogueActionListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
+                    public void onConfirm() {
                         initNewGame(treeJson);
                         startWarpAnimation(true);
                     }
@@ -552,7 +553,7 @@ public class MenuScreen implements Screen {
     }
     
     public void reset() {
-        for(int i = 0; i < fires.size; i++){
+        for (int i = 0; i < fires.size; i++) {
             fires.get(i).update(100); // hide previous partially visible warp flame
         }
         drawScreenExtenders = true;
@@ -573,7 +574,7 @@ public class MenuScreen implements Screen {
         
         inventory.update();
         blackMarket.update();
-    
+        
         musicManager.setNewMusicSource("music/ambient", 1, 5, 5);
     }
     
@@ -647,14 +648,14 @@ public class MenuScreen implements Screen {
         
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             if (!isConfirmationDialogActive) {
-                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("exit.alert"), new ClickListener() {
+                new ConfirmationDialogue(compositeManager, menuStage, localeManager.get("exit.alert"), new DialogueActionListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
+                    public void onConfirm() {
                         Gdx.app.exit();
                     }
-                }, new ClickListener() {
+                    
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
+                    public void onCancel() {
                         isConfirmationDialogActive = false;
                     }
                 });

@@ -9,7 +9,7 @@
     "l2": {
       "node0": {
         "type": "upgrade",
-        "upgradeType": "parameter.speed",
+        "upgradeParameter": "parameter.speed",
         "upgradeValue": "X1.3",
         "upgradePrice": {
           "item.cyan_crystal": 4
@@ -22,7 +22,7 @@
       },
       "node1": {
         "type": "upgrade",
-        "upgradeType": "parameter.acceleration_force",
+        "upgradeParameter": "parameter.acceleration_force",
         "upgradeValue": "X1.2",
         "upgradePrice": {
           "item.red_fuel_cell": 2
@@ -35,7 +35,7 @@
       },
       "node2": {
         "type": "upgrade",
-        "upgradeType": "parameter.weight",
+        "upgradeParameter": "parameter.weight",
         "upgradeValue": "X0.7",
         "upgradePrice": {
           "money": 4500
@@ -50,7 +50,7 @@
     "l3": {
       "node0": {
         "type": "upgrade",
-        "upgradeType": "parameter.speed",
+        "upgradeParameter": "parameter.speed",
         "upgradeValue": "X1.5",
         "upgradePrice": {
           "item.purple_crystal": 2
@@ -63,7 +63,7 @@
       },
       "node1": {
         "type": "upgrade",
-        "upgradeType": "parameter.acceleration_force",
+        "upgradeParameter": "parameter.acceleration_force",
         "upgradeValue": "X1.4",
         "upgradePrice": {
           "item.cyan_fuel_cell": 2
@@ -76,7 +76,7 @@
       },
       "node2": {
         "type": "upgrade",
-        "upgradeType": "parameter.weight",
+        "upgradeParameter": "parameter.weight",
         "upgradeValue": "X0.5",
         "upgradePrice": {
           "money": 6000

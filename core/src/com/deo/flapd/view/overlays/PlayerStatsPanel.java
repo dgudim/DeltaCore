@@ -89,8 +89,6 @@ public class PlayerStatsPanel extends Group {
         JsonEntry batteryConfig = treeJson.get(getString(Keys.currentBattery), "parameters");
         JsonEntry shieldConfig = treeJson.get(getString(Keys.currentShield), "parameters");
         
-        System.out.println(moduleConfig);
-        
         float weight =
                 weaponConfig.getFloat( 1, "parameter.weight") +
                         coreConfig.getFloat( 1, "parameter.weight") +

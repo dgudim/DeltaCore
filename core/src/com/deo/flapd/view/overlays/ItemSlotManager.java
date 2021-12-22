@@ -47,6 +47,7 @@ import com.deo.flapd.utils.Keys;
 import com.deo.flapd.utils.LocaleManager;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
+import com.deo.flapd.view.dialogues.DialogueActionListener;
 import com.deo.flapd.view.dialogues.PurchaseDialogue;
 import com.deo.flapd.view.dialogues.SellScrapDialogue;
 
@@ -115,9 +116,9 @@ public class ItemSlotManager {
             update.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    new ConfirmationDialogue(compositeManager, stage, localeManager.get("workshop.market.reset"), new ClickListener() {
+                    new ConfirmationDialogue(compositeManager, stage, localeManager.get("workshop.market.reset"), new DialogueActionListener() {
                         @Override
-                        public void clicked(InputEvent event, float x, float y) {
+                        public void onConfirm() {
                             if (getInteger(Keys.moneyAmount) >= 3500) {
                                 subtractInteger(Keys.moneyAmount, 3500);
                                 putLong(Keys.shopLastGenerationTime, 0);

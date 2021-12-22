@@ -1,66 +1,45 @@
 package com.deo.flapd.view.dialogues;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.deo.flapd.utils.CompositeManager;
-import com.deo.flapd.utils.ui.UIComposer;
-
-import java.util.Arrays;
-
 import static com.deo.flapd.utils.DUtils.constructFilledImageWithColor;
 import static com.deo.flapd.utils.DUtils.getInteger;
 import static com.deo.flapd.utils.DUtils.getString;
 import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.deo.flapd.utils.CompositeManager;
+
+import java.util.Arrays;
+
 public class ColorCustomizationDialogue extends Dialogue {
     
-    private final Dialog dialog;
     public boolean drawFire = true;
     
-    ColorCustomizationDialogue(CompositeManager compositeManager, final String particleEffect, final Stage stage, DialogueActionListener dialogueActionListener) {
+    ColorCustomizationDialogue(CompositeManager compositeManager, final Stage stage, final String particleEffect, DialogueActionListener dialogueActionListener) {
+        super(compositeManager, "colorDialog");
         
-        AssetManager assetManager = compositeManager.getAssetManager();
+        font.getData().setScale(0.26f);
         
-        BitmapFont font = assetManager.get("fonts/pixel.ttf");
-        font.setUseIntegerPositions(false);
-        font.getData().setScale(0.13f * 2);
-        font.getData().markupEnabled = true;
-        
-        Skin textures = new Skin();
-        textures.addRegions(assetManager.get("shop/workshop.atlas"));
-        final Window.WindowStyle dialogStyle = new Window.WindowStyle();
-        dialogStyle.background = textures.getDrawable("colorDialog");
-        dialogStyle.titleFont = font;
-    
         ParticleEffectPool.PooledEffect fire = compositeManager.getParticleEffectPool().getParticleEffectByPath("particles/" + particleEffect + ".p");
         fire.scaleEffect(5f);
-        
-        dialog = new Dialog("", dialogStyle);
-        
-        UIComposer uiComposer = compositeManager.getUiComposer();
         
         TextButton close = uiComposer.addTextButton("workshopRed", "cancel", 0.455f);
         TextButton ok = uiComposer.addTextButton("workshopGreen", "apply", 0.455f);

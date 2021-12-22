@@ -1,39 +1,5 @@
 package com.deo.flapd.view.dialogues;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.Scaling;
-import com.deo.flapd.utils.CompositeManager;
-import com.deo.flapd.utils.JsonEntry;
-import com.deo.flapd.utils.Keys;
-import com.deo.flapd.utils.LocaleManager;
-import com.deo.flapd.utils.ui.UIComposer;
-import com.deo.flapd.view.overlays.UpgradeMenu;
-
 import static com.deo.flapd.utils.DUtils.addInteger;
 import static com.deo.flapd.utils.DUtils.getBoolean;
 import static com.deo.flapd.utils.DUtils.getInteger;
@@ -43,15 +9,40 @@ import static com.deo.flapd.utils.DUtils.putString;
 import static com.deo.flapd.utils.DUtils.scaleDrawables;
 import static com.deo.flapd.utils.DUtils.subtractInteger;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.Scaling;
+import com.deo.flapd.utils.CompositeManager;
+import com.deo.flapd.utils.JsonEntry;
+import com.deo.flapd.utils.Keys;
+import com.deo.flapd.view.overlays.UpgradeMenu;
+
 public class CraftingDialogue extends Dialogue {
     
-    private final Dialog dialog;
     private final DialogueActionListener dialogueActionListener;
     private final UpgradeMenu upgradeMenu;
     private final Stage stage;
     
     private final CompositeManager compositeManager;
-    private final LocaleManager localeManager;
     
     private final int requestedQuantity;
     private final Array<TextButton> buyShortcuts;
@@ -60,7 +51,6 @@ public class CraftingDialogue extends Dialogue {
     
     private final String result;
     private int resultCount;
-    private final UIComposer uiComposer;
     private final Label.LabelStyle yellowLabelStyle;
     private final Label.LabelStyle defaultLabelStyle;
     private final Slider quantity;
@@ -80,12 +70,11 @@ public class CraftingDialogue extends Dialogue {
     }
     
     private CraftingDialogue(CompositeManager compositeManager, final Stage stage, final String result, int requestedQuantity, boolean showDescription, final Dialogue previousDialogue, DialogueActionListener dialogueActionListener, UpgradeMenu upgradeMenu) {
+        super(compositeManager, "craftingTerminal");
         this.stage = stage;
         this.compositeManager = compositeManager;
         this.upgradeMenu = upgradeMenu;
         this.dialogueActionListener = dialogueActionListener;
-        AssetManager assetManager = compositeManager.getAssetManager();
-        localeManager = compositeManager.getLocaleManager();
         this.result = result;
         this.requestedQuantity = MathUtils.clamp(requestedQuantity, 1, 50);
         
@@ -93,15 +82,7 @@ public class CraftingDialogue extends Dialogue {
         tableLabels = new Array<>();
         items = treeJson.get(false, result, "items");
         
-        BitmapFont font = assetManager.get("fonts/pixel.ttf");
-        font.setUseIntegerPositions(false);
         font.getData().setScale(0.52f);
-        font.getData().markupEnabled = true;
-        
-        uiComposer = compositeManager.getUiComposer();
-        
-        Skin buttonSkin = new Skin();
-        buttonSkin.addRegions(assetManager.get("shop/workshop.atlas"));
         
         itemAtlas = assetManager.get("items/items.atlas");
         
@@ -127,11 +108,6 @@ public class CraftingDialogue extends Dialogue {
         defaultLabelStyle = new Label.LabelStyle();
         defaultLabelStyle.font = font;
         
-        Window.WindowStyle dialogStyle = new Window.WindowStyle();
-        dialogStyle.titleFont = font;
-        dialogStyle.background = buttonSkin.getDrawable("craftingTerminal");
-        dialog = new Dialog("", dialogStyle);
-        
         dialog.addActor(getProductImage());
         
         quantity = uiComposer.addSlider("sliderDefaultNormal", 1, 50, 1);
@@ -148,7 +124,7 @@ public class CraftingDialogue extends Dialogue {
                         customize.addListener(new ClickListener() {
                             @Override
                             public void clicked(InputEvent event, float x, float y) {
-                                new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage, new DialogueActionListener() {
+                                new ColorCustomizationDialogue(compositeManager, stage, treeJson.getString("fire_engine_left_red", result, "usesEffect"), new DialogueActionListener() {
                                     @Override
                                     public void onConfirm() {
                                         upgradeMenu.updateFire();
@@ -228,7 +204,7 @@ public class CraftingDialogue extends Dialogue {
                             customize.addListener(new ClickListener() {
                                 @Override
                                 public void clicked(InputEvent event, float x, float y) {
-                                    new ColorCustomizationDialogue(compositeManager, treeJson.getString("fire_engine_left_red", result, "usesEffect"), stage, new DialogueActionListener() {
+                                    new ColorCustomizationDialogue(compositeManager, stage, treeJson.getString("fire_engine_left_red", result, "usesEffect"), new DialogueActionListener() {
                                         @Override
                                         public void onConfirm() {
                                             upgradeMenu.updateFire();
@@ -287,7 +263,7 @@ public class CraftingDialogue extends Dialogue {
         } else {
             text.setText(localeManager.get("craftingDialogue.requiresOtherPartsMessage") + ":");
             yes.setText(localeManager.get("craftingDialogue.fine"));
-            dialog.setBackground(buttonSkin.getDrawable("craftingTerminal_locked"));
+            dialog.setBackground(skin.getDrawable("craftingTerminal_locked"));
             
             addCloseListener(yes, yes2);
             
