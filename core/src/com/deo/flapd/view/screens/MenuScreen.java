@@ -79,6 +79,7 @@ import com.deo.flapd.utils.postprocessing.PostProcessor;
 import com.deo.flapd.utils.ui.UIComposer;
 import com.deo.flapd.view.dialogues.ConfirmationDialogue;
 import com.deo.flapd.view.dialogues.DialogueActionListener;
+import com.deo.flapd.view.dialogues.UpgradeDialogue;
 import com.deo.flapd.view.overlays.CategoryManager;
 import com.deo.flapd.view.overlays.ItemSlotManager;
 import com.deo.flapd.view.overlays.PlayerStatsPanel;
@@ -490,6 +491,7 @@ public class MenuScreen implements Screen {
                         startWarpAnimation(true);
                     }
                 });
+                new UpgradeDialogue(compositeManager, menuStage);
             }
         });
         

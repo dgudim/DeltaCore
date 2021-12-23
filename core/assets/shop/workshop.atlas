@@ -3,44 +3,51 @@ workshop.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+upgradeDialog
+  rotate: false
+  xy: 1, 565
+  size: 512, 450
+  orig: 512, 450
+  offset: 0, 0
+  index: -1
 colorDialog
   rotate: false
-  xy: 1, 503
+  xy: 1, 51
   size: 376, 512
   orig: 376, 512
   offset: 0, 0
   index: -1
 blankDialogue
   rotate: false
-  xy: 379, 735
+  xy: 515, 735
   size: 512, 280
   orig: 512, 280
   offset: 0, 0
   index: -1
 craftingTerminal
   rotate: false
-  xy: 893, 735
+  xy: 1029, 735
   size: 512, 280
   orig: 512, 280
   offset: 0, 0
   index: -1
 craftingTerminal_locked
   rotate: false
-  xy: 1407, 735
+  xy: 515, 453
   size: 512, 280
   orig: 512, 280
   offset: 0, 0
   index: -1
 exitDialog
   rotate: false
-  xy: 1, 221
+  xy: 1543, 735
   size: 348, 280
   orig: 348, 280
   offset: 0, 0
   index: -1
 slot
   rotate: false
-  xy: 379, 605
+  xy: 379, 435
   size: 128, 128
   split: 15, 15, 15, 43
   orig: 128, 128
@@ -48,7 +55,7 @@ slot
   index: -1
 slot_disabled
   rotate: false
-  xy: 1, 91
+  xy: 1029, 605
   size: 128, 128
   split: 15, 15, 15, 43
   orig: 128, 128
@@ -56,7 +63,7 @@ slot_disabled
   index: -1
 slot_disabled_down
   rotate: false
-  xy: 509, 605
+  xy: 1893, 887
   size: 128, 128
   split: 15, 15, 15, 43
   orig: 128, 128
@@ -64,7 +71,7 @@ slot_disabled_down
   index: -1
 slot_disabled_over
   rotate: false
-  xy: 131, 91
+  xy: 379, 305
   size: 128, 128
   split: 15, 15, 15, 43
   orig: 128, 128
@@ -72,7 +79,7 @@ slot_disabled_over
   index: -1
 slot_enabled
   rotate: false
-  xy: 639, 605
+  xy: 1029, 475
   size: 128, 128
   split: 15, 15, 15, 43
   orig: 128, 128
@@ -80,7 +87,7 @@ slot_enabled
   index: -1
 slot_over
   rotate: false
-  xy: 769, 605
+  xy: 1159, 605
   size: 128, 128
   split: 15, 15, 15, 43
   orig: 128, 128
@@ -88,105 +95,105 @@ slot_over
   index: -1
 blank_shopButton_cyan_disabled
   rotate: false
-  xy: 379, 515
+  xy: 1289, 645
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_cyan_enabled
   rotate: false
-  xy: 1, 1
+  xy: 1447, 645
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_cyan_over
   rotate: false
-  xy: 899, 645
+  xy: 1605, 645
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_disabled
   rotate: false
-  xy: 537, 515
+  xy: 509, 363
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_enabled
   rotate: false
-  xy: 1057, 645
+  xy: 667, 363
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_over
   rotate: false
-  xy: 695, 515
+  xy: 825, 363
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_purple_disabled
   rotate: false
-  xy: 1215, 645
+  xy: 379, 215
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_purple_enabled
   rotate: false
-  xy: 1373, 645
+  xy: 379, 125
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_purple_over
   rotate: false
-  xy: 1531, 645
+  xy: 379, 35
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_red_disabled
   rotate: false
-  xy: 1689, 645
+  xy: 1159, 515
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_red_enabled
   rotate: false
-  xy: 899, 555
+  xy: 1763, 645
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 blank_shopButton_red_over
   rotate: false
-  xy: 1057, 555
+  xy: 1317, 555
   size: 156, 88
   orig: 156, 88
   offset: 0, 0
   index: -1
 question
   rotate: false
-  xy: 1921, 967
+  xy: 509, 313
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 question_enabled
   rotate: false
-  xy: 261, 171
+  xy: 1, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 question_over
   rotate: false
-  xy: 159, 41
+  xy: 1893, 837
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
